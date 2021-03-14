@@ -8,6 +8,7 @@ import kz.capitalpay.server.login.repository.PendingEmailRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -33,6 +34,7 @@ public class UserEmailService {
             if (pendingEmail != null && !pendingEmail.getStatus().equals(PENDING)) {
                 return error101;
             }
+            pendingEmail = new PendingEmail();
             pendingEmail.setEmail(request.getEmail());
             pendingEmail.setStatus(PENDING);
             pendingEmail.setConfirmCode(UUID.randomUUID().toString());
