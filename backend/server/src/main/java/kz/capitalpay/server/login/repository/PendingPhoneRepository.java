@@ -8,4 +8,6 @@ import java.util.List;
 public interface PendingPhoneRepository extends JpaRepository<PendingPhone, String> {
     PendingPhone findTopByPhone(String phone);
 
+    PendingPhone findTopByConfirmCodeAndStatus(String code,String status);
+
 }

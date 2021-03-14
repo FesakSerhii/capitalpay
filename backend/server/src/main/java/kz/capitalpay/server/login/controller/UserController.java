@@ -58,6 +58,13 @@ public class UserController {
     }
 
 
+    @PostMapping("/step5")
+    ResultDTO confirmPhone(@Valid @RequestBody ConfirmCodeCheckRequestDTO request) {
+        logger.info(gson.toJson(request));
+        return  userPhoneService.confirmPhone(request);
+    }
+
+
 //    @PostMapping("/step1")
 //    void signUp(@RequestBody ApplicationUser applicationUser) {
 //        logger.info(gson.toJson(applicationUser));

@@ -80,4 +80,9 @@ public class UserEmailService {
         }
     }
 
+    public boolean confirm(PendingEmail pendingEmail) {
+        pendingEmail.setStatus(CONFIRMED);
+        pendingEmailRepository.save(pendingEmail);
+        return true;
+    }
 }

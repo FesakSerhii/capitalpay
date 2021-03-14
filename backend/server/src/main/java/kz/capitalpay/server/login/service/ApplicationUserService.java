@@ -1,9 +1,7 @@
 package kz.capitalpay.server.login.service;
 
 import com.google.gson.Gson;
-
 import kz.capitalpay.server.dto.ResultDTO;
-import kz.capitalpay.server.login.dto.SignUpEmailRequestDTO;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.repository.ApplicationUserRepository;
 import org.slf4j.Logger;
@@ -14,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 
+import static kz.capitalpay.server.constants.ErrorDictionary.error104;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.USER;
 
 @Service
@@ -53,4 +52,17 @@ public class ApplicationUserService {
         return false;
     }
 
+    public ResultDTO createNewUser(String username, String passwordHash) {
+        ApplicationUser user = applicationUserRepository.findByUsername(username);
+        if (user != null && user.getUsername().equals(username)) {
+            return error104;
+        }
+        ApplicationUser applicationUser = new ApplicationUser();
+        applicationUser.setUsername(username);
+        applicationUser.setPassword(passwordHash);
+        applicationUser.setRoles(Collections.singleton(applicationRoleService.getRole(USER)));
+        applicationUserRepository.save(applicationUser);
+        return new ResultDTO(true, String.format("User %s created", username), 0);
+    }
 }
+
