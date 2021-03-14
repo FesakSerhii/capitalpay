@@ -11,13 +11,18 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.stream.Collectors;
 
 import static kz.capitalpay.server.login.config.SecurityConstants.HEADER_STRING;
 import static kz.capitalpay.server.login.config.SecurityConstants.TOKEN_PREFIX;
@@ -61,7 +66,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private Algorithm getAlgorithm() {
-
+/*
 
         String publicKeyContent = "-----BEGIN PUBLIC KEY-----\n" +
                 "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3RlFMRLfb0n7pve08qgX\n" +
@@ -100,7 +105,20 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                 "TEq/hGxzlgo7+TIKxvEMtdz7vXqnwIGna79cjqoviYUBmKQYgXJDJBC3m5ADQjFg\n" +
                 "8fuIydX8K0lO7ttfoNGFC8Te73kcSDNw9uJazOdTzEUSeHgMDsXl\n" +
                 "-----END RSA PRIVATE KEY-----\n";
+*/
+        final InputStream inputStreamPriv = getClass().getClassLoader()
+                .getResourceAsStream("rsa/privatekey.pem");
 
+        String privateKeyContent = new BufferedReader(
+                new InputStreamReader(inputStreamPriv, StandardCharsets.UTF_8)).lines()
+                .collect(Collectors.joining("\n"));
+
+        final InputStream inputStreamPub = getClass().getClassLoader()
+                .getResourceAsStream("rsa/publickey.pem");
+
+        String publicKeyContent = new BufferedReader(
+                new InputStreamReader(inputStreamPub, StandardCharsets.UTF_8)).lines()
+                .collect(Collectors.joining("\n"));
 
         publicKeyContent = publicKeyContent.replaceAll("\\n", "").replace("-----BEGIN PUBLIC KEY-----", "").replace("-----END PUBLIC KEY-----", "");
         privateKeyContent = privateKeyContent.replaceAll("\\n", "").replace("-----BEGIN PRIVATE KEY-----", "").replace("-----END PRIVATE KEY-----", "");

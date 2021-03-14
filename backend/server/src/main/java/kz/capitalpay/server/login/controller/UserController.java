@@ -65,13 +65,6 @@ public class UserController {
     }
 
 
-//    @PostMapping("/step1")
-//    void signUp(@RequestBody ApplicationUser applicationUser) {
-//        logger.info(gson.toJson(applicationUser));
-//        applicationUserService.signUp(applicationUser);
-//    }
-
-
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResultDTO handleValidationExceptions(
