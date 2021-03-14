@@ -48,7 +48,7 @@ public class TemporaryDevController {
         return new ResultDTO(true, pendingPhoneList, 0);
     }
 
-    @GetMapping("/api/test")
+    @PostMapping("/api/test")
     String testMyData(Principal principal) {
         return gson.toJson(principal);
     }
