@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -106,6 +107,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                 "8fuIydX8K0lO7ttfoNGFC8Te73kcSDNw9uJazOdTzEUSeHgMDsXl\n" +
                 "-----END RSA PRIVATE KEY-----\n";
 */
+
         final InputStream inputStreamPriv = getClass().getClassLoader()
                 .getResourceAsStream("rsa/privatekey.pem");
 
@@ -125,11 +127,15 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
         try {
             KeyFactory kf = KeyFactory.getInstance("RSA");
-
+/*
             X509EncodedKeySpec keySpecX509 = new X509EncodedKeySpec(Base64.getDecoder().decode(privateKeyContent));
             RSAPublicKey publicKey = (RSAPublicKey) kf.generatePublic(keySpecX509);
             RSAPrivateKey privateKey = (RSAPrivateKey) kf.generatePrivate(keySpecX509);
-
+*/
+            X509EncodedKeySpec keySpecX509pub = new X509EncodedKeySpec(Base64.getDecoder().decode(publicKeyContent));
+            PKCS8EncodedKeySpec keySpecX509priv = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKeyContent));
+            RSAPublicKey publicKey = (RSAPublicKey) kf.generatePublic(keySpecX509pub);
+            RSAPrivateKey privateKey = (RSAPrivateKey) kf.generatePrivate(keySpecX509priv);
 
             Algorithm algorithm = Algorithm.RSA256(publicKey, privateKey);
             return algorithm;
