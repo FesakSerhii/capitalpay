@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PendingEmailRepository extends JpaRepository<PendingEmail, String> {
     PendingEmail findByEmail(String email);
+
+    PendingEmail findByConfirmCode(String code);
 }

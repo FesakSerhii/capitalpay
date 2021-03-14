@@ -1,5 +1,6 @@
 package kz.capitalpay.server.login.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -7,6 +8,7 @@ import javax.persistence.Id;
 public class PendingEmail {
     @Id
     String email;
+    @Column(name = "confirm_code", nullable = false, unique = true)
     String confirmCode;
     String status;
     Long timestamp;
