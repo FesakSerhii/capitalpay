@@ -40,7 +40,9 @@ public class UserEmailService {
             if (pendingEmail != null && !pendingEmail.getStatus().equals(PENDING)) {
                 return error101;
             }
-            pendingEmail = new PendingEmail();
+            if (pendingEmail == null) {
+                pendingEmail = new PendingEmail();
+            }
             pendingEmail.setEmail(request.getEmail());
             pendingEmail.setStatus(PENDING);
             pendingEmail.setConfirmCode(UUID.randomUUID().toString());
@@ -61,11 +63,21 @@ public class UserEmailService {
 
 
     public ResultDTO checkConfirm(ConfirmCodeCheckRequestDTO request) {
-        PendingEmail pendingEmail = pendingEmailRepository.findByConfirmCode(request.getCode());
-        if (pendingEmail != null && pendingEmail.getStatus().equals(PENDING)) {
+        PendingEmail pendingEmail = checkConfirm(request.getCode());
+        if (pendingEmail != null) {
             return new ResultDTO(true, pendingEmail, 0);
         } else {
             return error102;
         }
     }
+
+    public PendingEmail checkConfirm(String code) {
+        PendingEmail pendingEmail = pendingEmailRepository.findByConfirmCode(code);
+        if (pendingEmail != null && pendingEmail.getStatus().equals(PENDING)) {
+            return pendingEmail;
+        } else {
+            return null;
+        }
+    }
+
 }

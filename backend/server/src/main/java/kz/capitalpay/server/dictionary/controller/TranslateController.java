@@ -28,11 +28,6 @@ public class TranslateController {
     @Autowired
     TranslateService translateService;
 
-    @PostMapping("/save")
-    ResultDTO saveTranslate(@Valid @RequestBody SaveTranslateRequestDTO request) {
-        logger.info(gson.toJson(request));
-        return translateService.save(request);
-    }
 
     @PostMapping("/pagelist")
     ResultDTO pageList() {

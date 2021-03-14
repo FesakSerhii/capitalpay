@@ -5,8 +5,10 @@ import com.google.gson.Gson;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.login.dto.ConfirmCodeCheckRequestDTO;
 import kz.capitalpay.server.login.dto.SignUpEmailRequestDTO;
+import kz.capitalpay.server.login.dto.SignUpPhoneRequestDTO;
 import kz.capitalpay.server.login.service.ApplicationUserService;
 import kz.capitalpay.server.login.service.UserEmailService;
+import kz.capitalpay.server.login.service.UserPhoneService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,9 @@ public class UserController {
     UserEmailService userEmailService;
 
     @Autowired
+    UserPhoneService userPhoneService;
+
+    @Autowired
     Gson gson;
 
     @PostMapping("/step1")
@@ -44,6 +49,12 @@ public class UserController {
     ResultDTO checkConfirm(@Valid @RequestBody ConfirmCodeCheckRequestDTO request) {
         logger.info(gson.toJson(request));
         return  userEmailService.checkConfirm(request);
+    }
+
+    @PostMapping("/step3")
+    ResultDTO savePassword(@Valid @RequestBody SignUpPhoneRequestDTO request) {
+        logger.info(gson.toJson(request));
+        return  userPhoneService.savePassword(request);
     }
 
 
