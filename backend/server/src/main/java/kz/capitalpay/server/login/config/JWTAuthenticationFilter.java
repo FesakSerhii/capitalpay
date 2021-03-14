@@ -86,48 +86,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 new InputStreamReader(inputStreamPub, StandardCharsets.UTF_8)).lines()
                 .collect(Collectors.joining("\n"));
 
-//
-//        String publicKeyContent = "-----BEGIN PUBLIC KEY-----\n" +
-//                "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3RlFMRLfb0n7pve08qgX\n" +
-//                "Xv5ajtREyGknir8Cbwwsq/FWwWjQDFo3OZNO3zpPPfCpk0L/VUwkWWro5Y6wFBzC\n" +
-//                "bfHKfir2Ibuqy3oM87v2p/jdMmPKxx6UtHQ3vrrSAJgZRw7bhMtURk4xy0y/N3kN\n" +
-//                "uARLupQootizCRef01cNZTWz0mY28MrJrpGVpNxr/APcan5bJum9VI1z9dpBL+W+\n" +
-//                "JuNL7NasUS79aneP3L4V/3nckntxhON52adaSAyVLuuUmd/NbIgYLvSkuI7pZ+/U\n" +
-//                "7/k8XkAnTjxbnRsezssRMgJYuCNthQ96h6vdxViurQQhMz2y/jWpncYtBSPsbwtE\n" +
-//                "GQIDAQAB\n" +
-//                "-----END PUBLIC KEY-----";
-
-
-//
-//        String privateKeyContent = "-----BEGIN PRIVATE KEY-----\n" +
-//                "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDdGUUxEt9vSfum\n" +
-//                "97TyqBde/lqO1ETIaSeKvwJvDCyr8VbBaNAMWjc5k07fOk898KmTQv9VTCRZaujl\n" +
-//                "jrAUHMJt8cp+KvYhu6rLegzzu/an+N0yY8rHHpS0dDe+utIAmBlHDtuEy1RGTjHL\n" +
-//                "TL83eQ24BEu6lCii2LMJF5/TVw1lNbPSZjbwysmukZWk3Gv8A9xqflsm6b1UjXP1\n" +
-//                "2kEv5b4m40vs1qxRLv1qd4/cvhX/edySe3GE43nZp1pIDJUu65SZ381siBgu9KS4\n" +
-//                "juln79Tv+TxeQCdOPFudGx7OyxEyAli4I22FD3qHq93FWK6tBCEzPbL+Namdxi0F\n" +
-//                "I+xvC0QZAgMBAAECggEAM0vansEXL7XFef58b9QJ4BM5JWwgLTMgZnNceDEl6BqN\n" +
-//                "G0BbDJKdv3Dq2qWnnuJIJY9kuAB7aneAY0oQlgn6HhH7/fuvsTHeNWkyuhXA60W0\n" +
-//                "5Cz87eetbpSMHmcvs82WB8NtsMiP2+Pmb5l1v8QJJ8lvXHFlYCrQlupxPVI0HGfD\n" +
-//                "xfXyYnPBobki94RFRKMKE03JHVt1lB1eE5hiXZ4WU5A1DOwxh+jORtqSDaJIz9CC\n" +
-//                "1PmxGNoRHXsWS5J+QKEzbQ7chCdxF7ZXl18bzkZInxO/k5NqNcpCfqjtsLSf0p7z\n" +
-//                "1I+n9ZoDSOBvkJYdvDyOftwjxj/9W1GJErD1Gd/SdQKBgQD1rP3ZtxWb6EV3sS5/\n" +
-//                "zYrAc4yaglmLA7VUk3gSBfmoZsFewRUwfi0bE7kAaCCmH7Gynr7lEyGOqKbkli3h\n" +
-//                "JRaBuBuumcosvpoe1DEPjzN2+6XSyndgxhLfZGNGSkZ2xtfL3CseeCBAgXc1KSRe\n" +
-//                "r3f597I1O9A9JRoP38viMI8IIwKBgQDmY+BEtGS3JyUpky9doLzY+6Ti9A5NswCY\n" +
-//                "L/ND/ZV6hfQFBrHEfTgpfvPiIu9j0Ue5QbtEj1YqTW9zPg4EWMV3H1lzeipX0DJl\n" +
-//                "eDr6vSOgnwI7eSpysvyCja9nniefbomNJ1bNvclHaUKKlxdmDqYEy3hSD9kuhkLg\n" +
-//                "84pzwv2IkwKBgHQLHmz0GfTmpcl/m6Mqh1uYONXStFEBk2k7rv90axSsVLJZKZUa\n" +
-//                "RFwB2OTkSmetmNXyPeEeRD+KUiqu9UTfq93iBNFYOzMfZNUjDXl3/qs4+n6yu+iu\n" +
-//                "JsP2Ox48f0QjcFMO0B84RqOxg4lMwa0n3Nfps/eJJTd8iu7smvVgUm9ZAoGAS/qS\n" +
-//                "InZPZKtvMQfOLhVtUi2jEgmkkfE/d/EQS9LcMfztHZ84jvEwzVaFvYUB56xD+A96\n" +
-//                "X8DZjLfe0mWbn8lazc8z48ZdInqRtC7zXG91yWnHBbAO1Ka8aZ2qRAS/Um/Uww0/\n" +
-//                "LjixoXBQNn5fhBO+ooQrmPyLBjHW6nLGrSiYDisCgYEAvWruoVU71PXAudtKg2MG\n" +
-//                "lpgehf6H4VX5glcTPYkr+ycz99Pi9hFUMS1MSr+EbHOWCjv5MgrG8Qy13Pu9eqfA\n" +
-//                "gadrv1yOqi+JhQGYpBiBckMkELebkANCMWDx+4jJ1fwrSU7u21+g0YULxN7veRxI\n" +
-//                "M3D24lrM51PMRRJ4eAwOxeU=\n" +
-//                "-----END PRIVATE KEY-----";
-
 
         publicKeyContent = publicKeyContent.replaceAll("\\n", "").replace("-----BEGIN PUBLIC KEY-----", "").replace("-----END PUBLIC KEY-----", "");
         privateKeyContent = privateKeyContent.replaceAll("\\n", "").replace("-----BEGIN PRIVATE KEY-----", "").replace("-----END PRIVATE KEY-----", "");

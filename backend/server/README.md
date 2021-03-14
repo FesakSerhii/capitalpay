@@ -1,6 +1,12 @@
 # CapitalPay
 Capital Pay System on Java Spring Boot
 
+Host:
+https://capitalpay.kz
+
+Example:
+https://capitalpay.kz/users/sign-up
+
 # Sing Up and Login
 
 Sign Up

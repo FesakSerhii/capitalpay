@@ -2,18 +2,24 @@ package kz.capitalpay.server.login.controller;
 
 import com.google.gson.Gson;
 
-import kz.capitalpay.server.login.model.ApplicationUser;
+import kz.capitalpay.server.dto.ResultDTO;
+import kz.capitalpay.server.login.dto.SignUpEmailRequestDTO;
 import kz.capitalpay.server.login.service.ApplicationUserService;
+import kz.capitalpay.server.login.service.UserEmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/v1/signup")
 public class UserController {
 
     Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -22,12 +28,35 @@ public class UserController {
     ApplicationUserService applicationUserService;
 
     @Autowired
+    UserEmailService userEmailService;
+
+    @Autowired
     Gson gson;
 
-    @PostMapping("/sign-up")
-    void signUp(@RequestBody ApplicationUser applicationUser) {
-        logger.info(gson.toJson(applicationUser));
-        applicationUserService.signUp(applicationUser);
+    @PostMapping("/step1")
+    ResultDTO step1(@Valid @RequestBody SignUpEmailRequestDTO request) {
+        logger.info(gson.toJson(request));
+        return userEmailService.setNewEmail(request);
     }
 
+
+//    @PostMapping("/step1")
+//    void signUp(@RequestBody ApplicationUser applicationUser) {
+//        logger.info(gson.toJson(applicationUser));
+//        applicationUserService.signUp(applicationUser);
+//    }
+
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResultDTO handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return new ResultDTO(false, errors,-2);
+    }
 }

@@ -2,6 +2,8 @@ package kz.capitalpay.server.login.service;
 
 import com.google.gson.Gson;
 
+import kz.capitalpay.server.dto.ResultDTO;
+import kz.capitalpay.server.login.dto.SignUpEmailRequestDTO;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.repository.ApplicationUserRepository;
 import org.slf4j.Logger;
@@ -50,4 +52,5 @@ public class ApplicationUserService {
         }
         return false;
     }
+
 }
