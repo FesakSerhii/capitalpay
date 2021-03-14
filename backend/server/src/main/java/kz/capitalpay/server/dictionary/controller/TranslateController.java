@@ -33,4 +33,10 @@ public class TranslateController {
         return translateService.save(request);
     }
 
+    @PostMapping("/pagelist")
+    ResultDTO pageList() {
+
+        return translateService.pageList();
+    }
+
 }

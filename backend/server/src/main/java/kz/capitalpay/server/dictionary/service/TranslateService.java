@@ -11,6 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 @Service
 public class TranslateService {
 
@@ -37,6 +41,23 @@ public class TranslateService {
                 translateRepository.save(translate);
             }
             return new ResultDTO(true, String.format("Saved %d records", request.getTranslates().size()), 0);
+        } catch (Exception e) {
+            logger.error("Line number: {} \n{}", e.getStackTrace()[0].getLineNumber(), e.getMessage());
+            e.printStackTrace();
+            return new ResultDTO(false, e.getMessage(), -1);
+        }
+    }
+
+    public ResultDTO pageList() {
+        try {
+            Set<String> pageList = new HashSet<>();
+            List<Translate> translateList = translateRepository.findAll();
+            if (translateList != null && translateList.size() > 0) {
+                for (Translate tr : translateList) {
+                    pageList.add(tr.getPage());
+                }
+            }
+            return new ResultDTO(true, pageList, 0);
         } catch (Exception e) {
             logger.error("Line number: {} \n{}", e.getStackTrace()[0].getLineNumber(), e.getMessage());
             e.printStackTrace();
