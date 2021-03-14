@@ -3,6 +3,7 @@ package kz.capitalpay.server.login.controller;
 import com.google.gson.Gson;
 
 import kz.capitalpay.server.dto.ResultDTO;
+import kz.capitalpay.server.login.dto.ConfirmCodeCheckRequestDTO;
 import kz.capitalpay.server.login.dto.SignUpEmailRequestDTO;
 import kz.capitalpay.server.login.service.ApplicationUserService;
 import kz.capitalpay.server.login.service.UserEmailService;
@@ -37,6 +38,12 @@ public class UserController {
     ResultDTO step1(@Valid @RequestBody SignUpEmailRequestDTO request) {
         logger.info(gson.toJson(request));
         return userEmailService.setNewEmail(request);
+    }
+
+    @PostMapping("/step2")
+    ResultDTO checkConfirm(@Valid @RequestBody ConfirmCodeCheckRequestDTO request) {
+        logger.info(gson.toJson(request));
+        return  userEmailService.checkConfirm(request);
     }
 
 
