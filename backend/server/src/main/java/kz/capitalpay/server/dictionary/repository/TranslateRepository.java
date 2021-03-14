@@ -11,4 +11,6 @@ public interface TranslateRepository extends JpaRepository<Translate, Long> {
     Translate findTopByPageAndTranskey(String page, String transkey);
 
     Translate findTopByPageAndTranskeyAndLang(String page, String transkey, String lang);
+
+    List<Translate> findByPageAndLang(String page, String lang);
 }
