@@ -18,6 +18,12 @@ public class ApplicationRole implements GrantedAuthority {
     public ApplicationRole() {
     }
 
+
+    public ApplicationRole(String authority) {
+        this.authority = authority;
+    }
+
+
     public ApplicationRole(Long id, String authority) {
         this.id = id;
         this.authority = authority;

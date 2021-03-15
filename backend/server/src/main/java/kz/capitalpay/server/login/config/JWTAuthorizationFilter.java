@@ -2,8 +2,11 @@ package kz.capitalpay.server.login.config;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import kz.capitalpay.server.login.model.ApplicationRole;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
@@ -21,8 +24,7 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.ArrayList;
-import java.util.Base64;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static kz.capitalpay.server.login.config.SecurityConstants.HEADER_STRING;
@@ -53,13 +55,17 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
         if (token != null) {
 //            String user = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
-            String user = JWT.require(getAlgorithm())
-                    .build()
-                    .verify(token.replace(TOKEN_PREFIX, ""))
-                    .getSubject();
 
+            DecodedJWT decodedJWT = JWT.require(getAlgorithm())
+                    .build()
+                    .verify(token.replace(TOKEN_PREFIX, ""));
+
+            String user = decodedJWT.getSubject();
+            String[] authorities = decodedJWT.getClaim("authorities").asArray(String.class);
+            Set<GrantedAuthority> roleSet = Arrays.stream(authorities).map(
+                    r -> new ApplicationRole(r)).collect(Collectors.toSet());
             if (user != null) {
-                return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
+                return new UsernamePasswordAuthenticationToken(user, authorities, roleSet);
             }
             return null;
         }
