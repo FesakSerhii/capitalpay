@@ -16,7 +16,11 @@ public class SendSmsService {
 
 
     public boolean sendSms(String phone, String text) {
-        if (!phone.contains("+7")) {
+        if (phone.contains("+38")) {
+            PendingPhone pendingPhone = pendingPhoneRepository.findTopByPhone(phone);
+            sendEmailService.sendMail(pendingPhone.getEmail(),
+                    "SMS Capital Pay", text);
+        } else {
             PendingPhone pendingPhone = pendingPhoneRepository.findTopByPhone(phone);
             sendEmailService.sendMail(pendingPhone.getEmail(),
                     "SMS Capital Pay", text);
