@@ -68,7 +68,7 @@ public class UserPhoneService {
             pendingPhone.setStatus(PENDING);
             pendingPhoneRepository.save(pendingPhone);
 
-            sendSmsService.sendSms(pendingPhone.getConfirmCode(), "CapitalPay confirm code: " + pendingPhone.getConfirmCode());
+            sendSmsService.sendSms(pendingPhone.getPhone(), "CapitalPay confirm code: " + pendingPhone.getConfirmCode());
 
             return new ResultDTO(true, "SMS sent", 0);
         } catch (Exception e) {
