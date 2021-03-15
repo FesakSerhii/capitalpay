@@ -72,7 +72,16 @@ public class ApplicationUserService {
         ApplicationUser applicationUser = new ApplicationUser();
         applicationUser.setUsername(username);
         applicationUser.setPassword(passwordHash);
-        applicationUser.setRoles(Collections.singleton(applicationRoleService.getRole(USER)));
+
+
+        Set<ApplicationRole> roles = new HashSet<>();
+        if (applicationRoleService.isEmpty()) {
+            logger.info("Add admin");
+            roles.add(applicationRoleService.getRole(ADMIN));
+        }
+        roles.add(applicationRoleService.getRole(USER));
+        logger.info(gson.toJson(roles));
+        applicationUser.setRoles(roles);
         applicationUserRepository.save(applicationUser);
         return new ResultDTO(true, String.format("User %s created", username), 0);
     }
