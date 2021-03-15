@@ -1,6 +1,7 @@
 package kz.capitalpay.server.login.service;
 
 
+import com.google.gson.Gson;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.repository.ApplicationUserRepository;
 import org.slf4j.Logger;
@@ -19,19 +20,20 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     ApplicationUserRepository applicationUserRepository;
 
-
+    @Autowired
+    Gson gson;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         logger.info("Username: {}", username);
         ApplicationUser applicationUser = applicationUserRepository.findByUsername(username);
+        logger.info(gson.toJson(applicationUser));
         if (applicationUser == null) {
             throw new UsernameNotFoundException(username);
         }
         return new org.springframework.security.core.userdetails.User(applicationUser.getUsername(), applicationUser.getPassword(),
                 applicationUser.getRoles());
     }
-
 
 
 }
