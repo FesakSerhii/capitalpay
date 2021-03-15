@@ -54,7 +54,7 @@ public class TemporaryDevController {
 
     @PostMapping("/api/test")
     String testMyData(Principal principal) {
-        sendEmailService.sendMail("ah@zyxit.info","Test Capital","Test text");
+        sendEmailService.sendMail("ah@zyxit.com","Test Capital","Test text");
         return gson.toJson(principal);
     }
 }
