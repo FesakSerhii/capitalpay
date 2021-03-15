@@ -69,29 +69,12 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         String username = ((User) authResult.getPrincipal()).getUsername();
         Gson gson = new Gson();
-//        logger.info(gson.toJson(authResult.getAuthorities()));
-        logger.info("AuthResult: {}",gson.toJson( authResult));
-        logger.info("Principal: {}",gson.toJson( ((User) authResult.getPrincipal()).getAuthorities()));
-        logger.info("Authorities: {}",gson.toJson( authResult.getAuthorities()));
-
         String[] roles = new String[authResult.getAuthorities().size()];
-        int i = 0;
-        for(GrantedAuthority ga : authResult.getAuthorities()){
-            ApplicationRole ar = (ApplicationRole) ga;
-            logger.info(gson.toJson(ar));
-            logger.info(gson.toJson(ar.getAuthority()));
-            roles[i] = ar.getAuthority();
-            logger.info(roles[i]);
-            i++;
-        }
-        logger.info("Roles: {}",gson.toJson(roles));
+
         Set<String> roleSet = authResult.getAuthorities().stream()
                 .map(r -> r.getAuthority()).collect(Collectors.toSet());
-        logger.info("Role Set:",gson.toJson(roleSet));
-        List<String> roleList = new ArrayList<>(roleSet);
 
-        System.out.println(roleList.get(0));
-        System.out.println(roles[0]);
+        roles = roleSet.toArray(roles);
         String token = JWT.create()
                 .withSubject(username)
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))

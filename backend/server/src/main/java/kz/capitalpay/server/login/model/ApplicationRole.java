@@ -37,6 +37,6 @@ public class ApplicationRole implements GrantedAuthority {
 
     @Override
     public String getAuthority() {
-        return null;
+        return this.authority;
     }
 }
