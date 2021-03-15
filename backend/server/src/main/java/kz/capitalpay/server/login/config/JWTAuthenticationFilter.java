@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.google.gson.Gson;
 import kz.capitalpay.server.login.model.ApplicationUser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -35,6 +37,8 @@ import static kz.capitalpay.server.login.config.SecurityConstants.*;
 
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+
+    Logger logger = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
 
     AuthenticationManager authenticationManager;
 
@@ -68,7 +72,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         Set<String> roleSet = authResult.getAuthorities().stream()
                 .map(r -> r.getAuthority()).collect(Collectors.toSet());
         List<String> roleList = new ArrayList<>(roleSet);
-        String[] roles = roleList.toArray(new String[0]);
+        String[] roles = roleList.toArray(new String[roleList.size()]);
         String token = JWT.create()
                 .withSubject(username)
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
