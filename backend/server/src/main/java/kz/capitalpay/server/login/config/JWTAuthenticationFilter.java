@@ -4,11 +4,13 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.google.gson.Gson;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -60,12 +62,17 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         String username = ((User) authResult.getPrincipal()).getUsername();
-        Set<String> roles = authResult.getAuthorities().stream()
+        Gson gson = new Gson();
+        logger.info(gson.toJson(authResult.getAuthorities()));
+
+        Set<String> roleSet = authResult.getAuthorities().stream()
                 .map(r -> r.getAuthority()).collect(Collectors.toSet());
+        List<String> roleList = new ArrayList<>(roleSet);
+        String[] roles = roleList.toArray(new String[0]);
         String token = JWT.create()
                 .withSubject(username)
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .withArrayClaim("authorities", (String[]) roles.toArray())
+                .withArrayClaim("authorities", roles)
                 .withJWTId(UUID.randomUUID().toString())
                 .sign(getAlgorithm());
         response.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
