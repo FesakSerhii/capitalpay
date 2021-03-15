@@ -41,10 +41,12 @@ public class ApplicationUserService {
             applicationUser.setPassword(bCryptPasswordEncoder.encode(applicationUser.getPassword()));
 
             Set<ApplicationRole> roles = new HashSet<>();
-            if(applicationRoleService.isEmpty()){
+            if (applicationRoleService.isEmpty()) {
+                logger.info("Add admin");
                 roles.add(applicationRoleService.getRole(ADMIN));
             }
             roles.add(applicationRoleService.getRole(USER));
+            logger.info(gson.toJson(roles));
             applicationUser.setRoles(roles);
             applicationUserRepository.save(applicationUser);
         } else {
