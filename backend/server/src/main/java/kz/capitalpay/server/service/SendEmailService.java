@@ -61,7 +61,7 @@ public class SendEmailService {
         try {
             logger.info("Send message...");
 
-            logger.error("Email temporary disabled");
+//            logger.error("Email temporary disabled");
             logger.info(email);
             logger.info(subj);
             logger.info(text);
