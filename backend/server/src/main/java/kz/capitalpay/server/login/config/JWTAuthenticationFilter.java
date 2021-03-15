@@ -72,11 +72,19 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         logger.info("Principal: {}",gson.toJson( ((User) authResult.getPrincipal()).getAuthorities()));
         logger.info("Authorities: {}",gson.toJson( authResult.getAuthorities()));
 
+        String[] roles = new String[authResult.getAuthorities().size()];
+        int i = 0;
+        for(GrantedAuthority ga : authResult.getAuthorities()){
+            logger.info(gson.toJson(ga));
+            roles[i] = ga.getAuthority();
+            i++;
+        }
+        logger.info("Roles: {}",gson.toJson(roles));
         Set<String> roleSet = authResult.getAuthorities().stream()
                 .map(r -> r.getAuthority()).collect(Collectors.toSet());
         logger.info("Role Set:",gson.toJson(roleSet));
         List<String> roleList = new ArrayList<>(roleSet);
-        String[] roles = roleList.toArray(new String[roleList.size()]);
+
         System.out.println(roleList.get(0));
         System.out.println(roles[0]);
         String token = JWT.create()
