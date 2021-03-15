@@ -73,8 +73,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .map(r -> r.getAuthority()).collect(Collectors.toSet());
         List<String> roleList = new ArrayList<>(roleSet);
         String[] roles = roleList.toArray(new String[roleList.size()]);
-        System.out.println(roleList.size());
-        System.out.println(authResult.getAuthorities().size());
+        System.out.println(roleList.get(0));
         System.out.println(roles[0]);
         String token = JWT.create()
                 .withSubject(username)
