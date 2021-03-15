@@ -6,6 +6,7 @@ import kz.capitalpay.server.dictionary.service.TranslateService;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.login.model.PendingPhone;
 import kz.capitalpay.server.login.repository.PendingPhoneRepository;
+import kz.capitalpay.server.service.SendEmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,9 @@ public class TemporaryDevController {
     @Autowired
     PendingPhoneRepository pendingPhoneRepository;
 
+    @Autowired
+    SendEmailService sendEmailService;
+
     @PostMapping("/translate/save")
     ResultDTO saveTranslate(@Valid @RequestBody SaveTranslateRequestDTO request) {
         logger.info(gson.toJson(request));
@@ -50,6 +54,7 @@ public class TemporaryDevController {
 
     @PostMapping("/api/test")
     String testMyData(Principal principal) {
+        sendEmailService.sendMail("ah@zyxit.info","Test Capital","Test text");
         return gson.toJson(principal);
     }
 }

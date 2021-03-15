@@ -66,7 +66,7 @@ public class SendEmailService {
             logger.info(subj);
             logger.info(text);
 
-            /*
+
 
             Session session = Session.getInstance(properties, new Authenticator() {
                 @Override
@@ -94,7 +94,7 @@ public class SendEmailService {
 
             logger.info("Message sent!");
             return true;
-*/
+
         } catch (Exception e) {
             e.printStackTrace();
         }
