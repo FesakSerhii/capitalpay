@@ -44,11 +44,6 @@ public class TemporaryDevController {
         return translateService.save(request);
     }
 
-    @PostMapping("/pending/sms")
-    ResultDTO pendingSmsList() {
-        List<PendingPhone> pendingPhoneList = pendingPhoneRepository.findAll();
-        return new ResultDTO(true, pendingPhoneList, 0);
-    }
 
     @PostMapping("/api/test")
     String testMyData(Principal principal) {

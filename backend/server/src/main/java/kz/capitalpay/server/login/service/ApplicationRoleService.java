@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ApplicationRoleService {
 
@@ -30,5 +32,10 @@ public class ApplicationRoleService {
             applicationRoleRepository.save(role);
         }
         return role;
+    }
+
+    public boolean isEmpty() {
+        List<ApplicationRole> roleList = applicationRoleRepository.findAll();
+        return roleList == null || roleList.size() == 0;
     }
 }

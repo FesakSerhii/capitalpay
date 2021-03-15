@@ -2,6 +2,7 @@ package kz.capitalpay.server.login.service;
 
 import com.google.gson.Gson;
 import kz.capitalpay.server.dto.ResultDTO;
+import kz.capitalpay.server.login.model.ApplicationRole;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.repository.ApplicationUserRepository;
 import org.slf4j.Logger;
@@ -11,8 +12,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.error104;
+import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.USER;
 
 @Service
@@ -35,7 +39,13 @@ public class ApplicationUserService {
     public void signUp(ApplicationUser applicationUser) {
         if (!existsUser(applicationUser)) {
             applicationUser.setPassword(bCryptPasswordEncoder.encode(applicationUser.getPassword()));
-            applicationUser.setRoles(Collections.singleton(applicationRoleService.getRole(USER)));
+
+            Set<ApplicationRole> roles = new HashSet<>();
+            if(applicationRoleService.isEmpty()){
+                roles.add(applicationRoleService.getRole(ADMIN));
+            }
+            roles.add(applicationRoleService.getRole(USER));
+            applicationUser.setRoles(roles);
             applicationUserRepository.save(applicationUser);
         } else {
             throw new IllegalArgumentException("User " + applicationUser.getUsername() + " exists");
