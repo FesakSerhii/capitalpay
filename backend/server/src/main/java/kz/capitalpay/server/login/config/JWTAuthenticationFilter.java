@@ -73,6 +73,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .map(r -> r.getAuthority()).collect(Collectors.toSet());
         List<String> roleList = new ArrayList<>(roleSet);
         String[] roles = roleList.toArray(new String[roleList.size()]);
+        System.out.println(roleList.size());
+        System.out.println(authResult.getAuthorities().size());
         String token = JWT.create()
                 .withSubject(username)
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
