@@ -26,9 +26,7 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Date;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static kz.capitalpay.server.login.config.SecurityConstants.*;
@@ -61,13 +59,17 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+        String username = ((User) authResult.getPrincipal()).getUsername();
+        Set<String> roles = authResult.getAuthorities().stream()
+                .map(r -> r.getAuthority()).collect(Collectors.toSet());
         String token = JWT.create()
-                .withSubject(((User) authResult.getPrincipal()).getUsername())
+                .withSubject(username)
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .withArrayClaim("authorities", (String[]) roles.toArray())
+                .withJWTId(UUID.randomUUID().toString())
                 .sign(getAlgorithm());
         response.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
     }
-
 
 
     private Algorithm getAlgorithm() {
