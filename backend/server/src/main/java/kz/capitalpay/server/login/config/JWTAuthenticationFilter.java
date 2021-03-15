@@ -76,7 +76,9 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         int i = 0;
         for(GrantedAuthority ga : authResult.getAuthorities()){
             logger.info(gson.toJson(ga));
+            logger.info(gson.toJson(ga.getAuthority()));
             roles[i] = ga.getAuthority();
+            logger.info(roles[i]);
             i++;
         }
         logger.info("Roles: {}",gson.toJson(roles));
