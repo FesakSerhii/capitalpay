@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.google.gson.Gson;
+import kz.capitalpay.server.login.model.ApplicationRole;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -75,9 +77,10 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String[] roles = new String[authResult.getAuthorities().size()];
         int i = 0;
         for(GrantedAuthority ga : authResult.getAuthorities()){
-            logger.info(gson.toJson(ga));
-            logger.info(gson.toJson(ga.getAuthority()));
-            roles[i] = ga.getAuthority();
+            ApplicationRole ar = (ApplicationRole) ga;
+            logger.info(gson.toJson(ar));
+            logger.info(gson.toJson(ar.getAuthority()));
+            roles[i] = ar.getAuthority();
             logger.info(roles[i]);
             i++;
         }
