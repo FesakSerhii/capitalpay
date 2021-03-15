@@ -67,7 +67,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         String username = ((User) authResult.getPrincipal()).getUsername();
         Gson gson = new Gson();
-        logger.info(gson.toJson(authResult.getAuthorities()));
+//        logger.info(gson.toJson(authResult.getAuthorities()));
+        logger.info("AuthResult: {}",gson.toJson( authResult));
 
         Set<String> roleSet = authResult.getAuthorities().stream()
                 .map(r -> r.getAuthority()).collect(Collectors.toSet());
