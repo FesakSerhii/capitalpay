@@ -37,8 +37,6 @@ public class TemporaryDevController {
     @Autowired
     PendingPhoneRepository pendingPhoneRepository;
 
-    @Autowired
-    SendEmailService sendEmailService;
 
     @PostMapping("/translate/save")
     ResultDTO saveTranslate(@Valid @RequestBody SaveTranslateRequestDTO request) {
@@ -54,7 +52,6 @@ public class TemporaryDevController {
 
     @PostMapping("/api/test")
     String testMyData(Principal principal) {
-        sendEmailService.sendMail("ah@zyxit.com","Test Capital","Test text");
         return gson.toJson(principal);
     }
 }
