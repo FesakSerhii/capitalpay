@@ -57,7 +57,7 @@ public class SendSmsService {
                         "&phones=" + phone +
                         "&mes=" + mes+
                         "&charset=utf-8";
-
+logger.info(url);
                 String response = restTemplate.getForObject(url, String.class);
 
                 logger.info(response);
