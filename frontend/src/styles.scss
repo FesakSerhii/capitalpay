@@ -1,0 +1,55 @@
+/* You can add global styles to this file, and also import other style files */
+body{
+  margin: 0;
+  padding: 0;
+  perspective: 1px;
+  transform-style: preserve-3d;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  background: #F6FAFA!important;
+  //background: black!important;
+}
+
+.parallax {
+  perspective: 1px;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.parallax__layer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.parallax__layer--base {
+  transform: translateZ(+1px);
+}
+
+.parallax__layer--back {
+  transform: translateZ(-1px);
+  z-index: -1000;
+}
+
+.nav-tabs .nav-link.active, .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link{
+  border: none;
+  color: #008D68!important;
+  position: relative;
+  text-decoration: underline;
+  text-underline-position: under;
+  font-size: 18px;
+}
+.nav-tabs .nav-link, .nav-tabs .nav-link, .nav-tabs .nav-item.show .nav-link{
+  border: none;
+  color: black!important;
+}
+.nav{
+  border: none;
+}
+.nav-tabs {
+  border-bottom: none!important;
+}
+
