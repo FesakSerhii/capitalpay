@@ -30,14 +30,14 @@ public class SmsController {
     }
 
     @PostMapping("/calback/sms")
-    void callbackUrl(@RequestParam("") String sms,
+    void callbackUrl(
                      @RequestParam("") String phone,
                      @RequestParam("") String status,
                      @RequestParam("") String time,
                      @RequestParam("") String ts,
                      @RequestParam("") String id) {
 
-        logger.info("{} {} {} {} {} {}", sms, phone, status, time, ts, id);
+        logger.info("{} {} {} {} {}",  phone, status, time, ts, id);
 
     }
 }
