@@ -54,7 +54,7 @@ public class SendSmsService {
                 String url = smsSendUrl +
                         "?login=" + smsSendLogin +
                         "&psw=" + smsSendPassword +
-                        "&phones=" + phone +
+                        "&phones=" + phone.replace("+","") +
                         "&mes=" + mes;
 //                        "&charset=utf-8";
 logger.info(url);
