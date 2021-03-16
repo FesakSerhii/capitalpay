@@ -48,11 +48,13 @@ public class SendSmsService {
         try {
             if (phone.contains("+77")) {
 
+                String mes =  URLEncoder.encode(text, StandardCharsets.UTF_8.toString());
+                logger.info(mes);
                 String url = smsSendUrl +
                         "?login=" + smsSendLogin +
                         "&psw=" + smsSendPassword +
                         "&phones=" + phone +
-                        "&mes=" + URLEncoder.encode(text, StandardCharsets.UTF_8.toString());;
+                        "&mes=" + mes;;
 
                 String response = restTemplate.getForObject(url, String.class);
 
