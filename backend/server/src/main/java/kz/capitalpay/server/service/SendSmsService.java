@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -48,16 +49,19 @@ public class SendSmsService {
         try {
             if (phone.contains("+77")) {
 
-                String mes =  URLEncoder.encode(text, StandardCharsets.UTF_8.toString()).replace("+", "%20");
+                String mes = URLEncoder.encode(text, StandardCharsets.UTF_8.toString()).replace("+", "%20");
 //                String mes =  text.replace("+","%2B").replace(" ","+");
                 logger.info(mes);
                 String url = smsSendUrl +
                         "?login=" + smsSendLogin +
                         "&psw=" + smsSendPassword +
-                        "&phones=" + phone.replace("+","") +
-                        "&mes=" + mes;
-//                        "&charset=utf-8";
-logger.info(url);
+                        "&phones=" + phone.replace("+", "") +
+                        "&mes=" + mes +
+                        "&charset=utf-8";
+                logger.info(url);
+
+
+
                 String response = restTemplate.getForObject(url, String.class);
 
                 logger.info(response);
