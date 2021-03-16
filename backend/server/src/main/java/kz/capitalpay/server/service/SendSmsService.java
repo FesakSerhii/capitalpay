@@ -55,8 +55,8 @@ public class SendSmsService {
                         "?login=" + smsSendLogin +
                         "&psw=" + smsSendPassword +
                         "&phones=" + phone +
-                        "&mes=" + mes+
-                        "&charset=utf-8";
+                        "&mes=" + mes;
+//                        "&charset=utf-8";
 logger.info(url);
                 String response = restTemplate.getForObject(url, String.class);
 
