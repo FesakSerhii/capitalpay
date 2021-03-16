@@ -15,7 +15,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.ProxySelector;
+import java.net.URI;
 import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 
 @Service
@@ -61,11 +66,23 @@ public class SendSmsService {
                         "&mes=" + mes +
                         "&charset=utf-8";
                 logger.info(url);
-
-
+/*
                 ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
                 logger.info(response.getBody());
+*/
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(new URI(url))
+                        .GET()
+                        .build();
+
+                HttpResponse<String> response = HttpClient
+                        .newBuilder()
+                        .proxy(ProxySelector.getDefault())
+                        .build()
+                        .send(request, HttpResponse.BodyHandlers.ofString());
+
+                logger.info(response.body());
                 return true;
 
             } else {
