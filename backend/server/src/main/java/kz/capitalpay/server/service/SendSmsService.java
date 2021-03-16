@@ -48,7 +48,7 @@ public class SendSmsService {
         try {
             if (phone.contains("+77")) {
 
-                String mes =  URLEncoder.encode(text, StandardCharsets.UTF_8.toString());
+                String mes =  URLEncoder.encode(text, StandardCharsets.UTF_8.toString()).replace("+", "%20");
 //                String mes =  text.replace("+","%2B").replace(" ","+");
                 logger.info(mes);
                 String url = smsSendUrl +
