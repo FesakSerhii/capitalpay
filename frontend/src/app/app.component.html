@@ -1,17 +1,16 @@
 <div class="parallax">
   <div class="parallax__layer parallax__layer--back">
-    <img src="../assets/shapes/3434.png" style="position: absolute;
-    top: -530px;
-    right: -1500px;
-    width: 165%;">
+    <img class="header-parallax-img" src="../assets/shapes/3434.png">
   </div>
   <app-header></app-header>
 <router-outlet></router-outlet>
-
   <div class="parallax__layer parallax__layer--back" style="top: unset">
-    <div style="position:absolute;top: 2796px">
-      <img src="../assets/shapes/ractangle_bottom.png">
-      <app-footer></app-footer>
+    <div class="position-relative parallax-wrap">
+      <div class="position-relative">
+        <img class="bottom-parallax-img" src="../assets/shapes/ractangle_bottom.png">
+      </div>
     </div>
   </div>
+  <a href="#top" class="btn-to-top"><img src="../../assets/shapes/carousel/arrow_up.svg" alt=""></a>
+  <app-footer></app-footer>
 </div>

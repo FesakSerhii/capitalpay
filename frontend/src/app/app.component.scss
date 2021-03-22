@@ -1,1 +1,41 @@
-
+.header-parallax-img{
+  position: absolute;
+  top: -783px;
+  right: -1500px;
+  width: 161%;
+}
+.parallax-wrap{
+  top: 2796px
+}
+.bottom-parallax-img{
+  position: absolute;
+  top: -2538px;
+  right: -2879px;
+  width: 5000px;
+}
+.btn-to-top{
+  padding: 13px 19px 15px;
+  border-radius: 50%;
+  background: #00B084;
+  position: sticky;
+  bottom: 500px;
+  margin-left: 1736px;
+}
+@media(max-width: 769px){
+  .bottom-parallax-img{
+    top: 62px;
+    right: -2000px;
+  }
+  .header-parallax-img{
+    right: -700px;
+    width: 1900px;
+  }
+}
+@media(max-width: 321px){
+  .bottom-parallax-img{
+    //top: -1538px;
+  }
+  .header-parallax-img{
+    width:1200px;
+  }
+}

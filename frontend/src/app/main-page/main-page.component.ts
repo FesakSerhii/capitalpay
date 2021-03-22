@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, HostListener, OnInit, ViewChild} from '@angular/core';
 import {NgbTabset} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
@@ -7,20 +7,21 @@ import {NgbTabset} from "@ng-bootstrap/ng-bootstrap";
   styleUrls: ['./main-page.component.scss'],
 })
 export class MainPageComponent implements OnInit {
-
-  currentTabId: string = '0';
+  currentTabId = '0';
+  width = 0;
   constructor() { }
   // @ViewChild("tab", {static: false}) tab: NgbTabset;
 
   ngOnInit(): void {
+    this.width = document.body.clientWidth;
     // this.tabset.select('1');
   }
-  nextTab(){
+  nextTab(): void{
     // this.tab.select(String(+this.currentTabId+1));
-    this.currentTabId = String(+this.currentTabId+1);
+    this.currentTabId = String(+this.currentTabId + 1);
   }
-  prevTab(){
+  prevTab(): void{
     // this.tab.select(String(+this.currentTabId-1));
-    this.currentTabId = String(+this.currentTabId-1);
+    this.currentTabId = String(+this.currentTabId - 1);
   }
 }

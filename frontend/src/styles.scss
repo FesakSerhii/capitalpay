@@ -52,4 +52,27 @@ body{
 .nav-tabs {
   border-bottom: none!important;
 }
-
+.carousel-cell img {
+  filter: grayscale(100%);
+  -webkit-filter: grayscale(100%);
+  -moz-filter: grayscale(100%);
+  -o-filter: grayscale(100%);
+  -webkit-filter: grayscale(1);
+}
+.carousel-arrow.carousel-arrow-next{
+  background-image: url('assets/shapes/carousel/iconmonstr-arrow-63.svg')!important;
+  background-color: transparent!important;
+  box-shadow: none!important;
+  &.carousel-arrow-disabled{
+    opacity: 0.5;
+  }
+}
+//carousel-arrow-disabled
+.carousel-arrow.carousel-arrow-prev{
+  background-image: url('assets/shapes/carousel/iconmonstr-arrow-64.svg')!important;
+  background-color: transparent!important;
+  box-shadow: none!important;
+  &.carousel-arrow-disabled{
+    opacity: 0.5;
+  }
+}

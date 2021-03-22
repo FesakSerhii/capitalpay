@@ -6,6 +6,7 @@ import { HexagonLinkComponent } from './hexagon-link/hexagon-link.component';
 
 
 
+
 @NgModule({
   declarations: [HeaderComponent, FooterComponent, HexagonLinkComponent],
     exports: [HeaderComponent, FooterComponent, HexagonLinkComponent],
