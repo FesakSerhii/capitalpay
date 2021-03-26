@@ -11,9 +11,9 @@
 
 .shape {
   //margin-top: 15px;
-  width: 71px;
-  height: 71px;
-  background-image: url("../../../assets/shapes/hexa_small.svg");
+  width: 107px;
+  height: 110px;
+  background-image: url("../../../assets/shapes/hexa_small.png");
   background-repeat: no-repeat;
   //background-color: white;
   position: relative;
@@ -23,8 +23,8 @@
   img{
     position: absolute;
     z-index: 2;
-    left: 13px;
-    top: 15px;
+    left: 35px;
+    top: 30px;
   }
   &:hover {
     background-image: url("../../../assets/shapes/circle.svg");

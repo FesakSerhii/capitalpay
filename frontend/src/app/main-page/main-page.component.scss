@@ -1,3 +1,16 @@
+@keyframes phone {
+  from {top: 493px;left: 493px;opacity: 0}
+  to {top: 115px;left: 544px;opacity: 1}
+}
+.phone-img{
+  animation-name: phone;
+  animation-duration: 4s;
+  animation-delay: 1s;
+  opacity: 1;
+  top: 115px;
+  position: absolute;
+  left: 544px;
+}
 @keyframes visa {
   from {top: 474px;left: 203px;}
   to {top: 415px;left: 302px;}
@@ -130,7 +143,17 @@
   left: 465px;
 }
 
-
+.hexa-payment-link:hover{
+  .hexa-shadow{
+    display: block;
+    position: absolute;
+    top: -128px;
+    left: -24px;
+  }
+}
+.hexa-shadow{
+  display: none;
+}
 .content{
   width: 1111px;
   margin:0 auto;
@@ -171,8 +194,16 @@
   background: white;
   width: 541px;
   height: 541px;
-  border-radius: 20px;
+  border: none;
+  border-radius: 73px;
   margin-right: 31px;
+  box-shadow: 0 0 11px rgb(33 33 33 / 20%);
+  &:first-child{
+    background: url("/../../assets/shapes/img/Группа 18.png");
+  }
+  &:nth-child(2){
+    background: url("/../../assets/shapes/img/Прямоугольник, скругл. углы 742.png");
+  }
   &__content{
     margin: 0 auto;
     margin-top: 54px;
@@ -207,7 +238,7 @@
   }
   &__item{
     &__title{
-      margin-top: 33px;
+      margin-top: 4px;
       margin-bottom: 20px;
     }
     &__text{
@@ -344,7 +375,8 @@
   &__sub-block{
     display: flex;
     margin-top: 360px;
-    width: 1111px
+    width: 1111px;
+    color: white;
   }
 }
 .carousel-wrap{
