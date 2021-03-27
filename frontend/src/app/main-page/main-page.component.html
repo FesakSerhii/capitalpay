@@ -1,17 +1,79 @@
 <div class="content">
 <!--  <app-scroll-to-top></app-scroll-to-top>-->
-  <div class="d-flex start-section">
-    <div class="carousel">
-      <h1 style="">Accept payments  everywhere</h1>
-      <p style="">Capital Pay is an online payment service that is easy to integr</p>
-      <a href="#" class="section-btn">Get started</a>
-    </div>
-    <div class="position-relative">
-      <img class="start-section__img" src="../../assets/shapes/img/Image.png">
-      <img class="phone-img" src="../../assets/shapes/img/phone.png" alt="phone">
-    </div>
+<!--  <div class="d-flex start-section">-->
+    <ngb-carousel [pauseOnHover]="true" [interval]="3000">
+      <ng-template ngbSlide>
+        <div class="d-flex start-section">
+        <div class="carousel">
+          <h1 style="">Accept payments  everywhere 1</h1>
+          <p style="">Capital Pay is an online payment service that is easy to integr</p>
+          <a href="#" class="section-btn">Get started</a>
+        </div>
+        <div class="position-relative">
+          <img class="start-section__img" src="../../assets/shapes/img/Image.png">
+          <img class="phone-img" src="../../assets/shapes/img/phone.png" alt="phone">
+        </div>
+        </div>
+      </ng-template>
+      <ng-template ngbSlide>
+        <div class="d-flex start-section">
+          <div class="carousel">
+            <h1 style="">Accept payments  everywhere 2</h1>
+            <p style="">Capital Pay is an online payment service that is easy to integr</p>
+            <a href="#" class="section-btn">Get started</a>
+          </div>
+          <div class="position-relative">
+            <img class="start-section__img" src="../../assets/shapes/img/Image.png">
+            <img class="phone-img" src="../../assets/shapes/img/phone.png" alt="phone">
+          </div>
+        </div>
+      </ng-template>
+      <ng-template ngbSlide>
+        <div class="d-flex start-section">
+          <div class="carousel">
+            <h1 style="">Accept payments  everywhere 3</h1>
+            <p style="">Capital Pay is an online payment service that is easy to integr</p>
+            <a href="#" class="section-btn">Get started</a>
+          </div>
+          <div class="position-relative">
+            <img class="start-section__img" src="../../assets/shapes/img/Image.png">
+            <img class="phone-img" src="../../assets/shapes/img/phone.png" alt="phone">
+          </div>
+        </div>
+      </ng-template>
+      <ng-template ngbSlide>
+        <div class="d-flex start-section">
+          <div class="carousel">
+            <h1 style="">Accept payments  everywhere 4</h1>
+            <p style="">Capital Pay is an online payment service that is easy to integr</p>
+            <a href="#" class="section-btn">Get started</a>
+          </div>
+          <div class="position-relative">
+            <img class="start-section__img" src="../../assets/shapes/img/Image.png">
+            <img class="phone-img" src="../../assets/shapes/img/phone.png" alt="phone">
+          </div>
+        </div>
+      </ng-template>
+      <ng-template ngbSlide>
+        <div class="d-flex start-section">
+          <div class="carousel">
+            <h1 style="">Accept payments  everywhere 5</h1>
+            <p style="">Capital Pay is an online payment service that is easy to integr</p>
+            <a href="#" class="section-btn">Get started</a>
+          </div>
+          <div class="position-relative">
+            <img class="start-section__img" src="../../assets/shapes/img/Image.png">
+            <img class="phone-img" src="../../assets/shapes/img/phone.png" alt="phone">
+          </div>
+        </div>
+      </ng-template>
 
-  </div>
+    </ngb-carousel>
+<!--    <div class="position-relative">-->
+<!--      <img class="start-section__img" src="../../assets/shapes/img/Image.png">-->
+<!--      <img class="phone-img" src="../../assets/shapes/img/phone.png" alt="phone">-->
+<!--    </div>-->
+<!--  </div>-->
   <div class="d-flex cards">
     <div class="card">
       <div class="card__content">
@@ -160,7 +222,7 @@
       <a class="main-info__next" *ngIf="currentTabId!=='5'" href="#" (click)="$event.preventDefault();nextTab()"><img src="../../assets/shapes/Paging.svg" alt=""></a>
     </div>
   </div>
-  <div class="payment-methods">
+  <div class="payment-methods" id="pay">
     <div class="payment-methods__wrap">
       <div class="payment-methods__hexas-bg">
         <div class="position-relative">

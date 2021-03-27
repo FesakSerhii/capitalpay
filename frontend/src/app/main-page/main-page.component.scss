@@ -1,6 +1,26 @@
 @keyframes phone {
-  from {top: 493px;left: 493px;opacity: 0}
-  to {top: 115px;left: 544px;opacity: 1}
+  from {
+    top: 493px;left: 493px;opacity: 0;
+  }
+  to {
+    top: 115px;left: 544px;opacity: 1;
+  }
+}
+@keyframes phoneMd {
+  from {
+    top: 493px;left: 393px;opacity: 0;
+  }
+  to {
+    top: 115px;left: 428px;opacity: 1;
+  }
+}
+@keyframes phoneSm {
+  from {
+    top: 150px;left: 100px;opacity: 0;
+  }
+  to {
+    top: -24px;left: 115px;opacity: 1;
+  }
 }
 .phone-img{
   animation-name: phone;
@@ -169,7 +189,8 @@
   .carousel{
     width:332px;
     margin: unset;
-    margin-top: 94px;
+    margin-top: 36px;
+    padding-bottom: 50px;
     h1{
       font-size: 40px;
     }
@@ -180,7 +201,6 @@
     }
   }
 }
-
 .section-btn{
   padding: 11px 41px;
   background: #177960;
@@ -384,6 +404,10 @@
   margin-bottom: 91px;
 }
 @media(max-width: 769px){
+  .phone-img{
+    left: 428px;
+    animation-name: phoneMd;
+  }
   .content{
     width: 748px;
     margin:0 auto;
@@ -534,6 +558,43 @@
   }
 }
 @media(max-width: 321px){
+
+  .carousel-cell{
+    width: 120px!important;
+    //&:nth-child(1){
+    //  transform: translateX(0)!important;
+    //}
+    //&:nth-child(2){
+    //  transform: translateX(100px)!important;
+    //}
+    //&:nth-child(3){
+    //  transform: translateX(200px)!important;
+    //}
+    //&:nth-child(4){
+    //  transform: translateX(300px)!important;
+    //}
+    //&:nth-child(5){
+    //  transform: translateX(400px)!important;
+    //}
+    //&:nth-child(6){
+    //  transform: translateX(500px)!important;
+    //}
+    //&:nth-child(7){
+    //  transform: translateX(600px)!important;
+    //}
+    //&:nth-child(8){
+    //  transform: translateX(700px)!important;
+    //}
+    //&:nth-child(9){
+    //  transform: translateX(800px)!important;
+    //}
+  }
+  .phone-img{
+    left: 115px;
+    top: -24px;
+    transform: scale(.5);
+    animation-name: phoneSm;
+  }
   .content{
     width: 312px;
   }

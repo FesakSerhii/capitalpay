@@ -76,3 +76,19 @@ body{
     opacity: 0.5;
   }
 }
+.carousel-indicators li {
+  background-color: #1e7e34!important;
+}
+.carousel-indicators .active {
+  background-color: #ffff99;
+}
+.carousel-inner{
+  width: 120%!important;
+  margin-left: -32px;
+}
+@media(max-width: 321px){
+  //.carousel-cells{
+  //  width:400px!important;
+  //}
+}
+
