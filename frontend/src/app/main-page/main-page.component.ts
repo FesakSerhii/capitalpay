@@ -16,9 +16,9 @@ export class MainPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.width = document.body.clientWidth;
-    setInterval(() => {
-      this.activeAnimation = this.isInViewport(document.getElementById('pay'));
-    }, 500);
+    // setInterval(() => {
+    //   this.activeAnimation = this.isInViewport(document.getElementById('pay'));
+    // }, 500);
 
     // this.tabset.select('1');
   }
@@ -30,13 +30,13 @@ export class MainPageComponent implements OnInit {
     // this.tab.select(String(+this.currentTabId-1));
     this.currentTabId = String(+this.currentTabId - 1);
   }
-  isInViewport(elem: any): boolean {
-    const bounding = elem.getBoundingClientRect();
-    return (
-      bounding.top >= 0 &&
-      bounding.left >= 0 &&
-      bounding.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-      bounding.right <= (window.innerWidth || document.documentElement.clientWidth)
-    );
-  }
+  // isInViewport(elem: any): boolean {
+  //   const bounding = elem.getBoundingClientRect();
+  //   return (
+  //     bounding.top >= 0 &&
+  //     bounding.left >= 0 &&
+  //     bounding.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+  //     bounding.right <= (window.innerWidth || document.documentElement.clientWidth)
+  //   );
+  // }
 }

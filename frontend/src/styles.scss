@@ -18,7 +18,9 @@ body{
   overflow-x: hidden;
   overflow-y: auto;
 }
-
+.parallax::-webkit-scrollbar {
+  display: none;
+}
 .parallax__layer {
   position: absolute;
   top: 0;

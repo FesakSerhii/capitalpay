@@ -1,0 +1,66 @@
+<div class="background" xmlns="http://www.w3.org/1999/html">
+  <div class="popup">
+    <ng-container *ngIf="step===0">
+      <div>
+        <p class="title">Register email</p>
+      </div>
+      <form class="registration-form">
+        <div class="form-field">
+          <span class="input-title">Email*</span>
+          <input type="email" [formControl]="email">
+        </div>
+        <button class="section-btn" (click)="$event.preventDefault();sendEmail()">Submit email</button>
+      </form>
+    </ng-container>
+    <ng-container *ngIf="step===1">
+      <div>
+        <p class="title">Phone verification</p>
+        <p class="sub-title">Please input check code you recieved on mobile number <span>{{phoneNumber.value}}</span></p>
+      </div>
+      <form class="registration-form">
+        <div class="form-field">
+        <span class="input-title">Code from sms *</span>
+        <input type="text">
+        </div>
+        <span class="resend-link" *ngIf="timerValue">Resend check code sms to my mobile  ({{timerValue}} sec)</span>
+        <a class="resend-link__active" href="#" *ngIf="!timerValue">Resend check code sms to my mobile</a>
+        <button class="section-btn" (click)="confirmCode()">Confirm</button>
+      </form>
+    </ng-container>
+    <ng-container *ngIf="step===2">
+      <div>
+        <p class="title">Finishing registration</p>
+      </div>
+      <form class="registration-form">
+        <div class="form-field">
+          <span class="input-title">Phone number  *</span>
+          <input type="text" [formControl]="phoneNumber" readonly>
+        </div>
+       <div class="form-field">
+         <span class="input-title">Password</span>
+         <input [type]="toggle['showPass']?'text':'password'">
+         <img class="password-toggle" src="../../assets/shapes/eye.svg" alt="eye" (click)="toggle['showPass']=!toggle['showPass']">
+       </div>
+        <div class="form-field">
+          <span class="input-title">Confirn password</span>
+          <input [type]="toggle['showConfirmPass']?'text':'password'">
+          <img class="password-toggle" src="../../assets/shapes/eye.svg" alt="eye" (click)="toggle['showConfirmPass']=!toggle['showConfirmPass']">
+        </div>
+        <button class="section-btn">Register</button>
+      </form>
+    </ng-container>
+    <ng-container *ngIf="step===3">
+      <div>
+        <p class="title">Phone verification</p>
+      </div>
+      <form class="registration-form">
+        <div class="form-field">
+          <span class="input-title">Mobile number*</span>
+          <input type="text" [formControl]="phoneNumber">
+        </div>
+        <button class="section-btn" (click)="sendCode()"> Send verification code</button>
+      </form>
+    </ng-container>
+  </div>
+
+</div>
