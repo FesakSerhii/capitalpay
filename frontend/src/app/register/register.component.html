@@ -14,6 +14,14 @@
     </ng-container>
     <ng-container *ngIf="step===1">
       <div>
+        <p class="title">Checkout your email</p>
+      </div>
+      <form class="registration-form">
+        <button class="section-btn" (click)="$event.preventDefault();navigate()">Close</button>
+      </form>
+    </ng-container>
+    <ng-container *ngIf="step===4">
+      <div>
         <p class="title">Phone verification</p>
         <p class="sub-title">Please input check code you recieved on mobile number <span>{{phoneNumber.value}}</span></p>
       </div>
@@ -27,7 +35,7 @@
         <button class="section-btn" (click)="confirmCode()">Confirm</button>
       </form>
     </ng-container>
-    <ng-container *ngIf="step===2">
+    <ng-container *ngIf="step===3">
       <div>
         <p class="title">Finishing registration</p>
       </div>
@@ -38,18 +46,18 @@
         </div>
        <div class="form-field">
          <span class="input-title">Password</span>
-         <input [type]="toggle['showPass']?'text':'password'">
+         <input [formControl]="password" [type]="toggle['showPass']?'text':'password'">
          <img class="password-toggle" src="../../assets/shapes/eye.svg" alt="eye" (click)="toggle['showPass']=!toggle['showPass']">
        </div>
         <div class="form-field">
           <span class="input-title">Confirn password</span>
-          <input [type]="toggle['showConfirmPass']?'text':'password'">
+          <input [formControl]="passwordConfirm" [type]="toggle['showConfirmPass']?'text':'password'">
           <img class="password-toggle" src="../../assets/shapes/eye.svg" alt="eye" (click)="toggle['showConfirmPass']=!toggle['showConfirmPass']">
         </div>
-        <button class="section-btn">Register</button>
+        <button class="section-btn" (click)="$event.preventDefault();sendPhoneAndPassword()">Register</button>
       </form>
     </ng-container>
-    <ng-container *ngIf="step===3">
+    <ng-container *ngIf="false">
       <div>
         <p class="title">Phone verification</p>
       </div>

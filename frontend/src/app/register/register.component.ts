@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {FormControl} from '@angular/forms';
+import {FormControl, PatternValidator, Validators} from '@angular/forms';
 import {RegisterService} from '../service/register.service';
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-register',
@@ -9,18 +10,35 @@ import {RegisterService} from '../service/register.service';
 })
 export class RegisterComponent implements OnInit {
 
-  constructor(public registerService: RegisterService) { }
+  constructor(public registerService: RegisterService,  public activatedRoute: ActivatedRoute, private router: Router) { }
   phoneNumber = new FormControl('+ 45 (566) 678 79 99');
   resendTimer: any = null;
   timerValue = 30;
   step = 0;
+  code = null;
   toggle = {
     showPass : false,
     showConfirmPass: false
   };
   email = new FormControl();
 
+  // tslint:disable-next-line:typedef
+  password = new FormControl('', [Validators.pattern('^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$')]);
+  passwordConfirm = new FormControl();
+
   ngOnInit(): void {
+    this.activatedRoute.queryParamMap.subscribe((param) => {
+      console.log(param);
+      // @ts-ignore
+      this.code = param.get('code');
+      if (this.code !== null){
+        // @ts-ignore
+        this.registerService.confirmEmail(this.code).then(resp => {
+          this.step = 3;
+        });
+      }
+
+    });
     console.log('fff');
   }
   startTimer(): void {
@@ -32,9 +50,7 @@ export class RegisterComponent implements OnInit {
       }
     }, 1000);
   }
-
-  // tslint:disable-next-line:typedef
-  sendEmail() {
+  sendEmail(): void {
     this.registerService.postEmail(this.email.value).then(resp => {
       this.step = ++this.step;
     });
@@ -48,5 +64,24 @@ export class RegisterComponent implements OnInit {
     this.step = ++this.step;
     this.resendTimer.clearInterval();
     this.timerValue = 30;
+  }
+
+  navigate(): void {
+    this.router.navigate(['']);
+  }
+
+  sendPhoneAndPassword(): void {
+    if (this.password.invalid){
+      this.password.reset();
+      this.passwordConfirm.reset();
+    }else if (this.password.value !== this.passwordConfirm.value){
+      this.passwordConfirm.reset();
+    }else{
+      // @ts-ignore
+      this.registerService.sendPassword(this.code, this.password.value, this.phoneNumber.value).then(resp => {
+        console.log(resp);
+        this.step = ++this.step;
+      });
+    }
   }
 }
