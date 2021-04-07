@@ -3,6 +3,7 @@ package kz.capitalpay.server.login.service;
 import com.google.gson.Gson;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.login.dto.ApplicationUserDTO;
+import kz.capitalpay.server.login.dto.TwoFactorAuthDTO;
 import kz.capitalpay.server.login.model.ApplicationRole;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.model.TwoFactorAuth;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Random;
@@ -141,6 +143,22 @@ public class ApplicationUserService {
     public boolean smsCheckResult(String username) {
         ApplicationUser applicationUser = applicationUserRepository.findByUsername(username);
         return twoFactorService.checkSmsCode(applicationUser.getId());
+    }
+
+    public ResultDTO twoFactorAuth(Principal principal, TwoFactorAuthDTO request) {
+        try {
+            ApplicationUser applicationUser = applicationUserRepository.findByUsername(principal.getName());
+            if (request.isEnable()) {
+                twoFactorService.setTwoFactor(applicationUser.getId());
+            } else {
+                twoFactorService.removeTwoFactorAuth(applicationUser.getId());
+            }
+
+            return new ResultDTO(true,"Two Factor Set",0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultDTO(false, e.getMessage(), -1);
+        }
     }
 }
 

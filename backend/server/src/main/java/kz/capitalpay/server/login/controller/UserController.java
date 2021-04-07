@@ -6,6 +6,7 @@ import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.login.dto.ConfirmCodeCheckRequestDTO;
 import kz.capitalpay.server.login.dto.SignUpEmailRequestDTO;
 import kz.capitalpay.server.login.dto.SignUpPhoneRequestDTO;
+import kz.capitalpay.server.login.dto.TwoFactorAuthDTO;
 import kz.capitalpay.server.login.service.ApplicationUserService;
 import kz.capitalpay.server.login.service.UserEmailService;
 import kz.capitalpay.server.login.service.UserPhoneService;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
