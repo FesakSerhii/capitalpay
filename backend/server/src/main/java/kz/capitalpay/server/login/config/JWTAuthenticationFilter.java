@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.event.AuthenticationFailureServiceExceptionEvent;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
@@ -38,6 +39,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     Logger logger = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
 
+    Gson gson = new Gson();
+
     AuthenticationManager authenticationManager;
 
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
@@ -46,19 +49,23 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        try {
-            ApplicationUser cred = new ObjectMapper().readValue(request.getInputStream(), ApplicationUser.class);
 
-            return authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            cred.getUsername(),
-                            cred.getPassword(),
-                            new ArrayList<>()
-                    )
-            );
-        } catch (Exception e) {
-            throw new RuntimeException();
+        ApplicationUser cred = null;
+        try {
+            cred = new ObjectMapper().readValue(request.getInputStream(), ApplicationUser.class);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                    cred.getUsername(),
+                    cred.getPassword(),
+                    new ArrayList<>()
+            );
+
+            Authentication authentication = authenticationManager.authenticate(token);
+
+            return authentication;
     }
 
     @Override

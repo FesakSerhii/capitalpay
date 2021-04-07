@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.error104;
+import static kz.capitalpay.server.constants.ErrorDictionary.error105;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.USER;
 
@@ -84,6 +85,19 @@ public class ApplicationUserService {
         applicationUser.setRoles(roles);
         applicationUserRepository.save(applicationUser);
         return new ResultDTO(true, String.format("User %s created", username), 0);
+    }
+
+    public ResultDTO setNewPassword(String userLogin, String oldPassword, String newPassword) {
+
+        ApplicationUser user = applicationUserRepository.findByUsername(userLogin);
+        if (bCryptPasswordEncoder.matches(oldPassword, user.getPassword())) {
+            user.setPassword(bCryptPasswordEncoder.encode(newPassword));
+            applicationUserRepository.save(user);
+            return new ResultDTO(true,user.getUsername(),0);
+        } else {
+            return error105;
+        }
+
     }
 }
 
