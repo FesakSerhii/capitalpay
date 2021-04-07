@@ -4,12 +4,16 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import kz.capitalpay.server.ContextProvider;
+import kz.capitalpay.server.dto.ResultDTO;
+import kz.capitalpay.server.login.dto.ApplicationUserDTO;
 import kz.capitalpay.server.login.model.ApplicationUser;
+import kz.capitalpay.server.login.service.ApplicationUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.event.AuthenticationFailureServiceExceptionEvent;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
@@ -43,6 +47,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     AuthenticationManager authenticationManager;
 
+    ApplicationUserService applicationUserService = ContextProvider.getBean(ApplicationUserService.class);
+
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
@@ -50,22 +56,30 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 
-        ApplicationUser cred = null;
+        ApplicationUserDTO cred = null;
         try {
-            cred = new ObjectMapper().readValue(request.getInputStream(), ApplicationUser.class);
+            cred = new ObjectMapper().readValue(request.getInputStream(), ApplicationUserDTO.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                    cred.getUsername(),
-                    cred.getPassword(),
-                    new ArrayList<>()
-            );
+                cred.getUsername(),
+                cred.getPassword(),
+                new ArrayList<>()
+        );
 
-            Authentication authentication = authenticationManager.authenticate(token);
+        if (applicationUserService.requireTwoFactorAuth(cred.getUsername())) {
+            if (cred.getSms() == null) {
+                applicationUserService.sendTwoFactorSms(cred.getUsername());
+            } else {
+                applicationUserService.checkTwoFactorSms(cred);
+            }
+        }
 
-            return authentication;
+        Authentication authentication = authenticationManager.authenticate(token);
+
+        return authentication;
     }
 
     @Override
@@ -78,13 +92,42 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .map(r -> r.getAuthority()).collect(Collectors.toSet());
 
         roles = roleSet.toArray(roles);
-        String token = JWT.create()
-                .withSubject(username)
-                .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .withArrayClaim("authorities", roles)
-                .withJWTId(UUID.randomUUID().toString())
-                .sign(getAlgorithm());
-        response.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
+
+        if (applicationUserService.requireTwoFactorAuth(username)) {
+            if (applicationUserService.smsNeedCheck(username)) {
+                if (applicationUserService.smsCheckResult(username)) {
+                    String token = JWT.create()
+                            .withSubject(username)
+                            .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                            .withArrayClaim("authorities", roles)
+                            .withJWTId(UUID.randomUUID().toString())
+                            .sign(getAlgorithm());
+                    response.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
+
+                    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                    response.getWriter().write(gson.toJson(new ResultDTO(true, username, 0)));
+                } else {
+                    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                    response.getWriter().write(gson.toJson(new ResultDTO(true, "SMS sent", 0)));
+                }
+            } else {
+                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                response.getWriter().write(gson.toJson(new ResultDTO(true, "SMS sent", 0)));
+            }
+
+        } else {
+
+            String token = JWT.create()
+                    .withSubject(username)
+                    .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                    .withArrayClaim("authorities", roles)
+                    .withJWTId(UUID.randomUUID().toString())
+                    .sign(getAlgorithm());
+            response.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
+
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.getWriter().write(gson.toJson(new ResultDTO(true, username, 0)));
+        }
     }
 
 

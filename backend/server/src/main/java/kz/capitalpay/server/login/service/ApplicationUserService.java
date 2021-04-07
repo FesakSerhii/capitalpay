@@ -2,9 +2,12 @@ package kz.capitalpay.server.login.service;
 
 import com.google.gson.Gson;
 import kz.capitalpay.server.dto.ResultDTO;
+import kz.capitalpay.server.login.dto.ApplicationUserDTO;
 import kz.capitalpay.server.login.model.ApplicationRole;
 import kz.capitalpay.server.login.model.ApplicationUser;
+import kz.capitalpay.server.login.model.TwoFactorAuth;
 import kz.capitalpay.server.login.repository.ApplicationUserRepository;
+import kz.capitalpay.server.service.SendSmsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.error104;
@@ -36,6 +40,13 @@ public class ApplicationUserService {
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @Autowired
+    TwoFactorService twoFactorService;
+
+    @Autowired
+    SendSmsService sendSmsService;
+
+    Random random = new Random();
 
     public void signUp(ApplicationUser applicationUser) {
         if (!existsUser(applicationUser)) {
@@ -93,11 +104,43 @@ public class ApplicationUserService {
         if (bCryptPasswordEncoder.matches(oldPassword, user.getPassword())) {
             user.setPassword(bCryptPasswordEncoder.encode(newPassword));
             applicationUserRepository.save(user);
-            return new ResultDTO(true,user.getUsername(),0);
+            return new ResultDTO(true, user.getUsername(), 0);
         } else {
             return error105;
         }
 
+    }
+
+
+    public boolean requireTwoFactorAuth(String username) {
+        ApplicationUser user = applicationUserRepository.findByUsername(username);
+        return twoFactorService.isRequired(user);
+    }
+
+    public void sendTwoFactorSms(String username) {
+
+        ApplicationUser applicationUser = applicationUserRepository.findByUsername(username);
+        if (applicationUser != null) {
+
+            twoFactorService.sendSms(applicationUser);
+        }
+
+    }
+
+    public void checkTwoFactorSms(ApplicationUserDTO cred) {
+        ApplicationUser applicationUser = applicationUserRepository.findByUsername(cred.getUsername());
+
+        twoFactorService.checkCode(applicationUser.getId(), cred.getSms());
+    }
+
+    public boolean smsNeedCheck(String username) {
+        ApplicationUser applicationUser = applicationUserRepository.findByUsername(username);
+        return twoFactorService.smsNeedCheck(applicationUser.getId());
+    }
+
+    public boolean smsCheckResult(String username) {
+        ApplicationUser applicationUser = applicationUserRepository.findByUsername(username);
+        return twoFactorService.checkSmsCode(applicationUser.getId());
     }
 }
 

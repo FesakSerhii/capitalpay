@@ -13,6 +13,7 @@ public class ApplicationUser implements Serializable {
     String username;
     String password;
 
+
     @ManyToMany(fetch = FetchType.EAGER)
     Set<ApplicationRole> roles;
 
@@ -47,4 +48,6 @@ public class ApplicationUser implements Serializable {
     public void setRoles(Set<ApplicationRole> roles) {
         this.roles = roles;
     }
+
+
 }
