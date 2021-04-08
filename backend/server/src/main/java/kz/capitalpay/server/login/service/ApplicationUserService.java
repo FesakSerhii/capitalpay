@@ -160,5 +160,10 @@ public class ApplicationUserService {
             return new ResultDTO(false, e.getMessage(), -1);
         }
     }
+
+    public ApplicationUser getUserById(Long userId) {
+        ApplicationUser applicationUser = applicationUserRepository.findById(userId).orElse(null);
+        return applicationUser;
+    }
 }
 

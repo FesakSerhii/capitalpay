@@ -9,4 +9,6 @@ public class ErrorDictionary {
     public static final ResultDTO error103 = new ResultDTO(false, "Phone used", 103);
     public static final ResultDTO error104 = new ResultDTO(false, "User already exists", 104);
     public static final ResultDTO error105 = new ResultDTO(false, "Old password does not match", 105);
+    public static final ResultDTO error106 = new ResultDTO(false, "User not found", 106);
+    public static final ResultDTO error107 = new ResultDTO(false, "Not enough rights to change the role", 107);
 }
