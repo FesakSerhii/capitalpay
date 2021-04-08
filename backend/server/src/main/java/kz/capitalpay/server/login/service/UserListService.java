@@ -141,8 +141,14 @@ public class UserListService {
             if (!result.isResult()) {
                 return result;
             }
+            logger.info(gson.toJson(result));
             ApplicationUser applicationUser = applicationUserRepository.findByUsername((String) result.getData());
             applicationUser.setEmail(request.getEmail());
+
+            if (request.getRoleList().contains(OPERATOR) || request.getRoleList().contains(ADMIN)) {
+                return error107;
+            }
+
             applicationUser.setRoles(roleListFromStringList(request.getRoleList()));
             applicationUserRepository.save(applicationUser);
             applicationUser.setPassword(null);

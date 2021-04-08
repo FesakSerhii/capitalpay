@@ -97,7 +97,7 @@ public class ApplicationUserService {
         logger.info(gson.toJson(roles));
         applicationUser.setRoles(roles);
         applicationUserRepository.save(applicationUser);
-        return new ResultDTO(true, String.format("User %s created", username), 0);
+        return new ResultDTO(true, username, 0);
     }
 
     public ResultDTO setNewPassword(String userLogin, String oldPassword, String newPassword) {
