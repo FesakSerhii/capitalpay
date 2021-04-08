@@ -6,6 +6,7 @@ import kz.capitalpay.server.eventlog.service.SystemEventsLogsService;
 import kz.capitalpay.server.login.dto.ChangeRolesDTO;
 import kz.capitalpay.server.login.dto.CreateNewUserDTO;
 import kz.capitalpay.server.login.dto.DeleteUserDTO;
+import kz.capitalpay.server.login.dto.EditUserDTO;
 import kz.capitalpay.server.login.model.ApplicationRole;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.model.DeletedApplicationUser;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.HashSet;
 import java.util.List;
@@ -157,11 +159,13 @@ public class UserListService {
             logger.info(gson.toJson(result));
             ApplicationUser applicationUser = applicationUserRepository.findByUsername((String) result.getData());
             applicationUser.setEmail(request.getEmail());
+            ApplicationUser admin = applicationUserRepository.findByUsername(principal.getName());
 
-            if (request.getRoleList().contains(OPERATOR) || request.getRoleList().contains(ADMIN)) {
-                return error107;
+            if (!admin.getRoles().contains(applicationRoleService.getRole(ADMIN))) {
+                if (request.getRoleList().contains(OPERATOR) || request.getRoleList().contains(ADMIN)) {
+                    return error107;
+                }
             }
-
             applicationUser.setRoles(roleListFromStringList(request.getRoleList()));
             applicationUserRepository.save(applicationUser);
             ApplicationUser resultUser = maskPassword(applicationUser);
@@ -195,11 +199,17 @@ public class UserListService {
                 return error106;
             }
 
-            Set<ApplicationRole> roleSet = applicationUser.getRoles();
-            if (roleSet.contains(applicationRoleService.getRole(OPERATOR)) ||
-                    roleSet.contains(applicationRoleService.getRole(OPERATOR))) {
-                return error107;
+            ApplicationUser admin = applicationUserRepository.findByUsername(principal.getName());
+
+            if (!admin.getRoles().contains(applicationRoleService.getRole(ADMIN))) {
+
+                Set<ApplicationRole> roleSet = applicationUser.getRoles();
+                if (roleSet.contains(applicationRoleService.getRole(OPERATOR)) ||
+                        roleSet.contains(applicationRoleService.getRole(OPERATOR))) {
+                    return error107;
+                }
             }
+
             DeletedApplicationUser deleted = new DeletedApplicationUser(applicationUser);
             deletedApplicationUserRepository.save(deleted);
             applicationUserRepository.delete(applicationUser);
@@ -208,6 +218,46 @@ public class UserListService {
                     DELETE_USER, gson.toJson(request));
 
             return new ResultDTO(true, request.getUserId(), 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultDTO(false, e.getMessage(), -1);
+        }
+
+    }
+
+    public ResultDTO editUser(Principal principal, EditUserDTO request) {
+        try {
+            ApplicationUser applicationUser = applicationUserService.getUserById(request.getId());
+            if (applicationUser == null) {
+                return error106;
+            }
+
+            ApplicationUser admin = applicationUserRepository.findByUsername(principal.getName());
+
+            if (!admin.getRoles().contains(applicationRoleService.getRole(ADMIN))) {
+
+                Set<ApplicationRole> roleSet = applicationUser.getRoles();
+                if (roleSet.contains(applicationRoleService.getRole(OPERATOR)) ||
+                        roleSet.contains(applicationRoleService.getRole(OPERATOR))) {
+                    return error107;
+                }
+            }
+
+            applicationUser.setEmail(request.getEmail());
+            applicationUser.setUsername(request.getPhone());
+
+            if (request.getPassword() != null) {
+                applicationUser.setPassword(bCryptPasswordEncoder.encode(request.getPassword()));
+            }
+
+            applicationUserRepository.save(applicationUser);
+            ApplicationUser resultUser = maskPassword(applicationUser);
+
+            request.setPassword(null);
+            systemEventsLogsService.addNewOperatorAction(principal.getName(),
+                    EDIT_USER, gson.toJson(request));
+
+            return new ResultDTO(true, resultUser, 0);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
