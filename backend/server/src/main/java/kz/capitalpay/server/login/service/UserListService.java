@@ -18,8 +18,7 @@ import java.util.Set;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.error106;
 import static kz.capitalpay.server.constants.ErrorDictionary.error107;
-import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
-import static kz.capitalpay.server.login.service.ApplicationRoleService.OPERATOR;
+import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
 
 @Service
 public class UserListService {
@@ -66,15 +65,8 @@ public class UserListService {
 
             if (admin.getRoles().contains(applicationRoleService.getRole(ADMIN))) {
                 logger.info("Admin!");
-                /*
-                Set<ApplicationRole> oldRole = new HashSet<>(applicationUser.getRoles());
-                Set<ApplicationRole> newRole = roleListFromStringList(request.getRoleList());
 
-                Set<ApplicationRole> needRemove = new HashSet<>(oldRole);
-                needRemove.removeAll(newRole);
-                Set<ApplicationRole> needAdd = new HashSet<>(newRole);
-                needAdd.removeAll(oldRole);
-*/
+
                 applicationUser.setRoles(roleListFromStringList(request.getRoleList()));
                 applicationUserRepository.save(applicationUser);
 
@@ -114,5 +106,26 @@ public class UserListService {
             roleSet.add(applicationRoleService.getRole(role));
         }
         return roleSet;
+    }
+
+    public ResultDTO roleList(Principal principal) {
+
+        ApplicationUser admin = applicationUserRepository.findByUsername(principal.getName());
+        Set<ApplicationRole> applicationRoles = new HashSet<>();
+        if (admin.getRoles().contains(applicationRoleService.getRole(ADMIN))) {
+
+            applicationRoles.add(applicationRoleService.getRole(USER));
+            applicationRoles.add(applicationRoleService.getRole(MERCHANT));
+            applicationRoles.add(applicationRoleService.getRole(OPERATOR));
+            applicationRoles.add(applicationRoleService.getRole(ADMIN));
+
+        } else if (admin.getRoles().contains(applicationRoleService.getRole(OPERATOR))) {
+
+            applicationRoles.add(applicationRoleService.getRole(USER));
+            applicationRoles.add(applicationRoleService.getRole(MERCHANT));
+            applicationRoles.add(applicationRoleService.getRole(OPERATOR));
+            applicationRoles.add(applicationRoleService.getRole(ADMIN));
+        }
+        return new ResultDTO(true, applicationRoles, 0);
     }
 }

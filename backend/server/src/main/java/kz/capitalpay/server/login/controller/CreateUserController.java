@@ -38,6 +38,14 @@ public class CreateUserController {
         return userListService.changeRoles(principal,request);
     }
 
+    @PostMapping("/rolelist")
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_OPERATOR"})
+    ResultDTO roleList(Principal principal) {
+        logger.info(gson.toJson(principal));
+        return userListService.roleList(principal);
+    }
+
+
 
 
 }
