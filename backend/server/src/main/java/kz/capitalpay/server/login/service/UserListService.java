@@ -31,4 +31,10 @@ public class UserListService {
             return new ResultDTO(false, e.getMessage(), -1);
         }
     }
+
+
+    List<ApplicationUser> removePasswords(List<ApplicationUser> applicationUserList){
+        applicationUserList.forEach(applicationUser -> applicationUser.setPassword(null));
+        return applicationUserList;
+    }
 }
