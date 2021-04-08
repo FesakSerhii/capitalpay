@@ -25,6 +25,7 @@ public class UserListService {
     public ResultDTO getAllUsers() {
         try {
             List<ApplicationUser> applicationUserList = applicationUserRepository.findAll();
+            applicationUserList = removePasswords(applicationUserList);
             return new ResultDTO(true, applicationUserList, 0);
         } catch (Exception e) {
             e.printStackTrace();
