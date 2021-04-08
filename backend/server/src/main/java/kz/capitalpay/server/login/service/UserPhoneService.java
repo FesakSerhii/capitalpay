@@ -4,8 +4,10 @@ import com.google.gson.Gson;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.login.dto.ConfirmCodeCheckRequestDTO;
 import kz.capitalpay.server.login.dto.SignUpPhoneRequestDTO;
+import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.model.PendingEmail;
 import kz.capitalpay.server.login.model.PendingPhone;
+import kz.capitalpay.server.login.repository.ApplicationUserRepository;
 import kz.capitalpay.server.login.repository.PendingPhoneRepository;
 import kz.capitalpay.server.service.SendSmsService;
 import org.slf4j.Logger;
@@ -43,6 +45,9 @@ public class UserPhoneService {
 
     @Autowired
     ApplicationUserService applicationUserService;
+
+    @Autowired
+    ApplicationUserRepository applicationUserRepository;
 
     Random random = new Random(System.currentTimeMillis());
 
@@ -87,7 +92,15 @@ public class UserPhoneService {
             pendingPhone.setStatus(CONFIRMED);
             pendingPhoneRepository.save(pendingPhone);
             ResultDTO result = applicationUserService.createNewUser(pendingPhone.getPhone(), pendingPhone.getPasswordHash());
-// TODO: Сохранить email в личные данные пользоватея
+
+            if (!result.isResult()) {
+                return result;
+            }
+            ApplicationUser applicationUser = applicationUserRepository.findByUsername((String) result.getData());
+
+            applicationUser.setEmail(pendingPhone.getEmail());
+            applicationUserRepository.save(applicationUser);
+
             return result;
         } catch (Exception e) {
             logger.error("Line number: {} \n{}", e.getStackTrace()[0].getLineNumber(), e.getMessage());

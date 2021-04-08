@@ -3,12 +3,14 @@ package kz.capitalpay.server.login.service;
 import com.google.gson.Gson;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.login.dto.ChangeRolesDTO;
+import kz.capitalpay.server.login.dto.CreateNewUserDTO;
 import kz.capitalpay.server.login.model.ApplicationRole;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.repository.ApplicationUserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -36,6 +38,10 @@ public class UserListService {
 
     @Autowired
     ApplicationRoleService applicationRoleService;
+
+    @Autowired
+    BCryptPasswordEncoder bCryptPasswordEncoder;
+
 
     public ResultDTO getAllUsers() {
         try {
@@ -127,5 +133,24 @@ public class UserListService {
             applicationRoles.add(applicationRoleService.getRole(ADMIN));
         }
         return new ResultDTO(true, applicationRoles, 0);
+    }
+
+    public ResultDTO newUser(Principal principal, CreateNewUserDTO request) {
+        try {
+            ResultDTO result = applicationUserService.createNewUser(request.getPhone(), bCryptPasswordEncoder.encode(request.getPassword()));
+            if (!result.isResult()) {
+                return result;
+            }
+            ApplicationUser applicationUser = applicationUserRepository.findByUsername((String) result.getData());
+            applicationUser.setEmail(request.getEmail());
+            applicationUser.setRoles(roleListFromStringList(request.getRoleList()));
+            applicationUserRepository.save(applicationUser);
+            applicationUser.setPassword(null);
+
+            return new ResultDTO(true, applicationUser, 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultDTO(false, e.getMessage(), -1);
+        }
     }
 }

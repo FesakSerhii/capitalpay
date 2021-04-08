@@ -12,6 +12,7 @@ public class ApplicationUser implements Serializable {
     Long id;
     String username;
     String password;
+    String email;
 
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -49,5 +50,11 @@ public class ApplicationUser implements Serializable {
         this.roles = roles;
     }
 
+    public String getEmail() {
+        return email;
+    }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }

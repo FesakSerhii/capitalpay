@@ -3,6 +3,7 @@ package kz.capitalpay.server.login.controller;
 import com.google.gson.Gson;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.login.dto.ChangeRolesDTO;
+import kz.capitalpay.server.login.dto.CreateNewUserDTO;
 import kz.capitalpay.server.login.service.UserListService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import javax.validation.Valid;
 import java.security.Principal;
 
 @RestController
@@ -35,7 +37,7 @@ public class CreateUserController {
     @RolesAllowed({"ROLE_ADMIN", "ROLE_OPERATOR"})
     ResultDTO changeRoles(Principal principal, @RequestBody ChangeRolesDTO request) {
         logger.info(gson.toJson(request));
-        return userListService.changeRoles(principal,request);
+        return userListService.changeRoles(principal, request);
     }
 
     @PostMapping("/rolelist")
@@ -45,7 +47,12 @@ public class CreateUserController {
         return userListService.roleList(principal);
     }
 
-
+    @PostMapping("/newuser")
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_OPERATOR"})
+    ResultDTO newUser(Principal principal, @Valid @RequestBody CreateNewUserDTO request) {
+        logger.info(gson.toJson(request));
+        return userListService.newUser(principal, request);
+    }
 
 
 }
