@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.login.dto.ChangeRolesDTO;
 import kz.capitalpay.server.login.dto.CreateNewUserDTO;
+import kz.capitalpay.server.login.dto.DeleteUserDTO;
 import kz.capitalpay.server.login.service.UserListService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +53,14 @@ public class CreateUserController {
     ResultDTO newUser(Principal principal, @Valid @RequestBody CreateNewUserDTO request) {
         logger.info(gson.toJson(request));
         return userListService.newUser(principal, request);
+    }
+
+
+    @PostMapping("/deleteuser")
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_OPERATOR"})
+    ResultDTO deleteUser(Principal principal, @Valid @RequestBody DeleteUserDTO request) {
+        logger.info(gson.toJson(request));
+        return userListService.deleteUser(principal, request);
     }
 
 

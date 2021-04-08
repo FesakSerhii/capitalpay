@@ -5,18 +5,23 @@ import java.io.Serializable;
 import java.util.Set;
 
 @Entity
-public class ApplicationUser implements Serializable, Cloneable {
+public class DeletedApplicationUser implements Serializable {
 
     @Id
-    @GeneratedValue
     Long id;
     String username;
     String password;
     String email;
 
+    public DeletedApplicationUser() {
+    }
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    Set<ApplicationRole> roles;
+    public DeletedApplicationUser(ApplicationUser applicationUser) {
+        this.id = applicationUser.getId();
+        this.username = applicationUser.getUsername();
+        this.password = applicationUser.getPassword();
+        this.email = applicationUser.getEmail();
+    }
 
     public Long getId() {
         return id;
@@ -42,13 +47,6 @@ public class ApplicationUser implements Serializable, Cloneable {
         this.password = password;
     }
 
-    public Set<ApplicationRole> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<ApplicationRole> roles) {
-        this.roles = roles;
-    }
 
     public String getEmail() {
         return email;
@@ -57,6 +55,4 @@ public class ApplicationUser implements Serializable, Cloneable {
     public void setEmail(String email) {
         this.email = email;
     }
-
-
 }

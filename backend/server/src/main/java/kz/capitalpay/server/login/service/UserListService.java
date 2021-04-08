@@ -2,11 +2,15 @@ package kz.capitalpay.server.login.service;
 
 import com.google.gson.Gson;
 import kz.capitalpay.server.dto.ResultDTO;
+import kz.capitalpay.server.eventlog.service.SystemEventsLogsService;
 import kz.capitalpay.server.login.dto.ChangeRolesDTO;
 import kz.capitalpay.server.login.dto.CreateNewUserDTO;
+import kz.capitalpay.server.login.dto.DeleteUserDTO;
 import kz.capitalpay.server.login.model.ApplicationRole;
 import kz.capitalpay.server.login.model.ApplicationUser;
+import kz.capitalpay.server.login.model.DeletedApplicationUser;
 import kz.capitalpay.server.login.repository.ApplicationUserRepository;
+import kz.capitalpay.server.login.repository.DeletedApplicationUserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +22,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static kz.capitalpay.server.constants.ErrorDictionary.error106;
-import static kz.capitalpay.server.constants.ErrorDictionary.error107;
+import static kz.capitalpay.server.constants.ErrorDictionary.*;
+import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.*;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
 
 @Service
@@ -41,6 +45,12 @@ public class UserListService {
 
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    DeletedApplicationUserRepository deletedApplicationUserRepository;
+
+    @Autowired
+    SystemEventsLogsService systemEventsLogsService;
 
 
     public ResultDTO getAllUsers() {
@@ -68,6 +78,9 @@ public class UserListService {
             }
 
             ApplicationUser admin = applicationUserRepository.findByUsername(principal.getName());
+
+            systemEventsLogsService.addNewOperatorAction(principal.getName(),
+                    CHANGE_ROLE, gson.toJson(request));
 
             if (admin.getRoles().contains(applicationRoleService.getRole(ADMIN))) {
                 logger.info("Admin!");
@@ -151,12 +164,54 @@ public class UserListService {
 
             applicationUser.setRoles(roleListFromStringList(request.getRoleList()));
             applicationUserRepository.save(applicationUser);
-            applicationUser.setPassword(null);
+            ApplicationUser resultUser = maskPassword(applicationUser);
 
-            return new ResultDTO(true, applicationUser, 0);
+            request.setPassword(null);
+            systemEventsLogsService.addNewOperatorAction(principal.getName(),
+                    CREATE_USER, gson.toJson(request));
+
+            return new ResultDTO(true, resultUser, 0);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }
+    }
+
+    private ApplicationUser maskPassword(ApplicationUser applicationUser) {
+        ApplicationUser result = new ApplicationUser();
+        result.setUsername(applicationUser.getUsername());
+        result.setId(applicationUser.getId());
+        result.setEmail(applicationUser.getEmail());
+        result.setRoles(applicationUser.getRoles());
+        return result;
+    }
+
+    public ResultDTO deleteUser(Principal principal, DeleteUserDTO request) {
+
+        try {
+
+            ApplicationUser applicationUser = applicationUserService.getUserById(request.getUserId());
+            if (applicationUser == null) {
+                return error106;
+            }
+
+            Set<ApplicationRole> roleSet = applicationUser.getRoles();
+            if (roleSet.contains(applicationRoleService.getRole(OPERATOR)) ||
+                    roleSet.contains(applicationRoleService.getRole(OPERATOR))) {
+                return error107;
+            }
+            DeletedApplicationUser deleted = new DeletedApplicationUser(applicationUser);
+            deletedApplicationUserRepository.save(deleted);
+            applicationUserRepository.delete(applicationUser);
+
+            systemEventsLogsService.addNewOperatorAction(principal.getName(),
+                    DELETE_USER, gson.toJson(request));
+
+            return new ResultDTO(true, request.getUserId(), 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultDTO(false, e.getMessage(), -1);
+        }
+
     }
 }
