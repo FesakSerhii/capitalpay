@@ -31,5 +31,4 @@ public class CreateUserController {
         return userListService.getAllUsers();
     }
 
-
 }
