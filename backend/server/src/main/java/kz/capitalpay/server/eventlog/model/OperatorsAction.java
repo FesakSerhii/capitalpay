@@ -1,5 +1,6 @@
 package kz.capitalpay.server.eventlog.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -12,7 +13,9 @@ public class OperatorsAction {
     Long timestamp;
     String eventName;
     String author;
+    @Column(length = 16383)
     String json;
+    String target;
 
     public Long getId() {
         return id;
@@ -54,4 +57,11 @@ public class OperatorsAction {
         this.json = json;
     }
 
+    public String getTarget() {
+        return target;
+    }
+
+    public void setTarget(String target) {
+        this.target = target;
+    }
 }

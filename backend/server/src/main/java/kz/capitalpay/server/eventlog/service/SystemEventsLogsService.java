@@ -16,14 +16,16 @@ public class SystemEventsLogsService {
     public static final String CREATE_USER = "create user";
     public static final String DELETE_USER = "delete user";
     public static final String EDIT_USER = "edit user";
+    public static final String EDIT_MERCHANT_KYC = "edit merchant kyc";
 
 
-    public boolean addNewOperatorAction(String author, String eventName, String json) {
+    public boolean addNewOperatorAction(String author, String eventName, String json, String target) {
         OperatorsAction operatorsAction = new OperatorsAction();
         operatorsAction.setTimestamp(System.currentTimeMillis());
         operatorsAction.setAuthor(author);
         operatorsAction.setEventName(eventName);
         operatorsAction.setJson(json);
+        operatorsAction.setTarget(target);
         operatorActionRepository.save(operatorsAction);
         return true;
     }

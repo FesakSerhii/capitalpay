@@ -11,4 +11,5 @@ public class ErrorDictionary {
     public static final ResultDTO error105 = new ResultDTO(false, "Old password does not match", 105);
     public static final ResultDTO error106 = new ResultDTO(false, "User not found", 106);
     public static final ResultDTO error107 = new ResultDTO(false, "Not enough rights to change the role", 107);
+    public static final ResultDTO error108 = new ResultDTO(false, "User is not a merchant", 108);
 }

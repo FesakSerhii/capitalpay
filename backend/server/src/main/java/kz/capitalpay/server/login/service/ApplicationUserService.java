@@ -165,5 +165,10 @@ public class ApplicationUserService {
         ApplicationUser applicationUser = applicationUserRepository.findById(userId).orElse(null);
         return applicationUser;
     }
+
+    public ApplicationUser getUserByLogin(String name) {
+        ApplicationUser applicationUser = applicationUserRepository.findByUsername(name);
+        return applicationUser;
+    }
 }
 

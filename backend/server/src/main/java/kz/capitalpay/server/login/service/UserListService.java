@@ -82,7 +82,7 @@ public class UserListService {
             ApplicationUser admin = applicationUserRepository.findByUsername(principal.getName());
 
             systemEventsLogsService.addNewOperatorAction(principal.getName(),
-                    CHANGE_ROLE, gson.toJson(request));
+                    CHANGE_ROLE, gson.toJson(request),applicationUser.getId().toString());
 
             if (admin.getRoles().contains(applicationRoleService.getRole(ADMIN))) {
                 logger.info("Admin!");
@@ -172,7 +172,7 @@ public class UserListService {
 
             request.setPassword(null);
             systemEventsLogsService.addNewOperatorAction(principal.getName(),
-                    CREATE_USER, gson.toJson(request));
+                    CREATE_USER, gson.toJson(request),applicationUser.getId().toString());
 
             return new ResultDTO(true, resultUser, 0);
         } catch (Exception e) {
@@ -215,7 +215,7 @@ public class UserListService {
             applicationUserRepository.delete(applicationUser);
 
             systemEventsLogsService.addNewOperatorAction(principal.getName(),
-                    DELETE_USER, gson.toJson(request));
+                    DELETE_USER, gson.toJson(request),applicationUser.getId().toString());
 
             return new ResultDTO(true, request.getUserId(), 0);
         } catch (Exception e) {
@@ -255,7 +255,7 @@ public class UserListService {
 
             request.setPassword(null);
             systemEventsLogsService.addNewOperatorAction(principal.getName(),
-                    EDIT_USER, gson.toJson(request));
+                    EDIT_USER, gson.toJson(request),applicationUser.getId().toString());
 
             return new ResultDTO(true, resultUser, 0);
         } catch (Exception e) {
