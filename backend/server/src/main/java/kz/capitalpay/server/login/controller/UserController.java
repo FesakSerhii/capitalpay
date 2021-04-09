@@ -41,6 +41,8 @@ public class UserController {
     @Autowired
     Gson gson;
 
+    /*
+
     @PostMapping("/step1")
     ResultDTO step1(@Valid @RequestBody SignUpEmailRequestDTO request) {
         logger.info(gson.toJson(request));
@@ -65,7 +67,7 @@ public class UserController {
         logger.info(gson.toJson(request));
         return  userPhoneService.confirmPhone(request);
     }
-
+*/
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)

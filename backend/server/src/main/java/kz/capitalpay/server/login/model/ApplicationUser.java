@@ -13,7 +13,10 @@ public class ApplicationUser implements Serializable, Cloneable {
     String username;
     String password;
     String email;
-
+    @Column(name = "active", columnDefinition = "boolean default false", nullable = false)
+    boolean active;
+    @Column(name = "blocked", columnDefinition = "boolean default false", nullable = false)
+    boolean blocked;
 
     @ManyToMany(fetch = FetchType.EAGER)
     Set<ApplicationRole> roles;
@@ -58,5 +61,19 @@ public class ApplicationUser implements Serializable, Cloneable {
         this.email = email;
     }
 
+    public boolean isActive() {
+        return active;
+    }
 
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
+    }
 }

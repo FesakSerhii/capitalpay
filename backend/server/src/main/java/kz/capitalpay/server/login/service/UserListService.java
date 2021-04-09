@@ -159,6 +159,7 @@ public class UserListService {
             logger.info(gson.toJson(result));
             ApplicationUser applicationUser = applicationUserRepository.findByUsername((String) result.getData());
             applicationUser.setEmail(request.getEmail());
+            applicationUser.setActive(true);
             ApplicationUser admin = applicationUserRepository.findByUsername(principal.getName());
 
             if (!admin.getRoles().contains(applicationRoleService.getRole(ADMIN))) {
