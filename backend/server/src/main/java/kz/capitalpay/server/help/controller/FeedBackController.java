@@ -19,7 +19,7 @@ import javax.validation.Valid;
 import java.security.Principal;
 
 @RestController
-@RequestMapping("/api/v1/help")
+@RequestMapping("/help")
 public class FeedBackController {
 
     Logger logger = LoggerFactory.getLogger(FeedBackController.class);
