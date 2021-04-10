@@ -28,7 +28,7 @@ public class FeedBackService {
                             "Имя Фамилия: %s <br/>\n" +
                             "Номер телефона: %s <br/>\n" +
                             "Email: %s <br/>\n" +
-                            " \n %s <br/>",
+                            "<br/>\n%s <br/>",
                     request.getCompanyName(),
                     request.getName(),
                     request.getPhone(),
