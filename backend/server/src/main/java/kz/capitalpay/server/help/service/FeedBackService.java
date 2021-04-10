@@ -24,11 +24,11 @@ public class FeedBackService {
 
     public ResultDTO feedBack(FeedBackDTO request) {
         try {
-            String text = String.format("Наименование компании: %s \n" +
-                            "Имя Фамилия: %s\n" +
-                            "Номер телефона: %s\n" +
-                            "Email: %s\n" +
-                            " \n %s",
+            String text = String.format("Наименование компании: %s <br/>\n" +
+                            "Имя Фамилия: %s <br/>\n" +
+                            "Номер телефона: %s <br/>\n" +
+                            "Email: %s <br/>\n" +
+                            " \n %s <br/>",
                     request.getCompanyName(),
                     request.getName(),
                     request.getPhone(),
