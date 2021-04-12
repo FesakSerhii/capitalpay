@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.help.dto.ChangeStatusSupportRequestDTO;
 import kz.capitalpay.server.help.dto.OneRequestDTO;
+import kz.capitalpay.server.help.dto.SendSupportAnswerDTO;
 import kz.capitalpay.server.help.dto.SupportRequestDTO;
 import kz.capitalpay.server.help.service.SupportService;
 import kz.capitalpay.server.login.dto.ChangeRolesDTO;
@@ -62,6 +63,14 @@ public class SupportController {
     ResultDTO changeStatus(Principal principal, @RequestBody ChangeStatusSupportRequestDTO request) {
         logger.info(gson.toJson(request));
         return supportService.changeStatus(principal,request);
+    }
+
+
+    @PostMapping("/answer")
+    @RolesAllowed({OPERATOR, ADMIN})
+    ResultDTO sendAnswer(Principal principal, @RequestBody SendSupportAnswerDTO request) {
+        logger.info(gson.toJson(request));
+        return supportService.sendSupportAnswer(principal,request);
     }
 
 

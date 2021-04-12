@@ -5,11 +5,10 @@ import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.eventlog.service.SystemEventsLogsService;
 import kz.capitalpay.server.files.model.FileStorage;
 import kz.capitalpay.server.files.service.FileStorageService;
-import kz.capitalpay.server.help.dto.ChangeStatusSupportRequestDTO;
-import kz.capitalpay.server.help.dto.OneRequestDTO;
-import kz.capitalpay.server.help.dto.OneSupportRequestResponceDTO;
-import kz.capitalpay.server.help.dto.SupportRequestDTO;
+import kz.capitalpay.server.help.dto.*;
+import kz.capitalpay.server.help.model.SupportAnswer;
 import kz.capitalpay.server.help.model.SupportRequest;
+import kz.capitalpay.server.help.repository.SupportAnswerRepository;
 import kz.capitalpay.server.help.repository.SupportRequestRepository;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.service.ApplicationUserService;
@@ -17,6 +16,7 @@ import kz.capitalpay.server.service.SendEmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.error109;
+import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.ANSWER_SUPPORT_REQUEST;
 import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.CHANGE_STATUS_SUPPORT_REQUEST;
 
 @Service
@@ -53,6 +54,12 @@ public class SupportService {
 
     @Autowired
     SystemEventsLogsService systemEventsLogsService;
+
+    @Autowired
+    SupportAnswerRepository supportAnswerRepository;
+
+    @Value("${filestorage.remote.path}")
+    String filePath;
 
     public ResultDTO supportRequest(Principal principal, SupportRequestDTO request) {
         try {
@@ -157,6 +164,49 @@ public class SupportService {
             supportRequestRepository.save(supportRequest);
 
             return new ResultDTO(true, supportRequest, 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultDTO(false, e.getMessage(), -1);
+        }
+    }
+
+    public ResultDTO sendSupportAnswer(Principal principal, SendSupportAnswerDTO request) {
+        try {
+            ApplicationUser operator = applicationUserService.getUserByLogin(principal.getName());
+            SupportRequest supportRequest = supportRequestRepository.findById(request.getRequestId()).orElse(null);
+            if (supportRequest == null) {
+                return error109;
+            }
+
+            ApplicationUser merchant = applicationUserService.getUserById(supportRequest.getAuthorId());
+
+            SupportAnswer supportAnswer = new SupportAnswer();
+            supportAnswer.setRequestId(supportRequest.getId());
+            supportAnswer.setOperatorId(operator.getId());
+            supportAnswer.setText(request.getText());
+            supportAnswer.setFileIdList(gson.toJson(request.getFileList()));
+            supportAnswerRepository.save(supportAnswer);
+
+            StringBuilder sb = new StringBuilder(request.getText());
+            if (request.getFileList() != null && request.getFileList().size() != 0) {
+                sb.append("<p>Прикрепленные файлы:</p>");
+                List<FileStorage> fileList = fileStorageService.getFilListById(request.getFileList());
+                for (FileStorage file : fileList) {
+                    sb.append("<p><a href=" + filePath + "/" + file.getPath() + ">" + file.getFilename() + "</a></p>");
+                }
+            }
+
+            sendEmailService.sendMail(merchant.getEmail(), "CapitalPay: " + supportRequest.getSubject(),
+                    sb.toString());
+
+            systemEventsLogsService.addNewOperatorAction(operator.getUsername(), ANSWER_SUPPORT_REQUEST,
+                    gson.toJson(request), merchant.getId().toString());
+
+            supportRequest.setStatus(CLOSED);
+            supportRequestRepository.save(supportRequest);
+
+            return new ResultDTO(true, supportAnswer, 0);
+
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
