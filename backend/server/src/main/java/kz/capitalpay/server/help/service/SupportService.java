@@ -135,7 +135,24 @@ public class SupportService {
 
             List<SupportAnswer> supportAnswerList = supportAnswerRepository.findByRequestId(supportRequest.getId());
             if (supportAnswerList != null && supportAnswerList.size() > 0) {
-                responceDTO.setSupportAnswer(supportAnswerList);
+
+                List<SupportAnswerDTO> supportAnswerDTOS = new ArrayList<>();
+                for(SupportAnswer sa : supportAnswerList){
+                    SupportAnswerDTO supportAnswer = new SupportAnswerDTO();
+                    supportAnswer.setId(sa.getId());
+                    supportAnswer.setOperatorId(sa.getOperatorId());
+                    supportAnswer.setText(sa.getText());
+                    if(sa.getFileIdList()!= null && sa.getFileIdList().length()>0){
+                        List<Double> doubleList = gson.fromJson(sa.getFileIdList(),List.class);
+                        List<Long> fileIdList = new ArrayList<>();
+                        doubleList.forEach(aDouble -> fileIdList.add(aDouble.longValue()));
+                        supportAnswer.setFileList(fileStorageService.getFilListById(fileIdList));
+                    }
+                    supportAnswerDTOS.add(supportAnswer);
+                }
+
+
+                responceDTO.setSupportAnswer(supportAnswerDTOS);
             }
 
             return new ResultDTO(true, responceDTO, 0);

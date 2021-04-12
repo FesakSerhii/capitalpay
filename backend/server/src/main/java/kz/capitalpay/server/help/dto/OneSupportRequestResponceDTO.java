@@ -22,7 +22,7 @@ public class OneSupportRequestResponceDTO {
 
     String status;
 
-   List< SupportAnswer> supportAnswer;
+   List< SupportAnswerDTO> supportAnswer;
 
     public Long getId() {
         return id;
@@ -80,11 +80,11 @@ public class OneSupportRequestResponceDTO {
         this.status = status;
     }
 
-    public List<SupportAnswer> getSupportAnswer() {
+    public List<SupportAnswerDTO> getSupportAnswer() {
         return supportAnswer;
     }
 
-    public void setSupportAnswer(List<SupportAnswer> supportAnswer) {
+    public void setSupportAnswer(List<SupportAnswerDTO> supportAnswer) {
         this.supportAnswer = supportAnswer;
     }
 }
