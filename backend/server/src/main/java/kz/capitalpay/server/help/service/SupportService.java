@@ -108,11 +108,13 @@ public class SupportService {
             responceDTO.setText(supportRequest.getText());
             responceDTO.setTheme(supportRequest.getTheme());
             responceDTO.setFileList(new ArrayList<>());
-            if(supportRequest.getFileIdList()!=null || supportRequest.getFileIdList().length()!=0) {
+            if (supportRequest.getFileIdList() != null || supportRequest.getFileIdList().length() != 0) {
 
 
-                List<Long> filesIdList = gson.fromJson(supportRequest.getFileIdList(), List.class);
-                logger.info(gson.toJson(filesIdList));
+                List<Double> doubleList = gson.fromJson(supportRequest.getFileIdList(), List.class);
+                logger.info(gson.toJson(doubleList));
+                List<Long> filesIdList = new ArrayList<>();
+                doubleList.forEach(aDouble -> filesIdList.add(aDouble.longValue()));
 
                 responceDTO.setFileList(fileStorageService.getFilListById(filesIdList));
 
