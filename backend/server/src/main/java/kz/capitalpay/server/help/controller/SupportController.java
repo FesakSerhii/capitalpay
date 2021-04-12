@@ -2,6 +2,7 @@ package kz.capitalpay.server.help.controller;
 
 import com.google.gson.Gson;
 import kz.capitalpay.server.dto.ResultDTO;
+import kz.capitalpay.server.help.dto.ChangeStatusSupportRequestDTO;
 import kz.capitalpay.server.help.dto.OneRequestDTO;
 import kz.capitalpay.server.help.dto.SupportRequestDTO;
 import kz.capitalpay.server.help.service.SupportService;
@@ -52,6 +53,15 @@ public class SupportController {
     ResultDTO oneRequest(@RequestBody OneRequestDTO request) {
         logger.info("Support request list");
         return supportService.oneRequest(request);
+    }
+
+
+
+    @PostMapping("/status")
+    @RolesAllowed({OPERATOR, ADMIN})
+    ResultDTO changeStatus(Principal principal, @RequestBody ChangeStatusSupportRequestDTO request) {
+        logger.info(gson.toJson(request));
+        return supportService.changeStatus(principal,request);
     }
 
 

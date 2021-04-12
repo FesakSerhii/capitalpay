@@ -2,8 +2,10 @@ package kz.capitalpay.server.help.service;
 
 import com.google.gson.Gson;
 import kz.capitalpay.server.dto.ResultDTO;
+import kz.capitalpay.server.eventlog.service.SystemEventsLogsService;
 import kz.capitalpay.server.files.model.FileStorage;
 import kz.capitalpay.server.files.service.FileStorageService;
+import kz.capitalpay.server.help.dto.ChangeStatusSupportRequestDTO;
 import kz.capitalpay.server.help.dto.OneRequestDTO;
 import kz.capitalpay.server.help.dto.OneSupportRequestResponceDTO;
 import kz.capitalpay.server.help.dto.SupportRequestDTO;
@@ -22,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.error109;
+import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.CHANGE_STATUS_SUPPORT_REQUEST;
 
 @Service
 public class SupportService {
@@ -47,6 +50,9 @@ public class SupportService {
 
     @Autowired
     FileStorageService fileStorageService;
+
+    @Autowired
+    SystemEventsLogsService systemEventsLogsService;
 
     public ResultDTO supportRequest(Principal principal, SupportRequestDTO request) {
         try {
@@ -121,6 +127,36 @@ public class SupportService {
             }
             return new ResultDTO(true, responceDTO, 0);
 
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultDTO(false, e.getMessage(), -1);
+        }
+    }
+
+    public ResultDTO changeStatus(Principal principal, ChangeStatusSupportRequestDTO request) {
+        try {
+            ApplicationUser operator = applicationUserService.getUserByLogin(principal.getName());
+            SupportRequest supportRequest = supportRequestRepository.findById(request.getRequestId()).orElse(null);
+            if (supportRequest == null) {
+                return error109;
+            }
+
+            ApplicationUser merchant = applicationUserService.getUserById(supportRequest.getAuthorId());
+
+            if (request.getStatus() == 1) {
+                supportRequest.setStatus(PROCESSED);
+            } else if (request.getStatus() == 2) {
+                supportRequest.setStatus(CLOSED);
+            } else {
+                supportRequest.setStatus(NEW_SUPPORT_REQUEST);
+            }
+
+            systemEventsLogsService.addNewOperatorAction(operator.getUsername(), CHANGE_STATUS_SUPPORT_REQUEST,
+                    gson.toJson(request), merchant.getId().toString());
+
+            supportRequestRepository.save(supportRequest);
+
+            return new ResultDTO(true, supportRequest, 0);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);

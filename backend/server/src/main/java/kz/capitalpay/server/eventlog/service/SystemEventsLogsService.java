@@ -17,6 +17,7 @@ public class SystemEventsLogsService {
     public static final String DELETE_USER = "delete user";
     public static final String EDIT_USER = "edit user";
     public static final String EDIT_MERCHANT_KYC = "edit merchant kyc";
+    public static final String CHANGE_STATUS_SUPPORT_REQUEST = "change status support request";
 
 
     public boolean addNewOperatorAction(String author, String eventName, String json, String target) {
