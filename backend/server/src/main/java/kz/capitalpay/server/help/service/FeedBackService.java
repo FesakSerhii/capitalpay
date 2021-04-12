@@ -14,7 +14,7 @@ public class FeedBackService {
 
     Logger logger = LoggerFactory.getLogger(FeedBackService.class);
 
-    String email = "arsenguzhva+888@gmail.com";
+    String email = "test@capitalpay.kz";
 
     @Autowired
     Gson gson;
