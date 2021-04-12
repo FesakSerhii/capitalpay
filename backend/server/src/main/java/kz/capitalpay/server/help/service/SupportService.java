@@ -132,6 +132,12 @@ public class SupportService {
                 responceDTO.setFileList(fileStorageService.getFilListById(filesIdList));
 
             }
+
+            List<SupportAnswer> supportAnswerList = supportAnswerRepository.findByRequestId(supportRequest.getId());
+            if (supportAnswerList != null && supportAnswerList.size() > 0) {
+                responceDTO.setSupportAnswer(supportAnswerList);
+            }
+
             return new ResultDTO(true, responceDTO, 0);
 
         } catch (Exception e) {
