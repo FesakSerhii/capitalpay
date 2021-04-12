@@ -97,7 +97,7 @@ public class SupportService {
                 return error109;
             }
 
-            ApplicationUser applicationUser = applicationUserService.getUserById(supportRequest.getId());
+            ApplicationUser applicationUser = applicationUserService.getUserById(supportRequest.getAuthorId());
             applicationUser.setPassword(null);
 
             OneSupportRequestResponceDTO responceDTO = new OneSupportRequestResponceDTO();
