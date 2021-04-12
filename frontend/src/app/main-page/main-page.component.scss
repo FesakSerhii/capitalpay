@@ -205,7 +205,7 @@
   padding: 11px 41px;
   background: #177960;
   color: white;
-  border-radius: 45px;
+  border-radius: 30px;
   margin-top: 45px;
   display:inline-block;
 }
@@ -215,8 +215,7 @@
   width: 541px;
   height: 541px;
   border: none;
-  border-radius: 73px;
-  margin-right: 31px;
+  border-radius: 30px;
   box-shadow: 0 0 11px rgb(33 33 33 / 20%);
   &:first-child{
     background: url("/../../assets/shapes/img/Группа 18.png");
@@ -270,7 +269,7 @@
   margin-top: 114px;
   height: 490px;
   background: white;
-  border-radius: 20px;
+  border-radius: 30px;
   position: relative;
   &__wrap{
     padding-top: 40px;
@@ -285,7 +284,7 @@
     width: 50%;
     background-image: url(../../assets/shapes/hand_with_phone.png);
     background-size: contain;
-    border-radius: 20px;
+    border-radius: 30px;
   }
   &__content{
     font-size: 16px;
@@ -307,7 +306,7 @@
     background: #008D68;
     padding: 15px 30px;
     color: white;
-    border-radius: 35px;
+    border-radius: 30px;
     display:inline-block;
     margin-top: 40px;
   }
@@ -383,7 +382,7 @@
     background: #008D68;
     padding: 15px 30px;
     color: white;
-    border-radius: 35px;
+    border-radius: 30px;
     display:inline-block;
     margin-top: 40px;
   }
@@ -456,7 +455,7 @@
       width: 50%;
       background-image: url(../../assets/shapes/hand_with_phone.png);
       background-size: contain;
-      border-radius: 20px;
+      border-radius: 30px;
     }
     &__content{
       font-size: 16px;
@@ -473,7 +472,7 @@
       background: #008D68;
       padding: 9px 30px;
       color: white;
-      border-radius: 35px;
+      border-radius: 30px;
       display:inline-block;
       margin-top: 40px;
     }
@@ -537,7 +536,7 @@
       background: #008D68;
       padding: 15px 30px;
       color: white;
-      border-radius: 35px;
+      border-radius: 30px;
       display:inline-block;
       margin-top: 40px;
     }
@@ -617,7 +616,7 @@
   .card{
     width: 312px;
     height: 481px;
-    border-radius: 20px;
+    border-radius: 30px;
     &__content{
       margin-top: 32px;
       width: 263px;
@@ -678,7 +677,7 @@
       background: #008D68;
       padding: 9px 30px;
       color: white;
-      border-radius: 35px;
+      border-radius: 30px;
       display:inline-block;
       margin-top: 40px;
     }

@@ -96,3 +96,17 @@ body{
   //}
 }
 
+.modal{
+  top:30%!important;
+}
+.modal-content{
+  background: transparent!important;
+  border: none!important;
+}
+.modal-header{
+  border-bottom: none!important;
+}
+.modal-footer{
+  border-top: none!important;
+  padding: 0 0 46px 0 !important;
+}

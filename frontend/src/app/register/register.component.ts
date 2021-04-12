@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, PatternValidator, Validators} from '@angular/forms';
 import {RegisterService} from '../service/register.service';
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -11,7 +11,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 export class RegisterComponent implements OnInit {
 
   constructor(public registerService: RegisterService,  public activatedRoute: ActivatedRoute, private router: Router) { }
-  phoneNumber = new FormControl('+ 45 (566) 678 79 99');
+  phoneNumber = new FormControl('+45566678799');
   resendTimer: any = null;
   timerValue = 30;
   step = 0;
@@ -25,6 +25,7 @@ export class RegisterComponent implements OnInit {
   // tslint:disable-next-line:typedef
   password = new FormControl('', [Validators.pattern('^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$')]);
   passwordConfirm = new FormControl();
+  confirmCodeForm = new FormControl();
 
   ngOnInit(): void {
     this.activatedRoute.queryParamMap.subscribe((param) => {
@@ -61,9 +62,11 @@ export class RegisterComponent implements OnInit {
   }
 
   confirmCode(): void {
-    this.step = ++this.step;
-    this.resendTimer.clearInterval();
-    this.timerValue = 30;
+    this.registerService.confirmPhone(this.confirmCodeForm.value).then(resp => {
+      this.resendTimer.clearInterval();
+      this.timerValue = 30;
+      this.navigate();
+    });
   }
 
   navigate(): void {
@@ -79,8 +82,8 @@ export class RegisterComponent implements OnInit {
     }else{
       // @ts-ignore
       this.registerService.sendPassword(this.code, this.password.value, this.phoneNumber.value).then(resp => {
-        console.log(resp);
         this.step = ++this.step;
+        this.startTimer();
       });
     }
   }

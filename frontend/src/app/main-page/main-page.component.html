@@ -1,8 +1,8 @@
-<div class="parallax">
+<app-header></app-header>
+<div class="parallax" (scroll)="log($event)">
   <div class="parallax__layer parallax__layer--back">
     <img class="header-parallax-img" src="../../assets/shapes/3434.png">
   </div>
-  <app-header></app-header>
 <div class="content">
 <!--  <app-scroll-to-top></app-scroll-to-top>-->
 <!--  <div class="d-flex start-section">-->
@@ -79,7 +79,7 @@
 <!--      <img class="phone-img" src="../../assets/shapes/img/phone.png" alt="phone">-->
 <!--    </div>-->
 <!--  </div>-->
-  <div class="d-flex cards">
+  <div class="d-flex cards justify-content-between">
     <div class="card">
       <div class="card__content">
         <h2 class="card__title">Payments</h2>
@@ -327,11 +327,13 @@
       </div>
     </div>
   </div>
-  <div class="position-relative">
+  <div class="position-relative" >
     <div class="manage">
+<!--      <ng-container *ngIf="scrollValue>2270">-->
       <h2 class="mb-0 manage__title">Payment methods</h2>
       <p class="manage__text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
       <a class="manage__link" href="#">Sign up to explore</a>
+<!--      </ng-container>-->
       <img class="manage__img" src="../../assets/shapes/laptop_bottom.png" alt="">
       <div class="manage__sub-block">
         <h2 class="manage__sub-title">Ready to get started?</h2>

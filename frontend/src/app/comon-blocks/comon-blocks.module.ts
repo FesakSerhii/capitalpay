@@ -4,6 +4,7 @@ import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { HexagonLinkComponent } from './hexagon-link/hexagon-link.component';
 import {RouterModule} from "@angular/router";
+import {ReactiveFormsModule} from "@angular/forms";
 
 
 
@@ -13,7 +14,8 @@ import {RouterModule} from "@angular/router";
     exports: [HeaderComponent, FooterComponent, HexagonLinkComponent],
     imports: [
         CommonModule,
-        RouterModule
+        RouterModule,
+        ReactiveFormsModule
     ]
 })
 export class ComonBlocksModule { }

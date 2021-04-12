@@ -1,4 +1,4 @@
-import {Component, HostListener, OnInit, ViewChild} from '@angular/core';
+import {Component, HostListener, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {NgbCarouselConfig, NgbTabset} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -11,8 +11,8 @@ export class MainPageComponent implements OnInit {
   currentTabId = '0';
   width = 0;
   activeAnimation = false;
+  scrollValue = 0;
   constructor() { }
-  // @ViewChild("tab", {static: false}) tab: NgbTabset;
 
   ngOnInit(): void {
     this.width = document.body.clientWidth;
@@ -39,4 +39,8 @@ export class MainPageComponent implements OnInit {
   //     bounding.right <= (window.innerWidth || document.documentElement.clientWidth)
   //   );
   // }
+  log(event: any): void {
+    this.scrollValue = event.target.scrollTop;
+    console.log(event.target.scrollTop);
+  }
 }

@@ -19,4 +19,8 @@ export class RegisterService {
   sendPassword(code: string, password: string, phone: string){
     return this.apiService.post('/v1/signup/step3', {code, password, phone}).toPromise();
   }
+  // tslint:disable-next-line:typedef
+  confirmPhone(code: string){
+    return this.apiService.post('/v1/signup/step5', {code}).toPromise();
+  }
 }
