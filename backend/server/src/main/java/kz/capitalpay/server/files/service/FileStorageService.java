@@ -22,6 +22,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -105,5 +107,17 @@ public class FileStorageService {
 
         //return complete hash
         return sb.toString();
+    }
+
+    public List<FileStorage> getFilListById(List<Long> filesIdList) {
+
+        List<FileStorage> result = new ArrayList<>();
+        for (Long fileId : filesIdList) {
+            FileStorage fileStorage = fileStorageRepository.findById(fileId).orElse(null);
+            if (fileStorage != null) {
+                result.add(fileStorage);
+            }
+        }
+        return result;
     }
 }

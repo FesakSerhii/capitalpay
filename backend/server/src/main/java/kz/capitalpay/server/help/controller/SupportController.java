@@ -2,6 +2,7 @@ package kz.capitalpay.server.help.controller;
 
 import com.google.gson.Gson;
 import kz.capitalpay.server.dto.ResultDTO;
+import kz.capitalpay.server.help.dto.OneRequestDTO;
 import kz.capitalpay.server.help.dto.SupportRequestDTO;
 import kz.capitalpay.server.help.service.SupportService;
 import kz.capitalpay.server.login.dto.ChangeRolesDTO;
@@ -38,12 +39,21 @@ public class SupportController {
         return supportService.supportRequest(principal, request);
     }
 
-        @PostMapping("/list")
-    @RolesAllowed({OPERATOR,ADMIN})
-    ResultDTO requestList( ) {
+    @PostMapping("/list")
+    @RolesAllowed({OPERATOR, ADMIN})
+    ResultDTO requestList() {
         logger.info("Support request list");
         return supportService.requestList();
     }
+
+
+    @PostMapping("/one")
+    @RolesAllowed({OPERATOR, ADMIN})
+    ResultDTO oneRequest(@RequestBody OneRequestDTO request) {
+        logger.info("Support request list");
+        return supportService.oneRequest(request);
+    }
+
 
 
 
