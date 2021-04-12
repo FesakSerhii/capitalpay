@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class SupportService {
@@ -63,5 +65,19 @@ public class SupportService {
             return new ResultDTO(false, e.getMessage(), -1);
         }
 
+    }
+
+
+    public ResultDTO requestList() {
+        try{
+            List<SupportRequest> requestList = supportRequestRepository.findAll();
+            if(requestList==null) requestList = new ArrayList<>();
+
+            return new ResultDTO(true,requestList,0);
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResultDTO(false,e.getMessage(),-1);
+        }
     }
 }

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.security.RolesAllowed;
 import java.security.Principal;
 
-import static kz.capitalpay.server.login.service.ApplicationRoleService.MERCHANT;
+import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
 
 @RestController
 @RequestMapping("/api/v1/support")
@@ -37,5 +37,14 @@ public class SupportController {
         logger.info(gson.toJson(request));
         return supportService.supportRequest(principal, request);
     }
+
+        @PostMapping("/list")
+    @RolesAllowed({OPERATOR,ADMIN})
+    ResultDTO requestList( ) {
+        logger.info("Support request list");
+        return supportService.requestList();
+    }
+
+
 
 }
