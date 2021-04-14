@@ -18,6 +18,8 @@ import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
+import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
+
 @RestController
 @RequestMapping(value = "/api/v1/merchantsettings", produces = "application/json;charset=UTF-8")
 public class MerchantKycController {
@@ -40,7 +42,7 @@ public class MerchantKycController {
 
 
     @PostMapping("/kyc/get")
-    @RolesAllowed({"ROLE_ADMIN", "ROLE_OPERATOR"})
+    @RolesAllowed({ADMIN, OPERATOR,MERCHANT})
     ResultDTO getKyc(@Valid @RequestBody MerchantKycDTO request, Principal principal) {
         logger.info("KYC get");
         return merchantKycService.getKyc(principal, request);

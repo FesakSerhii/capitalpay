@@ -19,10 +19,9 @@ import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
-import static kz.capitalpay.server.constants.ErrorDictionary.error106;
-import static kz.capitalpay.server.constants.ErrorDictionary.error108;
+import static kz.capitalpay.server.constants.ErrorDictionary.*;
 import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.EDIT_MERCHANT_KYC;
-import static kz.capitalpay.server.login.service.ApplicationRoleService.MERCHANT;
+import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
 
 @Service
 public class MerchantKycService {
@@ -102,6 +101,13 @@ public class MerchantKycService {
             ApplicationUser merchant = applicationUserService.getUserById(request.getMerchantId());
             if (merchant == null) {
                 return error106;
+            }
+
+            ApplicationUser operator = applicationUserService.getUserByLogin(principal.getName());
+            if (!operator.getRoles().contains(applicationRoleService.getRole(ADMIN)) &&
+                    !operator.getRoles().contains(applicationRoleService.getRole(OPERATOR)) &&
+                    !operator.getId().equals(merchant.getId())) {
+                return error110;
             }
 
             if (!merchant.getRoles().contains(applicationRoleService.getRole(MERCHANT))) {
