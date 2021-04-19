@@ -42,22 +42,29 @@ public class CurrencyService {
 
     public ResultDTO systemList() {
         try {
-            List<SystemCurrency> currencyList = currencyRepository.findAll();
-            if (currencyList == null || currencyList.size() == 0) {
-                SystemCurrency currency = new SystemCurrency();
-                currency.setAlpha("USD");
-                currency.setName("US Dollar");
-                currency.setNumber("840");
-                currency.setUnicode("$");
-                currencyRepository.save(currency);
-                currencyList.add(currency);
-            }
-            return new ResultDTO(true, currencyList, 0);
+            List<SystemCurrency> currencies = currencyList();
+            return new ResultDTO(true, currencies, 0);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }
     }
+
+  public   List<SystemCurrency> currencyList(){
+        List<SystemCurrency> currencyList = currencyRepository.findAll();
+        if (currencyList == null || currencyList.size() == 0) {
+            SystemCurrency currency = new SystemCurrency();
+            currency.setAlpha("USD");
+            currency.setName("US Dollar");
+            currency.setNumber("840");
+            currency.setUnicode("$");
+            currencyRepository.save(currency);
+            currencyList.add(currency);
+        }
+        return currencyList;
+    }
+
+
 
     public ResultDTO editOneCurrency(Principal principal, EditCurrencyDTO request) {
         try {
