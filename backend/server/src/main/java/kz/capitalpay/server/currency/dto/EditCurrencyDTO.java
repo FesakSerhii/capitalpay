@@ -1,6 +1,7 @@
 package kz.capitalpay.server.currency.dto;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public class EditCurrencyDTO {
     @NotBlank
@@ -8,7 +9,7 @@ public class EditCurrencyDTO {
     String number;
     String unicode;
     String name;
-
+    @NotNull
     boolean enabled;
 
     public String getAlpha() {
