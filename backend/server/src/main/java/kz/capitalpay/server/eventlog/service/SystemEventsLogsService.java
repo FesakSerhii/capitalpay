@@ -19,6 +19,7 @@ public class SystemEventsLogsService {
     public static final String EDIT_MERCHANT_KYC = "edit merchant kyc";
     public static final String CHANGE_STATUS_SUPPORT_REQUEST = "change status support request";
     public static final String ANSWER_SUPPORT_REQUEST = "answer support request";
+    public static final String EDIT_ONE_CURRENCY = "edit one currency";
 
 
     public boolean addNewOperatorAction(String author, String eventName, String json, String target) {
