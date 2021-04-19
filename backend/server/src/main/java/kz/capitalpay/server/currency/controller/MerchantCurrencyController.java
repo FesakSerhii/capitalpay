@@ -29,7 +29,7 @@ public class MerchantCurrencyController {
     @PostMapping("/merchant/list")
     @RolesAllowed({"ROLE_ADMIN", "ROLE_OPERATOR"})
     ResultDTO merchantList(@RequestBody MerchantRequestDTO request) {
-        logger.info("System List");
+        logger.info("Merchant List");
         return merchantCurrencyService.findAll(request);
     }
 

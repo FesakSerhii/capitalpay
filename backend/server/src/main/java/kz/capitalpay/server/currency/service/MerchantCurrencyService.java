@@ -50,11 +50,13 @@ public class MerchantCurrencyService {
             }
 
             Set<String> currencySet = new HashSet<>(currencyList);
-
+            logger.info("Set: {}", gson.toJson(currencySet));
             List<SystemCurrency> systemCurrencyList = currencyService.currencyList();
             Map<String, Boolean> result = new HashMap<>();
             for (SystemCurrency sk : systemCurrencyList) {
                 if (sk.isEnabled()) {
+                    logger.info("contains: {}", currencySet.contains(sk.getAlpha()));
+
                     result.put(sk.getAlpha(), currencySet.contains(sk.getAlpha()));
                 }
             }
