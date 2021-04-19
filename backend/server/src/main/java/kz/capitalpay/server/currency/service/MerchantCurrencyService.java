@@ -46,7 +46,7 @@ public class MerchantCurrencyService {
             logger.info("JSON: {}", currencyJson);
             List<String> currencyList = new ArrayList<>();
             if (currencyJson != null && currencyJson.length() > 0) {
-                gson.fromJson(currencyJson, List.class);
+                currencyList =   gson.fromJson(currencyJson, List.class);
             }
             logger.info("List: {}", currencyList);
             Set<String> currencySet = new HashSet<>(currencyList);
