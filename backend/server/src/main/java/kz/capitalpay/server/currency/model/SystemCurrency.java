@@ -13,6 +13,8 @@ public class SystemCurrency {
     String unicode;
     @Column(unique = true)
     String name;
+    @Column(name = "enabled", columnDefinition = "boolean default true", nullable = false)
+    boolean enabled;
 
     public String getAlpha() {
         return alpha;
@@ -44,5 +46,13 @@ public class SystemCurrency {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }
