@@ -54,16 +54,22 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         String token = request.getHeader(HEADER_STRING);
 
         if (token != null) {
-            DecodedJWT decodedJWT = JWT.require(getAlgorithm())
-                    .build()
-                    .verify(token.replace(TOKEN_PREFIX, ""));
+            try {
+                DecodedJWT decodedJWT = JWT.require(getAlgorithm())
+                        .build()
+                        .verify(token.replace(TOKEN_PREFIX, ""));
 
-            String user = decodedJWT.getSubject();
-            String[] authorities = decodedJWT.getClaim("authorities").asArray(String.class);
-            Set<GrantedAuthority> roleSet = Arrays.stream(authorities).map(
-                    r -> new ApplicationRole(r)).collect(Collectors.toSet());
-            if (user != null) {
-                return new UsernamePasswordAuthenticationToken(user, authorities, roleSet);
+                String user = decodedJWT.getSubject();
+                String[] authorities = decodedJWT.getClaim("authorities").asArray(String.class);
+                Set<GrantedAuthority> roleSet = Arrays.stream(authorities).map(
+                        r -> new ApplicationRole(r)).collect(Collectors.toSet());
+                if (user != null) {
+                    return new UsernamePasswordAuthenticationToken(user, authorities, roleSet);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
             }
             return null;
         }
