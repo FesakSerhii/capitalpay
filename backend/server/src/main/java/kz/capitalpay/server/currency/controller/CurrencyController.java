@@ -49,7 +49,7 @@ public class CurrencyController {
     @PostMapping("/system/add")
     @RolesAllowed({"ROLE_ADMIN", "ROLE_OPERATOR"})
     ResultDTO addCurrency(@Valid @RequestBody AddCurrencyDTO request, Principal principal) {
-        logger.info("Edit One Currency");
+        logger.info("Add Currency");
         return currencyService.addCurrency(principal, request);
     }
 
