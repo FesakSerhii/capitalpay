@@ -43,12 +43,12 @@ public class MerchantCurrencyService {
             }
 
             String currencyJson = merchantSettingsService.getField(merchant.getId(), MERCHANT_CURRENCY_LIST);
-
+            logger.info("JSON: {}", currencyJson);
             List<String> currencyList = new ArrayList<>();
             if (currencyJson != null && currencyJson.length() > 0) {
                 gson.fromJson(currencyJson, List.class);
             }
-
+            logger.info("List: {}", currencyList);
             Set<String> currencySet = new HashSet<>(currencyList);
             logger.info("Set: {}", gson.toJson(currencySet));
             List<SystemCurrency> systemCurrencyList = currencyService.currencyList();
