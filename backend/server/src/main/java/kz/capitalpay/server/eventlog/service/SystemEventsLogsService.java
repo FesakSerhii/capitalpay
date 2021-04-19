@@ -21,6 +21,7 @@ public class SystemEventsLogsService {
     public static final String ANSWER_SUPPORT_REQUEST = "answer support request";
     public static final String EDIT_ONE_CURRENCY = "edit one currency";
     public static final String ADD_CURRENCY = "add currency";
+    public static final String EDIT_MERCHANT_CURRENCY = "edit merchant currency";
 
 
     public boolean addNewOperatorAction(String author, String eventName, String json, String target) {
