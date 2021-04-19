@@ -1,6 +1,7 @@
 package kz.capitalpay.server.currency.controller;
 
 import com.google.gson.Gson;
+import kz.capitalpay.server.currency.dto.AddCurrencyDTO;
 import kz.capitalpay.server.currency.dto.EditCurrencyDTO;
 import kz.capitalpay.server.currency.service.CurrencyService;
 import kz.capitalpay.server.dto.ResultDTO;
@@ -37,11 +38,19 @@ public class CurrencyController {
         logger.info("System List");
         return currencyService.systemList();
     }
+
     @PostMapping("/system/edit")
     @RolesAllowed({"ROLE_ADMIN", "ROLE_OPERATOR"})
     ResultDTO editOneCurrency(@Valid @RequestBody EditCurrencyDTO request, Principal principal) {
         logger.info("Edit One Currency");
         return currencyService.editOneCurrency(principal, request);
+    }
+
+    @PostMapping("/system/add")
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_OPERATOR"})
+    ResultDTO addCurrency(@Valid @RequestBody AddCurrencyDTO request, Principal principal) {
+        logger.info("Edit One Currency");
+        return currencyService.addCurrency(principal, request);
     }
 
 

@@ -14,4 +14,5 @@ public class ErrorDictionary {
     public static final ResultDTO error108 = new ResultDTO(false, "User is not a merchant", 108);
     public static final ResultDTO error109 = new ResultDTO(false, "Support Request not found", 109);
     public static final ResultDTO error110 = new ResultDTO(false, "Not enough rights", 110);
+    public static final ResultDTO error111 = new ResultDTO(false, "Currency already exists", 111);
 }

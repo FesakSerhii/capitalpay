@@ -1,6 +1,7 @@
 package kz.capitalpay.server.currency.service;
 
 import com.google.gson.Gson;
+import kz.capitalpay.server.currency.dto.AddCurrencyDTO;
 import kz.capitalpay.server.currency.dto.EditCurrencyDTO;
 import kz.capitalpay.server.currency.model.SystemCurrency;
 import kz.capitalpay.server.currency.repository.CurrencyRepository;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Service;
 import java.security.Principal;
 import java.util.List;
 
+import static kz.capitalpay.server.constants.ErrorDictionary.error111;
+import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.ADD_CURRENCY;
 import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.EDIT_ONE_CURRENCY;
 
 @Service
@@ -73,6 +76,36 @@ public class CurrencyService {
             ApplicationUser operator = applicationUserService.getUserByLogin(principal.getName());
 
             systemEventsLogsService.addNewOperatorAction(operator.getUsername(), EDIT_ONE_CURRENCY,
+                    gson.toJson(request), "all");
+
+            currencyRepository.save(currency);
+            return new ResultDTO(true, currency, 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultDTO(false, e.getMessage(), -1);
+        }
+    }
+
+    public ResultDTO addCurrency(Principal principal, AddCurrencyDTO request) {
+        try {
+            SystemCurrency currency = currencyRepository.findByAlpha(request.getAlpha());
+            if (currency != null) {
+                return error111;
+            } else {
+                currency = new SystemCurrency();
+            }
+
+            currency.setName(request.getName());
+
+            currency.setNumber(request.getNumber());
+
+            currency.setUnicode(request.getUnicode());
+
+            currency.setEnabled(request.getEnabled());
+
+            ApplicationUser operator = applicationUserService.getUserByLogin(principal.getName());
+
+            systemEventsLogsService.addNewOperatorAction(operator.getUsername(), ADD_CURRENCY,
                     gson.toJson(request), "all");
 
             currencyRepository.save(currency);
