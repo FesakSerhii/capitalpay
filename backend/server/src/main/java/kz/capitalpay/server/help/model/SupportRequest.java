@@ -24,6 +24,8 @@ public class SupportRequest {
 
     String status;
 
+    boolean important;
+
     public Long getId() {
         return id;
     }
@@ -78,5 +80,13 @@ public class SupportRequest {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public boolean isImportant() {
+        return important;
+    }
+
+    public void setImportant(boolean important) {
+        this.important = important;
     }
 }

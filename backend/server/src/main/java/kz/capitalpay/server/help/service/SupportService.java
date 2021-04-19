@@ -181,6 +181,8 @@ public class SupportService {
                 supportRequest.setStatus(NEW_SUPPORT_REQUEST);
             }
 
+            supportRequest.setImportant(request.isImportant());
+
             systemEventsLogsService.addNewOperatorAction(operator.getUsername(), CHANGE_STATUS_SUPPORT_REQUEST,
                     gson.toJson(request), merchant.getId().toString());
 
