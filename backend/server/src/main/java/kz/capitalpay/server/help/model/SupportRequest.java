@@ -23,7 +23,7 @@ public class SupportRequest {
     String fileIdList;
 
     String status;
-
+    @Column(name = "important", columnDefinition = "boolean default false", nullable = false)
     boolean important;
 
     public Long getId() {
