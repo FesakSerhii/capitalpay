@@ -126,7 +126,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             response.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
 
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            response.getWriter().write(gson.toJson(new ResultDTO(true, username, 0)));
+            response.getWriter().write(gson.toJson(new ResultDTO(true, roles, 0)));
         }
     }
 
