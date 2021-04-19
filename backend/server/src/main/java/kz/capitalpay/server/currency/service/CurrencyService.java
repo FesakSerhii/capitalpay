@@ -68,7 +68,7 @@ public class CurrencyService {
             if (request.getUnicode() != null) {
                 currency.setUnicode(request.getUnicode());
             }
-            currency.setEnabled(request.isEnabled());
+            currency.setEnabled(request.getEnabled());
 
             ApplicationUser operator = applicationUserService.getUserByLogin(principal.getName());
 
