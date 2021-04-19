@@ -10,7 +10,7 @@ public class EditCurrencyDTO {
     String unicode;
     String name;
     @NotNull
-    boolean enabled;
+    Boolean enabled;
 
     public String getAlpha() {
         return alpha;
@@ -44,11 +44,11 @@ public class EditCurrencyDTO {
         this.name = name;
     }
 
-    public boolean isEnabled() {
+    public Boolean getEnabled() {
         return enabled;
     }
 
-    public void setEnabled(boolean enabled) {
+    public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
     }
 }
