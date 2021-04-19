@@ -94,6 +94,7 @@ public class CurrencyService {
             } else {
                 currency = new SystemCurrency();
             }
+            currency.setAlpha(request.getAlpha());
 
             currency.setName(request.getName());
 
