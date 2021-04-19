@@ -77,6 +77,26 @@ public class MerchantCurrencyService {
 
     }
 
+    public List<SystemCurrency> currencyList(Long merchantId) {
+        String currencyJson = merchantSettingsService.getField(merchantId, MERCHANT_CURRENCY_LIST);
+        logger.info("JSON: {}", currencyJson);
+        List<String> currencyList = new ArrayList<>();
+        if (currencyJson != null && currencyJson.length() > 0) {
+            currencyList = gson.fromJson(currencyJson, List.class);
+        }
+        logger.info("List: {}", currencyList);
+        Set<String> currencySet = new HashSet<>(currencyList);
+        logger.info("Set: {}", gson.toJson(currencySet));
+        List<SystemCurrency> systemCurrencyList = currencyService.currencyList();
+        List<SystemCurrency> result = new ArrayList<>();
+        for (SystemCurrency sk : systemCurrencyList) {
+            if (sk.isEnabled() && currencySet.contains(sk.getAlpha())) {
+                result.add(sk);
+            }
+        }
+        return result;
+    }
+
     public ResultDTO editList(Principal principal, MerchantEditListDTO request) {
         try {
             ApplicationUser merchant = applicationUserService.getUserById(request.getMerchantId());
@@ -91,7 +111,7 @@ public class MerchantCurrencyService {
             for (String s : request.getCurrencyList()) {
                 boolean error = true;
                 for (SystemCurrency sk : systemCurrencyList) {
-                    if (sk.getAlpha().equals(s)) {
+                    if (sk.getAlpha().equals(s) && sk.isEnabled()) {
                         error = false;
                         break;
                     }

@@ -7,6 +7,7 @@ import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.cashbox.repository.CashboxRepository;
 import kz.capitalpay.server.currency.model.SystemCurrency;
 import kz.capitalpay.server.currency.service.CurrencyService;
+import kz.capitalpay.server.currency.service.MerchantCurrencyService;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.eventlog.service.SystemEventsLogsService;
 import kz.capitalpay.server.login.model.ApplicationUser;
@@ -53,6 +54,9 @@ public class CashboxCurrencyService {
     @Autowired
     SystemEventsLogsService systemEventsLogsService;
 
+    @Autowired
+    MerchantCurrencyService merchantCurrencyService;
+
     public ResultDTO findAll(Principal principal, CashboxCurrencyRequestDTO request) {
         try {
             Cashbox cashbox = cashboxRepository.findById(request.getCashboxId()).orElse(null);
@@ -76,14 +80,11 @@ public class CashboxCurrencyService {
             }
             Set<String> currencySet = new HashSet<>(currencyList);
             logger.info("Set: {}", gson.toJson(currencySet));
-            List<SystemCurrency> systemCurrencyList = currencyService.currencyList();
+            List<SystemCurrency> systemCurrencyList = merchantCurrencyService.currencyList(owner.getId());
             Map<String, Boolean> result = new HashMap<>();
             for (SystemCurrency sk : systemCurrencyList) {
-                if (sk.isEnabled()) {
                     logger.info("contains: {}", currencySet.contains(sk.getAlpha()));
-
                     result.put(sk.getAlpha(), currencySet.contains(sk.getAlpha()));
-                }
             }
 
             return new ResultDTO(true, result, 0);
@@ -108,7 +109,7 @@ public class CashboxCurrencyService {
                 return error110;
             }
 
-            List<SystemCurrency> systemCurrencyList = currencyService.currencyList();
+            List<SystemCurrency> systemCurrencyList = merchantCurrencyService.currencyList(owner.getId());
 
             for (String s : request.getCurrencyList()) {
                 boolean error = true;
