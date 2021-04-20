@@ -9,7 +9,7 @@ public class CashboxPaysystemEditListDTO {
     @NotNull
     Long cashboxId;
 
-    @NotEmpty
+    @NotNull
     List<Long> paysystemList;
 
     public Long getCashboxId() {

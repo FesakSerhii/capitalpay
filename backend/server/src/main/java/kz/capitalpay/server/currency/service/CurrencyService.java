@@ -122,4 +122,12 @@ public class CurrencyService {
             return new ResultDTO(false, e.getMessage(), -1);
         }
     }
+
+    public boolean checkEnable(String alpha) {
+        SystemCurrency currency = currencyRepository.findByAlpha(alpha);
+        if(currency==null){
+            return false;
+        }
+        return currency.isEnabled();
+    }
 }

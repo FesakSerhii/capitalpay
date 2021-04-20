@@ -9,7 +9,7 @@ public class CashboxCurrencyEditListDTO {
     @NotNull
     Long cashboxId;
 
-    @NotEmpty
+    @NotNull
     List<String> currencyList;
 
     public Long getCashboxId() {
