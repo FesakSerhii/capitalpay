@@ -3,6 +3,7 @@ package kz.capitalpay.server.cashbox.service;
 import com.google.gson.Gson;
 import kz.capitalpay.server.cashbox.dto.CashboxCreateRequestDTO;
 import kz.capitalpay.server.cashbox.dto.CashboxNameRequestDTO;
+import kz.capitalpay.server.cashbox.dto.CashboxRequestDTO;
 import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.cashbox.repository.CashboxRepository;
 import kz.capitalpay.server.currency.service.CurrencyService;
@@ -78,6 +79,27 @@ public class CashboxService {
             cashbox.setName(request.getName());
 
             cashboxRepository.save(cashbox);
+
+            return new ResultDTO(true, cashbox, 0);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultDTO(false, e.getMessage(), -1);
+        }
+    }
+
+    public ResultDTO delete(Principal principal, CashboxRequestDTO request) {
+        try {
+            ApplicationUser owner = applicationUserService.getUserByLogin(principal.getName());
+            Cashbox cashbox = cashboxRepository.findById(request.getCashboxId()).orElse(null);
+            if(cashbox==null){
+                return error113;
+            }
+            if(!cashbox.getMerchantId().equals(owner.getId())){
+                return error110;
+            }
+
+            cashboxRepository.delete(cashbox);
 
             return new ResultDTO(true, cashbox, 0);
 

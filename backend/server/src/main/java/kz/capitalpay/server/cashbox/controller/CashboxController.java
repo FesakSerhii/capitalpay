@@ -3,6 +3,7 @@ package kz.capitalpay.server.cashbox.controller;
 import com.google.gson.Gson;
 import kz.capitalpay.server.cashbox.dto.CashboxCreateRequestDTO;
 import kz.capitalpay.server.cashbox.dto.CashboxNameRequestDTO;
+import kz.capitalpay.server.cashbox.dto.CashboxRequestDTO;
 import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.dto.ResultDTO;
 import org.slf4j.Logger;
@@ -45,6 +46,13 @@ public class CashboxController {
     ResultDTO changeName(@Valid @RequestBody CashboxNameRequestDTO request, Principal principal) {
         logger.info("Change Cashbox name");
         return cashboxService.changeName(principal, request);
+    }
+
+    @PostMapping("/delete")
+    @RolesAllowed({MERCHANT})
+    ResultDTO delete(@Valid @RequestBody CashboxRequestDTO request, Principal principal) {
+        logger.info("Delete Cashbox");
+        return cashboxService.delete(principal, request);
     }
 
 
