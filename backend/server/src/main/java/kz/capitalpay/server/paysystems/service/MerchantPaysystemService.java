@@ -61,10 +61,10 @@ public class MerchantPaysystemService {
             Set<Long> paysystemSet = new HashSet<>(paysystemList);
             logger.info("Set: {}", gson.toJson(paysystemSet));
             List<Paysystem> systemPaysystemList = paysystemService.paysystemList();
-            Map<Long, Boolean> result = new HashMap<>();
+            Map<String, Boolean> result = new HashMap<>();
             for (Paysystem ps : systemPaysystemList) {
                 if (ps.isEnabled()) {
-                    result.put(ps.getId(), paysystemSet.contains(ps.getId()));
+                    result.put(ps.getName(), paysystemSet.contains(ps.getId()));
                 }
             }
 
