@@ -1,9 +1,7 @@
 package kz.capitalpay.server.paysystems.service;
 
 import com.google.gson.Gson;
-
 import kz.capitalpay.server.currency.dto.MerchantRequestDTO;
-import kz.capitalpay.server.currency.model.SystemCurrency;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.eventlog.service.SystemEventsLogsService;
 import kz.capitalpay.server.login.model.ApplicationUser;
@@ -21,9 +19,7 @@ import java.util.*;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.error106;
 import static kz.capitalpay.server.constants.ErrorDictionary.error112;
-import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.EDIT_MERCHANT_CURRENCY;
 import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.EDIT_MERCHANT_PAYSYSTEM;
-import static kz.capitalpay.server.merchantsettings.service.MerchantSettingsService.MERCHANT_CURRENCY_LIST;
 import static kz.capitalpay.server.merchantsettings.service.MerchantSettingsService.MERCHANT_PAYSYSTEM_LIST;
 
 @Service
@@ -41,7 +37,7 @@ public class MerchantPaysystemService {
     MerchantSettingsService merchantSettingsService;
 
     @Autowired
-PaysystemService paysystemService;
+    PaysystemService paysystemService;
 
     @Autowired
     SystemEventsLogsService systemEventsLogsService;
@@ -57,8 +53,8 @@ PaysystemService paysystemService;
             logger.info("JSON: {}", paysystemJson);
             List<Long> paysystemList = new ArrayList<>();
             if (paysystemJson != null && paysystemJson.length() > 0) {
-                logger.info(paysystemJson);
-                paysystemList = gson.fromJson(paysystemJson, List.class);
+                List<Double> doubleList = gson.fromJson(paysystemJson, List.class);
+                doubleList.forEach(aDouble -> paysystemList.add(aDouble.longValue()));
                 logger.info(gson.toJson(paysystemList));
             }
             logger.info("List: {}", paysystemList);
@@ -85,7 +81,9 @@ PaysystemService paysystemService;
         logger.info("JSON: {}", paysystemJson);
         List<Long> paysystemList = new ArrayList<>();
         if (paysystemJson != null && paysystemJson.length() > 0) {
-            paysystemList = gson.fromJson(paysystemJson, List.class);
+            List<Double> doubleList = gson.fromJson(paysystemJson, List.class);
+            doubleList.forEach(aDouble -> paysystemList.add(aDouble.longValue()));
+            logger.info(gson.toJson(paysystemList));
         }
         logger.info("List: {}", paysystemList);
         Set<Long> paysystemSet = new HashSet<>(paysystemList);
