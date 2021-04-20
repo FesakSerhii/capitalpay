@@ -101,7 +101,9 @@ public class CashboxService {
 
             cashboxRepository.delete(cashbox);
 
-            return new ResultDTO(true, cashbox, 0);
+            List<Cashbox> cashboxList = cashboxRepository.findByMerchantId(owner.getId());
+
+            return new ResultDTO(true, cashboxList, 0);
 
         } catch (Exception e) {
             e.printStackTrace();
