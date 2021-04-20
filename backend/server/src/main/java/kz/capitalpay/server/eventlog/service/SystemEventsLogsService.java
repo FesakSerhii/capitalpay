@@ -22,6 +22,7 @@ public class SystemEventsLogsService {
     public static final String EDIT_ONE_CURRENCY = "edit one currency";
     public static final String ADD_CURRENCY = "add currency";
     public static final String EDIT_MERCHANT_CURRENCY = "edit merchant currency";
+    public static final String EDIT_MERCHANT_PAYSYSTEM = "edit merchant paysystem";
     public static final String ACTIVATE_PAYSYSTEM = "de/activate paysystem";
 
 

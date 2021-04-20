@@ -1,10 +1,11 @@
 package kz.capitalpay.server.paysystems.controller;
 
-
 import com.google.gson.Gson;
+
+import kz.capitalpay.server.currency.dto.MerchantRequestDTO;
 import kz.capitalpay.server.dto.ResultDTO;
-import kz.capitalpay.server.paysystems.dto.ActivatePaysystemDTO;
-import kz.capitalpay.server.paysystems.service.PaysystemService;
+import kz.capitalpay.server.paysystems.dto.MerchantEditListDTO;
+import kz.capitalpay.server.paysystems.service.MerchantPaysystemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,29 +22,28 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/api/v1/paysystem", produces = "application/json;charset=UTF-8")
-public class PaysystemController {
+public class MerchantPaysystemController {
 
-    Logger logger = LoggerFactory.getLogger(PaysystemController.class);
+    Logger logger = LoggerFactory.getLogger(MerchantPaysystemController.class);
 
     @Autowired
     Gson gson;
 
     @Autowired
-    PaysystemService paysystemService;
+    MerchantPaysystemService merchantPaysystemService;
 
-    @PostMapping("/system/list")
+    @PostMapping("/merchant/list")
     @RolesAllowed({"ROLE_ADMIN", "ROLE_OPERATOR"})
-    ResultDTO paysystemList() {
-        logger.info("Paysystem List");
-        return paysystemService.systemList();
+    ResultDTO merchantList(@RequestBody MerchantRequestDTO request) {
+        logger.info("Merchant List");
+        return merchantPaysystemService.findAll(request);
     }
 
-
-    @PostMapping("/system/enable")
+    @PostMapping("/merchant/edit")
     @RolesAllowed({"ROLE_ADMIN", "ROLE_OPERATOR"})
-    ResultDTO enablePaysystem(@Valid @RequestBody ActivatePaysystemDTO request,Principal principal) {
-        logger.info("Enable paysystem");
-        return paysystemService.enablePaysystem(principal, request);
+    ResultDTO merchantEditList(@Valid @RequestBody MerchantEditListDTO request, Principal principal) {
+        logger.info("Merchant Edit List");
+        return merchantPaysystemService.editList(principal, request);
     }
 
 

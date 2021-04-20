@@ -37,24 +37,29 @@ public class PaysystemService {
     @Autowired
     SystemEventsLogsService systemEventsLogsService;
 
-    public ResultDTO paysystemList() {
+    public ResultDTO systemList() {
         try {
-            List<Paysystem> paysystemList = paysystemRepository.findAll();
-            if (paysystemList == null || paysystemList.size() == 0) {
-                paysystemList = new ArrayList<>();
-                Paysystem paysystem = new Paysystem();
-                paysystem.setName("Test PaySystem");
-                paysystem.setEnabled(true);
-                paysystemRepository.save(paysystem);
-                paysystemList.add(paysystem);
-            }
-
-            return new ResultDTO(true, paysystemList, 0);
+            List<Paysystem> systemList = paysystemList();
+            return new ResultDTO(true, systemList, 0);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }
     }
+
+    List<Paysystem> paysystemList(){
+        List<Paysystem> paysystemList = paysystemRepository.findAll();
+        if (paysystemList == null || paysystemList.size() == 0) {
+            paysystemList = new ArrayList<>();
+            Paysystem paysystem = new Paysystem();
+            paysystem.setName("Test PaySystem");
+            paysystem.setEnabled(true);
+            paysystemRepository.save(paysystem);
+            paysystemList.add(paysystem);
+        }
+        return paysystemList;
+    }
+
 
     public ResultDTO enablePaysystem(Principal principal, ActivatePaysystemDTO request) {
         try {

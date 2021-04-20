@@ -50,7 +50,7 @@ public class CurrencyService {
         }
     }
 
-  public   List<SystemCurrency> currencyList(){
+    public List<SystemCurrency> currencyList() {
         List<SystemCurrency> currencyList = currencyRepository.findAll();
         if (currencyList == null || currencyList.size() == 0) {
             SystemCurrency currency = new SystemCurrency();
@@ -63,7 +63,6 @@ public class CurrencyService {
         }
         return currencyList;
     }
-
 
 
     public ResultDTO editOneCurrency(Principal principal, EditCurrencyDTO request) {

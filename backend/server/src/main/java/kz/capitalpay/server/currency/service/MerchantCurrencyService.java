@@ -8,7 +8,6 @@ import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.eventlog.service.SystemEventsLogsService;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.service.ApplicationUserService;
-import kz.capitalpay.server.merchantsettings.model.MerchantSettings;
 import kz.capitalpay.server.merchantsettings.service.MerchantSettingsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

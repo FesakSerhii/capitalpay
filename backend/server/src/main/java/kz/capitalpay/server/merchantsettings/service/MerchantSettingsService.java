@@ -22,6 +22,7 @@ public class MerchantSettingsService {
     MerchantSettingsRepository merchantSettingsRepository;
 
     public static final String MERCHANT_CURRENCY_LIST = "currencylist";
+    public static final String MERCHANT_PAYSYSTEM_LIST = "paysystemlist";
 
     public String getField(Long id, String fieldName) {
         MerchantSettings merchantSettings = merchantSettingsRepository.findTopByFieldNameAndMerchantId(fieldName, id);
