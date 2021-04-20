@@ -8,6 +8,7 @@ import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.service.ApplicationUserService;
 import kz.capitalpay.server.merchantsettings.service.MerchantSettingsService;
 import kz.capitalpay.server.paysystems.dto.MerchantEditListDTO;
+import kz.capitalpay.server.paysystems.dto.PaySystemListDTO;
 import kz.capitalpay.server.paysystems.model.Paysystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,10 +62,15 @@ public class MerchantPaysystemService {
             Set<Long> paysystemSet = new HashSet<>(paysystemList);
             logger.info("Set: {}", gson.toJson(paysystemSet));
             List<Paysystem> systemPaysystemList = paysystemService.paysystemList();
-            Map<String, Boolean> result = new HashMap<>();
+            List<PaySystemListDTO> result = new ArrayList<>();
             for (Paysystem ps : systemPaysystemList) {
                 if (ps.isEnabled()) {
-                    result.put(ps.getName(), paysystemSet.contains(ps.getId()));
+                    PaySystemListDTO paySystemListDTO = new PaySystemListDTO();
+                    paySystemListDTO.setId(ps.getId());
+                    paySystemListDTO.setName(ps.getName());
+                    paySystemListDTO.setEnabled(paysystemSet.contains(ps.getId()));
+
+                    result.add(paySystemListDTO);
                 }
             }
 
