@@ -17,4 +17,5 @@ public class ErrorDictionary {
     public static final ResultDTO error111 = new ResultDTO(false, "Currency already exists", 111);
     public static final ResultDTO error112 = new ResultDTO(false, "Currency not found", 112);
     public static final ResultDTO error113 = new ResultDTO(false, "Cashbox not found", 113);
+    public static final ResultDTO error114 = new ResultDTO(false, "Paysystem not found", 114);
 }

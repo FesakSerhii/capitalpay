@@ -2,6 +2,7 @@ package kz.capitalpay.server.paysystems.model;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -11,6 +12,7 @@ public class Paysystem {
 
     @Id @GeneratedValue
     Long id;
+    @Column(unique = true)
     String name;
 
     boolean enabled;
