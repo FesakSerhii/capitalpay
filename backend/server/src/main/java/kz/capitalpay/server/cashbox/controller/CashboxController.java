@@ -5,6 +5,7 @@ import kz.capitalpay.server.cashbox.dto.CashboxCreateRequestDTO;
 import kz.capitalpay.server.cashbox.dto.CashboxNameRequestDTO;
 import kz.capitalpay.server.cashbox.dto.CashboxRequestDTO;
 import kz.capitalpay.server.cashbox.service.CashboxService;
+import kz.capitalpay.server.currency.dto.MerchantRequestDTO;
 import kz.capitalpay.server.dto.ResultDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +20,7 @@ import javax.validation.Valid;
 
 import java.security.Principal;
 
-import static kz.capitalpay.server.login.service.ApplicationRoleService.MERCHANT;
+import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
 
 @RestController
 @RequestMapping(value = "/api/v1/cashbox", produces = "application/json;charset=UTF-8")
@@ -53,6 +54,14 @@ public class CashboxController {
     ResultDTO delete(@Valid @RequestBody CashboxRequestDTO request, Principal principal) {
         logger.info("Delete Cashbox");
         return cashboxService.delete(principal, request);
+    }
+
+
+    @PostMapping("/list")
+    @RolesAllowed({ADMIN,OPERATOR,MERCHANT})
+    ResultDTO list(@Valid @RequestBody MerchantRequestDTO request, Principal principal) {
+        logger.info("List Cashbox");
+        return cashboxService.list(principal, request);
     }
 
 
