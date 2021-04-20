@@ -2,6 +2,7 @@ package kz.capitalpay.server.cashbox.service;
 
 import com.google.gson.Gson;
 import kz.capitalpay.server.cashbox.dto.CashboxCreateRequestDTO;
+import kz.capitalpay.server.cashbox.dto.CashboxNameRequestDTO;
 import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.cashbox.repository.CashboxRepository;
 import kz.capitalpay.server.currency.service.CurrencyService;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Service;
 import java.security.Principal;
 import java.util.List;
 
-import static kz.capitalpay.server.constants.ErrorDictionary.error112;
+import static kz.capitalpay.server.constants.ErrorDictionary.*;
 import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.CASHBOX_CURRENCY_LIST;
 
 @Service
@@ -56,6 +57,28 @@ public class CashboxService {
                 cashboxRepository.delete(cashbox);
                 return error112;
             }
+            return new ResultDTO(true, cashbox, 0);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultDTO(false, e.getMessage(), -1);
+        }
+    }
+
+    public ResultDTO changeName(Principal principal, CashboxNameRequestDTO request) {
+        try {
+            ApplicationUser owner = applicationUserService.getUserByLogin(principal.getName());
+            Cashbox cashbox = cashboxRepository.findById(request.getCashboxId()).orElse(null);
+            if(cashbox==null){
+                return error113;
+            }
+            if(!cashbox.getMerchantId().equals(owner.getId())){
+                return error110;
+            }
+            cashbox.setName(request.getName());
+
+            cashboxRepository.save(cashbox);
+
             return new ResultDTO(true, cashbox, 0);
 
         } catch (Exception e) {

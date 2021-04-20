@@ -8,4 +8,5 @@ import java.util.List;
 public interface CashboxRepository extends JpaRepository<Cashbox,Long> {
 
     List<Cashbox> findByMerchantId(Long merchantId);
+
 }
