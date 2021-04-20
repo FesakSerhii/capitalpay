@@ -22,6 +22,7 @@ public class CashboxSettingsService {
     CashboxSettingsRepository cashboxSettingsRepository;
 
     public static final String CASHBOX_CURRENCY_LIST = "currencylist";
+    public static final String CASHBOX_PAYSYSTEM_LIST = "paysystemlist";
 
     public String getField(Long cashboxId, String fieldName) {
         CashboxSettings cashboxSettings = cashboxSettingsRepository.findTopByFieldNameAndCashboxId(fieldName, cashboxId);

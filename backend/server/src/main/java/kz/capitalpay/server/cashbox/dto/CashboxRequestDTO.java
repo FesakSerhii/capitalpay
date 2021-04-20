@@ -2,7 +2,7 @@ package kz.capitalpay.server.cashbox.dto;
 
 import javax.validation.constraints.NotNull;
 
-public class CashboxCurrencyRequestDTO {
+public class CashboxRequestDTO {
 
     @NotNull
     Long cashboxId;

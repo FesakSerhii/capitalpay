@@ -47,7 +47,7 @@ public class PaysystemService {
         }
     }
 
-    List<Paysystem> paysystemList(){
+    public List<Paysystem> paysystemList(){
         List<Paysystem> paysystemList = paysystemRepository.findAll();
         if (paysystemList == null || paysystemList.size() == 0) {
             paysystemList = new ArrayList<>();

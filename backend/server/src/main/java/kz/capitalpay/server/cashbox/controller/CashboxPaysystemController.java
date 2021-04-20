@@ -2,8 +2,9 @@ package kz.capitalpay.server.cashbox.controller;
 
 import com.google.gson.Gson;
 import kz.capitalpay.server.cashbox.dto.CashboxCurrencyEditListDTO;
+import kz.capitalpay.server.cashbox.dto.CashboxPaysystemEditListDTO;
 import kz.capitalpay.server.cashbox.dto.CashboxRequestDTO;
-import kz.capitalpay.server.cashbox.service.CashboxCurrencyService;
+import kz.capitalpay.server.cashbox.service.CashboxPaysystemService;
 import kz.capitalpay.server.dto.ResultDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,29 +23,29 @@ import java.util.Map;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
 
 @RestController
-@RequestMapping(value = "/api/v1/currency", produces = "application/json;charset=UTF-8")
-public class CashboxCurrencyController {
+@RequestMapping(value = "/api/v1/paysystem", produces = "application/json;charset=UTF-8")
+public class CashboxPaysystemController {
 
-    Logger logger = LoggerFactory.getLogger(CashboxCurrencyController.class);
+    Logger logger = LoggerFactory.getLogger(CashboxPaysystemController.class);
 
     @Autowired
     Gson gson;
 
     @Autowired
-    CashboxCurrencyService cashboxCurrencyService;
+    CashboxPaysystemService cashboxPaysystemService;
 
     @PostMapping("/cashbox/list")
     @RolesAllowed({ADMIN, OPERATOR, MERCHANT})
     ResultDTO cashboxList(@RequestBody CashboxRequestDTO request, Principal principal) {
-        logger.info("Cashbox currency List");
-        return cashboxCurrencyService.findAll(principal, request);
+        logger.info("Cashbox paysystem List");
+        return cashboxPaysystemService.findAll(principal, request);
     }
 
     @PostMapping("/cashbox/edit")
     @RolesAllowed({MERCHANT})
-    ResultDTO cashboxEditList(@Valid @RequestBody CashboxCurrencyEditListDTO request, Principal principal) {
+    ResultDTO cashboxEditList(@Valid @RequestBody CashboxPaysystemEditListDTO request, Principal principal) {
         logger.info("Cashbox Edit List");
-        return cashboxCurrencyService.editList(principal, request);
+        return cashboxPaysystemService.editList(principal, request);
     }
 
 
