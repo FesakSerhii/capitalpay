@@ -105,10 +105,10 @@ public class CashboxService {
             if (!cashbox.getMerchantId().equals(owner.getId())) {
                 return error110;
             }
-
-            cashboxRepository.delete(cashbox);
-
-            List<Cashbox> cashboxList = cashboxRepository.findByMerchantId(owner.getId());
+            cashbox.setDeleted(true);
+//            cashboxRepository.delete(cashbox);
+            cashboxRepository.save(cashbox);
+            List<Cashbox> cashboxList = cashboxRepository.findByMerchantIdAndDeleted(owner.getId(), false);
 
             return new ResultDTO(true, cashboxList, 0);
 
@@ -123,7 +123,7 @@ public class CashboxService {
         try {
             ApplicationUser owner = applicationUserService.getUserByLogin(principal.getName());
 
-            List<Cashbox> cashboxList = cashboxRepository.findByMerchantId(owner.getId());
+            List<Cashbox> cashboxList = cashboxRepository.findByMerchantIdAndDeleted(owner.getId(), false);
 
             return new ResultDTO(true, cashboxList, 0);
 

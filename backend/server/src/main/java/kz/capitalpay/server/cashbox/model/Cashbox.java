@@ -1,5 +1,6 @@
 package kz.capitalpay.server.cashbox.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -11,6 +12,8 @@ public class Cashbox {
     Long id;
     Long merchantId;
     String name;
+    @Column(name = "deleted", columnDefinition = "boolean default false", nullable = false)
+    boolean deleted;
 
     public Long getId() {
         return id;
@@ -34,5 +37,13 @@ public class Cashbox {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }
