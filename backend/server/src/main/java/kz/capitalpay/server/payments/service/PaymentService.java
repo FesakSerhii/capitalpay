@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static kz.capitalpay.server.payments.service.PaymentLogService.CREATE_NEW_PAYMENT;
+
 @Service
 public class PaymentService {
 
@@ -24,13 +26,19 @@ public class PaymentService {
     @Autowired
     PaymentRepository paymentRepository;
 
+    @Autowired
+    PaymentLogService paymentLogService;
+
     public boolean checkUnic(Cashbox cashbox, String billid) {
-        List<Payment> paymentList = paymentRepository.findByCashboxIdAndAndBillId(cashbox.getId(),billid);
-        return (paymentList==null || paymentList.size()==0);
+        List<Payment> paymentList = paymentRepository.findByCashboxIdAndAndBillId(cashbox.getId(), billid);
+        return (paymentList == null || paymentList.size() == 0);
     }
 
     public ResultDTO newPayment(Payment payment) {
         paymentRepository.save(payment);
-        return new ResultDTO(true,payment,0);
+        paymentLogService.newEvent(payment.getGuid(), payment.getIpAddress(), CREATE_NEW_PAYMENT,
+                gson.toJson(payment));
+
+        return new ResultDTO(true, payment, 0);
     }
 }
