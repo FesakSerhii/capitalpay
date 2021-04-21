@@ -49,7 +49,7 @@ public class SimpleController {
 
         logger.info(gson.toJson(request));
 
-        return new ResultDTO(true, "", 0);
+        return new ResultDTO(true, request, 0);
     }
 
 }
