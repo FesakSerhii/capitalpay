@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/payment/simple", produces = "application/json;charset=UTF-8")
@@ -27,33 +30,25 @@ public class SimpleController {
                   @RequestParam String billid,
                   @RequestParam Long totalamount,
                   @RequestParam String currency,
-                  @RequestParam List<String> paramlist
-
-//                  @RequestParam(required = false) String param1,
-//                  @RequestParam(required = false) String param2,
-//                  @RequestParam(required = false) String param3,
-//                  @RequestParam(required = false) String param4,
-//                  @RequestParam(required = false) String param5,
-//                  @RequestParam(required = false) String param6,
-//                  @RequestParam(required = false) String param7,
-//                  @RequestParam(required = false) String param8,
-//                  @RequestParam(required = false) String param9,
-//                  @RequestParam(required = false) String param10,
-//                  @RequestParam(required = false) String param11,
-//                  @RequestParam(required = false) String param12,
-//                  @RequestParam(required = false) String param13,
-//                  @RequestParam(required = false) String param14,
-//                  @RequestParam(required = false) String param15
+                  @RequestParam(required = false) String param,
+                  HttpServletRequest request
     ) {
         logger.info("cashboxid: {}", cashboxid);
         logger.info("billid: {}", billid);
         logger.info("totalamount: {}", totalamount);
         logger.info("currency: {}", currency);
 
-        logger.info(gson.toJson(paramlist));
-//
-//        logger.info("param1: {}", param1);
-//        logger.info("param2: {}", param2);
+        String ipAddress = request.getHeader("X-FORWARDED-FOR");
+        if (ipAddress == null) {
+            ipAddress = request.getRemoteAddr();
+        }
+
+        String userAgent = request.getHeader("User-Agent");
+
+        logger.info("ipAddress: {}", ipAddress);
+        logger.info("userAgent: {}", userAgent);
+
+
         return new ResultDTO(true, "", 0);
     }
 
