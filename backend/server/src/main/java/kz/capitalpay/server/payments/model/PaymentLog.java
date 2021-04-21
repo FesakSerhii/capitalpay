@@ -1,5 +1,6 @@
 package kz.capitalpay.server.payments.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -12,6 +13,7 @@ public class PaymentLog {
     String paymentID;
     String who;
     String action;
+    @Column(length = 16383)
     String details;
 
 
