@@ -35,6 +35,9 @@ public class PaymentService {
     }
 
     public ResultDTO newPayment(Payment payment) {
+
+
+
         paymentRepository.save(payment);
         paymentLogService.newEvent(payment.getGuid(), payment.getIpAddress(), CREATE_NEW_PAYMENT,
                 gson.toJson(payment));

@@ -134,7 +134,7 @@ public class MerchantKycService {
         }
     }
 
-    private String getField(Long id, String fieldName) {
+    public String getField(Long id, String fieldName) {
         MerchantKyc merchantKyc = merchantKycRepository.findTopByFieldNameAndMerchantId(fieldName, id);
         if (merchantKyc == null) {
             merchantKyc = new MerchantKyc();

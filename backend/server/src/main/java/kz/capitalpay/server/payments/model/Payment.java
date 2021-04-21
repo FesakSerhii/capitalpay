@@ -15,7 +15,9 @@ public class Payment {
     Long timestamp;
     LocalDateTime localDateTime;
     Long merchantId;
+    String merchantName;
     Long cashboxId;
+    String cashboxName;
     String billId;
     @Column(precision = 30, scale = 2)
     BigDecimal totalAmount;
@@ -57,12 +59,28 @@ public class Payment {
         this.merchantId = merchantId;
     }
 
+    public String getMerchantName() {
+        return merchantName;
+    }
+
+    public void setMerchantName(String merchantName) {
+        this.merchantName = merchantName;
+    }
+
     public Long getCashboxId() {
         return cashboxId;
     }
 
     public void setCashboxId(Long cashboxId) {
         this.cashboxId = cashboxId;
+    }
+
+    public String getCashboxName() {
+        return cashboxName;
+    }
+
+    public void setCashboxName(String cashboxName) {
+        this.cashboxName = cashboxName;
     }
 
     public String getBillId() {

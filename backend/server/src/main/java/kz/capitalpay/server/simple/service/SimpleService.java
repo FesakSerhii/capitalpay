@@ -8,6 +8,8 @@ import kz.capitalpay.server.currency.service.CurrencyService;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.service.ApplicationUserService;
+import kz.capitalpay.server.merchantsettings.service.MerchantKycService;
+import kz.capitalpay.server.merchantsettings.service.MerchantSettingsService;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.paysystems.service.PaysystemService;
@@ -47,6 +49,9 @@ public class SimpleService {
     @Autowired
     CashboxCurrencyService cashboxCurrencyService;
 
+    @Autowired
+    MerchantKycService merchantKycService;
+
     // Payment Status
     public static final String NEW_PAYMENT = "new payment";
 
@@ -65,14 +70,17 @@ public class SimpleService {
             if (!paymentService.checkUnic(cashbox, request.getBillid())) {
                 return error116;
             }
+
+            String merchantName = merchantKycService.getField(merchant.getId(), MerchantKycService.MNAME);
+
             BigDecimal totalAmount = BigDecimal.valueOf(request.getTotalamount())
                     .movePointLeft(2).setScale(2, RoundingMode.HALF_UP);
 
-            if (!cashboxCurrencyService.checkCurrencyEnable(cashbox.getId(),merchant.getId(), request.getCurrency())) {
+            if (!cashboxCurrencyService.checkCurrencyEnable(cashbox.getId(), merchant.getId(), request.getCurrency())) {
                 return error112;
             }
 
-            if(request.getParam().length()>255){
+            if (request.getParam().length() > 255) {
                 return error117;
             }
 
@@ -81,7 +89,9 @@ public class SimpleService {
             payment.setTimestamp(System.currentTimeMillis());
             payment.setLocalDateTime(LocalDateTime.now());
             payment.setMerchantId(merchant.getId());
+            payment.setMerchantName(merchantName);
             payment.setCashboxId(cashbox.getId());
+            payment.setCashboxName(cashbox.getName());
             payment.setBillId(request.getBillid());
             payment.setTotalAmount(totalAmount);
             payment.setCurrency(request.getCurrency());
