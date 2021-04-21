@@ -135,4 +135,14 @@ public class MerchantCurrencyService {
         }
 
     }
+
+    public boolean checkCurrencyEnable(Long merchantId, String currency) {
+        String currencyJson = merchantSettingsService.getField(merchantId, MERCHANT_CURRENCY_LIST);
+
+        List<String> currencyList = new ArrayList<>();
+        if (currencyJson != null && currencyJson.length() > 0) {
+            currencyList = gson.fromJson(currencyJson, List.class);
+        }
+        return currencyList.contains(currency) && currencyService.checkEnable(currency);
+    }
 }

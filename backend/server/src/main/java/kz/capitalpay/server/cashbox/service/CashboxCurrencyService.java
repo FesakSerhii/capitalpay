@@ -142,11 +142,8 @@ public class CashboxCurrencyService {
         if (currencyJson != null && currencyJson.length() > 0) {
             currencyList = gson.fromJson(currencyJson, List.class);
         }
-        List<SystemCurrency> systemCurrencyList = merchantCurrencyService.currencyList(merchantId);
 
-        logger.info("currencyList: {}",gson.toJson(currencyList));
-        logger.info("systemCurrencyList: {}",gson.toJson(systemCurrencyList));
-
-        return currencyList.contains(currency) && systemCurrencyList.contains(currency);
+        return currencyList.contains(currency) &&
+                merchantCurrencyService.checkCurrencyEnable(merchantId, currency);
     }
 }
