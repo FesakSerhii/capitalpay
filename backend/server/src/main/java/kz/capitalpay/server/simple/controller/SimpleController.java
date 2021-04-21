@@ -3,6 +3,7 @@ package kz.capitalpay.server.simple.controller;
 import com.google.gson.Gson;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.simple.dto.SimpleRequestDTO;
+import kz.capitalpay.server.simple.service.SimpleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,8 @@ public class SimpleController {
     @Autowired
     Gson gson;
 
+    @Autowired
+    SimpleService simpleService;
 
     @PostMapping("/pay")
     ResultDTO pay(@RequestParam Long cashboxid,
@@ -49,7 +52,9 @@ public class SimpleController {
 
         logger.info(gson.toJson(request));
 
-        return new ResultDTO(true, request, 0);
+        ResultDTO result = simpleService.newPayment(request);
+
+        return result;
     }
 
 }

@@ -83,8 +83,8 @@ public class CashboxCurrencyService {
             List<SystemCurrency> systemCurrencyList = merchantCurrencyService.currencyList(owner.getId());
             Map<String, Boolean> result = new HashMap<>();
             for (SystemCurrency sk : systemCurrencyList) {
-                    logger.info("contains: {}", currencySet.contains(sk.getAlpha()));
-                    result.put(sk.getAlpha(), currencySet.contains(sk.getAlpha()));
+                logger.info("contains: {}", currencySet.contains(sk.getAlpha()));
+                result.put(sk.getAlpha(), currencySet.contains(sk.getAlpha()));
             }
 
             return new ResultDTO(true, result, 0);
@@ -134,5 +134,16 @@ public class CashboxCurrencyService {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }
+    }
+
+    public boolean checkCurrencyEnable(Long cashboxId, Long merchantId, String currency) {
+        String currencyJson = cashboxSettingsService.getField(cashboxId, CASHBOX_CURRENCY_LIST);
+        List<String> currencyList = new ArrayList<>();
+
+        if (currencyJson != null && currencyJson.length() > 0) {
+            currencyList = gson.fromJson(currencyJson, List.class);
+        }
+        List<SystemCurrency> systemCurrencyList = merchantCurrencyService.currencyList(merchantId);
+        return currencyList.contains(currency) && systemCurrencyList.contains(currency);
     }
 }

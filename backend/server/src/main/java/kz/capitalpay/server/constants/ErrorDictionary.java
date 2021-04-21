@@ -18,4 +18,8 @@ public class ErrorDictionary {
     public static final ResultDTO error112 = new ResultDTO(false, "Currency not found", 112);
     public static final ResultDTO error113 = new ResultDTO(false, "Cashbox not found", 113);
     public static final ResultDTO error114 = new ResultDTO(false, "Paysystem not found", 114);
+    public static final ResultDTO error115 = new ResultDTO(false, "Bill ID > 31 char", 115);
+    public static final ResultDTO error116 = new ResultDTO(false, "Bill ID already exists", 116);
+    public static final ResultDTO error117 = new ResultDTO(false, "Length param > 255 byte", 117);
+
 }

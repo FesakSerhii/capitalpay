@@ -106,7 +106,7 @@ public class CashboxService {
                 return error110;
             }
             cashbox.setDeleted(true);
-//            cashboxRepository.delete(cashbox);
+
             cashboxRepository.save(cashbox);
             List<Cashbox> cashboxList = cashboxRepository.findByMerchantIdAndDeleted(owner.getId(), false);
 
@@ -134,4 +134,10 @@ public class CashboxService {
 
 
     }
+
+    public Cashbox findById(Long cashboxid) {
+        return cashboxRepository.findById(cashboxid).orElse(null);
+    }
+
+
 }
