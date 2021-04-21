@@ -2,6 +2,7 @@ package kz.capitalpay.server.simple.controller;
 
 import com.google.gson.Gson;
 import kz.capitalpay.server.dto.ResultDTO;
+import kz.capitalpay.server.simple.dto.SimpleRequestDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/payment/simple", produces = "application/json;charset=UTF-8")
@@ -31,23 +29,25 @@ public class SimpleController {
                   @RequestParam Long totalamount,
                   @RequestParam String currency,
                   @RequestParam(required = false) String param,
-                  HttpServletRequest request
+                  HttpServletRequest httpRequest
     ) {
-        logger.info("cashboxid: {}", cashboxid);
-        logger.info("billid: {}", billid);
-        logger.info("totalamount: {}", totalamount);
-        logger.info("currency: {}", currency);
+        SimpleRequestDTO request = new SimpleRequestDTO();
 
-        String ipAddress = request.getHeader("X-FORWARDED-FOR");
+        String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
         if (ipAddress == null) {
-            ipAddress = request.getRemoteAddr();
+            ipAddress = httpRequest.getRemoteAddr();
         }
+        request.setIpAddress(ipAddress);
 
-        String userAgent = request.getHeader("User-Agent");
+        request.setUserAgent(httpRequest.getHeader("User-Agent"));
 
-        logger.info("ipAddress: {}", ipAddress);
-        logger.info("userAgent: {}", userAgent);
+        request.setCashboxid(cashboxid);
+        request.setBillid(billid);
+        request.setTotalamount(totalamount);
+        request.setCurrency(currency);
+        request.setParam(param);
 
+        logger.info(gson.toJson(request));
 
         return new ResultDTO(true, "", 0);
     }
