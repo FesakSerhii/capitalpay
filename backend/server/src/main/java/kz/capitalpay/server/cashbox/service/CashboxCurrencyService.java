@@ -139,11 +139,14 @@ public class CashboxCurrencyService {
     public boolean checkCurrencyEnable(Long cashboxId, Long merchantId, String currency) {
         String currencyJson = cashboxSettingsService.getField(cashboxId, CASHBOX_CURRENCY_LIST);
         List<String> currencyList = new ArrayList<>();
-
         if (currencyJson != null && currencyJson.length() > 0) {
             currencyList = gson.fromJson(currencyJson, List.class);
         }
         List<SystemCurrency> systemCurrencyList = merchantCurrencyService.currencyList(merchantId);
+
+        logger.info("currencyList: {}",gson.toJson(currencyList));
+        logger.info("systemCurrencyList: {}",gson.toJson(systemCurrencyList));
+
         return currencyList.contains(currency) && systemCurrencyList.contains(currency);
     }
 }
