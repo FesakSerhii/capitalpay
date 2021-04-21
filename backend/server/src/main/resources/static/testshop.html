@@ -17,5 +17,19 @@
         <button type="submit">PAY</button>
     </p>
 </form>
+
+
+<form method="post" action="https://api.capitalpay.kz/payment/simple/pay">
+    <input name="cashboxid" type="hidden" value="1345"/>
+    <input name="billid" type="hidden" value="ORD-0123-2021-01-25-A"/>
+    <input name="totalamount" type="hidden" value="12000"/>
+    <input name="currency" type="hidden" value="KZT"/>
+    <input name="param1" type="hidden" value="спорттовары Б"/>
+    <input name="param2" type="hidden" value="x16"/>
+    <input name="param3" type="hidden" value="white"/>
+    <p>
+        <button type="submit">PAY</button>
+    </p>
+</form>
 </body>
 </html>
