@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Test Payment Temporary</title>
 </head>
 <p>
 <h1>Test Payment Temporary</h1>
+<p>Bill number: <span th:text="${billid}"></span></p>
+<p>Total: <span th:text="${totalamount}"></span> <span th:text="${currency}"></span></p>
 <p>Card number<input></p>
 <p>
 <form action="/" method="post">

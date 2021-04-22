@@ -21,7 +21,7 @@ public class TestSystemService {
 
     public String getPaymentButton(Payment payment) {
         return "<form method=\"post\" action=\"https://api.capitalpay.kz/testsystem/pay\">" +
-                "<input name=\"billid\" type=\"hidden\" value=\""+payment.getGuid()+"\"/>" +
+                "<input name=\"billid\" type=\"hidden\" value=\""+payment.getBillId()+"\"/>" +
                 "<input name=\"totalamount\" type=\"hidden\" value=\""+payment.getTotalAmount().movePointRight(2)+"\"/>" +
                 "<input name=\"currency\" type=\"hidden\" value=\""+payment.getCurrency()+"\"/>" +
                 "<p>" +
