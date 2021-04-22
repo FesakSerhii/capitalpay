@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Shop Temporary Page</title>
+</head>
+<body>
+<h1>Test Shop Temporary Page</h1>
+
+<form method="post" action="https://api.capitalpay.kz/payment/simple/pay">
+    <h2>120 ₸</h2>
+    <input name="cashboxid" type="hidden" value="1"/>
+    <input name="billid" type="hidden" th:value="${bilId}" value="ORD-0123-2021-01-25-A"/>
+    <input name="totalamount" type="hidden" value="12000"/>
+    <input name="currency" type="hidden" value="KZT"/>
+    <p>
+        <button type="submit">PAY</button>
+    </p>
+</form>
+
+</body>
+</html>
