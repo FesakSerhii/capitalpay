@@ -10,7 +10,7 @@
 <h1>Paysystems Temporary Page</h1>
 <table border="1" cellpadding="5" cellspacing="5">
     <tr>
-        <td>
+        <td id="cell">
 
         </td>
     </tr>
@@ -18,7 +18,7 @@
 </body>
 <script th:inline="javascript">
 
-    var payment = { 'paymentId' :  [[${paymentId}]] };
+    var payment = {'paymentId': [[${paymentId}]]};
 
 
     $.ajax({
@@ -26,7 +26,8 @@
         url: '/public/api/paysystem/system/buttonlist',
         data: JSON.stringify(payment),
         success: function (data) {
-            console.log(data)
+            $('cell').innerHTML = data.data[0].paymentForm;
+            console.log(data.data)
         },
         dataType: 'application/json;',
         contentType: "application/json;",
