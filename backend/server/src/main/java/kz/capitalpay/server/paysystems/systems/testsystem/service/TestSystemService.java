@@ -8,7 +8,7 @@ public class TestSystemService {
 
 
     public String getPaymentButton(Payment payment) {
-        return "<form method=\"post\" action=\"https://api.capitalpay.kz/payment/simple/pay\">\n" +
+        return "<form method=\"post\" action=\"https://api.capitalpay.kz/pay\">\n" +
                 "                <input name=\"cashboxid\" type=\"hidden\" value=\"1\"/>\n" +
                 "                <input name=\"billid\" type=\"hidden\" value=\"ORD-0123-2021-01-25-A\"/>\n" +
                 "                <input name=\"totalamount\" type=\"hidden\" value=\"12000\"/>\n" +
