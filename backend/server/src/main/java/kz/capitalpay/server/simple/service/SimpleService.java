@@ -51,7 +51,10 @@ public class SimpleService {
     MerchantKycService merchantKycService;
 
     // Payment Status
-    public static final String NEW_PAYMENT = "new payment";
+    public static final String NEW_PAYMENT = "NEW";
+    public static final String SUCCESS = "SUCCESS";
+    public static final String FAILED = "FAILED";
+    public static final String PENDING = "PENDING";
 
 
     public ResultDTO newPayment(SimpleRequestDTO request) {

@@ -12,8 +12,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Random;
 
-import static kz.capitalpay.server.simple.service.SimpleService.NEW_PAYMENT;
+import static kz.capitalpay.server.simple.service.SimpleService.*;
 
 @Service
 public class TestSystemService {
@@ -29,6 +30,8 @@ public class TestSystemService {
     @Autowired
     TestsystemPaymentRepository testsystemPaymentRepository;
 
+    Random random = new Random();
+
     public String getPaymentButton(Payment payment) {
         return "<form method=\"post\" action=\"https://api.capitalpay.kz/testsystem/pay\">" +
                 "<input name=\"paymentid\" type=\"hidden\" value=\"" + payment.getGuid() + "\"/>" +
@@ -43,7 +46,7 @@ public class TestSystemService {
 
 
     public void createPayment(String paymentid, String billid, BigDecimal totalamount, String currency) {
-        try{
+        try {
             TestsystemPayment payment = new TestsystemPayment();
             payment.setId(paymentid);
             payment.setTimestamp(System.currentTimeMillis());
@@ -53,8 +56,34 @@ public class TestSystemService {
             payment.setCurrency(currency);
             payment.setStatus(NEW_PAYMENT);
             testsystemPaymentRepository.save(payment);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public TestsystemPayment setStatus(String paymentid, Long status) {
+        try {
+            TestsystemPayment payment = testsystemPaymentRepository.findById(paymentid).orElse(null);
+            if (status == null || status < 1L || status > 3L) {
+                status = 1L + random.nextInt(3);
+            }
+
+            if (status.equals(1L)) {
+                payment.setStatus(SUCCESS);
+            } else if (status.equals(2L)) {
+                payment.setStatus(FAILED);
+            } else if (status.equals(3L)) {
+                payment.setStatus(PENDING);
+            }
+            testsystemPaymentRepository.save(payment);
+            return payment;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String getRedirectUrl() {
+        return "https://api.capitalpay.kz/payment/simple/redirecturl";
     }
 }

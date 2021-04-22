@@ -1,6 +1,7 @@
 package kz.capitalpay.server.paysystems.systems.testsystem.controller;
 
 import com.google.gson.Gson;
+import kz.capitalpay.server.paysystems.systems.testsystem.model.TestsystemPayment;
 import kz.capitalpay.server.paysystems.systems.testsystem.service.TestSystemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,4 +46,16 @@ public class TemporaryPageTestSystemController {
     }
 
 
+    @PostMapping("/testsystem/buttonclick")
+    void buttonClick(@RequestParam String paymentid,
+                     @RequestParam Long status,
+                     HttpServletResponse httpServletResponse) {
+
+        TestsystemPayment payment = testSystemService.setStatus(paymentid, status);
+        String redirectUrl = testSystemService.getRedirectUrl();
+
+        httpServletResponse.setHeader("Location",
+                redirectUrl + "?paimentid=" + payment.getId() + "&status=" + payment.getStatus());
+        httpServletResponse.setStatus(302);
+    }
 }
