@@ -87,11 +87,13 @@ public class TestSystemService {
         return "https://api.capitalpay.kz/testsystem/redirecturl";
     }
 
-    public void getRedirectUrlForPayment(String paymentid, String status) {
+    public String getRedirectUrlForPayment(String paymentid, String status) {
 
         Payment payment = paymentService.getPayment(paymentid);
 
         String redirectUrl =
                 "https://api.capitalpay.kz/testshop/temporary/status?status=" + status + "&billid=" + payment.getBillId();
+
+        return redirectUrl;
     }
 }
