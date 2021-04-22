@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -57,5 +58,25 @@ public class TemporaryPageTestSystemController {
         httpServletResponse.setHeader("Location",
                 redirectUrl + "?paymentid=" + payment.getId() + "&status=" + payment.getStatus());
         httpServletResponse.setStatus(302);
+    }
+
+
+    @GetMapping("/testsystem/redirecturl")
+    void getRedirectUrl(@RequestParam String paymentid,
+                        @RequestParam String status,
+                        HttpServletResponse httpServletResponse) {
+
+
+        logger.info(paymentid);
+        logger.info(status);
+
+        testSystemService.getRedirectUrlForPayment(paymentid, status);
+
+//        TestsystemPayment payment = testSystemService.setStatus(paymentid, status);
+        String redirectUrl = testSystemService.getRedirectUrl();
+
+        httpServletResponse.setHeader("Location", redirectUrl);
+        httpServletResponse.setStatus(302);
+
     }
 }

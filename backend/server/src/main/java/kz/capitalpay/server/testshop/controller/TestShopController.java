@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import static kz.capitalpay.server.simple.service.SimpleService.*;
 
 @Controller
 public class TestShopController {
@@ -25,6 +28,21 @@ public class TestShopController {
         Long bilId = testShopService.getNewBillId();
         modelMap.addAttribute("bilId", bilId);
         return "testshoptemppage";
+    }
+
+    @GetMapping("/testshop/temporary/status")
+    String showStatusPage(ModelMap modelMap,
+                          @RequestParam String status,
+                          @RequestParam String billid) {
+
+        switch (status){
+            case SUCCESS:    modelMap.addAttribute("color", "green"); break;
+            case FAILED:    modelMap.addAttribute("color", "red"); break;
+            case PENDING:    modelMap.addAttribute("color", "yellow"); break;
+        }
+
+        modelMap.addAttribute("billid", billid);
+        return "testshopstatus";
     }
 
 }
