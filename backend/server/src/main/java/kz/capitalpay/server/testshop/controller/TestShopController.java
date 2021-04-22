@@ -42,6 +42,7 @@ public class TestShopController {
         }
 
         modelMap.addAttribute("billid", billid);
+        modelMap.addAttribute("status", status);
         return "testshopstatus";
     }
 
