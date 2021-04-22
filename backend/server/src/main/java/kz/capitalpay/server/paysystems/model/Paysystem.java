@@ -14,6 +14,8 @@ public class Paysystem {
     Long id;
     @Column(unique = true)
     String name;
+    @Column(unique = true)
+    String componentName;
 
     boolean enabled;
 
@@ -31,6 +33,14 @@ public class Paysystem {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getComponentName() {
+        return componentName;
+    }
+
+    public void setComponentName(String componentName) {
+        this.componentName = componentName;
     }
 
     public boolean isEnabled() {

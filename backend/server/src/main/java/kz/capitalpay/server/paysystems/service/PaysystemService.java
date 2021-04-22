@@ -8,14 +8,18 @@ import kz.capitalpay.server.login.service.ApplicationUserService;
 import kz.capitalpay.server.paysystems.dto.ActivatePaysystemDTO;
 import kz.capitalpay.server.paysystems.model.Paysystem;
 import kz.capitalpay.server.paysystems.repository.PaysystemRepository;
+import kz.capitalpay.server.paysystems.systems.PaySystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.error114;
 import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.ACTIVATE_PAYSYSTEM;
@@ -36,6 +40,11 @@ public class PaysystemService {
 
     @Autowired
     SystemEventsLogsService systemEventsLogsService;
+
+    @Autowired
+    List<PaySystem> paySystemList;
+
+    Map<String,PaySystem> paySystems = new HashMap<>();
 
     public ResultDTO systemList() {
         try {
@@ -80,6 +89,19 @@ public class PaysystemService {
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
+        }
+    }
+
+    @PostConstruct
+    public void createPaySystemsMap(){
+        if(paySystemList != null && paySystemList.size()>0){
+            for(PaySystem paySystem : paySystemList){
+                String componentName = paySystem.getComponentName();
+                logger.info(componentName);
+                paySystems.put(componentName,paySystem);
+            }
+        }else{
+            logger.error("PaySystem List not found");
         }
     }
 }
