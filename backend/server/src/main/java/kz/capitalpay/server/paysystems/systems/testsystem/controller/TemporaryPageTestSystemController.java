@@ -1,6 +1,7 @@
 package kz.capitalpay.server.paysystems.systems.testsystem.controller;
 
 import com.google.gson.Gson;
+import kz.capitalpay.server.paysystems.systems.testsystem.service.TestSystemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class TemporaryPageTestSystemController {
     @Autowired
     Gson gson;
 
+    @Autowired
+    TestSystemService testSystemService;
+
     @PostMapping("/testsystem/pay")
     String showTestPaymentPage(ModelMap map,
                                @RequestParam String paymentid,
@@ -28,13 +32,14 @@ public class TemporaryPageTestSystemController {
                                @RequestParam BigDecimal totalamount,
                                @RequestParam String currency,
                                HttpServletRequest httpRequest,
-                               HttpServletResponse httpServletResponse){
+                               HttpServletResponse httpServletResponse) {
 
-        map.addAttribute("paymentid",paymentid);
-        map.addAttribute("billid",billid);
-        map.addAttribute("totalamount",totalamount.movePointLeft(2));
-        map.addAttribute("currency",currency);
+        map.addAttribute("paymentid", paymentid);
+        map.addAttribute("billid", billid);
+        map.addAttribute("totalamount", totalamount.movePointLeft(2));
+        map.addAttribute("currency", currency);
 
+        testSystemService.createPayment(paymentid, billid, totalamount, currency);
 
         return "testpaymenttmporary";
     }
