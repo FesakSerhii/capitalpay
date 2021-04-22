@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Paysystems Temporary Page</title>
@@ -16,11 +16,15 @@
     </tr>
 </table>
 </body>
-<script>
+<script th:inline="javascript">
+
+    var payment = { 'paymentId' :  '/*[[${paymentId}}]]*/' };
+
+
     $.ajax({
         type: 'POST',
         url: '/public/api/paysystem/system/buttonlist',
-        data: JSON.stringify( {"paymentId": "44205841-3844-4d6c-8182-e97ec34ae071"}),
+        data: JSON.stringify(payment),
         success: function (data) {
             console.log(data)
         },
