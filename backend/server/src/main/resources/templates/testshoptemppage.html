@@ -7,16 +7,59 @@
 <body>
 <h1>Test Shop Temporary Page</h1>
 
-<form method="post" action="https://api.capitalpay.kz/payment/simple/pay">
-    <h2>120 ₸</h2>
-    <input name="cashboxid" type="hidden" value="1"/>
-    <input name="billid" type="hidden" th:value="${bilId}" value="ORD-0123-2021-01-25-A"/>
-    <input name="totalamount" type="hidden" value="12000"/>
-    <input name="currency" type="hidden" value="KZT"/>
-    <p>
-        <button type="submit">PAY</button>
-    </p>
-</form>
+<table border="1" cellpadding="5" cellspacing="5">
+    <tr>
+        <td>
+            <form method="post" action="https://api.capitalpay.kz/payment/simple/pay">
+                <h2>120 ₸</h2>
+                <input name="cashboxid" type="hidden" value="1"/>
+                <input name="billid" type="hidden" th:value="${bilId}" value="ORD-0123-2021-01-25-A"/>
+                <input name="totalamount" type="hidden" value="12000"/>
+                <input name="currency" type="hidden" value="KZT"/>
+                <p>
+                    <button type="submit">PAY</button>
+                </p>
+            </form>
+        </td>
+  <td>
+            <form method="post" action="https://api.capitalpay.kz/payment/simple/pay">
+                <h2>5 000 ₸</h2>
+                <input name="cashboxid" type="hidden" value="1"/>
+                <input name="billid" type="hidden" th:value="${bilId+1}" value="ORD-0123-2021-01-25-A"/>
+                <input name="totalamount" type="hidden" value="500000"/>
+                <input name="currency" type="hidden" value="KZT"/>
+                <p>
+                    <button type="submit">PAY</button>
+                </p>
+            </form>
+        </td>
+  <td>
+            <form method="post" action="https://api.capitalpay.kz/payment/simple/pay">
+                <h2>3.50 ₸</h2>
+                <input name="cashboxid" type="hidden" value="1"/>
+                <input name="billid" type="hidden" th:value="${bilId+2}" value="ORD-0123-2021-01-25-A"/>
+                <input name="totalamount" type="hidden" value="350"/>
+                <input name="currency" type="hidden" value="KZT"/>
+                <p>
+                    <button type="submit">PAY</button>
+                </p>
+            </form>
+        </td>
+  <td>
+            <form method="post" action="https://api.capitalpay.kz/payment/simple/pay">
+                <h2>68 000 ₸</h2>
+                <input name="cashboxid" type="hidden" value="1"/>
+                <input name="billid" type="hidden" th:value="${bilId+3}" value="ORD-0123-2021-01-25-A"/>
+                <input name="totalamount" type="hidden" value="6800000"/>
+                <input name="currency" type="hidden" value="KZT"/>
+                <p>
+                    <button type="submit">PAY</button>
+                </p>
+            </form>
+        </td>
+    </tr>
+</table>
+
 
 </body>
 </html>

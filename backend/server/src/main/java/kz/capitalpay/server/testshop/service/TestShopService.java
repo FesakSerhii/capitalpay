@@ -8,7 +8,7 @@ public class TestShopService {
     Long lastBillId = System.currentTimeMillis();
 
     public Long getNewBillId(){
-        return lastBillId++;
+        return lastBillId+=100;
     }
 
 }
