@@ -81,6 +81,7 @@ public class PaysystemService {
             paysystemInfoRepository.save(paysystemInfo);
             paysystemInfoList.add(paysystemInfo);
         }
+        logger.info("paysystemInfoList: {}",gson.toJson(paysystemInfoList));
         return paysystemInfoList;
     }
 
@@ -131,7 +132,7 @@ public class PaysystemService {
 
             List<PaysystemInfo> availablePaysystems = cashboxPaysystemService
                     .availablePaysystemList(payment.getCashboxId());
-logger.info(gson.toJson(availablePaysystems));
+            logger.info(gson.toJson(availablePaysystems));
             for (PaysystemInfo pi : availablePaysystems) {
                 PaySystemButonResponceDTO paySystemButon = new PaySystemButonResponceDTO();
                 paySystemButon.setPaysystemInfo(pi);

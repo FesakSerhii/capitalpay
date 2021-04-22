@@ -94,6 +94,7 @@ public class MerchantPaysystemService {
         logger.info("List: {}", paysystemList);
 
         List<PaysystemInfo> systemPaysystemInfoList = paysystemService.paysystemList();
+        logger.info("systemPaysystemInfoList: {}",gson.toJson(systemPaysystemInfoList));
         List<PaysystemInfo> result = new ArrayList<>();
         for (PaysystemInfo ps : systemPaysystemInfoList) {
             logger.info("ps.getId(): {}",ps.getId());
