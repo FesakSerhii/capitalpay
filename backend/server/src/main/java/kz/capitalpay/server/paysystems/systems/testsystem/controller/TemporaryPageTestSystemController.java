@@ -55,7 +55,7 @@ public class TemporaryPageTestSystemController {
         String redirectUrl = testSystemService.getRedirectUrl();
 
         httpServletResponse.setHeader("Location",
-                redirectUrl + "?paimentid=" + payment.getId() + "&status=" + payment.getStatus());
+                redirectUrl + "?paymentid=" + payment.getId() + "&status=" + payment.getStatus());
         httpServletResponse.setStatus(302);
     }
 }
