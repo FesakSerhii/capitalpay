@@ -249,6 +249,10 @@ public class UserListService {
             applicationUser.setActive(request.isActive());
             applicationUser.setBlocked(request.isBlocked());
 
+            if(request.getRealname()!= null){
+                applicationUser.setRealname(request.getRealname());
+            }
+
             if (request.getPassword() != null) {
                 applicationUser.setPassword(bCryptPasswordEncoder.encode(request.getPassword()));
             }

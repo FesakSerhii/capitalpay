@@ -12,6 +12,7 @@ public class ApplicationUser implements Serializable, Cloneable {
     Long id;
     String username;
     String password;
+    String realname;
     String email;
     @Column(name = "active", columnDefinition = "boolean default false", nullable = false)
     boolean active;
@@ -43,6 +44,14 @@ public class ApplicationUser implements Serializable, Cloneable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRealname() {
+        return realname;
+    }
+
+    public void setRealname(String realname) {
+        this.realname = realname;
     }
 
     public Set<ApplicationRole> getRoles() {

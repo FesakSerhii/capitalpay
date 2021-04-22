@@ -16,6 +16,7 @@ public class EditUserDTO {
     @Pattern(regexp = "[+]\\d{11}", message = "Phone number standard E.164: +77012345678")
     String phone;
 
+    String realname;
     boolean active;
 
     boolean blocked;
@@ -50,6 +51,14 @@ public class EditUserDTO {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getRealname() {
+        return realname;
+    }
+
+    public void setRealname(String realname) {
+        this.realname = realname;
     }
 
     public boolean isActive() {
