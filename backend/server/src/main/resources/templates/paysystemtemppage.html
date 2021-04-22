@@ -26,7 +26,7 @@
         url: '/public/api/paysystem/system/buttonlist',
         data: JSON.stringify(payment),
         success: function (data) {
-            $('cell').innerHTML = data.data[0].paymentForm;
+            $('#cell').innerHTML = data.data[0].paymentForm;
             console.log(data.data)
         },
         dataType: 'json',
