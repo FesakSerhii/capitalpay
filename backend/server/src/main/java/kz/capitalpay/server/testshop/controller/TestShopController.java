@@ -20,7 +20,7 @@ public class TestShopController {
     @Autowired
     TestShopService testShopService;
 
-    @GetMapping("/testshop/temporary/page")
+    @GetMapping("/temporary/page")
     String showTemporaryPage(ModelMap modelMap) {
         Long bilId = testShopService.getNewBillId();
         modelMap.addAttribute("bilId", bilId);
