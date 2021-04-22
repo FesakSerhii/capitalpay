@@ -131,7 +131,7 @@ public class PaysystemService {
 
             List<PaysystemInfo> availablePaysystems = cashboxPaysystemService
                     .availablePaysystemList(payment.getCashboxId());
-
+logger.info(gson.toJson(availablePaysystems));
             for (PaysystemInfo pi : availablePaysystems) {
                 PaySystemButonResponceDTO paySystemButon = new PaySystemButonResponceDTO();
                 paySystemButon.setPaysystemInfo(pi);

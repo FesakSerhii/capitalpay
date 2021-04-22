@@ -156,8 +156,11 @@ public class CashboxPaysystemService {
                 logger.info(gson.toJson(paysystemList));
             }
             List<PaysystemInfo> systemPaysystemInfoList = merchantPaysystemService.paysystemList(owner.getId());
+            logger.info("systemPaysystemInfoList: {}",gson.toJson(systemPaysystemInfoList));
             List<PaysystemInfo> result = new ArrayList<>();
             for (PaysystemInfo ps : systemPaysystemInfoList) {
+                logger.info(ps.getId().toString());
+                logger.info(String.valueOf(paysystemList.contains(ps.getId())));
                 if(paysystemList.contains(ps.getId())){
                     result.add(ps);
                 }
