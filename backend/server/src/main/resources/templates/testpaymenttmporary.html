@@ -11,23 +11,31 @@
 <p>Total: <span th:text="${totalamount}"></span> <span th:text="${currency}"></span></p>
 <p>Card number<input></p>
 <p>
-<form action="/" method="post">
-    <button>Succes</button>
+<form action="/testsystem/buttonclick" method="post">
+    <input name="paymentid" type="hidden" th:value="${paymentid}">
+    <input name="status" type="hidden" value="1">
+    <button type="submit">Succes</button>
 </form>
 </p>
 <p>
-<form action="/" method="post">
-    <button>Failed</button>
+<form action="/testsystem/buttonclick" method="post">
+    <input name="paymentid" type="hidden" th:value="${paymentid}">
+    <input name="status" type="hidden" value="2">
+    <button type="submit">Failed</button>
 </form>
 </p>
 <p>
-<form action="/" method="post">
-    <button>Pending</button>
+<form action="/testsystem/buttonclick" method="post">
+    <input name="paymentid" type="hidden" th:value="${paymentid}">
+    <input name="status" type="hidden" value="3">
+    <button type="submit">Pending</button>
 </form>
 </p>
 <p>
-<form action="/" method="post">
-    <button>Random</button>
+<form action="/testsystem/buttonclick" method="post">
+    <input name="paymentid" type="hidden" th:value="${paymentid}">
+    <input name="status" type="hidden" value="0">
+    <button type="submit">Random</button>
 </form>
 </p>
 </body>
