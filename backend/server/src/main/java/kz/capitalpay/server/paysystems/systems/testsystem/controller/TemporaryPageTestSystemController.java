@@ -23,12 +23,14 @@ public class TemporaryPageTestSystemController {
 
     @PostMapping("/testsystem/pay")
     String showTestPaymentPage(ModelMap map,
+                               @RequestParam String paymentid,
                                @RequestParam String billid,
                                @RequestParam BigDecimal totalamount,
                                @RequestParam String currency,
                                HttpServletRequest httpRequest,
                                HttpServletResponse httpServletResponse){
 
+        map.addAttribute("paymentid",paymentid);
         map.addAttribute("billid",billid);
         map.addAttribute("totalamount",totalamount.movePointLeft(2));
         map.addAttribute("currency",currency);
