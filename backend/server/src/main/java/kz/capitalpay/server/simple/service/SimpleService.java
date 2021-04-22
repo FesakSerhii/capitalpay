@@ -80,7 +80,7 @@ public class SimpleService {
                 return error112;
             }
 
-            if (request.getParam().length() > 255) {
+            if (request.getParam()!= null && request.getParam().length() > 255) {
                 return error117;
             }
 

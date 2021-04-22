@@ -9,7 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 
-@Controller(value = "/testshop")
+@Controller
 public class TestShopController {
 
     Logger logger = LoggerFactory.getLogger(TestShopController.class);
@@ -20,7 +20,7 @@ public class TestShopController {
     @Autowired
     TestShopService testShopService;
 
-    @GetMapping("/temporary/page")
+    @GetMapping("/testshop/temporary/page")
     String showTemporaryPage(ModelMap modelMap) {
         Long bilId = testShopService.getNewBillId();
         modelMap.addAttribute("bilId", bilId);
