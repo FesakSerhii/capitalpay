@@ -9,7 +9,7 @@ import kz.capitalpay.server.login.service.ApplicationUserService;
 import kz.capitalpay.server.merchantsettings.service.MerchantSettingsService;
 import kz.capitalpay.server.paysystems.dto.MerchantEditListDTO;
 import kz.capitalpay.server.paysystems.dto.PaySystemListDTO;
-import kz.capitalpay.server.paysystems.model.Paysystem;
+import kz.capitalpay.server.paysystems.model.PaysystemInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,9 +61,9 @@ public class MerchantPaysystemService {
             logger.info("List: {}", paysystemList);
             Set<Long> paysystemSet = new HashSet<>(paysystemList);
             logger.info("Set: {}", gson.toJson(paysystemSet));
-            List<Paysystem> systemPaysystemList = paysystemService.paysystemList();
+            List<PaysystemInfo> systemPaysystemInfoList = paysystemService.paysystemList();
             List<PaySystemListDTO> result = new ArrayList<>();
-            for (Paysystem ps : systemPaysystemList) {
+            for (PaysystemInfo ps : systemPaysystemInfoList) {
                 if (ps.isEnabled()) {
                     PaySystemListDTO paySystemListDTO = new PaySystemListDTO();
                     paySystemListDTO.setId(ps.getId());
@@ -82,7 +82,7 @@ public class MerchantPaysystemService {
 
     }
 
-    public List<Paysystem> paysystemList(Long merchantId) {
+    public List<PaysystemInfo> paysystemList(Long merchantId) {
         String paysystemJson = merchantSettingsService.getField(merchantId, MERCHANT_PAYSYSTEM_LIST);
         logger.info("JSON: {}", paysystemJson);
         List<Long> paysystemList = new ArrayList<>();
@@ -94,9 +94,9 @@ public class MerchantPaysystemService {
         logger.info("List: {}", paysystemList);
         Set<Long> paysystemSet = new HashSet<>(paysystemList);
         logger.info("Set: {}", gson.toJson(paysystemSet));
-        List<Paysystem> systemPaysystemList = paysystemService.paysystemList();
-        List<Paysystem> result = new ArrayList<>();
-        for (Paysystem ps : systemPaysystemList) {
+        List<PaysystemInfo> systemPaysystemInfoList = paysystemService.paysystemList();
+        List<PaysystemInfo> result = new ArrayList<>();
+        for (PaysystemInfo ps : systemPaysystemInfoList) {
             if (ps.isEnabled() && paysystemSet.contains(ps.getId())) {
                 result.add(ps);
             }
@@ -113,11 +113,11 @@ public class MerchantPaysystemService {
 
             ApplicationUser operator = applicationUserService.getUserByLogin(principal.getName());
 
-            List<Paysystem> systemPaysystemList = paysystemService.paysystemList();
+            List<PaysystemInfo> systemPaysystemInfoList = paysystemService.paysystemList();
 
             for (Long l : request.getPaysystemList()) {
                 boolean error = true;
-                for (Paysystem ps : systemPaysystemList) {
+                for (PaysystemInfo ps : systemPaysystemInfoList) {
                     if (ps.getId().equals(l) && ps.isEnabled()) {
                         error = false;
                         break;

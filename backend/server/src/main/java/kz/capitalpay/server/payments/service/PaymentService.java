@@ -44,4 +44,8 @@ public class PaymentService {
 
         return new ResultDTO(true, payment, 0);
     }
+
+    public Payment getPayment(String paymentId) {
+        return paymentRepository.findByGuid(paymentId);
+    }
 }

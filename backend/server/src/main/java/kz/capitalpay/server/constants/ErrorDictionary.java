@@ -21,5 +21,6 @@ public class ErrorDictionary {
     public static final ResultDTO error115 = new ResultDTO(false, "Bill ID > 31 char", 115);
     public static final ResultDTO error116 = new ResultDTO(false, "Bill ID already exists", 116);
     public static final ResultDTO error117 = new ResultDTO(false, "Length param > 255 byte", 117);
+    public static final ResultDTO error118 = new ResultDTO(false, "Payment not found", 118);
 
 }

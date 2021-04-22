@@ -1,7 +1,5 @@
 package kz.capitalpay.server.paysystems.dto;
 
-import kz.capitalpay.server.paysystems.model.Paysystem;
-
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;

@@ -51,16 +51,11 @@ public class TemporaryDevController {
     }
 
 
-    @PostMapping("/sms/test")
-    ResultDTO sendSms(@RequestBody SendSmsDTO request) {
-        logger.info(gson.toJson(request));
-        return sendSmsService.sendNewSms(request);
-    }
-
-    @PostMapping("/api/test")
-    String testMyData(Principal principal) {
-        return gson.toJson(principal);
-    }
+//    @PostMapping("/sms/test")
+//    ResultDTO sendSms(@RequestBody SendSmsDTO request) {
+//        logger.info(gson.toJson(request));
+//        return sendSmsService.sendNewSms(request);
+//    }
 
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

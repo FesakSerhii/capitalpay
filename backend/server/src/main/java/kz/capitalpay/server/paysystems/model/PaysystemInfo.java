@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-public class Paysystem {
+public class PaysystemInfo {
 
     @Id @GeneratedValue
     Long id;

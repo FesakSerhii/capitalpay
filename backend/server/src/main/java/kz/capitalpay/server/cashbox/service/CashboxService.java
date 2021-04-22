@@ -13,6 +13,7 @@ import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.service.ApplicationRoleService;
 import kz.capitalpay.server.login.service.ApplicationUserService;
 import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
+import kz.capitalpay.server.paysystems.model.PaysystemInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,13 +132,12 @@ public class CashboxService {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }
-
-
     }
 
     public Cashbox findById(Long cashboxid) {
         return cashboxRepository.findById(cashboxid).orElse(null);
     }
+
 
 
 }

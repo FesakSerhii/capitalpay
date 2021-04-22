@@ -1,14 +1,10 @@
 package kz.capitalpay.server.cashbox.service;
 
 import com.google.gson.Gson;
-import kz.capitalpay.server.cashbox.dto.CashboxCurrencyEditListDTO;
 import kz.capitalpay.server.cashbox.dto.CashboxPaysystemEditListDTO;
 import kz.capitalpay.server.cashbox.dto.CashboxRequestDTO;
 import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.cashbox.repository.CashboxRepository;
-import kz.capitalpay.server.currency.model.SystemCurrency;
-import kz.capitalpay.server.currency.service.CurrencyService;
-import kz.capitalpay.server.currency.service.MerchantCurrencyService;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.eventlog.service.SystemEventsLogsService;
 import kz.capitalpay.server.login.model.ApplicationUser;
@@ -16,7 +12,7 @@ import kz.capitalpay.server.login.service.ApplicationRoleService;
 import kz.capitalpay.server.login.service.ApplicationUserService;
 import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.paysystems.dto.PaySystemListDTO;
-import kz.capitalpay.server.paysystems.model.Paysystem;
+import kz.capitalpay.server.paysystems.model.PaysystemInfo;
 import kz.capitalpay.server.paysystems.service.MerchantPaysystemService;
 import kz.capitalpay.server.paysystems.service.PaysystemService;
 import org.slf4j.Logger;
@@ -30,7 +26,6 @@ import java.util.*;
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.OPERATOR;
-import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.CASHBOX_CURRENCY_LIST;
 import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.CASHBOX_PAYSYSTEM_LIST;
 
 @Service
@@ -86,15 +81,14 @@ public class CashboxPaysystemService {
                 doubleList.forEach(aDouble -> paysystemList.add(aDouble.longValue()));
                 logger.info(gson.toJson(paysystemList));
             }
-            Set<Long> paysystemSet = new HashSet<>(paysystemList);
-            logger.info("Set: {}", gson.toJson(paysystemSet));
-            List<Paysystem> systemPaysystemList = merchantPaysystemService.paysystemList(owner.getId());
+
+            List<PaysystemInfo> systemPaysystemInfoList = merchantPaysystemService.paysystemList(owner.getId());
             List<PaySystemListDTO> result = new ArrayList<>();
-            for (Paysystem ps : systemPaysystemList) {
+            for (PaysystemInfo ps : systemPaysystemInfoList) {
                 PaySystemListDTO paySystemListDTO = new PaySystemListDTO();
                 paySystemListDTO.setId(ps.getId());
                 paySystemListDTO.setName(ps.getName());
-                paySystemListDTO.setEnabled(paysystemSet.contains(ps.getId()));
+                paySystemListDTO.setEnabled(paysystemList.contains(ps.getId()));
 
                 result.add(paySystemListDTO);
             }
@@ -121,11 +115,11 @@ public class CashboxPaysystemService {
                 return error110;
             }
 
-            List<Paysystem> systemPaysystemList = paysystemService.paysystemList();
+            List<PaysystemInfo> systemPaysystemInfoList = paysystemService.paysystemList();
 
             for (Long l : request.getPaysystemList()) {
                 boolean error = true;
-                for (Paysystem ps : systemPaysystemList) {
+                for (PaysystemInfo ps : systemPaysystemInfoList) {
                     if (ps.getId().equals(l) && ps.isEnabled()) {
                         error = false;
                         break;
@@ -145,5 +139,34 @@ public class CashboxPaysystemService {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }
+    }
+
+    public List<PaysystemInfo> availablePaysystemList(Long cashboxId) {
+        try {
+            Cashbox cashbox = cashboxRepository.findById(cashboxId).orElse(null);
+
+            ApplicationUser owner = applicationUserService.getUserById(cashbox.getMerchantId());
+
+            String paysystemJson = cashboxSettingsService.getField(cashboxId, CASHBOX_PAYSYSTEM_LIST);
+            List<Long> paysystemList = new ArrayList<>();
+
+            if (paysystemJson != null && paysystemJson.length() > 0) {
+                List<Double> doubleList = gson.fromJson(paysystemJson, List.class);
+                doubleList.forEach(aDouble -> paysystemList.add(aDouble.longValue()));
+                logger.info(gson.toJson(paysystemList));
+            }
+            List<PaysystemInfo> systemPaysystemInfoList = merchantPaysystemService.paysystemList(owner.getId());
+            List<PaysystemInfo> result = new ArrayList<>();
+            for (PaysystemInfo ps : systemPaysystemInfoList) {
+                if(paysystemList.contains(ps.getId())){
+                    result.add(ps);
+                }
+            }
+            return result;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
     }
 }
