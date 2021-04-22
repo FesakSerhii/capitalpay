@@ -92,12 +92,13 @@ public class MerchantPaysystemService {
             logger.info(gson.toJson(paysystemList));
         }
         logger.info("List: {}", paysystemList);
-        Set<Long> paysystemSet = new HashSet<>(paysystemList);
-        logger.info("Set: {}", gson.toJson(paysystemSet));
+
         List<PaysystemInfo> systemPaysystemInfoList = paysystemService.paysystemList();
         List<PaysystemInfo> result = new ArrayList<>();
         for (PaysystemInfo ps : systemPaysystemInfoList) {
-            if (ps.isEnabled() && paysystemSet.contains(ps.getId())) {
+            logger.info("ps.getId(): {}",ps.getId());
+            logger.info(String.valueOf(paysystemList.contains(ps.getId())));
+            if (ps.isEnabled() && paysystemList.contains(ps.getId())) {
                 result.add(ps);
             }
         }
