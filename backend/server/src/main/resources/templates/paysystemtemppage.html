@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Paysystems Temporary Page</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 </head>
 <body>
 <h1>Paysystems Temporary Page</h1>
@@ -14,4 +16,16 @@
     </tr>
 </table>
 </body>
+<script>
+    $.ajax({
+        type: 'POST',
+        url: '/public/api/paysystem/system/buttonlist',
+        data: {"paymentId": "44205841-3844-4d6c-8182-e97ec34ae071"},
+        success: function (data) {
+            console.log(data)
+        },
+        dataType: 'application/json'
+    })
+</script>
+
 </html>
