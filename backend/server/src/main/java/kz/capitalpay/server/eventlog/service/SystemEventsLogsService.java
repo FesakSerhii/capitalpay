@@ -1,7 +1,9 @@
 package kz.capitalpay.server.eventlog.service;
 
 import kz.capitalpay.server.eventlog.model.OperatorsAction;
+import kz.capitalpay.server.eventlog.model.PaysystemAction;
 import kz.capitalpay.server.eventlog.repository.OperatorActionRepository;
+import kz.capitalpay.server.eventlog.repository.PaysystemActionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +12,9 @@ public class SystemEventsLogsService {
 
     @Autowired
     OperatorActionRepository operatorActionRepository;
+
+    @Autowired
+    PaysystemActionRepository paysystemActionRepository;
 
     public static final String LOGIN = "login";
     public static final String CHANGE_ROLE = "change role";
@@ -24,6 +29,7 @@ public class SystemEventsLogsService {
     public static final String EDIT_MERCHANT_CURRENCY = "edit merchant currency";
     public static final String EDIT_MERCHANT_PAYSYSTEM = "edit merchant paysystem";
     public static final String ACTIVATE_PAYSYSTEM = "de/activate paysystem";
+    public static final String CHANGE_PAYMENT_STATUS = "change payment status";
 
 
     public boolean addNewOperatorAction(String author, String eventName, String json, String target) {
@@ -36,5 +42,20 @@ public class SystemEventsLogsService {
         operatorActionRepository.save(operatorsAction);
         return true;
     }
+
+
+
+    public boolean addNewPaysystemAction(String author, String eventName, String json, String target) {
+        PaysystemAction paysystemAction = new PaysystemAction();
+        paysystemAction.setTimestamp(System.currentTimeMillis());
+        paysystemAction.setAuthor(author);
+        paysystemAction.setEventName(eventName);
+        paysystemAction.setJson(json);
+        paysystemAction.setTarget(target);
+        paysystemActionRepository.save(paysystemAction);
+        return true;
+    }
+
+
 
 }
