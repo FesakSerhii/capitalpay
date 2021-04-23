@@ -1,0 +1,52 @@
+<!--<div [class]='"stselect " + classes' [class.opened]="opened" [class.direction-top]="isDirectionTop">-->
+<!--  <div class='head' (click)="!disabled ? opened = !opened: false; onTouched()" #selectElem >-->
+<!--    {{value !== null ? getValueTitle(value) : getCurrentValuesText()}}-->
+<!--  </div>-->
+
+<!--  <ul>-->
+<!--    <li *ngIf="hasSearch">-->
+<!--      <p class="my-0"><input class="form-control form-control-sm" [formControl]="searchStr" [placeholder]="'Пошук'"></p>-->
+<!--    </li>-->
+<!--    <perfect-scrollbar style="max-height: 400px; max-width: 100%;overflow-y: scroll">-->
+<!--      <li *ngFor="let v of filteredValues" (click)="updateValue(v);">-->
+<!--        <p>{{getValueTitle(getValueValue(v))}}</p>-->
+<!--      </li>-->
+<!--    </perfect-scrollbar>-->
+<!--  </ul>-->
+<!--</div>-->
+<div [class]="'dropdown bootstrap-select show-tick'+ classes" [class.show]="opened" (click)="!disabled ? opened = !opened: false; onTouched()">
+<!--  <select class="selectpicker" data-style="select-with-transition" multiple="" title="Choose City" data-size="7" tabindex="-98">-->
+<!--  <option disabled=""> Multiple Options</option>-->
+<!--    <perfect-scrollbar style="max-height: 400px; max-width: 100%;overflow-y: scroll">-->
+<!--      <option [value]="v" *ngFor="let v of filteredValues" (click)="updateValue(v);">{{getValueTitle(getValueValue(v))}}</option>-->
+<!--    </perfect-scrollbar>-->
+
+<!--</select>-->
+  <button type="button" class="btn dropdown-toggle bs-placeholder select-with-transition" data-toggle="dropdown" role="button" title="Choose City">
+    <div class="filter-option">
+      <div class="filter-option-inner">
+        <div class="filter-option-inner-inner">{{value !== null ? getValueTitle(value) : getCurrentValuesText()}}</div>
+      </div> </div><div class="ripple-container">
+  </div>
+  </button>
+  <div *ngIf="opened" class="dropdown-menu show" role="combobox" x-placement="bottom-start" style="max-height: 276px; overflow: hidden; min-width: 204px; position: absolute; top: 39px; left: 1px; will-change: top, left;">
+    <div class="inner show" role="listbox" aria-expanded="false" tabindex="-1" style="max-height: 266px; overflow-y: auto;">
+      <ul class="dropdown-menu inner show">
+        <li class="disabled">
+          <a role="option" class="dropdown-item disabled" aria-disabled="true" tabindex="-1" aria-selected="false">
+            <span class=" bs-ok-default check-mark"></span>
+            <span class="text"> Multiple Options</span>
+          </a>
+        </li>
+        <perfect-scrollbar style="max-height: 400px; max-width: 100%;overflow-y: scroll">
+          <li *ngFor="let v of filteredValues" (click)="updateValue(v);">
+            <a role="option" class="dropdown-item" tabindex="0">
+              <span class="bs-ok-default check-mark"></span>
+              <span class="text">{{getValueTitle(getValueValue(v))}}</span>
+            </a>
+          </li>
+        </perfect-scrollbar>
+      </ul>
+    </div>
+  </div>
+</div>

@@ -15,7 +15,11 @@ export const routes: Routes = [
   {
     path: 'confirm',
     component: RegisterComponent
-  }
+  },
+  {
+    path: 'merchant',
+    loadChildren: () => import('./merchant-panel/merchant-panel.module').then(mod => mod.MerchantPanelModule)
+  },
 ];
 
 @NgModule({

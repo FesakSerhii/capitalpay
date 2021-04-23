@@ -14,7 +14,7 @@ body{
 
 .parallax {
   perspective: 1px;
-  height: 100vh;
+  height: 100vh!important;
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -39,11 +39,12 @@ body{
 }
 
 .nav-tabs .nav-link.active, .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link{
-  border: none;
+  border: none!important;
   color: #008D68!important;
   position: relative;
-  text-decoration: underline;
+  text-decoration: underline!important;
   text-underline-position: under;
+  background: transparent!important;
   font-size: 18px;
 }
 .nav-tabs .nav-link, .nav-tabs .nav-link, .nav-tabs .nav-item.show .nav-link{

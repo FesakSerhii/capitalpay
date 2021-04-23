@@ -1,0 +1,105 @@
+<div>
+  <div class="container-fluid" style="width: 1111px; height: 50px;margin:0 auto; margin-top: 16px;
+    margin-bottom: 17px; display:flex;justify-content: space-between;align-items: center;">
+    <a href="#">
+      <img src="../../../assets/shapes/Logo_header.svg" alt="logo">
+    </a>
+    <div>
+      <a href="#" style="font-size: 16px;color: black;">Get started</a>
+      <a href="#" style="font-size: 16px;color: black;margin-left: 20px">Modules</a>
+      <a href="#" style="font-size: 16px;color: black;margin-left: 20px">Pricing</a>
+      <a href="#" style="font-size: 16px;color: black;margin-left: 20px">API</a>
+      <a href="#" style="font-size: 16px;color: black;margin-left: 20px">Contact</a>
+    </div>
+    <div>
+      <a href="#" style="font-size: 16px;color: black;" (click)="$event.preventDefault();open(loginModal)">Login</a>
+      <a style="margin-left: 20px;padding: 11px 17px; background: #177960; color: white;border-radius: 20px" (click)="$event.preventDefault();open(registerModal)">Sign up</a>
+      <a href="#" style="color: black;margin-left: 20px;">EN</a>
+    </div>
+  </div>
+</div>
+<ng-template #register let-modal>
+  <div class="popup">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+              (click)="modalService.dismissAll(false)">
+        <span aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17">
+            <g>
+              <g>
+                <path fill="#008D68"
+                      d="M15.514 16.407a.966.966 0 0 1-1.373 0l-6.27-6.26-6.26 6.27a.983.983 0 0 1-1.364-.01.954.954 0 0 1 0-1.363l6.26-6.26-6.26-6.27a.954.954 0 0 1-.289-.682c0-.258.103-.506.29-.682a.96.96 0 0 1 1.363-.01l6.26 6.27 6.27-6.26a.964.964 0 1 1 1.363 1.364l-6.26 6.27 6.26 6.26a.963.963 0 0 1 .01 1.363z"/>
+              </g>
+            </g>
+          </svg>
+        </span>
+      </button>
+    </div>
+    <div>
+      <p class="title">Apply for registration</p>
+    </div>
+    <form [formGroup]="registerForm" class="registration-form">
+      <div class="form-field">
+        <span class="input-title">Your name *</span>
+        <input type="text" formControlName="username">
+      </div>
+      <div class="form-field">
+        <span class="input-title">Phone number *</span>
+        <input type="text" formControlName="phone">
+      </div>
+      <div class="form-field">
+        <span class="input-title">Email *</span>
+        <input type="email" formControlName="email">
+      </div>
+      <div class="form-field">
+        <span class="input-title">Comment</span>
+        <input type="text" formControlName="comment">
+      </div>
+      <button class="section-btn" (click)="$event.preventDefault();">Send an application</button>
+    </form>
+    <div class="modal-footer">
+      <p class="m-0 m-auto">Already have an account? <a href="#" class="switch-modal-link" (click)="$event.preventDefault();switchToLogin(loginModal)">Log In</a></p>
+    </div>
+  </div>
+</ng-template>
+<ng-template #login let-modal>
+  <div class="popup">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+              (click)="modalService.dismissAll(false)">
+        <span aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17">
+            <g>
+              <g>
+                <path fill="#008D68"
+                      d="M15.514 16.407a.966.966 0 0 1-1.373 0l-6.27-6.26-6.26 6.27a.983.983 0 0 1-1.364-.01.954.954 0 0 1 0-1.363l6.26-6.26-6.26-6.27a.954.954 0 0 1-.289-.682c0-.258.103-.506.29-.682a.96.96 0 0 1 1.363-.01l6.26 6.27 6.27-6.26a.964.964 0 1 1 1.363 1.364l-6.26 6.27 6.26 6.26a.963.963 0 0 1 .01 1.363z"/>
+              </g>
+            </g>
+          </svg>
+        </span>
+      </button>
+    </div>
+    <div>
+      <p class="title">Login</p>
+    </div>
+    <form [formGroup]="loginForm" class="registration-form">
+      <div class="form-field">
+        <span class="input-title">Email *</span>
+        <input type="email" formControlName="email">
+      </div>
+      <div class="form-field">
+        <span class="input-title">Password</span>
+        <input formControlName="password">
+        <img class="password-toggle" src="../../../assets/shapes/eye.svg" alt="eye">
+      </div>
+      <div class="d-flex">
+        <input formControlName="isIpTrusted" type="checkbox" style="height: 21px;width: 21px">
+        <p class="ml-3">Save current IP address as trusted</p>
+      </div>
+      <button class="section-btn" (click)="$event.preventDefault();loginAction()">Login</button>
+    </form>
+    <div class="modal-footer">
+      <p class="m-0 m-auto">Don't have an account yet? <a href="#" class="switch-modal-link" (click)="$event.preventDefault();switchToLogin(registerModal)">Sign Up</a></p>
+    </div>
+  </div>
+</ng-template>

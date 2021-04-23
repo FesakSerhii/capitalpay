@@ -4,6 +4,8 @@
     <img class="header-parallax-img" src="../../assets/shapes/3434.png">
   </div>
 <div class="content">
+  <div id="top" style="position: absolute;
+    top: -60px;"></div>
 <!--  <app-scroll-to-top></app-scroll-to-top>-->
 <!--  <div class="d-flex start-section">-->
     <ngb-carousel [pauseOnHover]="true" [interval]="6000">
@@ -435,6 +437,6 @@
       </div>
     </div>
   </div>
-  <a href="#top" class="btn-to-top"><img src="../../assets/shapes/Button Go Up Hover.png" alt=""></a>
+  <a href="#top" class="btn-to-top" *ngIf="scrollValue>949"><img src="../../assets/shapes/Button Go Up Hover.png" alt=""></a>
   <app-footer></app-footer>
 </div>
