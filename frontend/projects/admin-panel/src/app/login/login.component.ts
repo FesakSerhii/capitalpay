@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {AuthService} from '../service/auth.service';
 import {Router} from '@angular/router';
+import {HttpResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-login',
@@ -23,7 +24,8 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
   }
   loginAction(){
-    this.authService.login(this.loginForm.value.email,this.loginForm.value.password).then(resp=>{
+    this.authService.login(this.loginForm.value.email,this.loginForm.value.password).then((resp: HttpResponse<any>)=>{
+      console.log(resp.headers);
       this.router.navigate(['/admin-panel/dashboard']);
     })
   }

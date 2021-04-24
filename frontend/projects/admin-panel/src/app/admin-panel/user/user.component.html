@@ -1,1 +1,173 @@
-<p>user works!</p>
+<div>
+  <div class="row">
+    <div>
+      <a href="#" class="btn btn-success btn-round" (click)="$event.preventDefault();open()">Создать пользователя<div class="ripple-container"></div></a>
+      <div class="card w1600">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <form class="form-horizontal">
+              <div class="d-flex">
+                <label class="col-form-label">Роль</label>
+                <div class="form-input-md">
+                  <div class="form-group has-default bmd-form-group">
+                    <app-custom-select classes="mr-5" [values]="[1,2,3,4,5,6,7,8,9,10]"></app-custom-select>
+                  </div>
+                </div>
+                <label class="col-form-label">Дата регистрации</label>
+                <div class="form-input-sm">
+                  <div class="form-group bmd-form-group">
+                    <div class="d-flex align-items-center">
+                      <input type="password" class="form-control">
+                      <i class="material-icons icon-color">date_range</i>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-input-sm">
+                  <div class="form-group bmd-form-group">
+                    <div class="d-flex align-items-center">
+                      <input type="password" class="form-control">
+                      <i class="material-icons icon-color">date_range</i>
+                    </div>
+                  </div>
+                </div>
+                <label class="col-form-label">Телефон</label>
+                <div class="form-input-md">
+                  <div class="form-group has-default bmd-form-group">
+                    <input type="email" class="form-control">
+                  </div>
+                </div><label class="col-form-label">ФИО</label>
+                <div class="form-input-md">
+                  <div class="form-group has-default bmd-form-group">
+                    <input type="email" class="form-control">
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex">
+                <label class="col-form-label">Статус</label>
+                <div class="form-input-md">
+                  <div class="form-group has-default bmd-form-group">
+                    <app-custom-select classes="mr-5" [values]="[1,2,3,4,5,6,7,8,9,10]"></app-custom-select>
+                  </div>
+                </div>
+                <label class="col-form-label">ID пользователя</label>
+                <div class="form-input-md">
+                  <div class="form-group has-default bmd-form-group">
+                    <input type="email" class="form-control">
+                  </div>
+                </div><label class="col-form-label">Email</label>
+                <div class="form-input-md">
+                  <div class="form-group has-default bmd-form-group">
+                    <input type="email" class="form-control">
+                  </div>
+                </div>
+              </div>
+            </form>
+            <div>
+              <button class="btn btn-success btn-round">Показать<div class="ripple-container"></div></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header card-header-success card-header-icon">
+          <div class="card-icon">
+            <i class="material-icons">perm_identity</i>
+          </div>
+          <h4 class="card-title ">Администраторы</h4>
+        </div>
+        <div class="card-body">
+<!--          <div class="tab-content tab-space">-->
+              <perfect-scrollbar style="max-height: 688px; max-width: 100%;overflow-y: scroll">
+                <div class="material-datatables">
+                  <div id="datatables_wrapper" class="dataTables_wrapper dt-bootstrap4"><div class="row"><div class="col-sm-12 col-md-6"><div class="dataTables_length" id="datatables_length"><label>Show <select name="datatables_length" aria-controls="datatables" class="custom-select custom-select-sm form-control form-control-sm"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="-1">All</option></select> entries</label></div></div><div class="col-sm-12 col-md-6"><div class="dataTables_filter"><label>INPUT<span class="bmd-form-group bmd-form-group-sm"><input type="search" class="form-control form-control-sm" placeholder="Search records" aria-controls="datatables"></span></label></div></div></div><div class="row"><div class="col-sm-12"><table class="table table-striped table-no-bordered table-hover dataTable dtr-inline" cellspacing="0" width="100%" style="width: 100%;" role="grid" aria-describedby="datatables_info">
+                    <thead>
+                    <tr role="row">
+                      <th class="sorting" tabindex="0" aria-controls="datatables" rowspan="1" colspan="1" style="width: 178px;" aria-sort="ascending" aria-label="Name: activate to sort column descending">ID Пользователя</th>
+                      <th class="sorting" tabindex="0" aria-controls="datatables" rowspan="1" colspan="1" style="width: 262px;" aria-label="Position: activate to sort column ascending">Дата регистрации</th>
+                      <th class="sorting" tabindex="0" aria-controls="datatables" rowspan="1" colspan="1" style="width: 134px;" aria-label="Office: activate to sort column ascending">Телефон</th>
+                      <th class="sorting" tabindex="0" aria-controls="datatables" rowspan="1" colspan="1" style="width: 48px;" aria-label="Age: activate to sort column ascending">Email</th>
+                      <th class="sorting" tabindex="0" aria-controls="datatables" rowspan="1" colspan="1" style="width: 115px;" aria-label="Date: activate to sort column ascending">ФИО</th>
+                      <th class="sorting" tabindex="0" aria-controls="datatables" rowspan="1" colspan="1" style="width: 115px;" aria-label="Date: activate to sort column ascending">Роль</th>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                      <th rowspan="1" colspan="1">ID Пользователя</th>
+                      <th rowspan="1" colspan="1">Дата регистрации</th>
+                      <th rowspan="1" colspan="1">Телефон</th>
+                      <th rowspan="1" colspan="1">Email</th>
+                      <th rowspan="1" colspan="1">ФИО</th>
+                      <th rowspan="1" colspan="1">Роль</th>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                    <tr role="row" class="odd">
+                      <td tabindex="0" class="sorting_1">7855266</td>
+                      <td>21.05.2020</td>
+                      <td>+7885456699</td>
+                      <td>example@email.com</td>
+                      <td>Иванов Иван Иванович</td>
+                      <td>Админ/Оператор</td>
+                    </tr>
+                    </tbody>
+                  </table></div></div><div class="row"><div class="col-sm-12 col-md-5"><div class="dataTables_info" role="status" aria-live="polite">Showing 1 to 10 of 40 entries</div></div><div class="col-sm-12 col-md-7"><div class="dataTables_paginate paging_full_numbers"><ul class="pagination"><li class="paginate_button page-item first disabled" ><a href="#" aria-controls="datatables" data-dt-idx="0" tabindex="0" class="page-link">First</a></li><li class="paginate_button page-item previous disabled"><a href="#" aria-controls="datatables" data-dt-idx="1" tabindex="0" class="page-link">Prev</a></li><li class="paginate_button page-item active"><a href="#" aria-controls="datatables" data-dt-idx="2" tabindex="0" class="page-link">1</a></li><li class="paginate_button page-item "><a href="#" aria-controls="datatables" data-dt-idx="3" tabindex="0" class="page-link">2</a></li><li class="paginate_button page-item "><a href="#" aria-controls="datatables" data-dt-idx="4" tabindex="0" class="page-link">3</a></li><li class="paginate_button page-item "><a href="#" aria-controls="datatables" data-dt-idx="5" tabindex="0" class="page-link">4</a></li><li class="paginate_button page-item next"><a href="#" aria-controls="datatables" data-dt-idx="6" tabindex="0" class="page-link">Next</a></li><li class="paginate_button page-item last" id="datatables_last"><a href="#" aria-controls="datatables" data-dt-idx="7" tabindex="0" class="page-link">Last</a></li></ul></div></div></div></div>
+                </div>
+              </perfect-scrollbar>
+<!--          </div>-->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #addNewUser let-modal>
+  <div class="card mt-0 mb-0 w742">
+    <div class="card-header card-header-success card-header-icon">
+      <div class="card-icon">
+        <i class="material-icons">perm_identity</i>
+      </div>
+      <h4 class="card-title ">Создать пользователя</h4>
+      <button type="button" class="close position-absolute" style="top: 10px;right: 0" data-dismiss="modal" aria-label="Close" (click)="close()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="card-body">
+        <div class="form-group has-default bmd-form-group">
+          <input type="email" class="form-control" placeholder="Телефон  *">
+        </div>
+        <div class="form-group has-default bmd-form-group">
+          <input type="email" class="form-control" placeholder="Email  *">
+        </div>
+        <div class="form-group has-default bmd-form-group">
+          <input type="email" class="form-control" placeholder="Пароль *">
+        </div>
+        <div class="form-group has-default bmd-form-group">
+          <input type="email" class="form-control" placeholder="Повторите пароль *">
+        </div>
+      <div class="d-flex">
+        <label class="col-form-label">Роль *</label>
+        <div class="form-input-md">
+          <div class="form-group has-default bmd-form-group">
+            <app-custom-select classes="mr-5" [values]="[1,2,3,4,5,6,7,8,9,10]"></app-custom-select>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-success btn-round" (click)="close()">Сохранить изменения<div class="ripple-container"></div></button>
+      </div>
+    </div>
+  </div>
+<!--  <div class="modal-content">-->
+<!--    <div class="modal-header">-->
+<!--      <h4 class="modal-title">{{'Підтвердіть дію'|translate}}</h4>-->
+<!--      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modalService.dismissAll(false)">-->
+<!--        <span aria-hidden="true">&times;</span>-->
+<!--      </button>-->
+<!--    </div>-->
+<!--    <div class="modal-body">-->
+<!--      {{massages[messageType]|translate}}-->
+<!--    </div>-->
+<!--    <div class="modal-footer justify-content-between">-->
+<!--      <button type="button" class="btn btn-default" (click)="modalService.dismissAll(false);">{{'Відміна'|translate}}</button>-->
+<!--      <button type="button" class="btn btn-primary" (click)="modal.close(true);">{{'Підтвердити'|translate}}</button>-->
+<!--    </div>-->
+<!--  </div>-->
+</ng-template>

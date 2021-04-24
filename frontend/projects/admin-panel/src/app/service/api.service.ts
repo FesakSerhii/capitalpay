@@ -32,7 +32,12 @@ export class ApiService {
   }
 
   public post(url: string, data: any = {}, waitBlob: boolean = false): Observable<any> {
-    const headers = { 'content-type': 'application/json'};
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const body = JSON.stringify(data);
+    return this.http.post(this.apiBase + url, body, {headers});
+  }
+  public postJwt(url: string, token, data: any = {},): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json','Authorization':token});
     const body = JSON.stringify(data);
     return this.http.post(this.apiBase + url, body, {headers});
   }

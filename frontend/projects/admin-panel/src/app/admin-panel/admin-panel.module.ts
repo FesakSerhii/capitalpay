@@ -7,6 +7,8 @@ import { HelpComponent } from './help/help.component';
 import { CurrenciesComponent } from './currencies/currencies.component';
 import { PaymentMethodsComponent } from './payment-methods/payment-methods.component';
 import { UserComponent } from './user/user.component';
+import {CommonBlocksModule} from "../../../../../common-blocks/common-blocks.module";
+import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
 
 
 
@@ -14,7 +16,9 @@ import { UserComponent } from './user/user.component';
   declarations: [DashboardComponent, SettingsComponent, HelpComponent, CurrenciesComponent, PaymentMethodsComponent, UserComponent],
   imports: [
     CommonModule,
-    AdminPanelRoutingModule
+    AdminPanelRoutingModule,
+    CommonBlocksModule,
+    PerfectScrollbarModule
   ]
 })
 export class AdminPanelModule { }
