@@ -76,33 +76,9 @@ public class TestSystemInService {
                  "</button>\n" +
                  "</form>";
 
-//        return "<form method=\"post\" action=\"https://api.capitalpay.kz/testsystem/pay\">" +
-//                "<input name=\"paymentid\" type=\"hidden\" value=\"" + payment.getGuid() + "\"/>" +
-//                "<input name=\"billid\" type=\"hidden\" value=\"" + payment.getBillId() + "\"/>" +
-//                "<input name=\"totalamount\" type=\"hidden\" value=\"" + payment.getTotalAmount().movePointRight(2) + "\"/>" +
-//                "<input name=\"currency\" type=\"hidden\" value=\"" + payment.getCurrency() + "\"/>" +
-//                "<p>" +
-//                "<button type=\"submit\">Test Payment System</button>" +
-//                "</p>" +
-//                "</form>";
     }
 
 
-    public void createPayment(String paymentid, String billid, BigDecimal totalamount, String currency) {
-        try {
-            TestsystemPayment payment = new TestsystemPayment();
-            payment.setId(paymentid);
-            payment.setTimestamp(System.currentTimeMillis());
-            payment.setLocalDateTime(LocalDateTime.now());
-            payment.setBillId(billid);
-            payment.setTotalAmount(totalamount);
-            payment.setCurrency(currency);
-            payment.setStatus(NEW_PAYMENT);
-            testsystemPaymentRepository.save(payment);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public TestsystemPayment setStatus(String paymentid, Long status) {
         try {

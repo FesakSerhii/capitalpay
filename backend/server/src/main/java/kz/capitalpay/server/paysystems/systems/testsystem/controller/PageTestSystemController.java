@@ -2,6 +2,7 @@ package kz.capitalpay.server.paysystems.systems.testsystem.controller;
 
 import com.google.gson.Gson;
 import kz.capitalpay.server.paysystems.systems.testsystem.model.TestsystemPayment;
+import kz.capitalpay.server.paysystems.systems.testsystem.service.TestSystemFantomService;
 import kz.capitalpay.server.paysystems.systems.testsystem.service.TestSystemInService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,9 @@ public class PageTestSystemController {
     @Autowired
     TestSystemInService testSystemInService;
 
+    @Autowired
+    TestSystemFantomService testSystemFantomService;
+
     @PostMapping("/testsystem/pay")
     String showTestPaymentPage(ModelMap map,
                                @RequestParam String paymentid,
@@ -41,9 +45,9 @@ public class PageTestSystemController {
         map.addAttribute("totalamount", totalamount.movePointLeft(2));
         map.addAttribute("currency", currency);
 
-        testSystemInService.createPayment(paymentid, billid, totalamount, currency);
+        testSystemFantomService.createPayment(paymentid, billid, totalamount, currency);
 
-        return "testpaymenttmporary";
+        return "testsystem/cardpay";
     }
 
 
