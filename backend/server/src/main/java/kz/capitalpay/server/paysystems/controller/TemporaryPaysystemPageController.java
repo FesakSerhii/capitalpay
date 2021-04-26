@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class TemporaryPaysystemPageController {
 
-    @GetMapping("/paysystems/temporary/page")
+    @GetMapping("/paysystems/page")
     String showTemporaryPage(ModelMap modelMap, @RequestParam String paymentid){
         modelMap.addAttribute("paymentId",paymentid);
-        return "paysystemtemppage";
+        return "paysystems/paysystemslist";
     }
 
 }

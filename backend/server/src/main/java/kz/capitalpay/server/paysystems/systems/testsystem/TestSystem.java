@@ -2,7 +2,7 @@ package kz.capitalpay.server.paysystems.systems.testsystem;
 
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.paysystems.systems.PaySystem;
-import kz.capitalpay.server.paysystems.systems.testsystem.service.TestSystemService;
+import kz.capitalpay.server.paysystems.systems.testsystem.service.TestSystemInService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class TestSystem implements PaySystem {
 
     @Autowired
-    TestSystemService testSystemService;
+    TestSystemInService testSystemInService;
 
     @Override
     public String getComponentName() {
@@ -19,6 +19,6 @@ public class TestSystem implements PaySystem {
 
     @Override
     public String getPaymentButton(Payment payment) {
-        return testSystemService.getPaymentButton(payment);
+        return testSystemInService.getPaymentButton(payment);
     }
 }

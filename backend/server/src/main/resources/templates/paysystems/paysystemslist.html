@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Payment Form1</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../static/testshop/css/style.css">
+</head>
+<body>
+<main class="content-whf">
+    <div  class="tpsform form1-theme">
+        <h1 class="tpsform_hdr">Payment methods</h1>
+        <div id="systemlist" class="tpsform_radiobox">
+<!--            <div class="tpsform_radioitem">-->
+<!--                <input type="radio" name="paysys" id="kazahnarodbank">-->
+<!--                <label for="kazahnarodbank">-->
+<!--                    <span class="tpsform_radioico"><img src="../../static/testshop/img/NBK_Logo.png" alt=""></span>-->
+<!--                    <span class="tpsform_radioname">АО «Народный банк Казахстана»</span>-->
+<!--                </label>-->
+<!--            </div>-->
+            <div class="tpsform_radioitem">
+
+
+                    <span class="tpsform_radioico"><img src="../../static/testshop/img/form1_ico2.png" alt=""></span>
+                    <span class="tpsform_radioname">Test payment system</span>
+
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+<script th:inline="javascript">
+
+    var payment = {'paymentId': [[${paymentId}]]};
+
+
+    $.ajax({
+        type: 'POST',
+        url: '/public/api/paysystem/system/buttonlist',
+        data: JSON.stringify(payment),
+        success: function (data) {
+            $('#systemlist').html( data.data[0].paymentForm);
+            console.log(data.data)
+        },
+        dataType: 'json',
+        contentType: "application/json;",
+    })
+</script>
+</html>

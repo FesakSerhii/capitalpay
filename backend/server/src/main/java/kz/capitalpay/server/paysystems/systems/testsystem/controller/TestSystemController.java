@@ -2,7 +2,7 @@ package kz.capitalpay.server.paysystems.systems.testsystem.controller;
 
 import com.google.gson.Gson;
 import kz.capitalpay.server.paysystems.systems.testsystem.model.TestsystemPayment;
-import kz.capitalpay.server.paysystems.systems.testsystem.service.TestSystemService;
+import kz.capitalpay.server.paysystems.systems.testsystem.service.TestSystemInService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +23,11 @@ public class TestSystemController {
     Gson gson;
 
     @Autowired
-    TestSystemService testSystemService;
+    TestSystemInService testSystemInService;
 
     @PostMapping("/interaction")
     String chаngePaymentStаtus(@Valid @RequestBody TestsystemPayment request) {
         logger.info("Notify from Test Payment System");
-        return testSystemService.chаngePaymentStаtus( request);
+        return testSystemInService.chаngePaymentStаtus( request);
     }
 }

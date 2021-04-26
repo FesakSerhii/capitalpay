@@ -2,7 +2,7 @@ package kz.capitalpay.server.paysystems.systems.testsystem.controller;
 
 import com.google.gson.Gson;
 import kz.capitalpay.server.paysystems.systems.testsystem.model.TestsystemPayment;
-import kz.capitalpay.server.paysystems.systems.testsystem.service.TestSystemService;
+import kz.capitalpay.server.paysystems.systems.testsystem.service.TestSystemInService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +17,15 @@ import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 
 @Controller
-public class TemporaryPageTestSystemController {
+public class PageTestSystemController {
 
-    Logger logger = LoggerFactory.getLogger(TemporaryPageTestSystemController.class);
+    Logger logger = LoggerFactory.getLogger(PageTestSystemController.class);
 
     @Autowired
     Gson gson;
 
     @Autowired
-    TestSystemService testSystemService;
+    TestSystemInService testSystemInService;
 
     @PostMapping("/testsystem/pay")
     String showTestPaymentPage(ModelMap map,
@@ -41,7 +41,7 @@ public class TemporaryPageTestSystemController {
         map.addAttribute("totalamount", totalamount.movePointLeft(2));
         map.addAttribute("currency", currency);
 
-        testSystemService.createPayment(paymentid, billid, totalamount, currency);
+        testSystemInService.createPayment(paymentid, billid, totalamount, currency);
 
         return "testpaymenttmporary";
     }
@@ -52,8 +52,8 @@ public class TemporaryPageTestSystemController {
                      @RequestParam Long status,
                      HttpServletResponse httpServletResponse) {
 
-        TestsystemPayment payment = testSystemService.setStatus(paymentid, status);
-        String redirectUrl = testSystemService.getRedirectUrl();
+        TestsystemPayment payment = testSystemInService.setStatus(paymentid, status);
+        String redirectUrl = testSystemInService.getRedirectUrl();
 
         httpServletResponse.setHeader("Location",
                 redirectUrl + "?paymentid=" + payment.getId() + "&status=" + payment.getStatus());
@@ -71,7 +71,7 @@ public class TemporaryPageTestSystemController {
         logger.info(status);
 
 
-        String redirectUrl =    testSystemService.getRedirectUrlForPayment(paymentid, status);
+        String redirectUrl =    testSystemInService.getRedirectUrlForPayment(paymentid, status);
 
         httpServletResponse.setHeader("Location", redirectUrl);
         httpServletResponse.setStatus(302);

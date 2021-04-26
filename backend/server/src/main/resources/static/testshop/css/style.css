@@ -692,6 +692,7 @@ body, p, h1, h2, ul {
   font-weight: 400;
   text-decoration: none;
   margin: 33px auto auto;
+  border: none;
 }
 .storebtn:hover {
   box-shadow: 0 3px 19px rgba(76, 18, 178, 0.35);

@@ -62,7 +62,7 @@ public class SimpleController {
         if (result.isResult() && result.getData() != null && result.getData() instanceof Payment) {
             Payment payment = (Payment) result.getData();
             httpServletResponse.setHeader("Location",
-                    "https://api.capitalpay.kz/paysystems/temporary/page?paymentid=" + payment.getGuid());
+                    "https://api.capitalpay.kz/paysystems/page?paymentid=" + payment.getGuid());
             httpServletResponse.setStatus(302);
         } else {
 

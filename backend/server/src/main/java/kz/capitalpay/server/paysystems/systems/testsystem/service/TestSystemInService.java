@@ -1,10 +1,8 @@
 package kz.capitalpay.server.paysystems.systems.testsystem.service;
 
 import com.google.gson.Gson;
-import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.eventlog.service.SystemEventsLogsService;
-import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.service.ApplicationUserService;
 import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.payments.model.Payment;
@@ -32,9 +30,9 @@ import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsServi
 import static kz.capitalpay.server.simple.service.SimpleService.*;
 
 @Service
-public class TestSystemService {
+public class TestSystemInService {
 
-    Logger logger = LoggerFactory.getLogger(TestSystemService.class);
+    Logger logger = LoggerFactory.getLogger(TestSystemInService.class);
 
     @Autowired
     Gson gson;
