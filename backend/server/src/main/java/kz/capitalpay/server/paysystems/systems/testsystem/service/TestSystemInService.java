@@ -61,103 +61,25 @@ public class TestSystemInService {
     @Autowired
     ApplicationUserService applicationUserService;
 
-    Random random = new Random();
+    @Autowired
+    TestSystemOutService testSystemOutService;
+
 
     public String getPaymentButton(Payment payment) {
 
-         return " <form class=\"tpsform_radioitem\" method=\"post\" action=\"https://api.capitalpay.kz/testsystem/pay\">" +
-                 "<input name=\"paymentid\" type=\"hidden\" value=\"" + payment.getGuid() + "\"/>" +
-                 "<input name=\"billid\" type=\"hidden\" value=\"" + payment.getBillId() + "\"/>" +
-                 "<input name=\"totalamount\" type=\"hidden\" value=\"" + payment.getTotalAmount().movePointRight(2) + "\"/>" +
-                 "<input name=\"currency\" type=\"hidden\" value=\"" + payment.getCurrency() + "\"/>" +
-                 "<button type=\"submit\">" +
-                 "<span class=\"tpsform_radioico\"><img src=\"/paysystems/img/form1_ico2.png\" alt=\"\"></span>" +
-                 "<span class=\"tpsform_radioname\">Test payment system</span>" +
-                 "</button>\n" +
-                 "</form>";
+        return " <form class=\"tpsform_radioitem\" method=\"post\" action=\"https://api.capitalpay.kz/testsystem/pay\">" +
+                "<input name=\"paymentid\" type=\"hidden\" value=\"" + payment.getGuid() + "\"/>" +
+                "<input name=\"billid\" type=\"hidden\" value=\"" + payment.getBillId() + "\"/>" +
+                "<input name=\"totalamount\" type=\"hidden\" value=\"" + payment.getTotalAmount().movePointRight(2) + "\"/>" +
+                "<input name=\"currency\" type=\"hidden\" value=\"" + payment.getCurrency() + "\"/>" +
+                "<button type=\"submit\">" +
+                "<span class=\"tpsform_radioico\"><img src=\"/paysystems/img/form1_ico2.png\" alt=\"\"></span>" +
+                "<span class=\"tpsform_radioname\">Test payment system</span>" +
+                "</button>\n" +
+                "</form>";
 
     }
 
-
-
-    public TestsystemPayment setStatus(String paymentid, Long status) {
-        try {
-            TestsystemPayment payment = testsystemPaymentRepository.findById(paymentid).orElse(null);
-            if (status == null || status < 1L || status > 3L) {
-                status = 1L + random.nextInt(3);
-            }
-
-            if (status.equals(1L)) {
-                payment.setStatus(SUCCESS);
-            } else if (status.equals(2L)) {
-                payment.setStatus(FAILED);
-            } else if (status.equals(3L)) {
-                payment.setStatus(PENDING);
-            }
-            testsystemPaymentRepository.save(payment);
-
-            notifyCapitalPAyAboutStatusChange(payment);
-
-            return payment;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private boolean notifyCapitalPAyAboutStatusChange(TestsystemPayment payment) {
-        try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-
-            HttpEntity<TestsystemPayment> request =
-                    new HttpEntity<>(payment, headers);
-
-            ResponseEntity<String> response =
-                    restTemplate.postForEntity("https://api.capitalpay.kz/testsystem/interaction",
-                            request, String.class);
-
-            logger.info(response.getStatusCode().toString());
-            if (response.hasBody()) {
-                logger.info(response.getBody());
-            }
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    private boolean notifyClientAboutStatusChange(Payment payment) {
-        try {
-         //   TODO: Signature
-
-            String interactionUrl = cashboxSettingsService.getField(payment.getCashboxId(), INTERACTION_URL);
-
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            HttpEntity<Payment> request =
-                    new HttpEntity<>(payment, headers);
-
-            ResponseEntity<String> response =
-                    restTemplate.postForEntity(interactionUrl,
-                            request, String.class);
-
-            logger.info(response.getStatusCode().toString());
-            if (response.hasBody()) {
-                logger.info(response.getBody());
-            }
-
-            systemEventsLogsService.addNewPaysystemAction(testSystem.getComponentName(),
-                    NOTIFY_CLIENT, gson.toJson(payment), payment.getMerchantId().toString());
-
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
 
     public String getRedirectUrl() {
         return "https://api.capitalpay.kz/testsystem/redirecturl";
@@ -181,7 +103,7 @@ public class TestSystemInService {
         systemEventsLogsService.addNewPaysystemAction(testSystem.getComponentName(), CHANGE_PAYMENT_STATUS,
                 gson.toJson(request), payment.getMerchantId().toString());
 
-        notifyClientAboutStatusChange(payment);
+//        testSystemOutService.notifyClientAboutStatusChange(payment);
 
         return "OK";
 

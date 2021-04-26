@@ -25,9 +25,9 @@ public class TestSystemController {
     @Autowired
     TestSystemInService testSystemInService;
 
-    @PostMapping("/interaction")
-    String chаngePaymentStаtus(@Valid @RequestBody TestsystemPayment request) {
-        logger.info("Notify from Test Payment System");
-        return testSystemInService.chаngePaymentStаtus( request);
-    }
+//    @PostMapping("/interaction")
+//    String chаngePaymentStаtus(@Valid @RequestBody TestsystemPayment request) {
+//        logger.info("Notify from Test Payment System");
+//        return testSystemInService.chаngePaymentStаtus( request);
+//    }
 }
