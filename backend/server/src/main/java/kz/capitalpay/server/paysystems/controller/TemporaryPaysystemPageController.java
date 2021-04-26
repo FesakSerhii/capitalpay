@@ -11,7 +11,7 @@ public class TemporaryPaysystemPageController {
     @GetMapping("/paysystems/page")
     String showTemporaryPage(ModelMap modelMap, @RequestParam String paymentid){
         modelMap.addAttribute("paymentId",paymentid);
-        return "paysystems/paysystemslist";
+        return "paysystemtemppage";
     }
 
 }
