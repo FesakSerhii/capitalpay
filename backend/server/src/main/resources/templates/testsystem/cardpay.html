@@ -13,11 +13,11 @@
         <input name="paymentid" type="hidden" th:value="${paymentid}">
         <div class="infoline">
             <p class="infoline_name">Order ID</p>
-            <p class="infoline_value">sdgfg674546665</p>
+            <p class="infoline_value" th:text="${billid}">sdgfg674546665</p>
         </div>
         <div class="infoline">
             <p class="infoline_name">Amount Total</p>
-            <p class="infoline_value"><span>100.00</span> USD</p>
+            <p class="infoline_value"><span th:text="${totalamount}"></span> <span th:text="${currency}"></span></p>
         </div>
         <hr class="delimiter"/>
         <div class="cardico">
