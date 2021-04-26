@@ -83,21 +83,6 @@ public class TestSystemFantomService {
 
     private boolean notifyCapitalPAyAboutStatusChange(TestsystemPayment payment) {
         try {
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.setContentType(MediaType.APPLICATION_JSON);
-//
-//            HttpEntity<TestsystemPayment> request =
-//                    new HttpEntity<>(payment, headers);
-//
-//            ResponseEntity<String> response =
-//                    restTemplate.postForEntity("https://api.capitalpay.kz/testsystem/interaction",
-//                            request, String.class);
-//
-//            logger.info(response.getStatusCode().toString());
-//            if (response.hasBody()) {
-//                logger.info(response.getBody());
-//            }
-
             testSystemInService.chаngePaymentStаtus(payment);
             return true;
         } catch (Exception e) {
@@ -106,4 +91,8 @@ public class TestSystemFantomService {
         return false;
     }
 
+    public String checkPendingStatus(String paymentid) {
+        TestsystemPayment payment = setStatus(paymentid,4L);
+        return payment.getStatus();
+    }
 }

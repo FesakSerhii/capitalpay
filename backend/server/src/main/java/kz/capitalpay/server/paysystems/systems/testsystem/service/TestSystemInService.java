@@ -13,21 +13,10 @@ import kz.capitalpay.server.paysystems.systems.testsystem.repository.TestsystemP
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.Random;
-
 import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.CHANGE_PAYMENT_STATUS;
-import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.NOTIFY_CLIENT;
-import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.INTERACTION_URL;
-import static kz.capitalpay.server.simple.service.SimpleService.*;
 
 @Service
 public class TestSystemInService {
@@ -61,8 +50,6 @@ public class TestSystemInService {
     @Autowired
     ApplicationUserService applicationUserService;
 
-    @Autowired
-    TestSystemOutService testSystemOutService;
 
 
     public String getPaymentButton(Payment payment) {
@@ -90,7 +77,9 @@ public class TestSystemInService {
         Payment payment = paymentService.getPayment(paymentid);
 
         String redirectUrl =
-                "https://api.capitalpay.kz/testshop/temporary/status?status=" + status + "&billid=" + payment.getBillId();
+                "https://api.capitalpay.kz/testshop/status?status=" + status
+                        + "&billid=" + payment.getBillId()
+                        + "&paymentid=" + paymentid;
 
         return redirectUrl;
     }

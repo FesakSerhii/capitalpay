@@ -30,10 +30,17 @@ public class TestShopController {
         return "testshop/store";
     }
 
-    @GetMapping("/testshop/temporary/status")
+    @GetMapping("/testshop/status")
     String showStatusPage(ModelMap modelMap,
                           @RequestParam String status,
-                          @RequestParam String billid) {
+                          @RequestParam String billid,
+                          @RequestParam String paymentid,
+                          @RequestParam(required = false) String pending) {
+
+        if(pending != null && pending.length() > 0 ){
+          status =  testShopService.checkPendingStatus(paymentid);
+        }
+
 
         switch (status){
             case SUCCESS:    modelMap.addAttribute("color", "green"); break;
@@ -45,5 +52,6 @@ public class TestShopController {
         modelMap.addAttribute("status", status);
         return "testshop/paymentstatus";
     }
+
 
 }
