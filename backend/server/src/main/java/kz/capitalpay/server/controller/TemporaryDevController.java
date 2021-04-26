@@ -7,6 +7,7 @@ import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.dto.SendSmsDTO;
 import kz.capitalpay.server.login.model.PendingPhone;
 import kz.capitalpay.server.login.repository.PendingPhoneRepository;
+import kz.capitalpay.server.paysystems.systems.testsystem.TestSystem;
 import kz.capitalpay.server.service.SendEmailService;
 import kz.capitalpay.server.service.SendSmsService;
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +52,43 @@ public class TemporaryDevController {
         return translateService.save(request);
     }
 
+
+//
+//    @PostMapping("/test/test")
+//    Boolean saveTranslate( @RequestBody TestTestDTO request) {
+//        logger.info(gson.toJson(request));
+//        return true;
+//    }
+//
+// static    class TestTestDTO{
+//        Long id;
+//        BigDecimal a;
+//        String b;
+//
+//        public Long getId() {
+//            return id;
+//        }
+//
+//        public void setId(Long id) {
+//            this.id = id;
+//        }
+//
+//        public BigDecimal getA() {
+//            return a;
+//        }
+//
+//        public void setA(BigDecimal a) {
+//            this.a = a;
+//        }
+//
+//        public String getB() {
+//            return b;
+//        }
+//
+//        public void setB(String b) {
+//            this.b = b;
+//        }
+//    }
 
 //    @PostMapping("/sms/test")
 //    ResultDTO sendSms(@RequestBody SendSmsDTO request) {

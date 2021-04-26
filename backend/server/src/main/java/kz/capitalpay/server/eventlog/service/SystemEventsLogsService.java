@@ -30,6 +30,7 @@ public class SystemEventsLogsService {
     public static final String EDIT_MERCHANT_PAYSYSTEM = "edit merchant paysystem";
     public static final String ACTIVATE_PAYSYSTEM = "de/activate paysystem";
     public static final String CHANGE_PAYMENT_STATUS = "change payment status";
+    public static final String NOTIFY_CLIENT = "notyfy client";
 
 
     public boolean addNewOperatorAction(String author, String eventName, String json, String target) {

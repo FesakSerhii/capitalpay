@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Payment store</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="../../../../../target/css/style.css">
+</head>
+<body class="withheaderfooter">
+<header>
+    <div class="topline">
+        <div class="container">
+            <div class="topline_links">
+                <a href="#!">Contacts</a>
+                <a href="#!">Delivery</a>
+                <a href="#!">How to buy?</a>
+            </div>
+            <div class="telinfo">
+                <p class="telinfo_number">+7 777 675-ХХ-78</p>
+                <p class="telinfo_time">Daily from 9:00 to 20:00</p>
+            </div>
+        </div>
+    </div>
+    <div class="hat">
+        <div class="container">
+            <a class="hat_logo" href="#!"><img src="../../../../../target/img/demologo.png" alt=""></a>
+            <nav class="menu">
+                <ul>
+                    <li class="menu_item active"><a href="#!">IPhone</a></li>
+                    <li class="menu_item"><a href="#!">IPad</a></li>
+                    <li class="menu_item"><a href="#!">IMac</a></li>
+                    <li class="menu_item"><a href="#!">Watch</a></li>
+                    <li class="menu_item"><a href="#!">AirPods</a></li>
+                    <li class="menu_item"><a href="#!">Service centre</a></li>
+                </ul>
+            </nav>
+            <div class="linksbox">
+                <a href="#!">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="27" height="26" viewBox="0 0 27 26">
+                        <g>
+                            <g>
+                                <path fill="#12242b"
+                                      d="M26.506 25.047a.844.844 0 0 1-.255.599.861.861 0 0 1-1.202 0l-6.526-6.507-.173.152a10.978 10.978 0 0 1-6.913 2.457C5.43 21.748.542 16.875.542 10.875.542 4.885 5.43.002 11.437.002c6.018 0 10.905 4.884 10.905 10.873 0 2.507-.876 4.954-2.476 6.893l-.142.173 6.527 6.508v.01a.805.805 0 0 1 .255.588zM20.63 10.875c0-5.056-4.122-9.167-9.193-9.167-5.07 0-9.193 4.111-9.193 9.167 0 5.055 4.122 9.167 9.193 9.167 5.07 0 9.193-4.112 9.193-9.167z"/>
+                            </g>
+                        </g>
+                    </svg>
+                </a>
+                <a href="#!">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="23" viewBox="0 0 26 23">
+                        <g>
+                            <g>
+                                <path fill="#12242b"
+                                      d="M25.99 7.28c0 1.944-.752 3.77-2.12 5.146L13.552 22.767a.804.804 0 0 1-.57.236.804.804 0 0 1-.57-.241L2.118 12.403A7.25 7.25 0 0 1-.007 7.265 7.23 7.23 0 0 1 2.105 2.12 7.16 7.16 0 0 1 7.21-.007c1.93 0 3.752.76 5.121 2.138l.669.674.657-.662A7.17 7.17 0 0 1 18.772.01c1.932 0 3.746.755 5.112 2.127A7.217 7.217 0 0 1 25.99 7.28zm-3.26-3.993a5.566 5.566 0 0 0-3.962-1.651c-1.5 0-2.91.588-3.97 1.657l-1.227 1.234a.804.804 0 0 1-1.147 0l-1.238-1.246A5.57 5.57 0 0 0 7.21 1.625c-1.494 0-2.9.586-3.957 1.65a5.602 5.602 0 0 0-1.641 3.99c0 1.508.585 2.926 1.647 3.994l9.723 9.785 9.748-9.768a5.594 5.594 0 0 0 1.642-3.994c0-1.512-.584-2.93-1.642-3.995z"/>
+                            </g>
+                        </g>
+                    </svg>
+                </a>
+                <a href="#!">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="26" viewBox="0 0 20 26">
+                        <g>
+                            <g>
+                                <path fill="#213238"
+                                      d="M19.982 22.491c0 1.938-1.7 3.514-3.79 3.514H3.789C1.7 26.005 0 24.429 0 22.49l.001-.04c.003-.008.003-.015.003-.023l1.42-16.687c.035-.407.355-.714.747-.714h2.854c.076-2.78 2.29-5.031 4.965-5.031 2.677 0 4.89 2.25 4.966 5.03h2.854c.386 0 .713.315.746.715l1.42 16.676c.006.027.006.053.006.074zM5.02 8.7V6.6H2.857L1.505 22.53c.019 1.049 1.043 1.908 2.284 1.908h12.403c1.24 0 2.265-.86 2.285-1.916L17.12 6.6h-2.163v2.1c0 .432-.339.782-.754.782-.414 0-.75-.35-.75-.782V6.6H6.523v2.1c0 .432-.337.782-.753.782-.414 0-.751-.35-.751-.782zm8.43-3.673c-.075-1.916-1.613-3.464-3.46-3.464-1.846 0-3.383 1.548-3.46 3.464z"/>
+                            </g>
+                        </g>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</header>
+<main class="content">
+    <div class="container">
+        <div class="breadcrumbs">
+            <a href="#!" class="product_name">iPhone</a>
+            <a href="#!" class="product_name">iPhone 12 Mini</a>
+        </div>
+        <div class="productlist">
+            <div class="productlist_item">
+                <div class="productlist_productimg">
+                    <img src="../../../../../target/img/goldphone.jpg" alt="">
+                </div>
+                <p class="productlist_productname">Apple iPhone 12 Pro Max 128 GB</p>
+                <p class="productlist_prductprice">
+                    609900
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="16" viewBox="0 0 13 16">
+                        <g>
+                            <g>
+                                <path fill="#1c1c1c"
+                                      d="M13-.001v2.286H-.016V-.001zm0 3.592v2.285H7.861V16H5.465V5.876h-5.48V3.591z"/>
+                            </g>
+                        </g>
+                    </svg>
+                </p>
+
+                <form method="post" action="https://api.capitalpay.kz/payment/simple/pay">
+                    <input name="cashboxid" type="hidden" value="1"/>
+                    <input name="billid" type="hidden" th:value="${bilId}" value="ORD-0123-2021-01-25-A"/>
+                    <input name="totalamount" type="hidden" value="12000"/>
+                    <input name="currency" type="hidden" value="KZT"/>
+                    <button class="storebtn" type="submit">Buy now</button>
+                </form>
+
+            </div>
+            <div class="productlist_item">
+                <div class="productlist_productimg">
+                    <img src="../../../../../target/img/blackphone.png" alt="">
+                </div>
+                <p class="productlist_productname">Apple iPhone 11 128 GB Black Slim</p>
+                <p class="productlist_prductprice">
+                    379900
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="16" viewBox="0 0 13 16">
+                        <g>
+                            <g>
+                                <path fill="#1c1c1c"
+                                      d="M13-.001v2.286H-.016V-.001zm0 3.592v2.285H7.861V16H5.465V5.876h-5.48V3.591z"/>
+                            </g>
+                        </g>
+                    </svg>
+                </p>
+                <a class="storebtn" href="#!">Buy now</a>
+            </div>
+            <div class="productlist_item">
+                <div class="productlist_productimg">
+                    <img src="../../../../../target/img/redphone.png" alt="">
+                </div>
+                <p class="productlist_productname">iPhone 12 Mini 128 Gb Red</p>
+                <p class="productlist_prductprice">
+                    419900
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="16" viewBox="0 0 13 16">
+                        <g>
+                            <g>
+                                <path fill="#1c1c1c"
+                                      d="M13-.001v2.286H-.016V-.001zm0 3.592v2.285H7.861V16H5.465V5.876h-5.48V3.591z"/>
+                            </g>
+                        </g>
+                    </svg>
+                </p>
+                <a class="storebtn" href="#!">Buy now</a>
+            </div>
+        </div>
+    </div>
+</main>
+<footer class="pagefooter">
+    <div class="container">
+        <div class="pagefooter_links">
+            <ul class="linkblock block1">
+                <li class="linkblock_hdr">Information</li>
+                <li><a href="#!">Shipping and payment</a></li>
+                <li><a href="#!">Return terms</a></li>
+                <li><a href="#!">How to order</a></li>
+            </ul>
+            <ul class="linkblock block2">
+                <li class="linkblock_hdr">About us</li>
+                <li><a href="#!">Contacts</a></li>
+                <li><a href="#!">Vacancies</a></li>
+            </ul>
+            <div class="contactinfo">
+                <p class="contactinfo_number">+7 777 675-ХХ-78</p>
+                <p class="contactinfo_time">Daily from 9:00 to 20:00</p>
+                <p class="contactinfo_adress">Address: 332 Old Sycamore Ave. Santa Ana, CA 92703</p>
+            </div>
+            <form class="subscribeform" action="">
+                <p class="subscribeform_text">Be the first to know about sales and new products!</p>
+                <label class="subscribeform_input" for="">
+                    <input type="text" id="" placeholder="Your email">
+                    <button class="subscribeform_btn">Subscribe</button>
+                </label>
+            </form>
+        </div>
+        <div class="bottomline">
+            <p class="copy">©2021 IOSTORE All rights reserved</p>
+            <div class="social">
+                <a href="#!">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">
+                        <g>
+                            <g opacity=".5">
+                                <g opacity=".5">
+                                    <path fill="#fff"
+                                          d="M14.062 0c7.767 0 14.063 6.268 14.063 14s-6.296 14-14.063 14C6.296 28 0 21.732 0 14S6.296 0 14.062 0zM.996 13.999c0 7.18 5.816 13 12.994 13 7.177 0 12.995-5.82 12.995-13s-5.818-13-12.995-13c-7.178 0-12.994 5.82-12.994 13zm16.636-6.39h-1.654c-1.126 0-1.101.963-1.101.963v2.601h3.148l-.554 1.983h-2.607v8.702h-2.368v-8.702H10.14l-.006-1.983h2.362V8.648c0-3.678 3.479-3.417 3.479-3.417h1.667z"/>
+                                </g>
+                            </g>
+                        </g>
+                    </svg>
+                </a>
+                <a href="#!">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">
+                        <g>
+                            <g opacity=".5">
+                                <g opacity=".5">
+                                    <path fill="#fff"
+                                          d="M14 0c7.732 0 14 6.268 14 14s-6.268 14-14 14S0 21.732 0 14 6.268 0 14 0zM.986 13.999c0 7.18 5.821 13 13.004 13 7.182 0 13.004-5.82 13.004-13s-5.822-13-13.004-13c-7.183 0-13.004 5.82-13.004 13zm18.574-2.273c.004.12.007.24.007.36 0 3.669-2.891 7.9-8.177 7.9a8.332 8.332 0 0 1-4.405-1.25 5.866 5.866 0 0 0 4.252-1.15c-1.255-.02-2.315-.823-2.682-1.925a3.014 3.014 0 0 0 1.297-.047c-1.315-.256-2.306-1.378-2.306-2.724v-.036c.39.21.831.334 1.301.348a2.755 2.755 0 0 1-1.278-2.31c0-.51.142-.986.39-1.396a8.265 8.265 0 0 0 5.926 2.902 2.623 2.623 0 0 1-.076-.634c0-1.534 1.287-2.777 2.875-2.777.826 0 1.572.337 2.097.878a5.929 5.929 0 0 0 1.824-.675 2.798 2.798 0 0 1-1.262 1.537 6.015 6.015 0 0 0 1.652-.437 5.732 5.732 0 0 1-1.435 1.436z"/>
+                                </g>
+                            </g>
+                        </g>
+                    </svg>
+                </a>
+                <a href="#!">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">
+                        <g>
+                            <g opacity=".5">
+                                <g opacity=".5">
+                                    <path fill="#fff"
+                                          d="M14 0c7.732 0 14 6.268 14 14s-6.268 14-14 14S0 21.732 0 14 6.268 0 14 0zM.986 13.999c0 7.18 5.823 13 13.004 13 7.183 0 13.005-5.82 13.005-13s-5.822-13-13.005-13c-7.181 0-13.004 5.82-13.004 13zm20.008-3.148v6.276a3.868 3.868 0 0 1-3.865 3.866h-6.28a3.87 3.87 0 0 1-3.866-3.866v-6.276a3.871 3.871 0 0 1 3.867-3.866h6.279a3.869 3.869 0 0 1 3.865 3.866zm-7.004-.47a3.615 3.615 0 0 0-3.612 3.608c0 1.99 1.621 3.61 3.612 3.61 1.99 0 3.61-1.62 3.61-3.61 0-1.99-1.62-3.609-3.61-3.609zm3.76-1.055a.917.917 0 0 0-.643.267.915.915 0 0 0 0 1.289.912.912 0 1 0 .644-1.556z"/>
+                                </g>
+                            </g>
+                        </g>
+                    </svg>
+                </a>
+                <a href="#!">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">
+                        <g>
+                            <g opacity=".5">
+                                <g opacity=".5">
+                                    <path fill="#fff"
+                                          d="M14 0c7.732 0 14 6.268 14 14s-6.268 14-14 14S0 21.732 0 14 6.268 0 14 0zM.984 13.999c0 7.18 5.824 13 13.005 13 7.182 0 13.005-5.82 13.005-13s-5.823-13-13.005-13c-7.181 0-13.005 5.82-13.005 13zm15.514 4.66c.028 1.778-1.812 3.333-4.759 3.333-2.583 0-4.749-1.17-4.749-2.843 0-2.524 1.795-3.34 4.377-3.34.283 0 .543-.007.808-.007-.353-.34-.64-.637-.64-1.152 0-.308.1-.602.237-.864-.14.01-.285.017-.433.017-2.122 0-3.357-1.483-3.357-3.342 0-1.82 1.88-3.452 4.138-3.452h4.45l-.997 1.014h-1.166c.824.47 1.262 1.435 1.262 2.501 0 .979-.546 1.765-1.316 2.363-.751.585-.891.828-.891 1.325 0 .422.897 1.053 1.309 1.359 1.435 1.073 1.71 1.748 1.727 3.087zm-4.297-5.599c1.138.034 1.791-.876 1.595-2.356-.197-1.478-.935-2.592-2.073-2.623-1.139-.034-2.134.996-1.94 2.475.198 1.48 1.28 2.471 2.418 2.504zm2.67 5.757c0-.145-.003-.29-.05-.419-.572-1.415-2.406-1.415-3.02-1.415-1.645 0-3.004.615-3.004 1.772 0 1.178 1.214 2.14 2.893 2.14 2.36 0 3.181-.9 3.181-2.078zm7.13-8.962h-2.138v2.148h-.712V9.855h-2.136v-.701h2.136V7.009h.712v2.145h2.139z"/>
+                                </g>
+                            </g>
+                        </g>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="../../../../../target/js/script.js"></script>
+</body>
+</html>

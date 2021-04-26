@@ -1,8 +1,12 @@
 package kz.capitalpay.server.paysystems.systems.testsystem.service;
 
 import com.google.gson.Gson;
-import kz.capitalpay.server.dto.ResultDTO;
+import kz.capitalpay.server.cashbox.model.Cashbox;
+import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.eventlog.service.SystemEventsLogsService;
+import kz.capitalpay.server.login.model.ApplicationUser;
+import kz.capitalpay.server.login.service.ApplicationUserService;
+import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.paysystems.systems.testsystem.TestSystem;
@@ -16,8 +20,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
@@ -25,6 +27,8 @@ import java.time.LocalDateTime;
 import java.util.Random;
 
 import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.CHANGE_PAYMENT_STATUS;
+import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.NOTIFY_CLIENT;
+import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.INTERACTION_URL;
 import static kz.capitalpay.server.simple.service.SimpleService.*;
 
 @Service
@@ -49,6 +53,15 @@ public class TestSystemService {
 
     @Autowired
     RestTemplate restTemplate;
+
+    @Autowired
+    CashboxService cashboxService;
+
+    @Autowired
+    CashboxSettingsService cashboxSettingsService;
+
+    @Autowired
+    ApplicationUserService applicationUserService;
 
     Random random = new Random();
 
@@ -97,7 +110,7 @@ public class TestSystemService {
             }
             testsystemPaymentRepository.save(payment);
 
-            notifyClientAboutStatusChange(payment);
+            notifyCapitalPAyAboutStatusChange(payment);
 
             return payment;
         } catch (Exception e) {
@@ -106,7 +119,7 @@ public class TestSystemService {
         return null;
     }
 
-    private boolean notifyClientAboutStatusChange(TestsystemPayment payment) {
+    private boolean notifyCapitalPAyAboutStatusChange(TestsystemPayment payment) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -122,6 +135,37 @@ public class TestSystemService {
             if (response.hasBody()) {
                 logger.info(response.getBody());
             }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private boolean notifyClientAboutStatusChange(Payment payment) {
+        try {
+         //   TODO: Signature
+
+            String interactionUrl = cashboxSettingsService.getField(payment.getCashboxId(), INTERACTION_URL);
+
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<Payment> request =
+                    new HttpEntity<>(payment, headers);
+
+            ResponseEntity<String> response =
+                    restTemplate.postForEntity(interactionUrl,
+                            request, String.class);
+
+            logger.info(response.getStatusCode().toString());
+            if (response.hasBody()) {
+                logger.info(response.getBody());
+            }
+
+            systemEventsLogsService.addNewPaysystemAction(testSystem.getComponentName(),
+                    NOTIFY_CLIENT, gson.toJson(payment), payment.getMerchantId().toString());
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -150,6 +194,8 @@ public class TestSystemService {
         payment.setStatus(request.getStatus());
         systemEventsLogsService.addNewPaysystemAction(testSystem.getComponentName(), CHANGE_PAYMENT_STATUS,
                 gson.toJson(request), payment.getMerchantId().toString());
+
+        notifyClientAboutStatusChange(payment);
 
         return "OK";
 
