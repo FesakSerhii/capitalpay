@@ -31,7 +31,7 @@ public class PageTestSystemController {
     @Autowired
     TestSystemFantomService testSystemFantomService;
 
-    @PostMapping("/demo/pay")
+    @PostMapping("/testsystem/pay")
     String showTestPaymentPage(ModelMap map,
                                @RequestParam String paymentid,
                                @RequestParam String billid,
@@ -47,11 +47,11 @@ public class PageTestSystemController {
 
         testSystemFantomService.createPayment(paymentid, billid, totalamount, currency);
 
-        return "demo/cardpay";
+        return "testsystem/cardpay";
     }
 
 
-    @PostMapping("/demo/buttonclick")
+    @PostMapping("/testsystem/buttonclick")
     void buttonClick(@RequestParam String paymentid,
                      @RequestParam Long status,
                      HttpServletResponse httpServletResponse) {
@@ -65,7 +65,7 @@ public class PageTestSystemController {
     }
 
 
-    @GetMapping("/demo/redirecturl")
+    @GetMapping("/testsystem/redirecturl")
     void getRedirectUrl(@RequestParam String paymentid,
                         @RequestParam String status,
                         HttpServletResponse httpServletResponse) {
