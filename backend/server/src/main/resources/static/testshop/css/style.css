@@ -162,7 +162,7 @@ body, p, h1, h2, ul {
 }
 
 .tpsform.form1-theme {
-  padding: 37px 32px 75px;
+  padding: 37px 32px 17px;
 }
 
 .tpsform.form2-theme {
@@ -184,30 +184,25 @@ body, p, h1, h2, ul {
 
 .tpsform_radioitem {
   margin-top: 9px;
+  position: relative;
+  height: 98px;
+  width: 100%;
 }
-.tpsform_radioitem input {
-  display: none;
-}
-.tpsform_radioitem label {
+.tpsform_radioitem button {
   display: flex;
   align-items: center;
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  bottom: 0;
   padding-left: 46px;
   height: 98px;
   background-color: #edf7f7;
   border-radius: 3px;
+  border: none;
 }
-.tpsform_radioitem label:before {
-  content: "";
-  position: absolute;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Cg%3E%3Cg%3E%3Cpath fill='%23fff' d='M10 0c5.523 0 10 4.477 10 10s-4.477 10-10 10S0 15.523 0 10 4.477 0 10 0z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-  width: 20px;
-  height: 20px;
-  top: 50%;
-  margin-top: -10px;
-  left: 12px;
-}
-.tpsform_radioitem label:hover {
+.tpsform_radioitem button:hover {
   background-color: rgba(186, 224, 224, 0.7);
   cursor: pointer;
 }
@@ -391,7 +386,8 @@ body, p, h1, h2, ul {
   display: flex;
   align-items: center;
   background-color: #f7f7f7;
-  padding-left: 0;
+  padding-left: 10px;
+  font-family: "Circular Std Book", sans-serif;
 }
 .select .select_box li:hover {
   box-shadow: inset 0 0 0 500px rgba(0, 0, 0, 0.1);
@@ -692,7 +688,6 @@ body, p, h1, h2, ul {
   font-weight: 400;
   text-decoration: none;
   margin: 33px auto auto;
-  border: none;
 }
 .storebtn:hover {
   box-shadow: 0 3px 19px rgba(76, 18, 178, 0.35);
