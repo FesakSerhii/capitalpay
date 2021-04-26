@@ -49,6 +49,7 @@ public class TestShopController {
         }
 
         modelMap.addAttribute("billid", billid);
+        modelMap.addAttribute("paymentid", paymentid);
         modelMap.addAttribute("status", status);
         return "testshop/paymentstatus";
     }
