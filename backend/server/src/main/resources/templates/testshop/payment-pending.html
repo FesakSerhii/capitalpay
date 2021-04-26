@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Test Payment failed</title>
+    <title>Test Payment pending</title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../../static/testshop/css/style.css">
 </head>
 <body class="withheaderfooter">
 <header>
@@ -24,7 +24,7 @@
     </div>
     <div class="hat">
         <div class="container">
-            <a class="hat_logo" href="#!"><img src="img/demologo.png" alt=""></a>
+            <a class="hat_logo" href="#!"><img src="../../static/testshop/img/demologo.png" alt=""></a>
             <nav class="menu">
                 <ul>
                     <li class="menu_item active"><a href="#!">IPhone</a></li>
@@ -72,25 +72,26 @@
 </header>
 <main class="content">
     <div class="container msg">
-        <div class="msgbox failed">
+        <div class="msgbox pending">
             <div class="msgbox_ico">
                 <svg xmlns="http://www.w3.org/2000/svg" width="90" height="90" viewBox="0 0 90 90">
                     <g>
                         <g>
                             <path fill="#8e4dff"
-                                  d="M89.998 44.997c0 24.814-20.189 45-45 45-24.812 0-45-20.186-45-45 0-24.813 20.188-45 45-45 24.811 0 45 20.187 45 45zm-45-41.999c-23.159 0-42 18.84-42 42 0 23.158 18.841 42 42 42 23.158 0 42-18.842 42-42 0-23.16-18.842-42-42-42zm13.236 51.965a2.313 2.313 0 0 1-3.272 3.271l-9.965-9.965-9.964 9.965a2.315 2.315 0 0 1-3.272-3.271l9.965-9.966-9.965-9.964a2.313 2.313 0 1 1 3.272-3.271l9.964 9.964 9.965-9.964a2.313 2.313 0 1 1 3.272 3.27l-9.965 9.965z"/>
+                                  d="M89.998 44.999c0 24.813-20.189 44.999-45 44.999-24.812 0-45-20.186-45-45 0-24.813 20.188-45 45-45 24.811 0 45 20.187 45 45zm-45-42c-23.159 0-42 18.84-42 42 0 23.158 18.841 42 42 42 23.158 0 42-18.842 42-42 0-23.16-18.842-42-42-42zm14.891 56.65a2.315 2.315 0 0 1-3.273 0L43.685 46.716V24.924a2.315 2.315 0 0 1 4.63 0V44.8l11.574 11.575c.904.903.904 2.37 0 3.273z"/>
                         </g>
                     </g>
                 </svg>
             </div>
-            <h1 class="msgbox_hdr">Payment failed</h1>
-            <p class="msgbox_text">Please try again or choose a different payment method</p>
+            <h1 class="msgbox_hdr">Payment pending</h1>
+            <p class="msgbox_text">Your request has been accepted</p>
             <hr class="msgbox_line">
             <div class="msgbox_techinfo">
-                <p>Error message: “Message text”</p>
                 <p>Order ID: 3434754</p>
                 <p>Payment ID: ciu85455</p>
             </div>
+            <a class="storebtn pendingpage-theme" href="#!">Check status</a>
+
         </div>
     </div>
 </main>
@@ -177,6 +178,6 @@
     </div>
 </footer>
 <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-<script src="js/script.js"></script>
+<script src="../../static/testshop/js/script.js"></script>
 </body>
 </html>
