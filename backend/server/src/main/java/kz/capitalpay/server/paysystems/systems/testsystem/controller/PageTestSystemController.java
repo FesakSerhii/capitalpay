@@ -56,7 +56,7 @@ public class PageTestSystemController {
                      @RequestParam Long status,
                      HttpServletResponse httpServletResponse) {
 
-        TestsystemPayment payment = testSystemInService.setStatus(paymentid, status);
+        TestsystemPayment payment = testSystemFantomService.setStatus(paymentid, status);
         String redirectUrl = testSystemInService.getRedirectUrl();
 
         httpServletResponse.setHeader("Location",
