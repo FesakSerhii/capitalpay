@@ -7,7 +7,7 @@ import kz.capitalpay.server.login.service.ApplicationUserService;
 import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
-import kz.capitalpay.server.paysystems.systems.testsystem.TestSystem;
+import kz.capitalpay.server.paysystems.systems.testsystem.HalykBank;
 import kz.capitalpay.server.paysystems.systems.testsystem.model.TestsystemPayment;
 import kz.capitalpay.server.paysystems.systems.testsystem.repository.TestsystemPaymentRepository;
 import org.slf4j.Logger;
@@ -47,7 +47,7 @@ public class TestSystemInService {
     SystemEventsLogsService systemEventsLogsService;
 
     @Autowired
-    TestSystem testSystem;
+    HalykBank testSystem;
 
     @Autowired
     RestTemplate restTemplate;

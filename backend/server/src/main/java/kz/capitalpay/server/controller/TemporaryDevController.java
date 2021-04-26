@@ -4,26 +4,18 @@ import com.google.gson.Gson;
 import kz.capitalpay.server.dictionary.dto.SaveTranslateRequestDTO;
 import kz.capitalpay.server.dictionary.service.TranslateService;
 import kz.capitalpay.server.dto.ResultDTO;
-import kz.capitalpay.server.dto.SendSmsDTO;
-import kz.capitalpay.server.login.model.PendingPhone;
 import kz.capitalpay.server.login.repository.PendingPhoneRepository;
-import kz.capitalpay.server.paysystems.systems.testsystem.TestSystem;
-import kz.capitalpay.server.service.SendEmailService;
 import kz.capitalpay.server.service.SendSmsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.math.BigDecimal;
-import java.security.Principal;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
