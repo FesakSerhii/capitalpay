@@ -97,8 +97,8 @@
 
                 <form method="post" action="https://api.capitalpay.kz/payment/simple/pay">
                     <input name="cashboxid" type="hidden" value="1"/>
-                    <input name="billid" type="hidden" th:value="${bilId}" value="ORD-0123-2021-01-25-A"/>
-                    <input name="totalamount" type="hidden" value="12000"/>
+                    <input name="billid" type="hidden" th:value="${bilId}" />
+                    <input name="totalamount" type="hidden" value="609900"/>
                     <input name="currency" type="hidden" value="KZT"/>
                     <button class="storebtn" type="submit">Buy now</button>
                 </form>
@@ -120,7 +120,14 @@
                         </g>
                     </svg>
                 </p>
-                <a class="storebtn" href="#!">Buy now</a>
+
+                <form method="post" action="https://api.capitalpay.kz/payment/simple/pay">
+                    <input name="cashboxid" type="hidden" value="1"/>
+                    <input name="billid" type="hidden" th:value="${bilId+1}" />
+                    <input name="totalamount" type="hidden" value="379900"/>
+                    <input name="currency" type="hidden" value="KZT"/>
+                    <button class="storebtn" type="submit">Buy now</button>
+                </form>
             </div>
             <div class="productlist_item">
                 <div class="productlist_productimg">
@@ -138,7 +145,14 @@
                         </g>
                     </svg>
                 </p>
-                <a class="storebtn" href="#!">Buy now</a>
+
+                <form method="post" action="https://api.capitalpay.kz/payment/simple/pay">
+                    <input name="cashboxid" type="hidden" value="1"/>
+                    <input name="billid" type="hidden" th:value="${bilId+2}" />
+                    <input name="totalamount" type="hidden" value="419900"/>
+                    <input name="currency" type="hidden" value="KZT"/>
+                    <button class="storebtn" type="submit">Buy now</button>
+                </form>
             </div>
         </div>
     </div>
