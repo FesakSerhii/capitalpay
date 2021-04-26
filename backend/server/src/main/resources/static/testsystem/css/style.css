@@ -681,6 +681,8 @@ body, p, h1, h2, ul {
   height: 46px;
   box-shadow: 0 3px 11px rgba(60, 13, 141, 0.35);
   border-radius: 23px;
+  border: none !important;
+  outline: none !important;
   background-color: #8e4dff;
   color: #ffffff;
   font-family: "Montserrat", sans-serif;
