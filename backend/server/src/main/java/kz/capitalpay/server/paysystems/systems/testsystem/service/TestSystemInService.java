@@ -64,15 +64,27 @@ public class TestSystemInService {
     Random random = new Random();
 
     public String getPaymentButton(Payment payment) {
-        return "<form method=\"post\" action=\"https://api.capitalpay.kz/testsystem/pay\">" +
-                "<input name=\"paymentid\" type=\"hidden\" value=\"" + payment.getGuid() + "\"/>" +
-                "<input name=\"billid\" type=\"hidden\" value=\"" + payment.getBillId() + "\"/>" +
-                "<input name=\"totalamount\" type=\"hidden\" value=\"" + payment.getTotalAmount().movePointRight(2) + "\"/>" +
-                "<input name=\"currency\" type=\"hidden\" value=\"" + payment.getCurrency() + "\"/>" +
-                "<p>" +
-                "<button type=\"submit\">Test Payment System</button>" +
-                "</p>" +
-                "</form>";
+
+         return " <form class=\"tpsform_radioitem\" method=\"post\" action=\"https://api.capitalpay.kz/testsystem/pay\">" +
+                 "<input name=\"paymentid\" type=\"hidden\" value=\"" + payment.getGuid() + "\"/>" +
+                 "<input name=\"billid\" type=\"hidden\" value=\"" + payment.getBillId() + "\"/>" +
+                 "<input name=\"totalamount\" type=\"hidden\" value=\"" + payment.getTotalAmount().movePointRight(2) + "\"/>" +
+                 "<input name=\"currency\" type=\"hidden\" value=\"" + payment.getCurrency() + "\"/>" +
+                 "<button type=\"submit\">" +
+                 "<span class=\"tpsform_radioico\"><img src=\"/paysystems/img/form1_ico2.png\" alt=\"\"></span>" +
+                 "<span class=\"tpsform_radioname\">Test payment system</span>" +
+                 "</button>\n" +
+                 "</form>";
+
+//        return "<form method=\"post\" action=\"https://api.capitalpay.kz/testsystem/pay\">" +
+//                "<input name=\"paymentid\" type=\"hidden\" value=\"" + payment.getGuid() + "\"/>" +
+//                "<input name=\"billid\" type=\"hidden\" value=\"" + payment.getBillId() + "\"/>" +
+//                "<input name=\"totalamount\" type=\"hidden\" value=\"" + payment.getTotalAmount().movePointRight(2) + "\"/>" +
+//                "<input name=\"currency\" type=\"hidden\" value=\"" + payment.getCurrency() + "\"/>" +
+//                "<p>" +
+//                "<button type=\"submit\">Test Payment System</button>" +
+//                "</p>" +
+//                "</form>";
     }
 
 
