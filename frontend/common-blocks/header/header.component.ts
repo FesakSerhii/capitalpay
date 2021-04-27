@@ -37,6 +37,7 @@ export class HeaderComponent implements OnInit {
   }
   loginAction(){
     this.authService.login(this.loginForm.value.email,this.loginForm.value.password).then(resp=>{
+      sessionStorage.setItem('token',resp.headers.get('Authorization').replace('Bearer','').trim());
       this.modalService.dismissAll();
       this.router.navigate(['/merchant/transactions-log']);
     })

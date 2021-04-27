@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {UserService} from "../../projects/admin-panel/src/app/service/user.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-transactions-log',
@@ -7,10 +9,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TransactionsLogComponent implements OnInit {
 
-  constructor() { }
+  constructor(private userService:UserService,private router:Router) { }
   activeTab = 'tab1';
-
+  user:any;
+  idAdmin:boolean;
   ngOnInit(): void {
+    this.user = this.userService.getUserInfo();
+    this.idAdmin = this.router.url.includes('admin-panel');
   }
 
 }

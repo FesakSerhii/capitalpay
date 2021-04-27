@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit {
   }
   loginAction(){
     this.authService.login(this.loginForm.value.email,this.loginForm.value.password).then((resp: HttpResponse<any>)=>{
-      console.log(resp.headers);
+      sessionStorage.setItem('token',resp.headers.get('Authorization').replace('Bearer','').trim());
       this.router.navigate(['/admin-panel/dashboard']);
     })
   }

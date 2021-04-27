@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  api: 'https://api.capitalpay.kz'
+  api: 'https://api.capitalpay.kz/api/v1',
+  login: 'https://api.capitalpay.kz'
 };
 
 /*

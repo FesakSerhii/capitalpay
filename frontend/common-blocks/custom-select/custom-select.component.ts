@@ -15,12 +15,12 @@ import {ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR} from '@angular/for
 })
 export class CustomSelectComponent implements OnInit, ControlValueAccessor {
   @Input() values: any[];
-  @Input() classes: string = '';
-  @Input() disabled: boolean = false;
-  opened: boolean = false;
+  @Input() classes = '';
+  @Input() disabled = false;
+  opened = false;
   private _value: any=null;
   @Input() placeholder = '';
-  @Input() hasSearch: boolean = false;
+  @Input() hasSearch = false;
 
   searchStr = new FormControl('');
 
@@ -107,7 +107,6 @@ export class CustomSelectComponent implements OnInit, ControlValueAccessor {
     this.writeValue(this.getValueValue(v));
     this.onChange(this._value);
     this.opened = false;
-    console.log(this.opened);
   }
 
   @HostListener('document:click', ['$event'])

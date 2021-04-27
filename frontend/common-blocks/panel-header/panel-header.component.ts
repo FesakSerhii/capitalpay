@@ -9,9 +9,20 @@ import {Router} from '@angular/router';
 export class PanelHeaderComponent implements OnInit {
   isExpanded = false;
   constructor(private router: Router) { }
+  pageTitles ={
+    "dashboard":'Дашборд',
+    "transaction-log":'История транзакций',
+    "settings":'Настройки',
+    "help":'Тех поддержка',
+    "currencies":'Валюты',
+    "payment-methods":'Платежные методы',
+    "user":'Пользователи',
+    "user/settings":'Настройки пользователя'
+  };
+  route = null;
 
   ngOnInit(): void {
-    console.log(this.router.url);
+    this.route = this.router.url.replace('/admin-panel/','').trim();
   }
   toogleSideMenu() {
     if (this.isExpanded) {

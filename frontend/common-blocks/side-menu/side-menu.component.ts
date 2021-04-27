@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import {UserService} from "../../projects/admin-panel/src/app/service/user.service";
 
 const helper = new JwtHelperService();
 
@@ -12,8 +13,8 @@ const helper = new JwtHelperService();
 
 export class SideMenuComponent implements OnInit {
   @Input() type: string;
-  constructor() { }
-  user:any = {};
+  user: any;
+  constructor(private userService:UserService) { }
   menu = {
     merchant:[
       {
@@ -68,26 +69,22 @@ export class SideMenuComponent implements OnInit {
         title:'Тех поддержка',
         icon:'question_answer'
       },
-      {
-        route:'currencies',
-        title:'Валюты',
-        icon:'monetization_on'
-      },
-      {
-        route:'payment-methods',
-        title:'Платежные методы',
-        icon:'checklist'
-      }
     ]
   };
+  roleList = {
+    ROLE_USER:'Пользователь',
+    ROLE_OPERATOR:'Оператор',
+    ROLE_ADMIN:'Админ',
+    ROLE_MERCHANT:'Мерчант'
+  };
+  userRoles = [];
 
   ngOnInit() {
-    if(sessionStorage.getItem('id_token')){
-      this.user = helper.decodeToken(sessionStorage.getItem('id_token'))
-    }else{
-      this.user.name = 'Тут кароч ФИО будет'
+    this.user = this.userService.getUserInfo();
+    for(let role of this.user.authorities){
+        this.userRoles.push(this.roleList[role])
     }
-
+    this.userRoles.join('/')
   }
 
 }

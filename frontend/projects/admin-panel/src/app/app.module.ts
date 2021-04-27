@@ -9,6 +9,8 @@ import {CommonBlocksModule} from '../../../../common-blocks/common-blocks.module
 import { LoginComponent } from './login/login.component';
 import {ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
+import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
+import {NgxMaskModule} from "ngx-mask";
 
 @NgModule({
   declarations: [
@@ -22,7 +24,9 @@ import {HttpClientModule} from '@angular/common/http';
     NgxSpinnerModule,
     HttpClientModule,
     CommonBlocksModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    PerfectScrollbarModule,
+    NgxMaskModule.forRoot(),
   ],
   providers: [],
   bootstrap: [AppComponent]

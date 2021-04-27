@@ -30,7 +30,12 @@ export class ApiService {
     }
     return httpParams;
   }
-
+  log(url: string, data: any = {}, waitBlob: boolean = false){
+    // const headers = new HttpHeaders({ 'Content-Type': 'application/json'});
+    const body = JSON.stringify(data);
+    return this.http.post(
+      this.apiBase + url, body, {observe: 'response'});
+  }
   public post(url: string, data: any = {}, waitBlob: boolean = false): Observable<any> {
     const headers = { 'content-type': 'application/json'};
     const body = JSON.stringify(data);

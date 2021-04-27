@@ -97,9 +97,9 @@ body{
   //}
 }
 
-.modal{
-  top:30%!important;
-}
+//.modal{
+//  top:30%!important;
+//}
 .modal-content{
   background: transparent!important;
   border: none!important;
@@ -110,4 +110,10 @@ body{
 .modal-footer{
   border-top: none!important;
   padding: 0 0 46px 0 !important;
+}
+textarea{
+  border-color: #ddd;
+  &::placeholder{
+    color: rgba(0, 0, 0, 0.5);
+  }
 }

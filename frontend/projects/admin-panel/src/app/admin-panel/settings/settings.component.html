@@ -1,1 +1,109 @@
-<p>settings works!</p>
+<div>
+  <ul class="nav nav-pills nav-pills-success" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab==='tab1'" (click)="$event.preventDefault();activeTab='tab1'">
+        валюты
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab==='tab2'" (click)="$event.preventDefault();activeTab='tab2'">
+        другие настройки
+      </a>
+    </li>
+  </ul>
+  <div class="row">
+    <div>
+      <div class="tab-content tab-space">
+        <div class="tab-pane" [class.active]="activeTab==='tab1'">
+          <div class="d-flex">
+            <div class="card" style="width: 380px">
+              <div class="card-header card-header-success card-header-icon">
+                <div class="card-icon">
+                  <i class="material-icons">monetization_on</i>
+                </div>
+                <h4 class="card-title ">Валюты</h4>
+              </div>
+              <div class="card-body mt-4 mb-4">
+                <div class="togglebutton">
+                  <label>
+                    <input type="checkbox" checked="">
+                    <span class="toggle"></span>
+                    KZT
+                  </label>
+                </div>
+                <div class="togglebutton">
+                  <label>
+                    <input type="checkbox" checked="">
+                    <span class="toggle"></span>
+                    USD
+                  </label>
+                </div>
+                <div class="togglebutton">
+                  <label>
+                    <input type="checkbox">
+                    <span class="toggle"></span>
+                    EUR
+                  </label>
+                </div>
+                <div class="togglebutton">
+                  <label>
+                    <input type="checkbox">
+                    <span class="toggle"></span>
+                    RUB
+                  </label>
+                </div>
+             </div>
+              <div class="card-footer d-flex justify-content-end">
+                <a href="#" class="btn btn-success btn-round" (click)="$event.preventDefault();">Сохранить<div class="ripple-container"></div></a>
+              </div>
+            </div>
+            <div class="card ml-3" style="width: 380px">
+              <div class="card-header card-header-success card-header-icon">
+                <div class="card-icon">
+                  <i class="material-icons">checklist</i>
+                </div>
+                <h4 class="card-title ">Платежные методы</h4>
+              </div>
+              <div class="card-body mt-4 mb-4">
+                <div class="togglebutton">
+                  <label>
+                    <input type="checkbox" checked="">
+                    <span class="toggle"></span>
+                    Visa/Mastercard
+                  </label>
+                </div>
+                <div class="togglebutton">
+                  <label>
+                    <input type="checkbox" checked="">
+                    <span class="toggle"></span>
+                    American Express
+                  </label>
+                </div>
+                <div class="togglebutton">
+                  <label>
+                    <input type="checkbox">
+                    <span class="toggle"></span>
+                    Union Pay
+                  </label>
+                </div>
+                <div class="togglebutton">
+                  <label>
+                    <input type="checkbox">
+                    <span class="toggle"></span>
+                    Qiwi
+                  </label>
+                </div>
+              </div>
+              <div class="card-footer d-flex justify-content-end">
+                <a href="#" class="btn btn-success btn-round" (click)="$event.preventDefault();">Сохранить<div class="ripple-container"></div></a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane" [class.active]="activeTab==='tab2'">
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -24,6 +24,7 @@
     "@auth0/angular-jwt": "^5.0.2",
     "@ng-bootstrap/ng-bootstrap": "^5.1.5",
     "angular-responsive-carousel": "^2.0.2",
+    "ngx-mask": "^11.1.5",
     "ngx-perfect-scrollbar": "^10.1.0",
     "ngx-spinner": "^11.0.1",
     "rxjs": "~6.6.0",

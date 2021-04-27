@@ -9,16 +9,22 @@ import { PaymentMethodsComponent } from './payment-methods/payment-methods.compo
 import { UserComponent } from './user/user.component';
 import {CommonBlocksModule} from "../../../../../common-blocks/common-blocks.module";
 import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
+import { UserSettingsComponent } from './user-settings/user-settings.component';
+import {ReactiveFormsModule} from "@angular/forms";
+import {NgxMaskModule} from "ngx-mask";
+import { ChatComponent } from './chat/chat.component';
 
 
 
 @NgModule({
-  declarations: [DashboardComponent, SettingsComponent, HelpComponent, CurrenciesComponent, PaymentMethodsComponent, UserComponent],
+  declarations: [DashboardComponent, SettingsComponent, HelpComponent, CurrenciesComponent, PaymentMethodsComponent, UserComponent, UserSettingsComponent, ChatComponent],
   imports: [
     CommonModule,
     AdminPanelRoutingModule,
     CommonBlocksModule,
-    PerfectScrollbarModule
+    PerfectScrollbarModule,
+    ReactiveFormsModule,
+    NgxMaskModule
   ]
 })
 export class AdminPanelModule { }
