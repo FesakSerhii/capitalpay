@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -118,7 +119,7 @@ public class HalykService {
 
             Payment paymentFromBd = paymentService.getPaymentByOrderId(order_id);
 
-            if (paymentFromBd.getTotalAmount().equals(amount)) {
+            if (paymentFromBd.getTotalAmount().equals(new BigDecimal(amount))) {
                 if (paymentComplite(xmlDoc)) {
                     logger.info("....TODO: Process Payment....");
 
