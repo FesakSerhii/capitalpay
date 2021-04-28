@@ -2,6 +2,7 @@ package kz.capitalpay.server.paysystems.systems.halykbank.sevice;
 
 import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.payments.model.Payment;
+import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.paysystems.systems.halykbank.kkbsign.Base64;
 import kz.capitalpay.server.paysystems.systems.halykbank.kkbsign.KKBSign;
 import org.dom4j.Document;
@@ -16,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 @Service
 public class HalykService {
@@ -44,6 +46,9 @@ public class HalykService {
     @Autowired
     CashboxSettingsService cashboxSettingsService;
 
+    @Autowired
+    PaymentService paymentService;
+
     public String getPaymentButton(Payment payment) {
 
         KKBSign kkbSign = new KKBSign();
@@ -59,7 +64,7 @@ public class HalykService {
         String failureBackLink = cashboxSettingsService.getField(payment.getCashboxId(), CashboxSettingsService.REDIRECT_FAILED_URL);
         String postLink = cashboxSettingsService.getField(payment.getCashboxId(), CashboxSettingsService.INTERACTION_URL);
 
-        return "<form class=\"tpsform_radioitem\" name=\"SendOrder\" method=\"post\" action=\"" + sendOrderActionLink + "\">" +
+        return "<form class=\"tpsform_radioitem\" name=\"SendOrder\" method=\"post\" action=\"" + sendOrderActionLink + "/jsp/process/logon.jsp\">" +
                 "<input type=\"hidden\" name=\"Signed_Order_B64\" value=\"" + base64Content + "\"><br>" +
                 "<input type=\"hidden\" name=\"email\" size=50 maxlength=50  value=\"" + mailUser + "\"><br>" +
                 "<input type=\"hidden\" name=\"Language\" value=\"rus\"><br>" +
@@ -111,8 +116,22 @@ public class HalykService {
             logger.info("paymentTime {}", paymentTime);
             logger.info("amount: {}", amount);
 
+            Payment paymentFromBd = paymentService.getPaymentByOrderId(order_id);
 
+            if (paymentFromBd.getTotalAmount().equals(amount)) {
+                if (paymentComplite(xmlDoc)) {
+                    logger.info("....TODO: Process Payment....");
 
+                }
+            }else {
+                logger.error("Amount not equal. Payment summ: {} Order amount {}", paymentFromBd.getTotalAmount(), amount);
+            }
+
+            KKBSign kkbsign = new KKBSign();
+
+            String ks = kkbsignCfgBank;
+            String result = kkbsign.verify(sBank.trim(), sbank_sign.trim(), ks, "kkbca", "1q2w3e4r") + "";
+            logger.info("Verify signature :{}", result);
 
             return 0;
         } catch (Exception e) {
@@ -121,5 +140,39 @@ public class HalykService {
         return -1;
     }
 
+    private boolean paymentComplite(Document xmlDoc) {
+        try {
+            Element Payment = (Element) xmlDoc.getRootElement().selectSingleNode("//document/bank/results/payment");
+            Element Merchant = (Element) xmlDoc.getRootElement().selectSingleNode("//document/bank/customer/merchant");
+            Element Order = (Element) xmlDoc.getRootElement().selectSingleNode("//document/bank/customer/merchant/order");
+            String merchant_id = Payment.attribute("merchant_id").getValue();
+            String reference = Payment.attribute("reference").getValue();
+            String approval_code = Payment.attribute("approval_code").getValue();
+            String orderid = Order.attribute("order_id").getValue();
+            String amount = Payment.attribute("amount").getValue();
+            String currency_code = Order.attribute("currency").getValue();
+            String cert_id = Merchant.attribute("cert_id").getValue();
+
+            String merchantXML = String.format("<merchant id=\"%s\"><command type=\"complete\"/><payment reference=\"%s\" approval_code=\"%s\" orderid=\"%s\" amount=\"%s\" currency_code=\"%s\"/></merchant>",
+                    merchant_id, reference, approval_code, orderid, amount, currency_code);
+            logger.info(merchantXML);
+            KKBSign kkbSign = new KKBSign();
+            Map<String, String> config = kkbSign.getConfig(kkbsignCfgPath);
+            String signature = kkbSign.sign64(merchantXML,
+                    config.get("keystore"),
+                    config.get("alias"),
+                    config.get("keypass"),
+                    config.get("storepass"));
+            String signedXML = String.format("<document>%s<merchant_sign type=\"RSA\" cert_id=\"%s\">%s</merchant_sign></document>",
+                    merchantXML, cert_id, signature);
+            logger.info(signedXML);
+            String response = restTemplate.getForObject(sendOrderActionLink+"/jsp/remote/control.jsp", String.class);
+            logger.info(response);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
 }

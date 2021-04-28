@@ -48,4 +48,7 @@ public class PaymentService {
     public Payment getPayment(String paymentId) {
         return paymentRepository.findByGuid(paymentId);
     }
+
+    public Payment getPaymentByOrderId(String orderId) {
+        return paymentRepository.findTopByBillId(orderId);    }
 }
