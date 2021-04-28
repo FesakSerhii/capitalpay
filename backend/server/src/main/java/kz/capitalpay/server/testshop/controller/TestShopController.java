@@ -65,7 +65,7 @@ public class TestShopController {
         modelMap.addAttribute("billid", "");
         modelMap.addAttribute("paymentid", "");
         modelMap.addAttribute("status", "success");
-        modelMap.addAttribute("color", "red");
+        modelMap.addAttribute("color", "green");
         return "testshop/paymentstatus";
     }
     @GetMapping("/testshop/failed")
