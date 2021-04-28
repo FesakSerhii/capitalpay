@@ -29,13 +29,25 @@
         url: '/public/api/paysystem/system/buttonlist',
         data: JSON.stringify(payment),
         success: function (data) {
-            plist = [];
+            plist = '';
             for (let i = 0; i < data.data.length; i++) {
-                plist.push(data.data[i].paymentForm);
+                plist = plist + data.data[i].paymentForm;
             }
-            plist.join();
+
             $('#systemlist').html(plist);
             console.log(data.data)
+
+
+            // plist = [];
+            // for (let i = 0; i < data.data.length; i++) {
+            //     plist.push(data.data[i].paymentForm);
+            // }
+            // plist.join();
+            // $('#systemlist').html(plist);
+            // console.log(data.data)
+            //
+            //
+            //
         },
         dataType: 'json',
         contentType: "application/json;",

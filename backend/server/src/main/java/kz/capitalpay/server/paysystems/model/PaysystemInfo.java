@@ -17,6 +17,8 @@ public class PaysystemInfo {
     @Column(unique = true)
     String componentName;
 
+    Long priority;
+
     boolean enabled;
 
     public Long getId() {
@@ -41,6 +43,14 @@ public class PaysystemInfo {
 
     public void setComponentName(String componentName) {
         this.componentName = componentName;
+    }
+
+    public Long getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Long priority) {
+        this.priority = priority;
     }
 
     public boolean isEnabled() {

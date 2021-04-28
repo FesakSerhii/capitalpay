@@ -23,10 +23,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.error114;
 import static kz.capitalpay.server.constants.ErrorDictionary.error118;
@@ -132,6 +129,7 @@ public class PaysystemService {
 
             List<PaysystemInfo> availablePaysystems = cashboxPaysystemService
                     .availablePaysystemList(payment.getCashboxId());
+            availablePaysystems.sort(Comparator.comparing(PaysystemInfo::getPriority));
             logger.info(gson.toJson(availablePaysystems));
             for (PaysystemInfo pi : availablePaysystems) {
                 PaySystemButonResponceDTO paySystemButon = new PaySystemButonResponceDTO();
