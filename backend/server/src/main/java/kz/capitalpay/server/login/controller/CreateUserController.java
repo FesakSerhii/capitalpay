@@ -2,10 +2,7 @@ package kz.capitalpay.server.login.controller;
 
 import com.google.gson.Gson;
 import kz.capitalpay.server.dto.ResultDTO;
-import kz.capitalpay.server.login.dto.ChangeRolesDTO;
-import kz.capitalpay.server.login.dto.CreateNewUserDTO;
-import kz.capitalpay.server.login.dto.DeleteUserDTO;
-import kz.capitalpay.server.login.dto.EditUserDTO;
+import kz.capitalpay.server.login.dto.*;
 import kz.capitalpay.server.login.service.UserListService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,7 +76,7 @@ public class CreateUserController {
 
     @PostMapping("/one")
     @RolesAllowed({"ROLE_ADMIN", "ROLE_OPERATOR"})
-    ResultDTO oneUser(Principal principal, @Valid @RequestBody EditUserDTO request) {
+    ResultDTO oneUser(Principal principal, @Valid @RequestBody OneUserDTO request) {
         logger.info(gson.toJson(request));
         return userListService.oneUser(principal, request);
     }

@@ -3,10 +3,7 @@ package kz.capitalpay.server.login.service;
 import com.google.gson.Gson;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.eventlog.service.SystemEventsLogsService;
-import kz.capitalpay.server.login.dto.ChangeRolesDTO;
-import kz.capitalpay.server.login.dto.CreateNewUserDTO;
-import kz.capitalpay.server.login.dto.DeleteUserDTO;
-import kz.capitalpay.server.login.dto.EditUserDTO;
+import kz.capitalpay.server.login.dto.*;
 import kz.capitalpay.server.login.model.ApplicationRole;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.model.DeletedApplicationUser;
@@ -272,7 +269,7 @@ public class UserListService {
 
     }
 
-    public ResultDTO oneUser(Principal principal, EditUserDTO request) {
+    public ResultDTO oneUser(Principal principal, OneUserDTO request) {
         try {
             ApplicationUser applicationUser = applicationUserService.getUserById(request.getId());
             if (applicationUser == null) {
@@ -281,7 +278,6 @@ public class UserListService {
 
             ApplicationUser resultUser = maskPassword(applicationUser);
 
-            request.setPassword(null);
             systemEventsLogsService.addNewOperatorAction(principal.getName(),
                     EDIT_USER, gson.toJson(request),applicationUser.getId().toString());
 
