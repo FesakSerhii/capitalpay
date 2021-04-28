@@ -29,9 +29,9 @@
         url: '/public/api/paysystem/system/buttonlist',
         data: JSON.stringify(payment),
         success: function (data) {
-            let plist;
-            for (let i = 0; i < data.length ; i++) {
-                plist += data.data[0].paymentForm;
+            plist = '';
+            for (let i = 0; i < data.length; i++) {
+                plist += data.data[i].paymentForm;
             }
             $('#systemlist').html(plist);
             console.log(data.data)
