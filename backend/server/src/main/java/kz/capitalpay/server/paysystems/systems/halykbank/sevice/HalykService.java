@@ -16,7 +16,7 @@ public class HalykService {
 
                 "<button type=\"submit\">" +
                 "<span class=\"tpsform_radioico\"><img src=\"/paysystems/img/NBK_Logo.png\" alt=\"\"></span>" +
-                "<span class=\"tpsform_radioname\">Test payment system</span>" +
+                "<span class=\"tpsform_radioname\">АО \"Народный банк Казахстана\"</span>" +
                 "</button>\n" +
                 "</form>";
 
