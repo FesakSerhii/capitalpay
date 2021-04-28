@@ -84,8 +84,42 @@ public class HalykService {
 
     public int setPaySystemResponse(String response, String appendix) {
         try {
-            logger.info(response);
-            logger.info(appendix);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String PostLink = response;
+            logger.info("PostLink: {}", PostLink);
+
+            Document xmlDoc = DocumentHelper.createDocument();
+            xmlDoc = DocumentHelper.parseText(PostLink);
+            logger.info("Full Document {}", xmlDoc.asXML());
+
+
+            Element Bank = (Element) xmlDoc.getRootElement().selectSingleNode("//document/bank");
+            String sBank = Bank.asXML() + "";
+            logger.info("Element bank: sBank={}", sBank);
+            Element bank_sign = (Element) xmlDoc.getRootElement().selectSingleNode("//document/bank_sign");
+            String sbank_sign = bank_sign.getText();
+            logger.info("Element bank_sign: sbank_sign={}", sbank_sign);
+            Element Merchant = (Element) xmlDoc.getRootElement().selectSingleNode("//document/bank/customer/merchant");
+            logger.info("Merchant: {}", Merchant.asXML());
+            Element Order = (Element) xmlDoc.getRootElement().selectSingleNode("//document/bank/customer/merchant/order");
+            Element results = (Element) xmlDoc.getRootElement().selectSingleNode("//document/bank/results");
+            Element payment = (Element) xmlDoc.getRootElement().selectSingleNode("//document/bank/results/payment");
+            logger.info("Order: {}", Order.asXML());
+            String order_id = Order.attribute("order_id").getValue();
+            logger.info("order_id : {}", order_id);
+            String amount = Order.attribute("amount").getValue();
+            String bik = Bank.attribute("bik").getValue();
+            String name = Bank.attribute("name").getValue();
+            String cardNumber = payment.attribute("card").getValue();
+            String reference = payment.attribute("reference").getValue();
+            String approvalCode = payment.attribute("approval_code").getValue();
+            LocalDateTime paymentTime = LocalDateTime.parse(results.attribute("timestamp").getValue(), formatter);
+            logger.info("paymentTime {}", paymentTime);
+            logger.info("amount: {}", amount);
+
+
+
+
             return 0;
         } catch (Exception e) {
             e.printStackTrace();
