@@ -37,15 +37,21 @@ public class TestShopController {
                           @RequestParam String paymentid,
                           @RequestParam(required = false) String pending) {
 
-        if(pending != null && pending.length() > 0 ){
-          status =  testShopService.checkPendingStatus(paymentid);
+        if (pending != null && pending.length() > 0) {
+            status = testShopService.checkPendingStatus(paymentid);
         }
 
 
-        switch (status){
-            case SUCCESS:    modelMap.addAttribute("color", "green"); break;
-            case FAILED:    modelMap.addAttribute("color", "red"); break;
-            case PENDING:    modelMap.addAttribute("color", "yellow"); break;
+        switch (status) {
+            case SUCCESS:
+                modelMap.addAttribute("color", "green");
+                break;
+            case FAILED:
+                modelMap.addAttribute("color", "red");
+                break;
+            case PENDING:
+                modelMap.addAttribute("color", "yellow");
+                break;
         }
 
         modelMap.addAttribute("billid", billid);
@@ -54,5 +60,18 @@ public class TestShopController {
         return "testshop/paymentstatus";
     }
 
-
+    @GetMapping("/testshop/success")
+    String showSimpleStatusPageSuccess(ModelMap modelMap) {
+        modelMap.addAttribute("billid", "");
+        modelMap.addAttribute("paymentid", "");
+        modelMap.addAttribute("status", "green");
+        return "testshop/paymentstatus";
+    }
+    @GetMapping("/testshop/failed")
+    String showSimpleStatusPageFailed(ModelMap modelMap) {
+        modelMap.addAttribute("billid", "");
+        modelMap.addAttribute("paymentid", "");
+        modelMap.addAttribute("status", "red");
+        return "testshop/paymentstatus";
+    }
 }
