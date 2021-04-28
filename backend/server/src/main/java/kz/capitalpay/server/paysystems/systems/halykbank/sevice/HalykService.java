@@ -61,17 +61,17 @@ public class HalykService {
 
         String appendix = new String(Base64.encode((ticket).getBytes()));
 
-        String backLink = cashboxSettingsService.getField(payment.getCashboxId(),CashboxSettingsService.REDIRECT_SUCCESS_URL);
-        String failureBackLink = cashboxSettingsService.getField(payment.getCashboxId(),CashboxSettingsService.REDIRECT_FAILED_URL);
-        String postLink = cashboxSettingsService.getField(payment.getCashboxId(),CashboxSettingsService.INTERACTION_URL);
+        String backLink = cashboxSettingsService.getField(payment.getCashboxId(), CashboxSettingsService.REDIRECT_SUCCESS_URL);
+        String failureBackLink = cashboxSettingsService.getField(payment.getCashboxId(), CashboxSettingsService.REDIRECT_FAILED_URL);
+        String postLink = cashboxSettingsService.getField(payment.getCashboxId(), CashboxSettingsService.INTERACTION_URL);
 
         return "<form class=\"tpsform_radioitem\" name=\"SendOrder\" method=\"post\" action=\"" + sendOrderActionLink + "\">" +
                 "<input type=\"hidden\" name=\"Signed_Order_B64\" value=\"" + base64Content + "\"><br>" +
                 "<input type=\"hidden\" name=\"email\" size=50 maxlength=50  value=\"" + mailUser + "\"><br>" +
                 "<input type=\"hidden\" name=\"Language\" value=\"rus\"><br>" +
-                "<input type=\"hidden\" name=\"BackLink\" value=\""+backLink+"\"><br>" +
-                "<input type=\"hidden\" name=\"PostLink\" value=\""+postLink+"\"><br>" +
-                "<input type=\"hidden\" name=\"FailureBackLink\" value=\""+failureBackLink+"\"><br>" +
+                "<input type=\"hidden\" name=\"BackLink\" value=\"" + backLink + "\"><br>" +
+                "<input type=\"hidden\" name=\"PostLink\" value=\"" + postLink + "\"><br>" +
+                "<input type=\"hidden\" name=\"FailureBackLink\" value=\"" + failureBackLink + "\"><br>" +
                 "<input type=\"hidden\" name=\"appendix\" size=50 maxlength=50 value=\"" + appendix + "\"/><br>" +
                 "<button type=\"submit\" name=\"GotoPay\">" +
                 "<span class=\"tpsform_radioico\"><img src=\"/paysystems/img/NBK_Logo.png\" alt=\"\"></span>" +
@@ -82,10 +82,10 @@ public class HalykService {
     }
 
 
-
     public int setPaySystemResponse(String response, String appendix) {
         try {
-
+            logger.info(response);
+            logger.info(appendix);
             return 0;
         } catch (Exception e) {
             e.printStackTrace();
