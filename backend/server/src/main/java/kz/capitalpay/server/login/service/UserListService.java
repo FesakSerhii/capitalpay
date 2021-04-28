@@ -271,4 +271,26 @@ public class UserListService {
         }
 
     }
+
+    public ResultDTO oneUser(Principal principal, EditUserDTO request) {
+        try {
+            ApplicationUser applicationUser = applicationUserService.getUserById(request.getId());
+            if (applicationUser == null) {
+                return error106;
+            }
+
+            ApplicationUser resultUser = maskPassword(applicationUser);
+
+            request.setPassword(null);
+            systemEventsLogsService.addNewOperatorAction(principal.getName(),
+                    EDIT_USER, gson.toJson(request),applicationUser.getId().toString());
+
+            return new ResultDTO(true, resultUser, 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultDTO(false, e.getMessage(), -1);
+        }
+
+
+    }
 }
