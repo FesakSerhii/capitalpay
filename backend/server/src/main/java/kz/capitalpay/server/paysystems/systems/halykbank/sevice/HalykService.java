@@ -1,7 +1,5 @@
 package kz.capitalpay.server.paysystems.systems.halykbank.sevice;
 
-import kz.capitalpay.server.cashbox.model.Cashbox;
-import kz.capitalpay.server.merchantsettings.model.CashboxSettings;
 import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.paysystems.systems.halykbank.kkbsign.Base64;
@@ -13,10 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
