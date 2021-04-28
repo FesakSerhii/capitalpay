@@ -19,6 +19,6 @@ public class HalykBank implements PaySystem {
 
     @Override
     public String getPaymentButton(Payment payment) {
-        return halykService.getPaymentButton();
+        return halykService.getPaymentButton(payment);
     }
 }
