@@ -77,7 +77,10 @@ public class HalykService {
 
         logger.info("Halyk Payment: ", gson.toJson(halykPayment));
         Long id = halykPayment.getId();
+        logger.info("ID: {}",id);
         logger.info("ID: {}",halykPayment.getId());
+        logger.info("ID: {}",id);
+
         halykPayment.setHalykId(String.format("%1$14s", id.toString())
                 .replace(' ', '0'));
         logger.info("Halyk ID: ", halykPayment.getHalykId());
