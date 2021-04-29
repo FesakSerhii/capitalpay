@@ -75,18 +75,14 @@ public class HalykService {
 
         logger.info("Halyk Payment: ", gson.toJson(halykPayment));
         Long id = halykPayment.getId();
-        logger.info("ID: {}", id);
-        logger.info("ID: {}", halykPayment.getId());
-        logger.info("ID: {}", id);
         String paddingID = String.format("%1$14s", id)
                 .replace(' ', '0');
         logger.info(paddingID);
         halykPayment.setHalykId(paddingID);
-        logger.info("Halyk ID: ", halykPayment.getHalykId());
 
         KKBSign kkbSign = new KKBSign();
 
-        String base64Content = kkbSign.build64(kkbsignCfgPath, payment.getTotalAmount().toString(), payment.getBillId());
+        String base64Content = kkbSign.build64(kkbsignCfgPath, payment.getTotalAmount().toString(), paddingID);
 
         String ticket = "<document><item number=\"1\" name=\"Оплата\" quantity=\"1\" " +
                 "amount=\"" + payment.getTotalAmount().toString() + "\"/></document>";
