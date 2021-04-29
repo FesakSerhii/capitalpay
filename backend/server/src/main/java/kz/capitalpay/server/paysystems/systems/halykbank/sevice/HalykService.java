@@ -68,6 +68,8 @@ public class HalykService {
         halykPayment.setTotalAmount(payment.getTotalAmount());
 
         halykPaymentRepository.save(halykPayment);
+        Long id = halykPayment.getId();
+        logger.info("Halyk ID: ", id);
         halykPayment.setHalykId(String.format("%1$14s", halykPayment.getId().toString())
                 .replace(' ', '0'));
         logger.info("Halyk ID: ", halykPayment.getHalykId());
