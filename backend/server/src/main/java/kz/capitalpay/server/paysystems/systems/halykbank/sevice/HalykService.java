@@ -71,7 +71,7 @@ public class HalykService {
         halykPayment.setStatus(payment.getStatus());
         halykPayment.setTotalAmount(payment.getTotalAmount());
 
-        halykPaymentRepository.save(halykPayment);
+       halykPayment = halykPaymentRepository.save(halykPayment);
 
         logger.info("Halyk Payment: ", gson.toJson(halykPayment));
         Long id = halykPayment.getId();
