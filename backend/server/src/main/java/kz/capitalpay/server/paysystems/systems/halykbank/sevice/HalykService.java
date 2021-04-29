@@ -62,6 +62,7 @@ public class HalykService {
     public String getPaymentButton(Payment payment) {
 
         HalykPayment halykPayment = new HalykPayment();
+        halykPayment = halykPaymentRepository.saveAndFlush(halykPayment);
         halykPayment.setTimestamp(System.currentTimeMillis());
         halykPayment.setLocalDateTime(LocalDateTime.now());
         halykPayment.setBillId(payment.getBillId());
@@ -71,7 +72,7 @@ public class HalykService {
         halykPayment.setStatus(payment.getStatus());
         halykPayment.setTotalAmount(payment.getTotalAmount());
 
-       halykPayment = halykPaymentRepository.saveAndFlush(halykPayment);
+
 
 
         logger.info("Halyk Payment: ", gson.toJson(halykPayment));
