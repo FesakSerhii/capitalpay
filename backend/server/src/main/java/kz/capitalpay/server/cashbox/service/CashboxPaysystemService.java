@@ -79,7 +79,7 @@ public class CashboxPaysystemService {
             if (paysystemJson != null && paysystemJson.length() > 0) {
                 List<Double> doubleList = gson.fromJson(paysystemJson, List.class);
                 doubleList.forEach(aDouble -> paysystemList.add(aDouble.longValue()));
-                logger.info(gson.toJson(paysystemList));
+//                logger.info(gson.toJson(paysystemList));
             }
 
             List<PaysystemInfo> systemPaysystemInfoList = merchantPaysystemService.paysystemList(owner.getId());
@@ -131,7 +131,7 @@ public class CashboxPaysystemService {
             }
 
             String paysystemJson = gson.toJson(request.getPaysystemList());
-            logger.info(paysystemJson);
+//            logger.info(paysystemJson);
 
             cashboxSettingsService.setField(cashbox.getId(), CASHBOX_PAYSYSTEM_LIST, paysystemJson);
             return new ResultDTO(true, request.getPaysystemList(), 0);
@@ -153,14 +153,14 @@ public class CashboxPaysystemService {
             if (paysystemJson != null && paysystemJson.length() > 0) {
                 List<Double> doubleList = gson.fromJson(paysystemJson, List.class);
                 doubleList.forEach(aDouble -> paysystemList.add(aDouble.longValue()));
-                logger.info(gson.toJson(paysystemList));
+//                logger.info(gson.toJson(paysystemList));
             }
             List<PaysystemInfo> systemPaysystemInfoList = merchantPaysystemService.paysystemList(owner.getId());
-            logger.info("systemPaysystemInfoList: {}",gson.toJson(systemPaysystemInfoList));
+//            logger.info("systemPaysystemInfoList: {}",gson.toJson(systemPaysystemInfoList));
             List<PaysystemInfo> result = new ArrayList<>();
             for (PaysystemInfo ps : systemPaysystemInfoList) {
-                logger.info(ps.getId().toString());
-                logger.info(String.valueOf(paysystemList.contains(ps.getId())));
+//                logger.info(ps.getId().toString());
+//                logger.info(String.valueOf(paysystemList.contains(ps.getId())));
                 if(paysystemList.contains(ps.getId())){
                     result.add(ps);
                 }

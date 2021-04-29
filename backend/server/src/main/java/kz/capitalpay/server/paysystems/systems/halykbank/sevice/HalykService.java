@@ -1,5 +1,6 @@
 package kz.capitalpay.server.paysystems.systems.halykbank.sevice;
 
+import com.google.gson.Gson;
 import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
@@ -29,6 +30,9 @@ public class HalykService {
 
     @Autowired
     RestTemplate restTemplate;
+
+    @Autowired
+    Gson gson;
 
 
     @Value("${kkbsign.cfg.path}")
@@ -68,10 +72,10 @@ public class HalykService {
         halykPayment.setTotalAmount(payment.getTotalAmount());
 
         halykPaymentRepository.save(halykPayment);
-        halykPaymentRepository.flush();
+
+        logger.info("Halyk Payment: ", gson.toJson(halykPayment));
         Long id = halykPayment.getId();
-        logger.info("Halyk ID: ", id);
-        halykPayment.setHalykId(String.format("%1$14s", halykPayment.getId().toString())
+        halykPayment.setHalykId(String.format("%1$14s", id.toString())
                 .replace(' ', '0'));
         logger.info("Halyk ID: ", halykPayment.getHalykId());
 
