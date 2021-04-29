@@ -25,6 +25,9 @@ export class UserComponent implements OnInit {
     phone:new FormControl('',[Validators.required,Validators.minLength(11),Validators.maxLength(11)]),
     roleList: new FormArray([new FormControl(Validators.required)])
   });
+  filter = new FormGroup({
+    role: new FormControl()
+  })
   confirmPassword= new FormControl();
   possibleRoles:[any]=null;
   possibleRolesList:[any]=null;
@@ -71,8 +74,11 @@ export class UserComponent implements OnInit {
     console.log(this.newUserForm.value.roleList);
     this.modalService.dismissAll()
   }
-  navigateToSettings(){
-    this.router.navigate(['/admin-panel/user/settings'])
+  navigateToSettings(id){
+    this.router.navigate(['/admin-panel/user/settings'],{queryParams: {
+        userId: id,
+      },
+      queryParamsHandling: "merge"})
   }
   createUser(){
     // tslint:disable-next-line:no-unused-expression

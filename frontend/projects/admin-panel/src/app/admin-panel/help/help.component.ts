@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {Router} from "@angular/router";
+import {SupportService} from "../../service/support.service";
 
 @Component({
   selector: 'app-help',
@@ -8,11 +9,21 @@ import {Router} from "@angular/router";
 })
 export class HelpComponent implements OnInit {
   activeTab = 'tab1';
-  constructor( private router: Router) { }
+  supportList: any;
+  constructor( private router: Router, private supportService: SupportService) { }
 
   ngOnInit(): void {
+    this.getSupportList()
   }
-  navigateToSettings(){
-    this.router.navigate(['/admin-panel/help/chat'])
+  getSupportList(){
+    this.supportService.getSupportList().then(resp=>{
+      this.supportList = resp.data;
+    })
+  }
+  navigateToSettings(id){
+    this.router.navigate(['/admin-panel/help/chat'],{queryParams: {
+      id: id,
+    },
+      queryParamsHandling: "merge"})
   }
 }

@@ -6,12 +6,12 @@
         <div class="card w1600">
           <div class="card-body">
             <div class="d-flex justify-content-between">
-              <form class="form-horizontal">
+              <form class="form-horizontal" [formControl]="filter">
                 <div class="d-flex">
                   <label class="col-form-label">Роль</label>
                   <div class="form-input-md">
                     <div class="form-group has-default bmd-form-group">
-                      <app-custom-select classes="mr-5" [values]="[1,2,3,4,5,6,7,8,9,10]"></app-custom-select>
+                      <app-custom-select classes="mr-5" [values]="possibleRoles"></app-custom-select>
                     </div>
                   </div>
                   <label class="col-form-label">Дата регистрации</label>
@@ -101,11 +101,11 @@
                 </tr>
                 </tfoot>
                 <tbody>
-                <tr role="row" class="odd" (click)="navigateToSettings()" *ngFor="let user of userList">
+                <tr role="row" class="odd" (click)="navigateToSettings(user.id)" *ngFor="let user of userList">
                   <td tabindex="0" class="sorting_1">{{user.id}}</td>
                   <td></td>
                   <td></td>
-                  <td>{{user.id}}</td>
+                  <td>{{user.email}}</td>
                   <td></td>
                   <td>{{user.roles}}</td>
                 </tr>

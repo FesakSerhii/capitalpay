@@ -10,35 +10,17 @@
             <h4 class="card-title ">Настройки пользователя</h4>
           </div>
           <div class="card-body">
+            <ng-container *ngIf="userRoles.ROLE_MERCHANT">
             <h4 class="title">Валюты</h4>
-            <div class="togglebutton">
-              <label>
-                <input type="checkbox" checked="">
-                <span class="toggle"></span>
-                KZT
-              </label>
-            </div>
-            <div class="togglebutton">
-              <label>
-                <input type="checkbox" checked="">
-                <span class="toggle"></span>
-                USD
-              </label>
-            </div>
-            <div class="togglebutton">
-              <label>
-                <input type="checkbox">
-                <span class="toggle"></span>
-                EUR
-              </label>
-            </div>
-            <div class="togglebutton">
-              <label>
-                <input type="checkbox">
-                <span class="toggle"></span>
-                RUB
-              </label>
-            </div>
+              <form [formGroup]="currenciesForm">
+                <div class="togglebutton" *ngFor="let currency of currencies">
+                  <label>
+                    <input type="checkbox" [formControlName]="currency.alpha">
+                    <span class="toggle"></span>
+                    {{currency.alpha}}
+                  </label>
+                </div>
+              </form>
             <a href="#" class="btn btn-success btn-round" (click)="$event.preventDefault();">Сохранить<div class="ripple-container"></div></a>
             <hr>
             <h4 class="title">Платежные методы</h4>
@@ -72,71 +54,91 @@
             </div>
             <a href="#" class="btn btn-success btn-round" (click)="$event.preventDefault();">Сохранить<div class="ripple-container"></div></a>
             <hr>
+            </ng-container>
             <h4 class="title">Switches</h4>
-            <div class="form-group has-default bmd-form-group d-flex">
-              <label class="col-form-label w160">Email</label>
-              <input type="email" class="form-control" placeholder="">
-            </div>
-            <div class="form-group has-default bmd-form-group d-flex">
-              <label class="col-form-label w160">Номер телефона</label>
-              <input type="email" class="form-control" placeholder="">
-            </div>
-            <div class="form-group has-default bmd-form-group d-flex">
-              <label class="col-form-label w160">ИИН/БИН</label>
-              <input type="email" class="form-control" placeholder="">
-            </div>
-            <div class="form-group has-default bmd-form-group d-flex">
-              <label class="col-form-label w160">Наименование</label>
-              <input type="email" class="form-control" placeholder="">
-            </div>
-            <div class="form-group has-default bmd-form-group d-flex">
-              <label class="col-form-label w160">Юридический адрес</label>
-              <input type="email" class="form-control" placeholder="">
-            </div>
-            <div class="form-group has-default bmd-form-group d-flex">
-              <label class="col-form-label w160">Фактический адрес</label>
-              <input type="email" class="form-control" placeholder="">
-            </div>
-            <div class="form-group has-default bmd-form-group d-flex">
-              <label class="col-form-label w160">ФИО Руководитель</label>
-              <input type="email" class="form-control" placeholder="">
-            </div>
-            <div class="form-group has-default bmd-form-group d-flex">
-              <label class="col-form-label w160">ФИО ГЛ. бухгалтер</label>
-              <input type="email" class="form-control" placeholder="">
-            </div>
-            <div class="form-group has-default bmd-form-group d-flex">
-              <label class="col-form-label w160">Основной номер телефона</label>
-              <input type="email" class="form-control" placeholder="">
-            </div>
-            <div class="form-group has-default bmd-form-group d-flex">
-              <label class="col-form-label w160">Банк Клиента</label>
-              <input type="email" class="form-control" placeholder="">
-            </div>
-            <div class="form-group has-default bmd-form-group d-flex">
-              <label class="col-form-label w160">ИИК</label>
-              <input type="email" class="form-control" placeholder="">
-            </div>
-            <div class="form-group has-default bmd-form-group d-flex">
-              <label class="col-form-label w160">БИК</label>
-              <input type="email" class="form-control" placeholder="">
-            </div>
-            <a href="#" class="btn btn-success btn-round" style="margin-left: 202px" (click)="$event.preventDefault();">изменить данные<div class="ripple-container"></div></a>
+            <form [formGroup]="userInfoForm" *ngIf="!userRoles.ROLE_MERCHANT">
+              <div class="form-group has-default bmd-form-group d-flex">
+                <label class="col-form-label w160">Email</label>
+                <input type="email" class="form-control" placeholder="" formControlName="email" [readOnly]="!isEditMode">
+              </div>
+              <div class="form-group has-default bmd-form-group d-flex">
+                <label class="col-form-label w160">Номер телефона</label>
+                <input type="text" class="form-control" placeholder="" formControlName="phone" [readOnly]="!isEditMode">
+              </div>
+              <div class="form-group has-default bmd-form-group d-flex">
+                <label class="col-form-label w160">Фио</label>
+                <input type="text" class="form-control" placeholder="" formControlName="fio" [readOnly]="!isEditMode">
+              </div>
+            </form>
+            <form [formGroup]="merchantInfoForm" *ngIf="userRoles.ROLE_MERCHANT">
+              <div class="form-group has-default bmd-form-group d-flex">
+                <label class="col-form-label w160">Email</label>
+                <input type="email" class="form-control" placeholder="" formControlName="email" [readOnly]="!isEditMode">
+              </div>
+              <div class="form-group has-default bmd-form-group d-flex">
+                <label class="col-form-label w160">Номер телефона</label>
+                <input type="text" class="form-control" placeholder="" formControlName="phone" [readOnly]="!isEditMode">
+              </div>
+              <div class="form-group has-default bmd-form-group d-flex">
+                <label class="col-form-label w160">ИИН/БИН</label>
+                <input type="text" class="form-control" placeholder="" formControlName="iinbin" [readOnly]="!isEditMode">
+              </div>
+              <div class="form-group has-default bmd-form-group d-flex">
+                <label class="col-form-label w160">Наименование</label>
+                <input type="text" class="form-control" placeholder="" formControlName="mname" [readOnly]="!isEditMode">
+              </div>
+              <div class="form-group has-default bmd-form-group d-flex">
+                <label class="col-form-label w160">Юридический адрес</label>
+                <input type="text" class="form-control" placeholder="" formControlName="uaddress" [readOnly]="!isEditMode">
+              </div>
+              <div class="form-group has-default bmd-form-group d-flex">
+                <label class="col-form-label w160">Фактический адрес</label>
+                <input type="text" class="form-control" placeholder="" formControlName="faddress" [readOnly]="!isEditMode">
+              </div>
+              <div class="form-group has-default bmd-form-group d-flex">
+                <label class="col-form-label w160">ФИО Руководитель</label>
+                <input type="text" class="form-control" placeholder="" formControlName="headname" [readOnly]="!isEditMode">
+              </div>
+              <div class="form-group has-default bmd-form-group d-flex">
+                <label class="col-form-label w160">ФИО ГЛ. бухгалтер</label>
+                <input type="text" class="form-control" placeholder="" formControlName="accountant" [readOnly]="!isEditMode">
+              </div>
+              <div class="form-group has-default bmd-form-group d-flex">
+                <label class="col-form-label w160">Основной номер телефона</label>
+                <input type="text" class="form-control" placeholder="" formControlName="mainphone" [readOnly]="!isEditMode">
+              </div>
+              <div class="form-group has-default bmd-form-group d-flex">
+                <label class="col-form-label w160">Банк Клиента</label>
+                <input type="text" class="form-control" placeholder="" formControlName="bankname" [readOnly]="!isEditMode">
+              </div>
+              <div class="form-group has-default bmd-form-group d-flex">
+                <label class="col-form-label w160">ИИК</label>
+                <input type="text" class="form-control" placeholder="" formControlName="iik" [readOnly]="!isEditMode">
+              </div>
+              <div class="form-group has-default bmd-form-group d-flex">
+                <label class="col-form-label w160">БИК</label>
+                <input type="text" class="form-control" placeholder="" formControlName="bik" [readOnly]="!isEditMode">
+              </div>
+            </form>
+            <a href="#" *ngIf="!isEditMode" class="btn btn-success btn-round" style="margin-left: 202px" (click)="$event.preventDefault();isEditMode=true">изменить данные<div class="ripple-container"></div></a>
+            <a href="#" *ngIf="isEditMode" class="btn btn-success btn-round" style="margin-left: 202px" (click)="$event.preventDefault();editUserData()">Сохранить<div class="ripple-container"></div></a>
           </div>
         </div>
-        <div class="card user-options ml-3">
+        <div class="card user-options ml-3" *ngIf="userRoles.ROLE_MERCHANT">
           <div class="card-body">
             <div class="d-flex flex-column align-items-center">
-              <span class="id">ID 63466</span>
-              <h4 class="user-info-title">ТОО «Мобайл Телеком-Сервис»</h4>
-              <span class="d-flex align-items-center success"><i class="material-icons">verified_user</i>активирован</span>
+              <span class="id">ID {{userId}}</span>
+              <h4 class="user-info-title">{{userInfoForm.value.mname}}</h4>
+              <span class="d-flex align-items-center success" *ngIf="userInfoForm.value.active"><i class="material-icons">verified_user</i>активирован</span>
+              <span class="d-flex align-items-center danger" *ngIf="!!!userInfoForm.value.active"><i class="material-icons">gpp_bad</i>не активирован</span>
               <div class="d-flex mt-5">
                 <label class="col-form-label label-checkbox pt-0">Роль:</label>
                 <div class="row ml-1">
                   <div>
+                    <form [formGroup]="userRolesForm">
                     <div class="form-check">
                       <label class="form-check-label">
-                        <input class="form-check-input" type="checkbox" value="">Администратор
+                        <input class="form-check-input" formControlName="ROLE_ADMIN" type="checkbox" value="">Администратор
                         <span class="form-check-sign">
                               <span class="check"></span>
                             </span>
@@ -144,7 +146,7 @@
                     </div>
                     <div class="form-check">
                       <label class="form-check-label">
-                        <input class="form-check-input" type="checkbox" value="">Оператор
+                        <input class="form-check-input" formControlName="ROLE_OPERATOR" type="checkbox" value="">Оператор
                         <span class="form-check-sign">
                               <span class="check"></span>
                             </span>
@@ -152,12 +154,13 @@
                     </div>
                     <div class="form-check">
                       <label class="form-check-label">
-                        <input class="form-check-input" type="checkbox" value="">Мерчант
+                        <input class="form-check-input" formControlName="ROLE_MERCHANT" type="checkbox" value="">Мерчант
                         <span class="form-check-sign">
                               <span class="check"></span>
                             </span>
                       </label>
                     </div>
+                    </form>
                   </div>
                 </div>
               </div>

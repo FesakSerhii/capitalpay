@@ -22,6 +22,12 @@ export class UserService {
   getUserRolesList(){
     return this.apiService.postJwt('api','/userlist/rolelist',token).toPromise();
   }
+  editUserData(newUserData) {
+    return this.apiService.postJwt('api', '/userlist/edituser', token, newUserData).toPromise();
+  }
+  getUserData(id){
+    return this.apiService.postJwt('api','/userlist/one',token,{id}).toPromise();
+  }
   getUserInfo(){
     return user;
   }

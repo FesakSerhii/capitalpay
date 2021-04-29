@@ -11,6 +11,8 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
 import {NgxMaskModule} from "ngx-mask";
+import {httpInterceptorProviders} from "./http-interceptors";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 @NgModule({
   declarations: [
@@ -19,6 +21,7 @@ import {NgxMaskModule} from "ngx-mask";
     LoginComponent
   ],
   imports: [
+    BrowserAnimationsModule,
     BrowserModule,
     AppRoutingModule,
     NgxSpinnerModule,
@@ -28,7 +31,7 @@ import {NgxMaskModule} from "ngx-mask";
     PerfectScrollbarModule,
     NgxMaskModule.forRoot(),
   ],
-  providers: [],
+  providers: [httpInterceptorProviders],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
