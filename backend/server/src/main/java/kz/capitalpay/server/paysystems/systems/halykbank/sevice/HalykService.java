@@ -73,16 +73,14 @@ public class HalykService {
         halykPayment.setTotalAmount(payment.getTotalAmount());
 
 
-
-
         logger.info("Halyk Payment: ", gson.toJson(halykPayment));
         Long id = halykPayment.getId();
-        logger.info("ID: {}",id);
-        logger.info("ID: {}",halykPayment.getId());
-        logger.info("ID: {}",id);
-
-        halykPayment.setHalykId(String.format("%1$14s", id.toString())
-                .replace(' ', '0'));
+        logger.info("ID: {}", id);
+        logger.info("ID: {}", halykPayment.getId());
+        logger.info("ID: {}", id);
+        String paddingID = String.format("%1$14s", id.toString())
+                .replace(' ', '0');
+        halykPayment.setHalykId(paddingID);
         logger.info("Halyk ID: ", halykPayment.getHalykId());
 
         KKBSign kkbSign = new KKBSign();
