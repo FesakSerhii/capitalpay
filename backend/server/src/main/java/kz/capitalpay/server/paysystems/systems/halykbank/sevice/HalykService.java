@@ -80,6 +80,7 @@ public class HalykService {
         logger.info("ID: {}", id);
         String paddingID = String.format("%1$14s", id)
                 .replace(' ', '0');
+        logger.info(paddingID);
         halykPayment.setHalykId(paddingID);
         logger.info("Halyk ID: ", halykPayment.getHalykId());
 
