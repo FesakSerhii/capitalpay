@@ -5,6 +5,8 @@ import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.paysystems.systems.halykbank.kkbsign.Base64;
 import kz.capitalpay.server.paysystems.systems.halykbank.kkbsign.KKBSign;
+import kz.capitalpay.server.paysystems.systems.halykbank.model.HalykPayment;
+import kz.capitalpay.server.paysystems.systems.halykbank.repository.HalykPaymentRepository;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -50,7 +52,25 @@ public class HalykService {
     @Autowired
     PaymentService paymentService;
 
+    @Autowired
+    HalykPaymentRepository halykPaymentRepository;
+
     public String getPaymentButton(Payment payment) {
+
+        HalykPayment halykPayment = new HalykPayment();
+        halykPayment.setTimestamp(System.currentTimeMillis());
+        halykPayment.setLocalDateTime(LocalDateTime.now());
+        halykPayment.setBillId(payment.getBillId());
+        halykPayment.setCashboxId(payment.getCashboxId());
+        halykPayment.setCurrency(payment.getCurrency());
+        halykPayment.setPaymentId(payment.getGuid());
+        halykPayment.setStatus(payment.getStatus());
+        halykPayment.setTotalAmount(payment.getTotalAmount());
+
+        halykPaymentRepository.save(halykPayment);
+        halykPayment.setHalykId(String.format("%1$14s", halykPayment.getId().toString())
+                .replace(' ', '0'));
+        logger.info("Halyk ID: ", halykPayment.getHalykId());
 
         KKBSign kkbSign = new KKBSign();
 
@@ -65,7 +85,7 @@ public class HalykService {
         String failureBackLink = cashboxSettingsService.getField(payment.getCashboxId(), CashboxSettingsService.REDIRECT_FAILED_URL);
         String postLink = cashboxSettingsService.getField(payment.getCashboxId(), CashboxSettingsService.INTERACTION_URL);
 
-        return "<form class=\"tpsform_radioitem\" name=\"SendOrder\" method=\"post\" action=\"" + sendOrderActionLink + "/jsp/process/logon.jsp\">" +
+        String form = "<form class=\"tpsform_radioitem\" name=\"SendOrder\" method=\"post\" action=\"" + sendOrderActionLink + "/jsp/process/logon.jsp\">" +
                 "<input type=\"hidden\" name=\"Signed_Order_B64\" value=\"" + base64Content + "\"><br>" +
                 "<input type=\"hidden\" name=\"email\" size=50 maxlength=50  value=\"" + mailUser + "\"><br>" +
                 "<input type=\"hidden\" name=\"Language\" value=\"rus\"><br>" +
@@ -78,7 +98,9 @@ public class HalykService {
                 "<span class=\"tpsform_radioname\">АО \"Народный банк Казахстана\"</span>" +
                 "</button>\n" +
                 "</form>";
+        halykPayment.setForm(form);
 
+        return form;
     }
 
 
@@ -124,7 +146,7 @@ public class HalykService {
                     logger.info("....TODO: Process Payment....");
 
                 }
-            }else {
+            } else {
                 logger.error("Amount not equal. Payment summ: {} Order amount {}", paymentFromBd.getTotalAmount(), amount);
             }
 
@@ -167,7 +189,7 @@ public class HalykService {
             String signedXML = String.format("<document>%s<merchant_sign type=\"RSA\" cert_id=\"%s\">%s</merchant_sign></document>",
                     merchantXML, cert_id, signature);
             logger.info(signedXML);
-            String response = restTemplate.getForObject(sendOrderActionLink+"/jsp/remote/control.jsp", String.class);
+            String response = restTemplate.getForObject(sendOrderActionLink + "/jsp/remote/control.jsp", String.class);
             logger.info(response);
             return true;
         } catch (Exception e) {
