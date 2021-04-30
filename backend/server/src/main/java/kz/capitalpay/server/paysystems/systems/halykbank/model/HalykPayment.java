@@ -23,6 +23,8 @@ public class HalykPayment {
     String status;
     @Column(length = 16383)
     String form;
+    @Column(length = 16383)
+    String xmlResponse;
 
     public Long getId() {
         return id;
@@ -110,5 +112,13 @@ public class HalykPayment {
 
     public void setForm(String form) {
         this.form = form;
+    }
+
+    public String getXmlResponse() {
+        return xmlResponse;
+    }
+
+    public void setXmlResponse(String xmlResponse) {
+        this.xmlResponse = xmlResponse;
     }
 }

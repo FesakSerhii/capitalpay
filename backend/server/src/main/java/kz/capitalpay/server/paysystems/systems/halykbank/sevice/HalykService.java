@@ -149,6 +149,9 @@ public class HalykService {
             logger.info("amount: {}", amount);
 
             HalykPayment halykPayment = halykPaymentRepository.findTopByHalykId(order_id);
+            halykPayment.setXmlResponse(response);
+            halykPaymentRepository.save(halykPayment);
+
             Payment paymentFromBd = paymentService.getPayment(halykPayment.getPaymentId());
 
             if (paymentFromBd.getTotalAmount().equals(new BigDecimal(amount))) {
@@ -188,7 +191,7 @@ public class HalykService {
 
             String merchantXML = String.format("<merchant id=\"%s\"><command type=\"complete\"/><payment reference=\"%s\" approval_code=\"%s\" orderid=\"%s\" amount=\"%s\" currency_code=\"%s\"/></merchant>",
                     merchant_id, reference, approval_code, orderid, amount, currency_code);
-            logger.info(merchantXML);
+            logger.info("merchantXML: {}", merchantXML);
             KKBSign kkbSign = new KKBSign();
             Map<String, String> config = kkbSign.getConfig(kkbsignCfgPath);
             String signature = kkbSign.sign64(merchantXML,
@@ -198,9 +201,9 @@ public class HalykService {
                     config.get("storepass"));
             String signedXML = String.format("<document>%s<merchant_sign type=\"RSA\" cert_id=\"%s\">%s</merchant_sign></document>",
                     merchantXML, cert_id, signature);
-            logger.info(signedXML);
+            logger.info("signedXML: {}",signedXML);
             String response = restTemplate.getForObject(sendOrderActionLink + "/jsp/remote/control.jsp", String.class);
-            logger.info(response);
+            logger.info("response: {}",response);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
