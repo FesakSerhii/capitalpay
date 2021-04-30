@@ -19,12 +19,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import java.util.logging.Level;
 
 @Service
 public class HalykService {
@@ -206,7 +210,7 @@ public class HalykService {
                     merchantXML, cert_id, signature);
             logger.info("signedXML: {}", signedXML);
             String url = sendOrderActionLink + "/jsp/remote/control.jsp?"
-                    + URLEncoder.encode(signedXML, StandardCharsets.UTF_8.toString());
+                    + escapeJavascript(signedXML);
             logger.info("Url: {}", url);
             String response = restTemplate.getForObject(url, String.class);
             logger.info("response: {}", response);
@@ -217,4 +221,37 @@ public class HalykService {
         return false;
     }
 
+
+    private static ScriptEngine engine = new ScriptEngineManager()
+            .getEngineByName("JavaScript");
+
+    /**
+     * Encoding if need escaping %$&+,/:;=?@<>#%
+     *
+     * @param str should be encoded
+     * @return encoded Result
+     */
+    public String escapeJavascript(String str) {
+        try {
+            return engine.eval(String.format("escape(\"%s\")",
+                    str.replaceAll("%20", " "))).toString()
+                    .replaceAll("%3A", ":")
+                    .replaceAll("%2F", "/")
+                    .replaceAll("%3B", ";")
+                    .replaceAll("%40", "@")
+                    .replaceAll("%3C", "<")
+                    .replaceAll("%3E", ">")
+                    .replaceAll("%3D", "=")
+                    .replaceAll("%26", "&")
+                    .replaceAll("%25", "%")
+                    .replaceAll("%24", "$")
+                    .replaceAll("%23", "#")
+                    .replaceAll("%2B", "+")
+                    .replaceAll("%2C", ",")
+                    .replaceAll("%3F", "?");
+        } catch (ScriptException ex) {
+            logger.error(ex.getMessage());
+            return null;
+        }
+    }
 }
