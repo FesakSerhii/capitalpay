@@ -8,7 +8,6 @@ import kz.capitalpay.server.paysystems.systems.halykbank.kkbsign.Base64;
 import kz.capitalpay.server.paysystems.systems.halykbank.kkbsign.KKBSign;
 import kz.capitalpay.server.paysystems.systems.halykbank.model.HalykPayment;
 import kz.capitalpay.server.paysystems.systems.halykbank.repository.HalykPaymentRepository;
-import org.apache.tomcat.util.digester.DocumentProperties;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -18,11 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
+import org.apache.commons.codec.net.URLCodec;
 import java.math.BigDecimal;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -206,7 +202,7 @@ public class HalykService {
             String signedXML = String.format("<document>%s<merchant_sign type=\"RSA\" cert_id=\"%s\">%s</merchant_sign></document>",
                     merchantXML, cert_id, signature);
             logger.info("signedXML: {}", signedXML);
-            String url = sendOrderActionLink + "/jsp/remote/control.jsp?" + signedXML;
+            String url = sendOrderActionLink + "/jsp/remote/control.jsp?" + URLCodec.encodeUrl(signedXML);
             logger.info("Url: {}", url);
             String response = restTemplate.getForObject(url, String.class);
             logger.info("response: {}", response);
