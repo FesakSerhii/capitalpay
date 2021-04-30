@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -204,7 +206,7 @@ public class HalykService {
                     merchantXML, cert_id, signature);
             logger.info("signedXML: {}", signedXML);
             String url = sendOrderActionLink + "/jsp/remote/control.jsp?"
-                    + new String( URLCodec.encodeUrl(null, signedXML.getBytes()));
+                    + URLEncoder.encode(signedXML, StandardCharsets.UTF_8.toString());
             logger.info("Url: {}", url);
             String response = restTemplate.getForObject(url, String.class);
             logger.info("response: {}", response);
