@@ -185,8 +185,8 @@ public class KKBSign implements Serializable {
     private String value(final String s, final String str) {
         System.out.println("Value:" + str);
         final int n = s.indexOf(34, s.indexOf(str)) + 1;
-        System.out.println(s.indexOf(str));
-        System.out.println(s.indexOf(34, s.indexOf(str)));
+        System.out.println(s.indexOf(str)+ s.substring(s.indexOf(str),3));
+        System.out.println(s.indexOf(34, s.indexOf(str))+s.substring(s.indexOf(34, s.indexOf(str)),3));
         System.out.println(n);
         System.out.println(s.substring(n, s.indexOf(34, n)));
         System.out.println("\n");
