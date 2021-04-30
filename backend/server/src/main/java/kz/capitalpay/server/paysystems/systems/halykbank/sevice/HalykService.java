@@ -31,6 +31,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
+import static kz.capitalpay.server.simple.service.SimpleService.SUCCESS;
+
 @Service
 public class HalykService {
 
@@ -162,22 +164,30 @@ public class HalykService {
 
             Payment paymentFromBd = paymentService.getPayment(halykPayment.getPaymentId());
 
-            if (paymentFromBd.getTotalAmount().equals(new BigDecimal(amount))) {
-                if (paymentComplite(xmlDoc)) {
-                    logger.info("....TODO: Process Payment....");
-
-                }
-            } else {
+            if (!paymentFromBd.getTotalAmount().equals(new BigDecimal(amount))) {
                 logger.error("Amount not equal. Payment summ: {} Order amount {}", paymentFromBd.getTotalAmount(), amount);
+                return -1;
             }
 
             KKBSign kkbsign = new KKBSign();
 
             String ks = kkbsignCfgBank;
-            String result = kkbsign.verify(sBank.trim(), sbank_sign.trim(), ks, "kkbca", "1q2w3e4r") + "";
+            boolean result = kkbsign.verify(sBank.trim(), sbank_sign.trim(), ks, "kkbca", "1q2w3e4r");
             logger.info("Verify signature :{}", result);
+            if (!result) {
+                return -1;
+            }
+            boolean complited = paymentComplite(xmlDoc);
+            if (complited) {
+                logger.info("...Process Payment....");
 
-            return 0;
+                halykPayment.setStatus(SUCCESS);
+                halykPaymentRepository.save(halykPayment);
+                paymentService.success(paymentFromBd);
+                return 0;
+            }else{
+                logger.error("Payment complited: {}",complited);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -219,6 +229,8 @@ public class HalykService {
             String response = restTemplate.getForObject(sendOrderActionLink + "/jsp/remote/control.jsp?{signedXML}",
                     String.class, vars);
             logger.info("response: {}", response);
+            // TODO: analyze response
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();

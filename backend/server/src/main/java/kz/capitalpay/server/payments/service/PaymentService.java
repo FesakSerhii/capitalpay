@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static kz.capitalpay.server.payments.service.PaymentLogService.CREATE_NEW_PAYMENT;
+import static kz.capitalpay.server.simple.service.SimpleService.SUCCESS;
 
 @Service
 public class PaymentService {
@@ -51,4 +52,9 @@ public class PaymentService {
 
     public Payment getPaymentByOrderId(String orderId) {
         return paymentRepository.findTopByBillId(orderId);    }
+
+    public void success(Payment paymentFromBd) {
+        paymentFromBd.setStatus(SUCCESS);
+        paymentRepository.save(paymentFromBd);
+    }
 }

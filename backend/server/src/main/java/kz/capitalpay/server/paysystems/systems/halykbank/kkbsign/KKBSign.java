@@ -56,15 +56,12 @@ public class KKBSign implements Serializable {
             final byte[] array = new byte[fileInputStream.available()];
             fileInputStream.read(array);
             final String config = new String(array);
-            System.out.println("Config: "+config);
             final String keystore = this.value(config, "keystore");
             final String alias = this.value(config, "alias");
             final String keypass = this.value(config, "keypass");
-            System.out.println("Keypass: "+keypass);
             final String storepass = this.value(config, "storepass");
             final String template = this.value(config, "template");
             final String certificate = this.value(config, "certificate");
-            System.out.println("Certificate: " + certificate);
             final String merchant_id = this.value(config, "merchant_id");
             final String currency = this.value(config, "currency");
             final String merchant_name = this.value(config, "merchant_name");
@@ -72,9 +69,7 @@ public class KKBSign implements Serializable {
             final byte[] array2 = new byte[fileInputStream2.available()];
             fileInputStream2.read(array2);
             final String replace = this.replace(this.replace(this.replace(this.replace(this.replace(this.replace(this.replace(new String(array2), "%order_id%", ord), "%amount%", sum), "%amount%", sum), "%certificate%", certificate), "%merchant_id%", merchant_id), "%currency%", currency), "%merchant_name%", merchant_name);
-            System.out.println("Replace: "+replace);
             final String string = "<document>" + (replace + "<merchant_sign type=\"RSA\">" + this.sign64(replace, keystore, alias, keypass, storepass) + "</merchant_sign>") + "</document>";
-            System.out.println("String: " + string);
             final Base64 base64 = new Base64();
             return new String(Base64.encode(string.getBytes()));
         } catch (Exception ex) {
@@ -91,14 +86,10 @@ public class KKBSign implements Serializable {
             final char[] charArray2 = storepass.toCharArray();
             if (this.debug) {
                 final char[] encode = Base64.encode(MessageDigest.getInstance(this.debughash).digest(bytes));
-                System.out.println(this.debughash + " Hash:");
-                System.out.println(new String(encode));
             }
             final KeyStore instance = KeyStore.getInstance(this.keystoretype);
             instance.load(new FileInputStream(keystore), charArray2);
             final Signature instance2 = Signature.getInstance(this.signalgorythm);
-            System.out.println("Alias: " + alias);
-            System.out.println("Pass: " + new String(charArray));
             instance2.initSign((PrivateKey) instance.getKey(alias, charArray));
             instance2.update(bytes);
             final byte[] sign = instance2.sign();
@@ -183,13 +174,7 @@ public class KKBSign implements Serializable {
     }
 
     private String value(final String s, final String str) {
-        System.out.println("Value:" + str);
-
-        System.out.println(s.indexOf(str));
-        System.out.println(s.indexOf( 34,s.indexOf(str)));
-        final int n = s.indexOf(34, s.indexOf(str)) + 1;
-        System.out.println(s.substring(n, s.indexOf(34, n)));
-        System.out.println("\n");
+         final int n = s.indexOf(34, s.indexOf(str)) + 1;
         return s.substring(n, s.indexOf(34, n));
     }
 
