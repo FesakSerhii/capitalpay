@@ -207,7 +207,7 @@ public class HalykService {
                     merchantXML, cert_id, signature);
             logger.info("signedXML: {}", signedXML);
             String url = sendOrderActionLink + "/jsp/remote/control.jsp?"
-                    + URLEncoder.encode(signedXML, StandardCharsets.UTF_16);
+                    + URLEncoder.encode(signedXML, StandardCharsets.US_ASCII);
             logger.info("Url: {}", url);
             String response = restTemplate.getForObject(url, String.class);
             logger.info("response: {}", response);
