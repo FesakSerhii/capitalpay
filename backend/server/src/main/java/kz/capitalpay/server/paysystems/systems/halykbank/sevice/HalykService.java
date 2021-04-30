@@ -27,6 +27,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -209,10 +210,12 @@ public class HalykService {
             String signedXML = String.format("<document>%s<merchant_sign type=\"RSA\" cert_id=\"%s\">%s</merchant_sign></document>",
                     merchantXML, cert_id, signature);
             logger.info("signedXML: {}", signedXML);
-            String url = sendOrderActionLink + "/jsp/remote/control.jsp?"
-                    + signedXML;
-            logger.info("Url: {}", url);
-            String response = restTemplate.getForObject(url, String.class);
+
+            Map<String, String> vars = new HashMap<>();
+            vars.put("signedXML", signedXML);
+
+            String response = restTemplate.getForObject(sendOrderActionLink + "/jsp/remote/control.jsp?{signedXML}",
+                    String.class, vars);
             logger.info("response: {}", response);
             return true;
         } catch (Exception e) {
@@ -220,7 +223,6 @@ public class HalykService {
         }
         return false;
     }
-
 
 
 }
