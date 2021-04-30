@@ -60,10 +60,11 @@ public class KKBSign implements Serializable {
             final String keystore = this.value(config, "keystore");
             final String alias = this.value(config, "alias");
             final String keypass = this.value(config, "keypass");
+            System.out.println("Keypass: "+keypass);
             final String storepass = this.value(config, "storepass");
             final String template = this.value(config, "template");
             final String certificate = this.value(config, "certificate");
-            System.out.println("certificate: " + certificate);
+            System.out.println("Certificate: " + certificate);
             final String merchant_id = this.value(config, "merchant_id");
             final String currency = this.value(config, "currency");
             final String merchant_name = this.value(config, "merchant_name");
@@ -182,7 +183,13 @@ public class KKBSign implements Serializable {
     }
 
     private String value(final String s, final String str) {
+        System.out.println("Value:");
         final int n = s.indexOf(34, s.indexOf(str)) + 1;
+        System.out.println(s.indexOf(str));
+        System.out.println(s.indexOf(34, s.indexOf(str)));
+        System.out.println(n);
+        System.out.println(s.substring(n, s.indexOf(34, n)));
+        System.out.println("\n");
         return s.substring(n, s.indexOf(34, n));
     }
 
