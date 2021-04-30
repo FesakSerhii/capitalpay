@@ -149,7 +149,7 @@ public class HalykService {
             logger.info("amount: {}", amount);
 
             HalykPayment halykPayment = halykPaymentRepository.findTopByHalykId(order_id);
-            Payment paymentFromBd = paymentService.getPaymentByOrderId(halykPayment.getPaymentId());
+            Payment paymentFromBd = paymentService.getPayment(halykPayment.getPaymentId());
 
             if (paymentFromBd.getTotalAmount().equals(new BigDecimal(amount))) {
                 if (paymentComplite(xmlDoc)) {
