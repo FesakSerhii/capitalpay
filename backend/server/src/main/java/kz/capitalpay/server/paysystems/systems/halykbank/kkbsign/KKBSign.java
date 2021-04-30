@@ -70,6 +70,7 @@ public class KKBSign implements Serializable {
             final byte[] array2 = new byte[fileInputStream2.available()];
             fileInputStream2.read(array2);
             final String replace = this.replace(this.replace(this.replace(this.replace(this.replace(this.replace(this.replace(new String(array2), "%order_id%", ord), "%amount%", sum), "%amount%", sum), "%certificate%", certificate), "%merchant_id%", merchant_id), "%currency%", currency), "%merchant_name%", merchant_name);
+            System.out.println("Replace: "+replace);
             final String string = "<document>" + (replace + "<merchant_sign type=\"RSA\">" + this.sign64(replace, keystore, alias, keypass, storepass) + "</merchant_sign>") + "</document>";
             System.out.println("String: " + string);
             final Base64 base64 = new Base64();
