@@ -22,6 +22,7 @@ import org.springframework.web.client.RestTemplate;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -207,7 +208,7 @@ public class HalykService {
             logger.info("signedXML: {}",signedXML);
             String response = restTemplate
                     .getForObject(sendOrderActionLink + "/jsp/remote/control.jsp?"
-                                    + URLEncoder.encode(signedXML, Charset.defaultCharset()),
+                                    + URLEncoder.encode(signedXML, StandardCharsets.UTF_8),
                     String.class);
             logger.info("response: {}",response);
             return true;
