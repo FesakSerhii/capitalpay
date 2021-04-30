@@ -206,7 +206,7 @@ public class HalykService {
                     merchantXML, cert_id, signature);
             logger.info("signedXML: {}",signedXML);
             String response = restTemplate
-                    .getForObject(sendOrderActionLink + "/jsp/remote/control.jsp"
+                    .getForObject(sendOrderActionLink + "/jsp/remote/control.jsp?"
                                     + URLEncoder.encode(signedXML, Charset.defaultCharset()),
                     String.class);
             logger.info("response: {}",response);
