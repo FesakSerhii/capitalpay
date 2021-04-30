@@ -196,6 +196,8 @@ public class HalykService {
             String amount = Payment.attribute("amount").getValue();
             String currency_code = Order.attribute("currency").getValue();
             String cert_id = Merchant.attribute("cert_id").getValue();
+            logger.info("Merchant: {}", Merchant.asXML());
+            logger.info("cert_id: {}", cert_id);
 
             String merchantXML = String.format("<merchant id=\"%s\"><command type=\"complete\"/><payment reference=\"%s\" approval_code=\"%s\" orderid=\"%s\" amount=\"%s\" currency_code=\"%s\"/></merchant>",
                     merchant_id, reference, approval_code, orderid, amount, currency_code);
