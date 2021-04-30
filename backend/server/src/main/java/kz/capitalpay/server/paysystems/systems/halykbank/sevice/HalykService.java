@@ -205,12 +205,12 @@ public class HalykService {
                     config.get("storepass"));
             String signedXML = String.format("<document>%s<merchant_sign type=\"RSA\" cert_id=\"%s\">%s</merchant_sign></document>",
                     merchantXML, cert_id, signature);
-            logger.info("signedXML: {}",signedXML);
-            String response = restTemplate
-                    .getForObject(sendOrderActionLink + "/jsp/remote/control.jsp?"
-                                    + URLEncoder.encode(signedXML, StandardCharsets.UTF_8),
-                    String.class);
-            logger.info("response: {}",response);
+            logger.info("signedXML: {}", signedXML);
+            String url = sendOrderActionLink + "/jsp/remote/control.jsp?"
+                    + URLEncoder.encode(signedXML, StandardCharsets.UTF_16);
+            logger.info("Url: {}", url);
+            String response = restTemplate.getForObject(url, String.class);
+            logger.info("response: {}", response);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
