@@ -56,6 +56,7 @@ public class KKBSign implements Serializable {
             final byte[] array = new byte[fileInputStream.available()];
             fileInputStream.read(array);
             final String config = new String(array);
+            System.out.println("Config: "+config);
             final String keystore = this.value(config, "keystore");
             final String alias = this.value(config, "alias");
             final String keypass = this.value(config, "keypass");
