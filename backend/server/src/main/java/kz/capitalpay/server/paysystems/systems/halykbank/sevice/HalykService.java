@@ -203,7 +203,8 @@ public class HalykService {
             String signedXML = String.format("<document>%s<merchant_sign type=\"RSA\" cert_id=\"%s\">%s</merchant_sign></document>",
                     merchantXML, cert_id, signature);
             logger.info("signedXML: {}", signedXML);
-            String url = sendOrderActionLink + "/jsp/remote/control.jsp?" + URLCodec.encodeUrl(null, signedXML.getBytes());
+            String url = sendOrderActionLink + "/jsp/remote/control.jsp?"
+                    + new String( URLCodec.encodeUrl(null, signedXML.getBytes()));
             logger.info("Url: {}", url);
             String response = restTemplate.getForObject(url, String.class);
             logger.info("response: {}", response);
