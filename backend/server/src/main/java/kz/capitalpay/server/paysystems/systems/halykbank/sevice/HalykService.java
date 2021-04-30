@@ -107,6 +107,7 @@ public class HalykService {
                 "</button>\n" +
                 "</form>";
         halykPayment.setForm(form);
+        halykPaymentRepository.save(halykPayment);
 
         return form;
     }
@@ -147,7 +148,8 @@ public class HalykService {
             logger.info("paymentTime {}", paymentTime);
             logger.info("amount: {}", amount);
 
-            Payment paymentFromBd = paymentService.getPaymentByOrderId(order_id);
+            HalykPayment halykPayment = halykPaymentRepository.findTopByBillId(order_id);
+            Payment paymentFromBd = paymentService.getPaymentByOrderId(halykPayment.getPaymentId());
 
             if (paymentFromBd.getTotalAmount().equals(new BigDecimal(amount))) {
                 if (paymentComplite(xmlDoc)) {
