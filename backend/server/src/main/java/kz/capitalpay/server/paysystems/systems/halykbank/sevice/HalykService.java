@@ -1,6 +1,8 @@
 package kz.capitalpay.server.paysystems.systems.halykbank.sevice;
 
 import com.google.gson.Gson;
+import kz.capitalpay.server.cashbox.model.Cashbox;
+import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
@@ -24,6 +26,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
+import static kz.capitalpay.server.simple.service.SimpleService.FAILED;
 import static kz.capitalpay.server.simple.service.SimpleService.SUCCESS;
 
 @Service
@@ -56,6 +59,12 @@ public class HalykService {
     @Value("${remote.api.addres}")
     String remoteApiAddress;
 
+    @Value("${kkbsign.merchant_id}")
+    String halykMerchantId;
+
+    @Value("${kkbsign.certificate}")
+    String halykCertId;
+
     @Autowired
     CashboxSettingsService cashboxSettingsService;
 
@@ -64,6 +73,9 @@ public class HalykService {
 
     @Autowired
     HalykPaymentRepository halykPaymentRepository;
+
+    @Autowired
+    CashboxService cashboxService;
 
     public String getPaymentButton(Payment payment) {
 
@@ -258,10 +270,39 @@ public class HalykService {
     }
 
     private String getPaymentStatus(HalykPayment halykPayment) {
+        try {
 
-        //TODO: сделать реальный запрос статуса платежа
+            String merchant_id = halykMerchantId;
+            String cert_id = halykCertId;
+            String orderid = halykPayment.getBillId();
 
-        return SUCCESS;
+            String merchantXML = String.format("<merchant id=\"%s\"><order id=\"%s\"/></merchant>",
+                    merchant_id,  orderid);
+            logger.info("merchantXML: {}", merchantXML);
+            KKBSign kkbSign = new KKBSign();
+            Map<String, String> config = kkbSign.getConfig(kkbsignCfgPath);
+            String signature = kkbSign.sign64(merchantXML,
+                    config.get("keystore"),
+                    config.get("alias"),
+                    config.get("keypass"),
+                    config.get("storepass"));
+            String signedXML = String.format("<document>%s<merchant_sign type=\"RSA\" cert_id=\"%s\">%s</merchant_sign></document>",
+                    merchantXML, cert_id, signature);
+            logger.info("signedXML: {}", signedXML);
+
+            Map<String, String> vars = new HashMap<>();
+            vars.put("signedXML", signedXML);
+
+            String response = restTemplate.getForObject(sendOrderActionLink + "/jsp/remote/checkOrdern.jsp?{signedXML}",
+                    String.class, vars);
+            logger.info("response: {}", response);
+            // TODO: analyze response
+
+            return SUCCESS;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return FAILED;
 
     }
 }
