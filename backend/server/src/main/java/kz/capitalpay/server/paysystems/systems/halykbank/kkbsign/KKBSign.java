@@ -114,6 +114,11 @@ public class KKBSign implements Serializable {
             final byte[] bytes = s.getBytes();
             final byte[] decode = Base64.decode(s2.toCharArray());
             final char[] charArray = s3.toCharArray();
+
+            System.out.println("s: " + s);
+            System.out.println("s2: " + new String(decode));
+            System.out.println("s3: " + s3);
+
             final KeyStore instance = KeyStore.getInstance(this.keystoretype);
             instance.load(new FileInputStream(name), charArray);
             final Signature instance2 = Signature.getInstance(this.signalgorythm);
@@ -174,7 +179,7 @@ public class KKBSign implements Serializable {
     }
 
     private String value(final String s, final String str) {
-         final int n = s.indexOf(34, s.indexOf(str)) + 1;
+        final int n = s.indexOf(34, s.indexOf(str)) + 1;
         return s.substring(n, s.indexOf(34, n));
     }
 

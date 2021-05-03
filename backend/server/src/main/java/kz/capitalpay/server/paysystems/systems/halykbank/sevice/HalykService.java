@@ -296,7 +296,9 @@ public class HalykService {
             String response = restTemplate.getForObject(sendOrderActionLink + "/jsp/remote/checkOrdern.jsp?{signedXML}",
                     String.class, vars);
             logger.info("response: {}", response);
-            // TODO: analyze response
+
+            // TODO: checksignature and get Ststus
+
 
             return SUCCESS;
         } catch (Exception e) {
