@@ -108,19 +108,19 @@ public class KKBSign implements Serializable {
         }
     }
 
-    public synchronized boolean verify(final String s, final String s2, final String name, final String alias, final String s3) {
+    public synchronized boolean verify(final String xml, final String signature, final String cert, final String alias, final String password) {
         try {
             final Base64 base64 = new Base64();
-            final byte[] bytes = s.getBytes();
-            final byte[] decode = Base64.decode(s2.toCharArray());
-            final char[] charArray = s3.toCharArray();
+            final byte[] bytes = xml.getBytes();
+            final byte[] decode = Base64.decode(signature.toCharArray());
+            final char[] charArray = password.toCharArray();
 
-            System.out.println("s: " + s);
-            System.out.println("s2: " + new String(decode));
-            System.out.println("s3: " + s3);
+            System.out.println("xml: " + xml);
+            System.out.println("signature: " + signature);
+            System.out.println("s3: " + password);
 
             final KeyStore instance = KeyStore.getInstance(this.keystoretype);
-            instance.load(new FileInputStream(name), charArray);
+            instance.load(new FileInputStream(cert), charArray);
             final Signature instance2 = Signature.getInstance(this.signalgorythm);
             instance2.initVerify(instance.getCertificate(alias));
             instance2.update(bytes);
