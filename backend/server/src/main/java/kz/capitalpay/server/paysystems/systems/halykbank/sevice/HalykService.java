@@ -1,7 +1,6 @@
 package kz.capitalpay.server.paysystems.systems.halykbank.sevice;
 
 import com.google.gson.Gson;
-import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
@@ -9,7 +8,6 @@ import kz.capitalpay.server.paysystems.systems.halykbank.kkbsign.Base64;
 import kz.capitalpay.server.paysystems.systems.halykbank.kkbsign.KKBSign;
 import kz.capitalpay.server.paysystems.systems.halykbank.model.HalykPayment;
 import kz.capitalpay.server.paysystems.systems.halykbank.repository.HalykPaymentRepository;
-import org.apache.commons.codec.net.URLCodec;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -18,20 +16,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import java.math.BigDecimal;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
 import static kz.capitalpay.server.simple.service.SimpleService.SUCCESS;
 
@@ -106,7 +97,7 @@ public class HalykService {
 
 //        String backLink = cashboxSettingsService.getField(payment.getCashboxId(), CashboxSettingsService.REDIRECT_SUCCESS_URL);
 //        String backLink = cashboxSettingsService.getField(payment.getCashboxId(), CashboxSettingsService.REDIRECT_SUCCESS_URL);
-        String backLink = remoteApiAddress + "/halyk/backlink?paymentId=" + paddingID;
+        String backLink = remoteApiAddress + "/halyk/backlink?paymentid=" + paddingID;
 //        String failureBackLink = cashboxSettingsService.getField(payment.getCashboxId(), CashboxSettingsService.REDIRECT_FAILED_URL);
 
         String postLink = cashboxSettingsService.getField(payment.getCashboxId(), CashboxSettingsService.INTERACTION_URL);
