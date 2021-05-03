@@ -1,6 +1,7 @@
 package kz.capitalpay.server.paysystems.systems.halykbank.sevice;
 
 import com.google.gson.Gson;
+import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
 import javax.script.ScriptEngine;
@@ -60,7 +62,7 @@ public class HalykService {
     @Value("${mail.user}")
     String mailUser;
 
-    @Value("${remote.api.addres}"    )
+    @Value("${remote.api.addres}")
     String remoteApiAddress;
 
     @Autowired
@@ -104,7 +106,7 @@ public class HalykService {
 
 //        String backLink = cashboxSettingsService.getField(payment.getCashboxId(), CashboxSettingsService.REDIRECT_SUCCESS_URL);
 //        String backLink = cashboxSettingsService.getField(payment.getCashboxId(), CashboxSettingsService.REDIRECT_SUCCESS_URL);
-        String backLink = remoteApiAddress+"/halyk/backlink?paymentId="+paddingID;
+        String backLink = remoteApiAddress + "/halyk/backlink?paymentId=" + paddingID;
 //        String failureBackLink = cashboxSettingsService.getField(payment.getCashboxId(), CashboxSettingsService.REDIRECT_FAILED_URL);
 
         String postLink = cashboxSettingsService.getField(payment.getCashboxId(), CashboxSettingsService.INTERACTION_URL);
@@ -245,4 +247,30 @@ public class HalykService {
     }
 
 
+    public String getRedirectUrlForPayment(String halykId) {
+        try {
+            HalykPayment halykPayment = halykPaymentRepository.findTopByHalykId(halykId);
+            String status = getPaymentStatus(halykPayment);
+            String billid = halykPayment.getBillId();
+            String paymentid = halykPayment.getPaymentId();
+            String url = cashboxSettingsService.getField(halykPayment.getCashboxId(), CashboxSettingsService.REDIRECT_URL)
+                    + "?status=" + status
+                    + "&billid=" + billid
+                    + "&paymentid=" + paymentid;
+
+            return url;
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("Halyk ID: {}", halykId);
+        }
+        return null;
+    }
+
+    private String getPaymentStatus(HalykPayment halykPayment) {
+
+        //TODO: сделать реальный запрос статуса платежа
+
+        return SUCCESS;
+
+    }
 }

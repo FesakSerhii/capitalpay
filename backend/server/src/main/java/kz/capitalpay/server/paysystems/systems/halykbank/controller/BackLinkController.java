@@ -9,7 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -26,12 +25,19 @@ public class BackLinkController {
     HalykService halykService;
 
     @GetMapping("/halyk/backlink")
-    public void backLink(@RequestParam String paymentId, HttpServletRequest request, HttpServletResponse response) {
-        logger.info(paymentId);
-        try {
-            response.getWriter().write("<h1>" + paymentId + "</h1>");
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void backLink(@RequestParam String paymentid, HttpServletRequest request, HttpServletResponse response) {
+
+        String redirectUrl = halykService.getRedirectUrlForPayment(paymentid);
+        if (redirectUrl == null) {
+            logger.error("Payment ID: {}", paymentid);
+            try {
+                response.getWriter().write("Error");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }else {
+            response.setHeader("Location", redirectUrl);
+            response.setStatus(302);
         }
     }
 

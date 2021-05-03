@@ -24,6 +24,7 @@ public class CashboxSettingsService {
     public static final String CASHBOX_CURRENCY_LIST = "currencylist";
     public static final String CASHBOX_PAYSYSTEM_LIST = "paysystemlist";
     public static final String INTERACTION_URL = "interactionurl";
+    public static final String REDIRECT_URL = "redirecturl";
     public static final String REDIRECT_SUCCESS_URL = "redirectsuccess";
     public static final String REDIRECT_FAILED_URL = "redirectfailed";
     public static final String REDIRECT_PENDING_URL = "redirectpending";
