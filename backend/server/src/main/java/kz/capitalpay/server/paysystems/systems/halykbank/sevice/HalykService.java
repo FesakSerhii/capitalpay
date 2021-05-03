@@ -99,7 +99,9 @@ public class HalykService {
 
         String appendix = new String(Base64.encode((ticket).getBytes()));
 
-        String backLink = cashboxSettingsService.getField(payment.getCashboxId(), CashboxSettingsService.REDIRECT_SUCCESS_URL);
+//        String backLink = cashboxSettingsService.getField(payment.getCashboxId(), CashboxSettingsService.REDIRECT_SUCCESS_URL);
+//        String backLink = cashboxSettingsService.getField(payment.getCashboxId(), CashboxSettingsService.REDIRECT_SUCCESS_URL);
+        String backLink = "https://api.capitalpay.kz/halyk/backlink/success?paymentId="+paddingID;
         String failureBackLink = cashboxSettingsService.getField(payment.getCashboxId(), CashboxSettingsService.REDIRECT_FAILED_URL);
         String postLink = cashboxSettingsService.getField(payment.getCashboxId(), CashboxSettingsService.INTERACTION_URL);
 
@@ -185,8 +187,8 @@ public class HalykService {
                 halykPaymentRepository.save(halykPayment);
                 paymentService.success(paymentFromBd);
                 return 0;
-            }else{
-                logger.error("Payment complited: {}",complited);
+            } else {
+                logger.error("Payment complited: {}", complited);
             }
         } catch (Exception e) {
             e.printStackTrace();
