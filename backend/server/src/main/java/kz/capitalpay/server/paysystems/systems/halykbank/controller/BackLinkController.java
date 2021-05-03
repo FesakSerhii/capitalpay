@@ -25,7 +25,7 @@ public class BackLinkController {
     @Autowired
     HalykService halykService;
 
-    @GetMapping("/halyk/backlink/success")
+    @GetMapping("/halyk/backlink")
     public void backLink(@RequestParam String paymentId, HttpServletRequest request, HttpServletResponse response) {
         logger.info(paymentId);
         try {

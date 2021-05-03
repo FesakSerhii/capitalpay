@@ -60,6 +60,9 @@ public class HalykService {
     @Value("${mail.user}")
     String mailUser;
 
+    @Value("${remote.api.addres}"    )
+    String remoteApiAddress;
+
     @Autowired
     CashboxSettingsService cashboxSettingsService;
 
@@ -101,8 +104,9 @@ public class HalykService {
 
 //        String backLink = cashboxSettingsService.getField(payment.getCashboxId(), CashboxSettingsService.REDIRECT_SUCCESS_URL);
 //        String backLink = cashboxSettingsService.getField(payment.getCashboxId(), CashboxSettingsService.REDIRECT_SUCCESS_URL);
-        String backLink = "https://api.capitalpay.kz/halyk/backlink/success?paymentId="+paddingID;
-        String failureBackLink = cashboxSettingsService.getField(payment.getCashboxId(), CashboxSettingsService.REDIRECT_FAILED_URL);
+        String backLink = remoteApiAddress+"/halyk/backlink?paymentId="+paddingID;
+//        String failureBackLink = cashboxSettingsService.getField(payment.getCashboxId(), CashboxSettingsService.REDIRECT_FAILED_URL);
+
         String postLink = cashboxSettingsService.getField(payment.getCashboxId(), CashboxSettingsService.INTERACTION_URL);
 
         String form = "<form class=\"tpsform_radioitem\" name=\"SendOrder\" method=\"post\" action=\"" + sendOrderActionLink + "/jsp/process/logon.jsp\">" +
@@ -111,7 +115,7 @@ public class HalykService {
                 "<input type=\"hidden\" name=\"Language\" value=\"rus\"><br>" +
                 "<input type=\"hidden\" name=\"BackLink\" value=\"" + backLink + "\"><br>" +
                 "<input type=\"hidden\" name=\"PostLink\" value=\"" + postLink + "\"><br>" +
-                "<input type=\"hidden\" name=\"FailureBackLink\" value=\"" + failureBackLink + "\"><br>" +
+//                "<input type=\"hidden\" name=\"FailureBackLink\" value=\"" + failureBackLink + "\"><br>" +
                 "<input type=\"hidden\" name=\"appendix\" size=50 maxlength=50 value=\"" + appendix + "\"/><br>" +
                 "<button type=\"submit\" name=\"GotoPay\">" +
                 "<span class=\"tpsform_radioico\"><img src=\"/paysystems/img/NBK_Logo.png\" alt=\"\"></span>" +
