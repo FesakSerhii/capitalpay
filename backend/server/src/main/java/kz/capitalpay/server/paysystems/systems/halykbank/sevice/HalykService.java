@@ -250,7 +250,6 @@ public class HalykService {
         return false;
     }
 
-
     public String getRedirectUrlForPayment(String halykId) {
         try {
             HalykPayment halykPayment = halykPaymentRepository.findTopByHalykId(halykId);
