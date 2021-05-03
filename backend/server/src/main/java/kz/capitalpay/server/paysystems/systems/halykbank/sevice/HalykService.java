@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -230,7 +232,7 @@ public class HalykService {
                     config.get("keypass"),
                     config.get("storepass"));
             String signedXML = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?><document>%s<merchant_sign type=\"RSA\" cert_id=\"%s\">%s</merchant_sign></document>",
-                    merchantXML, cert_id, signature);
+                    merchantXML, cert_id, URLEncoder.encode( signature,"UTF-8"));
             logger.info("signedXML: {}", signedXML);
 
             Map<String, String> vars = new HashMap<>();
@@ -286,7 +288,7 @@ public class HalykService {
                     config.get("keypass"),
                     config.get("storepass"));
             String signedXML = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?><document>%s<merchant_sign type=\"RSA\" cert_id=\"%s\">%s</merchant_sign></document>",
-                    merchantXML, cert_id, signature);
+                    merchantXML, cert_id, URLEncoder.encode( signature,"UTF-8"));
             logger.info("signedXML: {}", signedXML);
 
             Map<String, String> vars = new HashMap<>();
