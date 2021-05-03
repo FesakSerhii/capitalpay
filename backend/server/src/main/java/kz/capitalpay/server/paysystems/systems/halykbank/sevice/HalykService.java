@@ -318,7 +318,7 @@ public class HalykService {
             logger.info("Order: {}", Order.asXML());
             String order_id = Order.attribute("id").getValue();
             logger.info("order_id : {}", order_id);
-            String amount = Order.attribute("amount").getValue();
+
             String payment = sResponse.attribute("payment").getValue();
             logger.info("payment={}", payment);
             String status = sResponse.attribute("status").getValue();
@@ -326,7 +326,7 @@ public class HalykService {
             String sResult = sResponse.attribute("result").getValue();
             logger.info("result={}", sResult);
 
-            logger.info("amount: {}", amount);
+
 
 
             KKBSign kkbsign = new KKBSign();
