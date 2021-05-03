@@ -229,7 +229,7 @@ public class HalykService {
                     config.get("alias"),
                     config.get("keypass"),
                     config.get("storepass"));
-            String signedXML = String.format("<document>%s<merchant_sign type=\"RSA\" cert_id=\"%s\">%s</merchant_sign></document>",
+            String signedXML = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?><document>%s<merchant_sign type=\"RSA\" cert_id=\"%s\">%s</merchant_sign></document>",
                     merchantXML, cert_id, signature.replace("+","\\+"));
             logger.info("signedXML: {}", signedXML);
 
@@ -285,7 +285,7 @@ public class HalykService {
                     config.get("alias"),
                     config.get("keypass"),
                     config.get("storepass"));
-            String signedXML = String.format("<document>%s<merchant_sign type=\"RSA\" cert_id=\"%s\">%s</merchant_sign></document>",
+            String signedXML = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?><document>%s<merchant_sign type=\"RSA\" cert_id=\"%s\">%s</merchant_sign></document>",
                     merchantXML, cert_id, signature.replace("+","\\+"));
             logger.info("signedXML: {}", signedXML);
 
