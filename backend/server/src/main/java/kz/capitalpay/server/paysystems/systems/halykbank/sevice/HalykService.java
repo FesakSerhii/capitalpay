@@ -26,8 +26,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
-import static kz.capitalpay.server.simple.service.SimpleService.FAILED;
-import static kz.capitalpay.server.simple.service.SimpleService.SUCCESS;
+import static kz.capitalpay.server.simple.service.SimpleService.*;
 
 @Service
 public class HalykService {
@@ -277,7 +276,7 @@ public class HalykService {
             String orderid = halykPayment.getHalykId();
 
             String merchantXML = String.format("<merchant id=\"%s\"><order id=\"%s\"/></merchant>",
-                    merchant_id,  orderid);
+                    merchant_id, orderid);
             logger.info("merchantXML: {}", merchantXML);
             KKBSign kkbSign = new KKBSign();
             Map<String, String> config = kkbSign.getConfig(kkbsignCfgPath);
@@ -297,10 +296,57 @@ public class HalykService {
                     String.class, vars);
             logger.info("response: {}", response);
 
-            // TODO: checksignature and get Ststus
+
+            String PostLink = response;
+            logger.info("PostLink: {}", PostLink);
+
+            Document xmlDoc = DocumentHelper.createDocument();
+            xmlDoc = DocumentHelper.parseText(PostLink);
+            logger.info("Full Document {}", xmlDoc.asXML());
 
 
-            return SUCCESS;
+            Element Bank = (Element) xmlDoc.getRootElement().selectSingleNode("//document/bank");
+            String sBank = Bank.asXML() + "";
+            logger.info("Element bank: sBank={}", sBank);
+            Element bank_sign = (Element) xmlDoc.getRootElement().selectSingleNode("//document/bank_sign");
+            String sbank_sign = bank_sign.getText();
+            logger.info("Element bank_sign: sbank_sign={}", sbank_sign);
+            Element Merchant = (Element) xmlDoc.getRootElement().selectSingleNode("//document/bank/merchant");
+            logger.info("Merchant: {}", Merchant.asXML());
+            Element Order = (Element) xmlDoc.getRootElement().selectSingleNode("//document/bank/merchant/order");
+            Element sResponse = (Element) xmlDoc.getRootElement().selectSingleNode("//document/bank/response");
+            logger.info("Order: {}", Order.asXML());
+            String order_id = Order.attribute("order_id").getValue();
+            logger.info("order_id : {}", order_id);
+            String amount = Order.attribute("amount").getValue();
+            String payment = sResponse.attribute("payment").getValue();
+            logger.info("payment={}", payment);
+            String status = sResponse.attribute("status").getValue();
+            logger.info("status={}", status);
+            String sResult = sResponse.attribute("result").getValue();
+            logger.info("result={}", sResult);
+
+            logger.info("amount: {}", amount);
+
+
+            KKBSign kkbsign = new KKBSign();
+
+            String ks = kkbsignCfgBank;
+            boolean result = kkbsign.verify(sBank.trim(), sbank_sign.trim(), ks, "kkbca", "1q2w3e4r");
+            logger.info("Verify signature :{}", result);
+            if (!result) {
+                return null;
+            }
+
+            if (payment.equals("true")) {
+                if (status.equals("0")) {
+                    return PENDING;
+                } else if (status.equals("2")) {
+                    return SUCCESS;
+                }
+            }
+
+            return FAILED;
         } catch (Exception e) {
             e.printStackTrace();
         }
