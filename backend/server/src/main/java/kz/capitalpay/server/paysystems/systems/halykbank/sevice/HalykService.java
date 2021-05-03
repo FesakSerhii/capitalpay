@@ -316,7 +316,7 @@ public class HalykService {
             Element Order = (Element) xmlDoc.getRootElement().selectSingleNode("//document/bank/merchant/order");
             Element sResponse = (Element) xmlDoc.getRootElement().selectSingleNode("//document/bank/response");
             logger.info("Order: {}", Order.asXML());
-            String order_id = Order.attribute("order_id").getValue();
+            String order_id = Order.attribute("id").getValue();
             logger.info("order_id : {}", order_id);
             String amount = Order.attribute("amount").getValue();
             String payment = sResponse.attribute("payment").getValue();
