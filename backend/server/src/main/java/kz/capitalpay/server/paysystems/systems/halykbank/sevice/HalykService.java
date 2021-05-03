@@ -274,7 +274,7 @@ public class HalykService {
 
             String merchant_id = halykMerchantId;
             String cert_id = halykCertId;
-            String orderid = halykPayment.getBillId();
+            String orderid = halykPayment.getHalykId();
 
             String merchantXML = String.format("<merchant id=\"%s\"><order id=\"%s\"/></merchant>",
                     merchant_id,  orderid);
