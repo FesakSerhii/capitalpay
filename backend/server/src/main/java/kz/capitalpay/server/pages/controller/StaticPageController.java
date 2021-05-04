@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.merchantsettings.dto.MerchantKycDTO;
 import kz.capitalpay.server.pages.dto.SavePageDTO;
+import kz.capitalpay.server.pages.dto.ShowListDTO;
 import kz.capitalpay.server.pages.dto.ShowOnePageDTO;
 import kz.capitalpay.server.pages.service.StaticPageService;
 import org.slf4j.Logger;
@@ -35,9 +36,9 @@ public class StaticPageController {
 
     @PostMapping("/list")
     @RolesAllowed({"ROLE_ADMIN", "ROLE_OPERATOR"})
-    ResultDTO showAll() {
+    ResultDTO showAll(@Valid @RequestBody ShowListDTO request) {
         logger.info("Static Page list");
-        return staticPageService.showAll();
+        return staticPageService.showAll(request);
     }
 
     @PostMapping("/one")

@@ -6,6 +6,7 @@ import kz.capitalpay.server.eventlog.service.SystemEventsLogsService;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.service.ApplicationUserService;
 import kz.capitalpay.server.pages.dto.SavePageDTO;
+import kz.capitalpay.server.pages.dto.ShowListDTO;
 import kz.capitalpay.server.pages.dto.ShowOnePageDTO;
 import kz.capitalpay.server.pages.model.StaticPage;
 import kz.capitalpay.server.pages.repository.StaticPageRepository;
@@ -41,9 +42,9 @@ public class StaticPageService {
     SystemEventsLogsService systemEventsLogsService;
 
 
-    public ResultDTO showAll() {
+    public ResultDTO showAll(ShowListDTO request) {
         try {
-            List<StaticPage> staticPageList = staticPageRepository.findAll();
+            List<StaticPage> staticPageList = staticPageRepository.findByLanguage(request.getLanguage());
             if (staticPageList == null) {
                 staticPageList = new ArrayList<>();
             }
