@@ -31,6 +31,8 @@ public class SystemEventsLogsService {
     public static final String ACTIVATE_PAYSYSTEM = "de/activate paysystem";
     public static final String CHANGE_PAYMENT_STATUS = "change payment status";
     public static final String NOTIFY_CLIENT = "notyfy client";
+    public static final String CREATE_STATIC_PAGE = "create static page";
+    public static final String EDIT_STATIC_PAGE = "edit static page";
 
 
     public boolean addNewOperatorAction(String author, String eventName, String json, String target) {
