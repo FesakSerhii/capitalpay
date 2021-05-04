@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static kz.capitalpay.server.constants.ErrorDictionary.error119;
 import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.CREATE_STATIC_PAGE;
 import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.EDIT_STATIC_PAGE;
 
@@ -99,10 +100,24 @@ public class StaticPageService {
                     gson.toJson(request), "all");
 
             staticPageRepository.save(staticPage);
-            return new ResultDTO(true,staticPage,0);
+            return new ResultDTO(true, staticPage, 0);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }
+    }
+
+    public ResultDTO showPage(ShowOnePageDTO request) {
+        try {
+            StaticPage staticPage = staticPageRepository.findTopByTagAndLanguage(request.getTag(), request.getLanguage());
+            if (staticPage == null) {
+                return error119;
+            }
+            return new ResultDTO(true, staticPage, 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultDTO(false, e.getMessage(), -1);
+        }
+
     }
 }
