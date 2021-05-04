@@ -3,6 +3,7 @@ package kz.capitalpay.server.pages.controller;
 import com.google.gson.Gson;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.merchantsettings.dto.MerchantKycDTO;
+import kz.capitalpay.server.pages.dto.DeleteDTO;
 import kz.capitalpay.server.pages.dto.SavePageDTO;
 import kz.capitalpay.server.pages.dto.ShowListDTO;
 import kz.capitalpay.server.pages.dto.ShowOnePageDTO;
@@ -56,6 +57,12 @@ public class StaticPageController {
         return staticPageService.save(principal, request);
     }
 
+    @PostMapping("/delete")
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_OPERATOR"})
+    ResultDTO delete(@Valid @RequestBody DeleteDTO request, Principal principal) {
+        logger.info("Delete Page");
+        return staticPageService.delete(principal, request);
+    }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)

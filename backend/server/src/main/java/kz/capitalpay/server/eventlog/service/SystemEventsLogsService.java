@@ -33,6 +33,7 @@ public class SystemEventsLogsService {
     public static final String NOTIFY_CLIENT = "notyfy client";
     public static final String CREATE_STATIC_PAGE = "create static page";
     public static final String EDIT_STATIC_PAGE = "edit static page";
+    public static final String DELETE_STATIC_PAGE = "delete static page";
 
 
     public boolean addNewOperatorAction(String author, String eventName, String json, String target) {

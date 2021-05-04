@@ -5,6 +5,7 @@ import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.eventlog.service.SystemEventsLogsService;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.service.ApplicationUserService;
+import kz.capitalpay.server.pages.dto.DeleteDTO;
 import kz.capitalpay.server.pages.dto.SavePageDTO;
 import kz.capitalpay.server.pages.dto.ShowListDTO;
 import kz.capitalpay.server.pages.dto.ShowOnePageDTO;
@@ -21,8 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.error119;
-import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.CREATE_STATIC_PAGE;
-import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.EDIT_STATIC_PAGE;
+import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.*;
 
 @Service
 public class StaticPageService {
@@ -114,6 +114,26 @@ public class StaticPageService {
             if (staticPage == null) {
                 return error119;
             }
+            return new ResultDTO(true, staticPage, 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultDTO(false, e.getMessage(), -1);
+        }
+
+    }
+
+    public ResultDTO delete(Principal principal, DeleteDTO request) {
+        try {
+            ApplicationUser applicationUser = applicationUserService.getUserByLogin(principal.getName());
+            List<StaticPage> staticPage = staticPageRepository.findByTag(request.getTag());
+            if (staticPage == null) {
+                return error119;
+            }
+            systemEventsLogsService.addNewOperatorAction(applicationUser.getUsername(), DELETE_STATIC_PAGE,
+                    gson.toJson(request), "all");
+
+            staticPageRepository.deleteAll(staticPage);
+
             return new ResultDTO(true, staticPage, 0);
         } catch (Exception e) {
             e.printStackTrace();
