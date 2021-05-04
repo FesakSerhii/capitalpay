@@ -125,16 +125,16 @@ public class StaticPageService {
     public ResultDTO delete(Principal principal, DeleteDTO request) {
         try {
             ApplicationUser applicationUser = applicationUserService.getUserByLogin(principal.getName());
-            List<StaticPage> staticPage = staticPageRepository.findByTag(request.getTag());
-            if (staticPage == null) {
+            List<StaticPage> staticPageList = staticPageRepository.findByTag(request.getTag());
+            if (staticPageList == null) {
                 return error119;
             }
             systemEventsLogsService.addNewOperatorAction(applicationUser.getUsername(), DELETE_STATIC_PAGE,
                     gson.toJson(request), "all");
 
-            staticPageRepository.deleteAll(staticPage);
+            staticPageRepository.deleteAll(staticPageList);
 
-            return new ResultDTO(true, staticPage, 0);
+            return new ResultDTO(true, staticPageList, 0);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
