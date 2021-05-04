@@ -1,4 +1,4 @@
-package kz.capitalpay.server.controller;
+package kz.capitalpay.server.pages.controller;
 
 import com.google.gson.Gson;
 import kz.capitalpay.server.dictionary.dto.SaveTranslateRequestDTO;
@@ -19,12 +19,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-public class TemporaryDevController {
+public class TranslateController {
 
-    // TODO: Это временный контроллер для разработчиков.
-    // В будущем нужно будет удалить
-
-    Logger logger = LoggerFactory.getLogger(TemporaryDevController.class);
+    Logger logger = LoggerFactory.getLogger(TranslateController.class);
 
     @Autowired
     Gson gson;
@@ -44,49 +41,6 @@ public class TemporaryDevController {
         return translateService.save(request);
     }
 
-
-//
-//    @PostMapping("/test/test")
-//    Boolean saveTranslate( @RequestBody TestTestDTO request) {
-//        logger.info(gson.toJson(request));
-//        return true;
-//    }
-//
-// static    class TestTestDTO{
-//        Long id;
-//        BigDecimal a;
-//        String b;
-//
-//        public Long getId() {
-//            return id;
-//        }
-//
-//        public void setId(Long id) {
-//            this.id = id;
-//        }
-//
-//        public BigDecimal getA() {
-//            return a;
-//        }
-//
-//        public void setA(BigDecimal a) {
-//            this.a = a;
-//        }
-//
-//        public String getB() {
-//            return b;
-//        }
-//
-//        public void setB(String b) {
-//            this.b = b;
-//        }
-//    }
-
-//    @PostMapping("/sms/test")
-//    ResultDTO sendSms(@RequestBody SendSmsDTO request) {
-//        logger.info(gson.toJson(request));
-//        return sendSmsService.sendNewSms(request);
-//    }
 
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
