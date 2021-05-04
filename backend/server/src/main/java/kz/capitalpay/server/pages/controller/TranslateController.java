@@ -1,6 +1,7 @@
 package kz.capitalpay.server.pages.controller;
 
 import com.google.gson.Gson;
+import kz.capitalpay.server.dictionary.dto.GetDictionaryDTO;
 import kz.capitalpay.server.dictionary.dto.SaveTranslateRequestDTO;
 import kz.capitalpay.server.dictionary.service.TranslateService;
 import kz.capitalpay.server.dto.ResultDTO;
@@ -41,6 +42,17 @@ public class TranslateController {
         return translateService.save(request);
     }
 
+    @PostMapping("/pagelist")
+    ResultDTO pageList() {
+
+        return translateService.pageList();
+    }
+
+    @PostMapping("/dictionary")
+    ResultDTO getDictionary(@Valid @RequestBody GetDictionaryDTO request) {
+        logger.info(gson.toJson(request));
+        return translateService.getDictionary(request);
+    }
 
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
