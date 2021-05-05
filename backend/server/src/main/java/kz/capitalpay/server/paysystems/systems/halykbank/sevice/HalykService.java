@@ -292,7 +292,7 @@ public class HalykService {
                     config.get("keypass"),
                     config.get("storepass"));
             String signedXML = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?><document>%s<merchant_sign type=\"RSA\" cert_id=\"%s\">%s</merchant_sign></document>",
-                    merchantXML, cert_id, URLEncoder.encode(signature, "UTF-8"));
+                    merchantXML, cert_id, signature);
             logger.info("signedXML: {}", signedXML);
 
             Map<String, String> vars = new HashMap<>();
