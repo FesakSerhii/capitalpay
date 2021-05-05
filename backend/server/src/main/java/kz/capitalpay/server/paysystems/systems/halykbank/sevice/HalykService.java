@@ -236,12 +236,15 @@ public class HalykService {
             logger.info("signedXML: {}", signedXML);
 
             Map<String, String> vars = new HashMap<>();
-            vars.put("signedXML", signedXML);
-//            logger.info("Encode request: {}", sendOrderActionLink + "/jsp/remote/control.jsp?" + vars.get("signedXML"));
+            vars.put("signedXML", URLEncoder.encode(signedXML,Charset.defaultCharset()));
+
             String response = restTemplate.getForObject(sendOrderActionLink + "/jsp/remote/control.jsp?{signedXML}",
                     String.class, vars);
             logger.info("response: {}", response);
             // TODO: analyze response
+
+            // TODO: EventLog
+
 
             return true;
         } catch (Exception e) {
