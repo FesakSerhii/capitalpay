@@ -355,8 +355,6 @@ public class HalykService {
             e.printStackTrace();
         }
 
-        // TODO: временно пока не разобрались с кодирвоанием подписи
-        return SUCCESS;
-
+        return PENDING;
     }
 }
