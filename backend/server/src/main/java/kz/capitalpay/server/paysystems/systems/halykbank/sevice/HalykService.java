@@ -238,7 +238,7 @@ public class HalykService {
 
             Map<String, String> vars = new HashMap<>();
             vars.put("signedXML", signedXML);
-            vars.put("signedXML", URLDecoder.decode(signedXML, Charset.defaultCharset()));
+//            vars.put("signedXML", URLDecoder.decode(signedXML, Charset.defaultCharset()));
             logger.info("Encoded: {}", vars.get("signedXML"));
             String response = restTemplate.getForObject(sendOrderActionLink + "/jsp/remote/control.jsp?{signedXML}",
                     String.class, vars);
