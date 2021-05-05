@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
@@ -237,8 +238,8 @@ public class HalykService {
 
             Map<String, String> vars = new HashMap<>();
             vars.put("signedXML", signedXML);
-//            vars.put("signedXML", URLEncoder.encode(signedXML, Charset.defaultCharset()));
-//            logger.info("Encoded: {}", vars.get("signedXML"));
+            vars.put("signedXML", URLDecoder.decode(signedXML, Charset.defaultCharset()));
+            logger.info("Encoded: {}", vars.get("signedXML"));
             String response = restTemplate.getForObject(sendOrderActionLink + "/jsp/remote/control.jsp?{signedXML}",
                     String.class, vars);
             logger.info("response: {}", response);
