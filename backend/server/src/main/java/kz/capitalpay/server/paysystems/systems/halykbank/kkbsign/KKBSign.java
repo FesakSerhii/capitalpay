@@ -78,10 +78,10 @@ public class KKBSign implements Serializable {
         }
     }
 
-    public synchronized String sign64(final String xml, final String keystore, final String alias, final String keypass, final String storepass) {
+    public synchronized String sign64(final String text, final String keystore, final String alias, final String keypass, final String storepass) {
         try {
             final Base64 base64 = new Base64();
-            final byte[] bytes = xml.getBytes();
+            final byte[] bytes = text.getBytes();
             final char[] charArray = keypass.toCharArray();
             final char[] charArray2 = storepass.toCharArray();
             if (this.debug) {
