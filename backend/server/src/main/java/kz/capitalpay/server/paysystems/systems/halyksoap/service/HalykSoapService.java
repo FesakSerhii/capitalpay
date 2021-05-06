@@ -119,7 +119,7 @@ public class HalykSoapService {
             String signedXML = createPaymentOrderXML(amount, cardholderName, cvc, desc, month, orderid, pan, 1, year);
             Map<String, String> vars = new HashMap<>();
             vars.put("signedXML", signedXML);
-
+            logger.info(signedXML);
             String response = restTemplate.postForObject(sendOrderActionLink + "/axis2/services/EpayService.EpayServiceHttpSoap11Endpoint/",
                     signedXML, String.class, java.util.Optional.ofNullable(null));
             logger.info("response: {}", response);
