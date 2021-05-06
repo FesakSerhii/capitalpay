@@ -7,9 +7,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class HalykSoapService {
@@ -40,6 +43,11 @@ public class HalykSoapService {
     @Value("${halyk.soap.storepass}")
     String storepass;
 
+    @Value("${kkbsign.send.order.action.link}")
+    String sendOrderActionLink;
+
+    @Autowired
+    RestTemplate restTemplate;
 
     String createPaymentOrderXML(BigDecimal amount, String cardholderName, String cvc, String desc,
                                  String month, String orderid, String pan, int trtype, String year) {
@@ -83,36 +91,51 @@ public class HalykSoapService {
         String concatString = md + pares + sessionid;
         KKBSign kkbSign = new KKBSign();
         String signatureValue = kkbSign.sign64(concatString, keystore, alias, keypass, storepass);
-        String xml = String.format("      class=\"collapse in\"\n" +
-                        "      <soapenv:Envelope xmlns:soapenv=\"http://www.w3.org/2003/05/soap-envelope\">\n" +
-                        "          <soapenv:Body>\n" +
-                        "              <ns4:paymentOrderAcs xmlns:ns4=\"http://ws.epay.kkb.kz/xsd\">\n" +
-                        "                  <order>\n" +
-                        "                      <md>%s</md>\n" +
-                        "                      <pares>%s</pares>\n" +
-                        "                      <sessionid>%s</sessionid>\n" +
-                        "                  </order>\n" +
-                        "                  <requestSignature>\n" +
-                        "                      <merchantCertificate>%s</merchantCertificate>\n" +
-                        "                      <merchantId>%s</merchantId>\n" +
-                        "                      <signatureValue>%s</signatureValue>\n" +
-                        "                  </requestSignature>\n" +
-                        "              </ns4:paymentOrderAcs>\n" +
-                        "          </soapenv:Body>\n" +
-                        "      </soapenv:Envelope>",
+        String xml = String.format(
+                "<soapenv:Envelope xmlns:soapenv=\"http://www.w3.org/2003/05/soap-envelope\">" +
+                        "<soapenv:Body>" +
+                        "<ns4:paymentOrderAcs xmlns:ns4=\"http://ws.epay.kkb.kz/xsd\">" +
+                        "<order>" +
+                        "<md>%s</md>" +
+                        "<pares>%s</pares>" +
+                        "<sessionid>%s</sessionid>" +
+                        "</order>" +
+                        "<requestSignature>" +
+                        "<merchantCertificate>%s</merchantCertificate>" +
+                        "<merchantId>%s</merchantId>" +
+                        "<signatureValue>%s</signatureValue>" +
+                        "</requestSignature>" +
+                        "</ns4:paymentOrderAcs>" +
+                        "</soapenv:Body>" +
+                        "</soapenv:Envelope>",
                 md, pares, sessionid, merchantCertificate, merchantid, signatureValue
         );
         return xml;
+    }
+
+    public boolean paymentPay(BigDecimal amount, String cardholderName, String cvc, String desc,
+                              String month, String orderid, String pan, String year) {
+        try {
+            String signedXML = createPaymentOrderXML(amount, cardholderName, cvc, desc, month, orderid, pan, 1, year);
+            Map<String, String> vars = new HashMap<>();
+            vars.put("signedXML", signedXML);
+
+            String response = restTemplate.getForObject(sendOrderActionLink + "/axis2/services/EpayService?{signedXML}",
+                    String.class, vars);
+            logger.info("response: {}", response);
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
     }
 
 
     @PostConstruct
     public void testCreateXML() {
         try {
-            String xml = createPaymentOrderAcsXML("ASDEF8009001",
-                    "ABCD-AMOUNT5-TERMINAL92061101-ORDER4785514--OK",
-                    "1285268A80D266BB2E74AC1FE69D9D1E");
-            logger.info("\n" + xml + "\n");
+           paymentPay(new BigDecimal("5.00"),"OLEG IVANOFF","653","Test payment SOAP",
+                   "05","0000000000234","4405645000006150","2025");
         } catch (Exception e) {
             e.printStackTrace();
         }
