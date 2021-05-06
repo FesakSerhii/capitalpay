@@ -136,7 +136,7 @@ public class HalykSoapService {
         try {
             Thread.sleep(5000);
             paymentPay(new BigDecimal("5.00"), "OLEG IVANOFF", "653", "Test payment SOAP",
-                    "05", "0000000000234", "4405645000006150", "2025");
+                    "05", "0000000000234", "4405645000006150", "25");
         } catch (Exception e) {
             e.printStackTrace();
         }
