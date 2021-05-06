@@ -48,53 +48,73 @@ public class HalykSoapService {
         KKBSign kkbSign = new KKBSign();
         String signatureValue = kkbSign.sign64(concatString, keystore, alias, keypass, storepass);
         String xml = String.format("<soapenv:Envelope xmlns:soapenv=\"http://www.w3.org/2003/05/soap-envelope\">" +
-                        "          <soapenv:Body>" +
-                        "              <ns4:paymentOrder xmlns:ns4=\"http://ws.epay.kkb.kz/xsd\">" +
-                        "                  <order>" +
-                        "                      <amount>%s</amount>\n" +
-                        "                      <cardholderName>%s</cardholderName>\n" +
-                        "                      <currency>%s</currency>\n" +
-                        "                      <cvc>%s</cvc>\n" +
-                        "                      <desc>%s</desc>\n" +
-                        "                      <merchantid>%s</merchantid>\n" +
-                        "                      <month>%s</month>\n" +
-                        "                      <orderid>%s</orderid>\n" +
-                        "                      <pan>%s</pan>\n" +
-                        "                      <trtype>%d</trtype>\n" +
-                        "                      <year>%s</year>\n" +
+                        "<soapenv:Body>" +
+                        "<ns4:paymentOrder xmlns:ns4=\"http://ws.epay.kkb.kz/xsd\">" +
+                        "<order>" +
+                        "<amount>%s</amount>" +
+                        "<cardholderName>%s</cardholderName>" +
+                        "<currency>%s</currency>" +
+                        "<cvc>%s</cvc>" +
+                        "<desc>%s</desc>" +
+                        "<merchantid>%s</merchantid>" +
+                        "<month>%s</month>" +
+                        "<orderid>%s</orderid>" +
+                        "<pan>%s</pan>" +
+                        "<trtype>%d</trtype>" +
+                        "<year>%s</year>" +
+                        "</order>" +
+                        "<requestSignature>" +
+                        "<merchantCertificate>%s</merchantCertificate>" +
+                        "<merchantId>%s</merchantId>" +
+                        "<signatureValue>%s</signatureValue>" +
+                        "</requestSignature>" +
+                        "</ns4:paymentOrder>" +
+                        "</soapenv:Body>" +
+                        "</soapenv:Envelope>",
+                amount.toString().replace(".", ","),
+                cardholderName, currency, cvc, desc, merchantid, month, orderid, pan, trtype, year,
+                merchantCertificate, merchantid, signatureValue
+        );
+        return xml;
+
+    }
+
+    String createPaymentOrderAcsXML(String md, String pares, String sessionid) {
+        String concatString = md + pares + sessionid;
+        KKBSign kkbSign = new KKBSign();
+        String signatureValue = kkbSign.sign64(concatString, keystore, alias, keypass, storepass);
+        String xml = String.format("      class=\"collapse in\"\n" +
+                        "      <soapenv:Envelope xmlns:soapenv=\"http://www.w3.org/2003/05/soap-envelope\">\n" +
+                        "          <soapenv:Body>\n" +
+                        "              <ns4:paymentOrderAcs xmlns:ns4=\"http://ws.epay.kkb.kz/xsd\">\n" +
+                        "                  <order>\n" +
+                        "                      <md>%s</md>\n" +
+                        "                      <pares>%s</pares>\n" +
+                        "                      <sessionid>%s</sessionid>\n" +
                         "                  </order>\n" +
                         "                  <requestSignature>\n" +
                         "                      <merchantCertificate>%s</merchantCertificate>\n" +
                         "                      <merchantId>%s</merchantId>\n" +
                         "                      <signatureValue>%s</signatureValue>\n" +
                         "                  </requestSignature>\n" +
-                        "              </ns4:paymentOrder>\n" +
+                        "              </ns4:paymentOrderAcs>\n" +
                         "          </soapenv:Body>\n" +
                         "      </soapenv:Envelope>",
-                amount.toString().replace(".", ","),
-                cardholderName,
-                currency,
-                cvc,
-                desc,
-                merchantid,
-                month,
-                orderid,
-                pan,
-                trtype,
-                year,
-                merchantCertificate,
-                merchantid,
-                signatureValue
+                md, pares, sessionid, merchantCertificate, merchantid, signatureValue
         );
         return xml;
-
     }
 
 
     @PostConstruct
     public void testCreateXML() {
-        String xml = createPaymentOrderXML(new BigDecimal("5"), "Sergey Frolov", "653",
-                "desc", "09", "101", "4405645000006150", 0, "15");
-        logger.info("\n" + xml + "\n");
+        try {
+            String xml = createPaymentOrderAcsXML("ASDEF8009001",
+                    "ABCD-AMOUNT5-TERMINAL92061101-ORDER4785514--OK",
+                    "1285268A80D266BB2E74AC1FE69D9D1E");
+            logger.info("\n" + xml + "\n");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
