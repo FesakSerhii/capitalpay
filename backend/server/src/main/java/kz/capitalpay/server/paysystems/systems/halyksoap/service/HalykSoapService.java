@@ -53,8 +53,10 @@ public class HalykSoapService {
                                  String month, String orderid, String pan, int trtype, String year) {
 
         String concatString = orderid + amount + currency + trtype + pan + merchantid;
+        logger.info("Concat String (orderid + amount + currency + trtype + pan + merchantid): {}",concatString);
         KKBSign kkbSign = new KKBSign();
         String signatureValue = kkbSign.sign64(concatString, keystore, alias, keypass, storepass);
+        logger.info("Signature: {}",signatureValue);
         String xml = String.format("<soapenv:Envelope xmlns:soapenv=\"http://www.w3.org/2003/05/soap-envelope\">" +
                         "<soapenv:Body>" +
                         "<ns4:paymentOrder xmlns:ns4=\"http://ws.epay.kkb.kz/xsd\">" +
