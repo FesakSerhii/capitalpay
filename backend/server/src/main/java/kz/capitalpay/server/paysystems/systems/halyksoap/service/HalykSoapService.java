@@ -120,11 +120,11 @@ public class HalykSoapService {
             Map<String, String> vars = new HashMap<>();
             vars.put("signedXML", signedXML);
 
-            String response = restTemplate.getForObject(sendOrderActionLink + "/axis2/services/EpayService?{signedXML}",
-                    String.class, vars);
+            String response = restTemplate.postForObject(sendOrderActionLink + "/axis2/services/EpayService.EpayServiceHttpSoap11Endpoint/",
+                    signedXML, String.class, java.util.Optional.ofNullable(null));
             logger.info("response: {}", response);
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
@@ -134,8 +134,9 @@ public class HalykSoapService {
     @PostConstruct
     public void testCreateXML() {
         try {
-           paymentPay(new BigDecimal("5.00"),"OLEG IVANOFF","653","Test payment SOAP",
-                   "05","0000000000234","4405645000006150","2025");
+            Thread.sleep(5000);
+            paymentPay(new BigDecimal("5.00"), "OLEG IVANOFF", "653", "Test payment SOAP",
+                    "05", "0000000000234", "4405645000006150", "2025");
         } catch (Exception e) {
             e.printStackTrace();
         }
