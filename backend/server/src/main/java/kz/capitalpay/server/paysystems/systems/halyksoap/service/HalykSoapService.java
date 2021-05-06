@@ -137,8 +137,8 @@ public class HalykSoapService {
     public void testCreateXML() {
         try {
             Thread.sleep(5000);
-            paymentPay(new BigDecimal("5.00"), "OLEG IVANOFF", "653", "Test payment SOAP",
-                    "05", "0000000000234", "4405645000006150", "25");
+            paymentPay(new BigDecimal("5.00"), "OLEG IVANOFF", "292", "Test payment SOAP",
+                    "12", "0000000000234", "4405645000006371", "16");
         } catch (Exception e) {
             e.printStackTrace();
         }
