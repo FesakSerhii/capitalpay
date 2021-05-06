@@ -120,7 +120,7 @@ public class HalykSoapService {
             Map<String, String> vars = new HashMap<>();
             vars.put("signedXML", signedXML);
             logger.info(signedXML);
-            String response = restTemplate.postForObject(sendOrderActionLink + "/axis2/services/EpayService.EpayServiceHttpSoap11Endpoint/",
+            String response = restTemplate.postForObject(sendOrderActionLink + "/axis2/services/EpayService.EpayServiceHttpSoap12Endpoint/",
                     signedXML, String.class, java.util.Optional.ofNullable(null));
             logger.info("response: {}", response);
             return true;
