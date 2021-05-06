@@ -52,7 +52,7 @@ public class HalykSoapService {
     String createPaymentOrderXML(BigDecimal amount, String cardholderName, String cvc, String desc,
                                  String month, String orderid, String pan, int trtype, String year) {
 
-        String concatString = orderid + amount + currency + trtype + pan + merchantid;
+        String concatString = orderid + amount.toString().replace(".",",") + currency + trtype + pan + merchantid;
         logger.info("Concat String (orderid + amount + currency + trtype + pan + merchantid): {}",concatString);
         KKBSign kkbSign = new KKBSign();
         String signatureValue = kkbSign.sign64(concatString, keystore, alias, keypass, storepass);
