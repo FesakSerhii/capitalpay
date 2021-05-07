@@ -2,7 +2,9 @@ package kz.capitalpay.server.paysystems.systems.halyksoap.service;
 
 import com.google.gson.Gson;
 import kz.capitalpay.server.paysystems.systems.halykbank.kkbsign.KKBSign;
+import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykCheckOrder;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykPaymentOrder;
+import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykCheckOrderRepository;
 import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykPaymentOrderRepository;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -60,6 +62,9 @@ public class HalykSoapService {
 
     @Autowired
     HalykPaymentOrderRepository halykPaymentOrderRepository;
+
+    @Autowired
+    HalykCheckOrderRepository halykCheckOrderRepository;
 
     private String createPaymentOrderXML(HalykPaymentOrder paymentOrder, String cvc, String month, String year, String pan) {
 
@@ -159,6 +164,55 @@ public class HalykSoapService {
         return false;
     }
 
+
+    public String checkOrder(String orderid) {
+        try {
+            HalykCheckOrder checkOrder = new HalykCheckOrder();
+            checkOrder.setMerchantid(merchantid);
+            checkOrder.setOrderid(orderid);
+
+            halykCheckOrderRepository.save(checkOrder);
+
+            String signedXML = createCheckOrderXML(checkOrder);
+            Map<String, String> vars = new HashMap<>();
+            vars.put("signedXML", signedXML);
+
+            String response = restTemplate.postForObject(sendOrderActionLink + "/axis2/services/EpayService.EpayServiceHttpSoap12Endpoint/",
+                    signedXML, String.class, java.util.Optional.ofNullable(null));
+            logger.info("response: {}", response);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private String createCheckOrderXML(HalykCheckOrder checkOrder) {
+
+        String concatString = checkOrder.getMerchantid() + checkOrder.getOrderid();
+        KKBSign kkbSign = new KKBSign();
+        String signatureValue = kkbSign.sign64(concatString, keystore, clientAlias, keypass, storepass);
+        String xml = String.format("<soapenv:Envelope xmlns:soapenv=\"http://www.w3.org/2003/05/soap-envelope\">" +
+                        "<soapenv:Body>" +
+                        "<ns4:checkOrder xmlns:ns4=\"http://ws.epay.kkb.kz/xsd\">" +
+                        "<order>" +
+                        "<merchantid>%s</merchantid>" +
+                        "<orderid>%s</orderid>" +
+                        "</order>" +
+                        "<requestSignature>" +
+                        "<merchantCertificate>%s</merchantCertificate>" +
+                        "<merchantId>%s</merchantId>" +
+                        "<signatureValue>%s</signatureValue>" +
+                        "</requestSignature>" +
+                        "</ns4:checkOrder>" +
+                        "</soapenv:Body>" +
+                        "</soapenv:Envelope>",
+                checkOrder.getMerchantid(), checkOrder.getOrderid(),
+                merchantCertificate, merchantid, signatureValue);
+        return xml;
+
+    }
+
     private HalykPaymentOrder parsePaymentOrderResponse(HalykPaymentOrder paymentOrder, String response) {
         try {
             Document xmlDoc = DocumentHelper.createDocument();
@@ -220,6 +274,10 @@ public class HalykSoapService {
 //            Thread.sleep(1000);
             paymentPay(new BigDecimal("70.0"), "OLEG IVANOFF", "653", "Test payment SOAP",
                     "A9", "0000000074244", "440564000006150", "25");
+
+            String status = checkOrder("0000000074244");
+            logger.info("Status: {}", status);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
