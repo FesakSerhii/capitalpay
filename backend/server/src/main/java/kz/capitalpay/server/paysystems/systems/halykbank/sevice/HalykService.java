@@ -67,6 +67,7 @@ public class HalykService {
     @Value("${kkbsign.certificate}")
     String halykCertId;
 
+
     @Autowired
     CashboxSettingsService cashboxSettingsService;
 
