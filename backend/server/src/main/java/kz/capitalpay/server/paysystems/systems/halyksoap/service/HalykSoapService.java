@@ -252,6 +252,8 @@ public class HalykSoapService {
             logger.info("Verify: {}", signatureValid);
             checkOrder.setSignatureValid(signatureValid);
 
+            halykCheckOrderRepository.save(checkOrder);
+
             return checkOrder;
         } catch (Exception e) {
             e.printStackTrace();
