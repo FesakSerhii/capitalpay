@@ -165,11 +165,11 @@ public class HalykSoapService {
 
             xmlDoc.getRootElement().addNamespace("ns", "http://ws.epay.kkb.kz/xsd");
             Element AscUrl = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:paymentOrderResponse/return/acsUrl");
-            if (AscUrl.hasContent()) paymentOrder.setAcsUrl(AscUrl.getText());
+            if (!AscUrl.getText().equals("null")) paymentOrder.setAcsUrl(AscUrl.getText());
             Element Approvalcode = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:paymentOrderResponse/return/approvalcode");
-            if (Approvalcode.hasContent()) paymentOrder.setApprovalcode(Approvalcode.getText());
+            if (!Approvalcode.getText().equals("null")) paymentOrder.setApprovalcode(Approvalcode.getText());
             Element Intreference = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:paymentOrderResponse/return/intreference");
-            if (Intreference.hasContent()) paymentOrder.setIntreference(Intreference.getText());
+            if (!Intreference.getText().equals("null")) paymentOrder.setIntreference(Intreference.getText());
 
 
         } catch (Exception e) {
