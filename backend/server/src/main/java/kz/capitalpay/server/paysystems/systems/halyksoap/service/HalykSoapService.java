@@ -180,7 +180,7 @@ public class HalykSoapService {
     @PostConstruct
     public void testCreateXML() {
         try {
-            Thread.sleep(5000);
+            Thread.sleep(1000);
             paymentPay(new BigDecimal("5.00"), "OLEG IVANOFF", "323", "Test payment SOAP",
                     "12", "0000000074234", "4003035000005378", "25");
         } catch (Exception e) {

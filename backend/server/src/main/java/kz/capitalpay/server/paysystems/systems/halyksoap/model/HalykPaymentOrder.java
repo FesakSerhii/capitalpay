@@ -1,5 +1,6 @@
 package kz.capitalpay.server.paysystems.systems.halyksoap.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -17,6 +18,7 @@ public class HalykPaymentOrder {
     String amount;
     String cardholderName;
     String currency;
+    @Column(name="description")
     String desc;
     String merchantid;
     String orderid;
