@@ -181,6 +181,78 @@ public class HalykSoapService {
                     signedXML, String.class, java.util.Optional.ofNullable(null));
             logger.info("response: {}", response);
 
+            parseCheckOrderResponse(checkOrder, response);
+            logger.info(gson.toJson(checkOrder));
+            return checkOrder.getStatus();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private HalykCheckOrder parseCheckOrderResponse(HalykCheckOrder checkOrder, String response) {
+        try {
+            Document xmlDoc = DocumentHelper.createDocument();
+
+            xmlDoc = DocumentHelper.parseText(response);
+            logger.info("Full Document {}", xmlDoc.asXML());
+
+            xmlDoc.getRootElement().addNamespace("ns", "http://ws.epay.kkb.kz/xsd");
+            Element AcceptReversalDate = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/acceptReversalDate");
+            if (!AcceptReversalDate.getText().equals("null"))
+                checkOrder.setAcceptReversalDate(AcceptReversalDate.getText());
+            Element Approvalcode = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/approvalcode");
+            if (!Approvalcode.getText().equals("null")) checkOrder.setApprovalcode(Approvalcode.getText());
+            Element Cardhash = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/cardhash");
+            if (!Cardhash.getText().equals("null")) checkOrder.setCardhash(Cardhash.getText());
+            Element Intreference = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/intreference");
+            if (!Intreference.getText().equals("null")) checkOrder.setIntreference(Intreference.getText());
+            Element Message = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/message");
+            if (!Message.getText().equals("null")) checkOrder.setMessage(Message.getText());
+            Element Orderal = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/orderal");
+            if (!Orderal.getText().equals("null")) checkOrder.setOrderal(Orderal.getText());
+            Element PaidAmount = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/paidAmount");
+            if (!PaidAmount.getText().equals("null")) checkOrder.setPaidAmount(PaidAmount.getText());
+            Element PaidCurrency = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/paidCurrency");
+            if (!PaidCurrency.getText().equals("null")) checkOrder.setPaidCurrency(PaidCurrency.getText());
+            Element Payerip = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/payerip");
+            if (!Payerip.getText().equals("null")) checkOrder.setPayerip(Payerip.getText());
+            Element Payermail = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/payermail");
+            if (!Payermail.getText().equals("null")) checkOrder.setPayermail(Payermail.getText());
+            Element Payername = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/payername");
+            if (!Payername.getText().equals("null")) checkOrder.setPayername(Payername.getText());
+            Element Payerphone = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/payerphone");
+            if (!Payerphone.getText().equals("null")) checkOrder.setPayerphone(Payerphone.getText());
+            Element Reference = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/reference");
+            if (!Reference.getText().equals("null")) checkOrder.setReference(Reference.getText());
+            Element RefundTotalAmount = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/refundTotalAmount");
+            if (!RefundTotalAmount.getText().equals("null"))
+                checkOrder.setRefundTotalAmount(RefundTotalAmount.getText());
+            Element Resultcode = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/resultcode");
+            if (!Resultcode.getText().equals("null")) checkOrder.setResultcode(Resultcode.getText());
+            Element Secure = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/secure");
+            if (!Secure.getText().equals("null")) checkOrder.setSecure(Secure.getText());
+            Element SessionDate = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/sessionDate");
+            if (!SessionDate.getText().equals("null")) checkOrder.setSessionDate(SessionDate.getText());
+            Element SessionId = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/sessionId");
+            if (!SessionId.getText().equals("null")) checkOrder.setSessionId(SessionId.getText());
+            Element Status = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/status");
+            if (!Status.getText().equals("null")) checkOrder.setStatus(Status.getText());
+            Element TransactionDate = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/transactionDate");
+            if (!TransactionDate.getText().equals("null")) checkOrder.setTransactionDate(TransactionDate.getText());
+
+            Element SignatureValue = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/responseSignature/signatureValue");
+            String signatureValue = SignatureValue.getText() + "";
+
+            Element SignedString = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/responseSignature/signedString");
+            String signedString = SignedString.getText() + "";
+            logger.info("SignedString: {}", signedString);
+            KKBSign kkbSign = new KKBSign();
+            boolean signatureValid = kkbSign.verify(signedString, signatureValue, keystore, bankAlias, storepass); /// keypass???
+            logger.info("Verify: {}", signatureValid);
+            checkOrder.setSignatureValid(signatureValid);
+
+            return checkOrder;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -272,8 +344,9 @@ public class HalykSoapService {
 //            paymentPay(new BigDecimal("5.00"), "OLEG IVANOFF", "323", "Test payment SOAP",
 //                    "12", "0000000074234", "4003035000005378", "25");
 //            Thread.sleep(1000);
-            paymentPay(new BigDecimal("70.0"), "OLEG IVANOFF", "653", "Test payment SOAP",
-                    "A9", "0000000074244", "440564000006150", "25");
+
+//            paymentPay(new BigDecimal("70.0"), "OLEG IVANOFF", "653", "Test payment SOAP",
+//                    "A9", "0000000074244", "440564000006150", "25");
 
             String status = checkOrder("0000000074244");
             logger.info("Status: {}", status);
