@@ -192,6 +192,7 @@ public class HalykSoapService {
 
             Element SignedString = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:paymentOrderResponse/return/responseSignature/signedString");
             String signedString = SignedString.getText() + "";
+            logger.info("SignedString: {}", SignedString);
             KKBSign kkbSign = new KKBSign();
             boolean signatureValid = kkbSign.verify(signedString, signatureValue, keystore, alias, storepass); /// keypass???
             logger.info("Verify: {}", signatureValid);
