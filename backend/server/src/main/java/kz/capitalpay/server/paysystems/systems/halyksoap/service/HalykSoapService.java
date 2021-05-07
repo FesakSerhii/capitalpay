@@ -40,8 +40,11 @@ public class HalykSoapService {
     @Value("${halyk.soap.keystore}")
     String keystore;
 
-    @Value("${halyk.soap.alias}")
-    String alias;
+    @Value("${halyk.soap.client.alias}")
+    String clientAlias;
+
+    @Value("${halyk.soap.bank.alias}")
+    String bankAlias;
 
     @Value("${halyk.soap.keypass}")
     String keypass;
@@ -192,7 +195,7 @@ public class HalykSoapService {
 
             Element SignedString = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:paymentOrderResponse/return/responseSignature/signedString");
             String signedString = SignedString.getText() + "";
-            logger.info("SignedString: {}", SignedString);
+            logger.info("SignedString: {}", signedString);
             KKBSign kkbSign = new KKBSign();
             boolean signatureValid = kkbSign.verify(signedString, signatureValue, keystore, alias, storepass); /// keypass???
             logger.info("Verify: {}", signatureValid);
