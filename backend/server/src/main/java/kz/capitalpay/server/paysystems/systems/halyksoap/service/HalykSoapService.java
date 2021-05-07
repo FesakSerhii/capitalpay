@@ -66,7 +66,7 @@ public class HalykSoapService {
         String concatString = paymentOrder.getOrderid() + paymentOrder.getAmount() + paymentOrder.getCurrency() +
                 paymentOrder.getTrtype() + pan + paymentOrder.getMerchantid();
         KKBSign kkbSign = new KKBSign();
-        String signatureValue = kkbSign.sign64(concatString, keystore, alias, keypass, storepass);
+        String signatureValue = kkbSign.sign64(concatString, keystore, clientAlias, keypass, storepass);
         String xml = String.format("<soapenv:Envelope xmlns:soapenv=\"http://www.w3.org/2003/05/soap-envelope\">" +
                         "<soapenv:Body>" +
                         "<ns4:paymentOrder xmlns:ns4=\"http://ws.epay.kkb.kz/xsd\">" +
@@ -103,7 +103,7 @@ public class HalykSoapService {
     String createPaymentOrderAcsXML(String md, String pares, String sessionid) {
         String concatString = md + pares + sessionid;
         KKBSign kkbSign = new KKBSign();
-        String signatureValue = kkbSign.sign64(concatString, keystore, alias, keypass, storepass);
+        String signatureValue = kkbSign.sign64(concatString, keystore, clientAlias, keypass, storepass);
         String xml = String.format(
                 "<soapenv:Envelope xmlns:soapenv=\"http://www.w3.org/2003/05/soap-envelope\">" +
                         "<soapenv:Body>" +
@@ -197,7 +197,7 @@ public class HalykSoapService {
             String signedString = SignedString.getText() + "";
             logger.info("SignedString: {}", signedString);
             KKBSign kkbSign = new KKBSign();
-            boolean signatureValid = kkbSign.verify(signedString, signatureValue, keystore, alias, storepass); /// keypass???
+            boolean signatureValid = kkbSign.verify(signedString, signatureValue, keystore, bankAlias, storepass); /// keypass???
             logger.info("Verify: {}", signatureValid);
             paymentOrder.setSignatureValid(signatureValid);
 
