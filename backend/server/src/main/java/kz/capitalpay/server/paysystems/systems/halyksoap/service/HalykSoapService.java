@@ -2,6 +2,11 @@ package kz.capitalpay.server.paysystems.systems.halyksoap.service;
 
 import com.google.gson.Gson;
 import kz.capitalpay.server.paysystems.systems.halykbank.kkbsign.KKBSign;
+import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykPaymentOrder;
+import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykPaymentOrderRepository;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,14 +55,15 @@ public class HalykSoapService {
     @Autowired
     RestTemplate restTemplate;
 
-    String createPaymentOrderXML(BigDecimal amount, String cardholderName, String cvc, String desc,
-                                 String month, String orderid, String pan, int trtype, String year) {
+    @Autowired
+    HalykPaymentOrderRepository halykPaymentOrderRepository;
 
-        String concatString = orderid + amount.toString().replace(".",",") + currency + trtype + pan + merchantid;
-        logger.info("Concat String (orderid + amount + currency + trtype + pan + merchantid): {}",concatString);
+    private String createPaymentOrderXML(HalykPaymentOrder paymentOrder, String cvc, String month, String year, String pan) {
+
+        String concatString = paymentOrder.getOrderid() + paymentOrder.getAmount() + paymentOrder.getCurrency() +
+                paymentOrder.getTrtype() + pan + paymentOrder.getMerchantid();
         KKBSign kkbSign = new KKBSign();
         String signatureValue = kkbSign.sign64(concatString, keystore, alias, keypass, storepass);
-        logger.info("Signature: {}",signatureValue);
         String xml = String.format("<soapenv:Envelope xmlns:soapenv=\"http://www.w3.org/2003/05/soap-envelope\">" +
                         "<soapenv:Body>" +
                         "<ns4:paymentOrder xmlns:ns4=\"http://ws.epay.kkb.kz/xsd\">" +
@@ -81,8 +88,9 @@ public class HalykSoapService {
                         "</ns4:paymentOrder>" +
                         "</soapenv:Body>" +
                         "</soapenv:Envelope>",
-                amount.toString().replace(".", ","),
-                cardholderName, currency, cvc, desc, merchantid, month, orderid, pan, trtype, year,
+                paymentOrder.getAmount(), paymentOrder.getCardholderName(), paymentOrder.getCurrency(), cvc,
+                paymentOrder.getDesc(), paymentOrder.getMerchantid(), month, paymentOrder.getOrderid(),
+                pan, paymentOrder.getTrtype(), year,
                 merchantCertificate, merchantid, signatureValue
         );
         return xml;
@@ -118,18 +126,54 @@ public class HalykSoapService {
     public boolean paymentPay(BigDecimal amount, String cardholderName, String cvc, String desc,
                               String month, String orderid, String pan, String year) {
         try {
-            String signedXML = createPaymentOrderXML(amount, cardholderName, cvc, desc, month, orderid, pan, 1, year);
+            HalykPaymentOrder paymentOrder = new HalykPaymentOrder();
+            paymentOrder.setTimestamp(System.currentTimeMillis());
+            paymentOrder.setLocalDateTime(LocalDateTime.now());
+            paymentOrder.setAmount(amount.setScale(2).toString());
+            paymentOrder.setCardholderName(cardholderName);
+            paymentOrder.setCurrency(currency);
+            paymentOrder.setDesc(desc);
+            paymentOrder.setMerchantid(merchantid);
+            paymentOrder.setOrderid(orderid);
+            paymentOrder.setTrtype(1);
+
+            halykPaymentOrderRepository.save(paymentOrder);
+
+            String signedXML = createPaymentOrderXML(paymentOrder, cvc, month, year, pan);
             Map<String, String> vars = new HashMap<>();
             vars.put("signedXML", signedXML);
-            logger.info(signedXML);
+
             String response = restTemplate.postForObject(sendOrderActionLink + "/axis2/services/EpayService.EpayServiceHttpSoap12Endpoint/",
                     signedXML, String.class, java.util.Optional.ofNullable(null));
             logger.info("response: {}", response);
+
+            parsePaymentOrderResponse(paymentOrder, response);
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
+    }
+
+    private HalykPaymentOrder parsePaymentOrderResponse(HalykPaymentOrder paymentOrder, String response) {
+        try {
+            Document xmlDoc = DocumentHelper.createDocument();
+            xmlDoc = DocumentHelper.parseText(response);
+            logger.info("Full Document {}", xmlDoc.asXML());
+
+
+            Element AscUrl = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:paymentOrderResponse/return/acsUrl");
+            logger.info("Element return: return={}", AscUrl.asXML() + "");
+            String sAcsUrl = AscUrl.getText();
+            logger.info("Element AscUrl: acsUrl={}", sAcsUrl);
+            paymentOrder.setAcsUrl(sAcsUrl);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return paymentOrder;
+
     }
 
 
