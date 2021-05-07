@@ -159,10 +159,11 @@ public class HalykSoapService {
     private HalykPaymentOrder parsePaymentOrderResponse(HalykPaymentOrder paymentOrder, String response) {
         try {
             Document xmlDoc = DocumentHelper.createDocument();
+
             xmlDoc = DocumentHelper.parseText(response);
             logger.info("Full Document {}", xmlDoc.asXML());
 
-
+            xmlDoc.getRootElement().addNamespace("ns", "http://ws.epay.kkb.kz/xsd");
             Element AscUrl = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:paymentOrderResponse/return/acsUrl");
             logger.info("Element return: return={}", AscUrl.asXML() + "");
             String sAcsUrl = AscUrl.getText();
