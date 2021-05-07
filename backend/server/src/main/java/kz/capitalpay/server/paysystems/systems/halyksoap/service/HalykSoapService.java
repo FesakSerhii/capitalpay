@@ -52,10 +52,6 @@ public class HalykSoapService {
     @Value("${kkbsign.send.order.action.link}")
     String sendOrderActionLink;
 
-    @Value("${halyk.soap.cert.bank}")
-    String certBank;
-
-
     @Autowired
     RestTemplate restTemplate;
 
@@ -197,7 +193,7 @@ public class HalykSoapService {
             Element SignedString = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:paymentOrderResponse/return/responseSignature/signedString");
             String signedString = SignedString.getText() + "";
             KKBSign kkbSign = new KKBSign();
-            boolean signatureValid = kkbSign.verify(signedString, signatureValue, certBank, alias, storepass); /// keypass???
+            boolean signatureValid = kkbSign.verify(signedString, signatureValue, keystore, alias, storepass); /// keypass???
             logger.info("Verify: {}", signatureValid);
             paymentOrder.setSignatureValid(signatureValid);
 
