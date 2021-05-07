@@ -148,7 +148,7 @@ public class HalykSoapService {
             logger.info("response: {}", response);
 
             parsePaymentOrderResponse(paymentOrder, response);
-
+            logger.info(gson.toJson(paymentOrder));
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -165,10 +165,10 @@ public class HalykSoapService {
 
             xmlDoc.getRootElement().addNamespace("ns", "http://ws.epay.kkb.kz/xsd");
             Element AscUrl = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:paymentOrderResponse/return/acsUrl");
-            logger.info("Element return: return={}", AscUrl.asXML() + "");
-            String sAcsUrl = AscUrl.getText();
-            logger.info("Element AscUrl: acsUrl={}", sAcsUrl);
-            paymentOrder.setAcsUrl(sAcsUrl);
+            paymentOrder.setAcsUrl(AscUrl.getText());
+            Element Approvalcode = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:paymentOrderResponse/return/approvalcode");
+            paymentOrder.setApprovalcode(Approvalcode.getText());
+
 
         } catch (Exception e) {
             e.printStackTrace();
