@@ -31,7 +31,7 @@ public class SimpleController {
     SimpleService simpleService;
 
     @PostMapping("/pay")
-    void pay(@RequestParam Long cashboxid,
+    String pay(@RequestParam Long cashboxid,
                   @RequestParam String billid,
                   @RequestParam Long totalamount,
                   @RequestParam String currency,
@@ -59,6 +59,8 @@ public class SimpleController {
 
         ResultDTO result = simpleService.newPayment(request);
 
+        return "paysystems/cardpay";
+        /*
         if (result.isResult() && result.getData() != null && result.getData() instanceof Payment) {
             Payment payment = (Payment) result.getData();
             httpServletResponse.setHeader("Location",
@@ -73,5 +75,7 @@ public class SimpleController {
                e.printStackTrace();
            }
         }
+
+         */
     }
 }
