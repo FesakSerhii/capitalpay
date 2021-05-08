@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
@@ -81,7 +82,7 @@ public class SimpleService {
                 return error112;
             }
 
-            if (request.getParam()!= null && request.getParam().length() > 255) {
+            if (request.getParam() != null && request.getParam().length() > 255) {
                 return error117;
             }
 
@@ -108,5 +109,33 @@ public class SimpleService {
             return new ResultDTO(false, e.getMessage(), -1);
         }
 
+    }
+
+    public ResultDTO createPayment(HttpServletRequest httpRequest, Long cashboxid, String billid, Long totalamount, String currency, String param) {
+        try {
+            SimpleRequestDTO request = new SimpleRequestDTO();
+
+            String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
+            if (ipAddress == null) {
+                ipAddress = httpRequest.getRemoteAddr();
+            }
+            request.setIpAddress(ipAddress);
+
+            request.setUserAgent(httpRequest.getHeader("User-Agent"));
+
+            request.setCashboxid(cashboxid);
+            request.setBillid(billid);
+            request.setTotalamount(totalamount);
+            request.setCurrency(currency);
+            request.setParam(param);
+
+            logger.info("Request: {}",gson.toJson(request));
+
+            return newPayment(request);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultDTO(false, e.getMessage(), -1);
+        }
     }
 }

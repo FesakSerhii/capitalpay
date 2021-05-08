@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,34 +34,29 @@ public class SimpleController {
 
     @PostMapping("/pay")
     String pay(@RequestParam Long cashboxid,
-                  @RequestParam String billid,
-                  @RequestParam Long totalamount,
-                  @RequestParam String currency,
-                  @RequestParam(required = false) String param,
-                  HttpServletRequest httpRequest,
-                  HttpServletResponse httpServletResponse
+               @RequestParam String billid,
+               @RequestParam Long totalamount,
+               @RequestParam String currency,
+               @RequestParam(required = false) String param,
+               HttpServletRequest httpRequest,
+               ModelMap modelMap
     ) {
-        SimpleRequestDTO request = new SimpleRequestDTO();
 
-        String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
-        if (ipAddress == null) {
-            ipAddress = httpRequest.getRemoteAddr();
+
+        ResultDTO resultDTO = simpleService.createPayment(httpRequest, cashboxid, billid, totalamount, currency, param);
+        if (resultDTO.isResult() && resultDTO.getData() instanceof Payment) {
+            Payment payment = (Payment) resultDTO.getData();
+
+            modelMap.addAttribute("paymentid", payment.getGuid());
+            modelMap.addAttribute("billid", payment.getBillId());
+            modelMap.addAttribute("totalamount",payment.getTotalAmount());
+            modelMap.addAttribute("currency",payment.getCurrency());
+
+            return "paysystems/cardpay";
+        } else {
+            modelMap.addAttribute("message", resultDTO.getData());
+            return "paysystems/error";
         }
-        request.setIpAddress(ipAddress);
-
-        request.setUserAgent(httpRequest.getHeader("User-Agent"));
-
-        request.setCashboxid(cashboxid);
-        request.setBillid(billid);
-        request.setTotalamount(totalamount);
-        request.setCurrency(currency);
-        request.setParam(param);
-
-        logger.info(gson.toJson(request));
-
-        ResultDTO result = simpleService.newPayment(request);
-
-        return "paysystems/cardpay";
         /*
         if (result.isResult() && result.getData() != null && result.getData() instanceof Payment) {
             Payment payment = (Payment) result.getData();
