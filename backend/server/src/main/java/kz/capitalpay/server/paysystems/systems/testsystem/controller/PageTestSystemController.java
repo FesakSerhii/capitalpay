@@ -70,15 +70,12 @@ public class PageTestSystemController {
                         @RequestParam String status,
                         HttpServletResponse httpServletResponse) {
 
-
         logger.info(paymentid);
         logger.info(status);
-
 
         String redirectUrl =    testSystemInService.getRedirectUrlForPayment(paymentid, status);
 
         httpServletResponse.setHeader("Location", redirectUrl);
         httpServletResponse.setStatus(302);
-
     }
 }
