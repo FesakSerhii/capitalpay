@@ -37,13 +37,14 @@ public class SimpleController {
                @RequestParam String billid,
                @RequestParam Long totalamount,
                @RequestParam String currency,
+               @RequestParam String description,
                @RequestParam(required = false) String param,
                HttpServletRequest httpRequest,
                ModelMap modelMap
     ) {
 
 
-        ResultDTO resultDTO = simpleService.createPayment(httpRequest, cashboxid, billid, totalamount, currency, param);
+        ResultDTO resultDTO = simpleService.createPayment(httpRequest, cashboxid, billid, totalamount, currency,description, param);
         if (resultDTO.isResult() && resultDTO.getData() instanceof Payment) {
             Payment payment = (Payment) resultDTO.getData();
 
@@ -51,6 +52,7 @@ public class SimpleController {
             modelMap.addAttribute("billid", payment.getBillId());
             modelMap.addAttribute("totalamount",payment.getTotalAmount());
             modelMap.addAttribute("currency",payment.getCurrency());
+            modelMap.addAttribute("description",payment.getDescription());
 
             return "paysystems/cardpay";
         } else {

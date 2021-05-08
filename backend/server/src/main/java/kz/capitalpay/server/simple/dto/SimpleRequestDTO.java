@@ -7,6 +7,7 @@ public class SimpleRequestDTO {
     String billid;
     Long totalamount;
     String currency;
+    String description;
     String param;
     String ipAddress;
     String userAgent;
@@ -41,6 +42,14 @@ public class SimpleRequestDTO {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getParam() {

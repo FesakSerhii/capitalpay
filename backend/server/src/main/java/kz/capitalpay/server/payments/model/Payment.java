@@ -19,9 +19,11 @@ public class Payment {
     Long cashboxId;
     String cashboxName;
     String billId;
+    String paySysPayId;
     @Column(precision = 30, scale = 2)
     BigDecimal totalAmount;
     String currency;
+    String description;
     String param;
     String ipAddress;
     String userAgent;
@@ -91,6 +93,14 @@ public class Payment {
         this.billId = billId;
     }
 
+    public String getPaySysPayId() {
+        return paySysPayId;
+    }
+
+    public void setPaySysPayId(String paySysPayId) {
+        this.paySysPayId = paySysPayId;
+    }
+
     public BigDecimal getTotalAmount() {
         return totalAmount;
     }
@@ -105,6 +115,14 @@ public class Payment {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getParam() {

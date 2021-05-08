@@ -11,6 +11,7 @@
 <main class="content-whf form2-theme">
     <form action="/testsystem/buttonclick" method="post" class="tpsform form2-theme">
         <input name="paymentid" type="hidden" th:value="${paymentid}">
+        <input name="description" type="hidden" th:value="${description}">
         <div class="infoline">
             <p class="infoline_name">Order ID</p>
             <p class="infoline_value" th:text="${billid}">sdgfg674546665</p>
@@ -27,12 +28,12 @@
         <label class="tpsform_input" for="cardloldername">
             <span>Cardlolder name *</span>
             <!--добавьте к span класс .focused при фокусе на инпуте-->
-            <input type="text" placeholder="John Doe" id="cardloldername">
+            <input name="cardHolderName" type="text" placeholder="John Doe" id="cardloldername">
         </label>
         <label class="tpsform_input" for="cardnumber">
             <span class="focused">Card number  *</span>
             <!--добавьте к span класс .focused при фокусе на инпуте-->
-            <input type="text" placeholder="" id="cardnumber">
+            <input name="pan" type="text" placeholder="" id="cardnumber">
         </label>
         <div class="formline">
             <div class="select form2-theme">
@@ -59,17 +60,17 @@
                 <div class="select_label">&nbsp;</div>
                 <div class="head"><span class="select-placeholder">YYYY</span></div>
                 <ul class="select_box">
-                    <li>2021</li>
-                    <li>2022</li>
-                    <li>2023</li>
-                    <li>2024</li>
-                    <li>2025</li>
+                    <li>21</li>
+                    <li>22</li>
+                    <li>23</li>
+                    <li>24</li>
+                    <li>25</li>
                 </ul>
             </div>
             <label class="tpsform_input ico pass" for="cardseccode">
                 <span>Card Security Code *</span>
                 <!--добавьте к span класс .focused при фокусе на инпуте-->
-                <input type="password" placeholder="" id="cardseccode">
+                <input name="cvc" type="password" placeholder="" id="cardseccode">
             </label>
         </div>
         <div class="checkbox">

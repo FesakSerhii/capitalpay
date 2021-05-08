@@ -1,4 +1,4 @@
-package kz.capitalpay.server.paysystems.systems.halykbank.kkbsign;
+package kz.capitalpay.server.paysystems.systems.halyksoap.kkbsign;
 
 import java.io.FileInputStream;
 import java.io.Serializable;

@@ -57,6 +57,8 @@ public class SimpleService {
     public static final String FAILED = "FAILED";
     public static final String PENDING = "PENDING";
 
+    public static Long lastPaymentId = System.currentTimeMillis() / 10000;
+
 
     public ResultDTO newPayment(SimpleRequestDTO request) {
         try {
@@ -95,8 +97,11 @@ public class SimpleService {
             payment.setCashboxId(cashbox.getId());
             payment.setCashboxName(cashbox.getName());
             payment.setBillId(request.getBillid());
+            payment.setPaySysPayId(String.format("%1$14s", lastPaymentId++)
+                    .replace(' ', '0'));
             payment.setTotalAmount(totalAmount);
             payment.setCurrency(request.getCurrency());
+            payment.setDescription(request.getDescription());
             payment.setParam(request.getParam());
             payment.setIpAddress(request.getIpAddress());
             payment.setUserAgent(request.getUserAgent());
@@ -111,7 +116,7 @@ public class SimpleService {
 
     }
 
-    public ResultDTO createPayment(HttpServletRequest httpRequest, Long cashboxid, String billid, Long totalamount, String currency, String param) {
+    public ResultDTO createPayment(HttpServletRequest httpRequest, Long cashboxid, String billid, Long totalamount, String currency,String description, String param) {
         try {
             SimpleRequestDTO request = new SimpleRequestDTO();
 
@@ -127,6 +132,7 @@ public class SimpleService {
             request.setBillid(billid);
             request.setTotalamount(totalamount);
             request.setCurrency(currency);
+            request.setDescription(description);
             request.setParam(param);
 
             logger.info("Request: {}",gson.toJson(request));

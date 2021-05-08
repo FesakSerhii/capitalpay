@@ -1,7 +1,7 @@
 package kz.capitalpay.server.paysystems.systems.halyksoap.service;
 
 import com.google.gson.Gson;
-import kz.capitalpay.server.paysystems.systems.halykbank.kkbsign.KKBSign;
+import kz.capitalpay.server.paysystems.systems.halyksoap.kkbsign.KKBSign;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykCheckOrder;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykPaymentOrder;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykPaymentOrderAcs;
@@ -71,6 +71,8 @@ public class HalykSoapService {
     @Autowired
     HalykPaymentOrderAcsRepository halykPaymentOrderAcsRepository;
 
+
+
     private String createPaymentOrderXML(HalykPaymentOrder paymentOrder, String cvc, String month, String year, String pan) {
 
         String concatString = paymentOrder.getOrderid() + paymentOrder.getAmount() + paymentOrder.getCurrency() +
@@ -136,7 +138,7 @@ public class HalykSoapService {
         return xml;
     }
 
-    public boolean paymentOrder(BigDecimal amount, String cardholderName, String cvc, String desc,
+    public String paymentOrder(BigDecimal amount, String cardholderName, String cvc, String desc,
                                 String month, String orderid, String pan, String year) {
         try {
             HalykPaymentOrder paymentOrder = new HalykPaymentOrder();
@@ -163,11 +165,11 @@ public class HalykSoapService {
             parsePaymentOrderResponse(paymentOrder, response);
             logger.info(gson.toJson(paymentOrder));
 
-            return true;
+            return "OK";
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+        return "FAIL";
     }
 
 
@@ -487,4 +489,5 @@ public class HalykSoapService {
             e.printStackTrace();
         }
     }
+
 }
