@@ -471,11 +471,11 @@ public class HalykSoapService {
 //                        paymentOrder(new BigDecimal("70.0"), "OLEG IVANOFF", "653", "Test payment SOAP",
 //                                "A9", "0000000074244", "440564000006150", "25");
 
-                        paymentOrderAcs("ASDEF8009001","ABCD-AMOUNT5-TERMINAL92061101-ORDER4785514--OK",
-                                "1285268A80D266BB2E74AC1FE69D9D1E");
+                        paymentOrderAcs("ASDEF8009003","ABCD-AMOUNT5.00-TERMINAL92061102-ORDER0000000074234--OK",
+                                "3B9482631E42175E5B06C568DE0F1132");
 
-                        String status = checkOrder("0000000074244");
-                        logger.info("Status: {}", status);
+//                        String status = checkOrder("0000000074244");
+//                        logger.info("Status: {}", status);
 
                     } catch (Exception e) {
                         e.printStackTrace();
