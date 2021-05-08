@@ -37,7 +37,7 @@ public class SimpleController {
                @RequestParam String billid,
                @RequestParam Long totalamount,
                @RequestParam String currency,
-               @RequestParam String description,
+               @RequestParam(defaultValue = "") String description,
                @RequestParam(required = false) String param,
                HttpServletRequest httpRequest,
                ModelMap modelMap
