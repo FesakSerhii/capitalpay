@@ -49,10 +49,25 @@ public class PaymentService {
     }
 
     public Payment getPaymentByOrderId(String orderId) {
-        return paymentRepository.findTopByBillId(orderId);    }
+        return paymentRepository.findTopByBillId(orderId);
+    }
 
     public void success(Payment paymentFromBd) {
         paymentFromBd.setStatus(SUCCESS);
         paymentRepository.save(paymentFromBd);
+    }
+
+    public void setStatusByPaySysPayId(String paySysPayId, String status) {
+        Payment payment = paymentRepository.findTopByPaySysPayId(paySysPayId);
+        if (payment != null) {
+            payment.setStatus(status);
+            paymentRepository.save(payment);
+// TODO: сделать логирование изменения статусов
+            // TODO: уведомить мерчанта о том что статус изменился
+        }else {
+            logger.error("PaySysPay ID: {}",paySysPayId);
+            logger.error("Payment: {}",payment);
+        }
+
     }
 }

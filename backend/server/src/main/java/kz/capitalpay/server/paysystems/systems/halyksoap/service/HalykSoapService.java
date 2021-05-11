@@ -1,6 +1,7 @@
 package kz.capitalpay.server.paysystems.systems.halyksoap.service;
 
 import com.google.gson.Gson;
+import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.paysystems.systems.halyksoap.kkbsign.KKBSign;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykCheckOrder;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykPaymentOrder;
@@ -23,6 +24,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+
+import static kz.capitalpay.server.simple.service.SimpleService.SUCCESS;
 
 @Service
 public class HalykSoapService {
@@ -71,6 +74,8 @@ public class HalykSoapService {
     @Autowired
     HalykPaymentOrderAcsRepository halykPaymentOrderAcsRepository;
 
+    @Autowired
+    PaymentService paymentService;
 
 
     private String createPaymentOrderXML(HalykPaymentOrder paymentOrder, String cvc, String month, String year, String pan) {
@@ -164,6 +169,10 @@ public class HalykSoapService {
 
             parsePaymentOrderResponse(paymentOrder, response);
             logger.info(gson.toJson(paymentOrder));
+
+            if(paymentOrder.getReturnCode() != null && paymentOrder.getReturnCode().equals("00")){
+                paymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(),SUCCESS);
+            }
 
             return "OK";
         } catch (Exception e) {

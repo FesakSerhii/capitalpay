@@ -36,11 +36,11 @@
         <label class="tpsform_input" for="cardnumber">
             <span class="focused">Card number  *</span>
             <!--добавьте к span класс .focused при фокусе на инпуте-->
-            <input name="pan" type="text" placeholder="" id="cardnumber">
+            <input autocomplete="cc-number" name="pan" type="text" placeholder="" id="cardnumber">
         </label>
         <div class="formline">
             <div class="select form2-theme">
-                <input type="hidden" name="month">
+                <input type="hidden" name="month"  autocomplete="cc-exp-month" >
                 <div class="select_label">Expiration Date *</div>
                 <div class="head"><span class="select-placeholder">MM</span></div>
                 <ul class="select_box">
@@ -59,7 +59,7 @@
                 </ul>
             </div>
             <div class="select form2-theme">
-                <input type="hidden" name="year">
+                <input type="hidden" name="year"  autocomplete="cc-exp-year" >
                 <div class="select_label">&nbsp;</div>
                 <div class="head"><span class="select-placeholder">YY</span></div>
                 <ul class="select_box">
@@ -77,7 +77,7 @@
             <label class="tpsform_input ico pass" for="cardseccode">
                 <span>Card Security Code *</span>
                 <!--добавьте к span класс .focused при фокусе на инпуте-->
-                <input name="cvc" type="password" placeholder="" id="cardseccode">
+                <input  autocomplete="off" name="cvv" type="password" placeholder="" id="cardseccode">
             </label>
         </div>
         <div class="checkbox">

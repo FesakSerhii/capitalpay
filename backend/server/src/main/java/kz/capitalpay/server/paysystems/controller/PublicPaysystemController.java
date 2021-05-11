@@ -48,7 +48,7 @@ public class PublicPaysystemController {
                           HttpServletResponse httpResponse,
                           @RequestParam String paymentid,
                           @RequestParam String cardHolderName,
-                          @RequestParam String cvc,
+                          @RequestParam String cvv,
                           @RequestParam String month,
                           @RequestParam String pan,
                           @RequestParam String year
@@ -64,7 +64,7 @@ public class PublicPaysystemController {
         Payment payment = paymentService.getPayment(paymentid);
 
         String result = halykSoapService.paymentOrder(payment.getTotalAmount(),
-                cardHolderName, cvc, payment.getDescription(), month, payment.getPaySysPayId(), pan, year);
+                cardHolderName, cvv, payment.getDescription(), month, payment.getPaySysPayId(), pan, year);
         if(result.equals("OK")){
             // TODO: сделать нормальную страницу успешного платежа
             httpResponse.setHeader("Location", "https://api.capitalpay.kz/testshop/page");
