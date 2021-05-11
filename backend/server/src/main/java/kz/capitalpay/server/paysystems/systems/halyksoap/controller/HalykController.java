@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,11 +22,14 @@ public class HalykController {
 
     @PostMapping("/paysystem/halyk/listener")
     @ResponseBody
-    public String listener(HttpServletRequest request, HttpServletResponse response) {
-        logger.info("Request:");
-        logger.info("3DS: {}", gson.toJson(request.getParameterMap()));
+    public String listener(@RequestParam String PaRes,
+                           @RequestParam String MD,
+                           @RequestParam String TermUrl) {
+        logger.info("PaRes: {}",PaRes);
+        logger.info("MD: {}",MD);
+        logger.info("TermUrl: {}",TermUrl);
 
-        return gson.toJson(request.getParameterMap());
+        return PaRes;
     }
 
 
