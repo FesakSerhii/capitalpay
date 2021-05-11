@@ -13,6 +13,7 @@ import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.service.ApplicationRoleService;
 import kz.capitalpay.server.login.service.ApplicationUserService;
 import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
+import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.paysystems.model.PaysystemInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +26,9 @@ import java.util.List;
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.OPERATOR;
-import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.CASHBOX_CURRENCY_LIST;
+import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.*;
+import static kz.capitalpay.server.simple.service.SimpleService.FAILED;
+import static kz.capitalpay.server.simple.service.SimpleService.SUCCESS;
 
 @Service
 public class CashboxService {
@@ -139,5 +142,13 @@ public class CashboxService {
     }
 
 
-
+    public String getUrlByPayment(Payment payment, String status) {
+        if (status.equals(SUCCESS)) {
+            return cashboxSettingsService.getField(payment.getCashboxId(), REDIRECT_SUCCESS_URL);
+        } else if (status.equals(FAILED)) {
+            return cashboxSettingsService.getField(payment.getCashboxId(), REDIRECT_FAILED_URL);
+        } else {
+            return cashboxSettingsService.getField(payment.getCashboxId(), REDIRECT_PENDING_URL);
+        }
+    }
 }

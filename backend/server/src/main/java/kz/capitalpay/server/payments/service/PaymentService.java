@@ -2,6 +2,7 @@ package kz.capitalpay.server.payments.service;
 
 import com.google.gson.Gson;
 import kz.capitalpay.server.cashbox.model.Cashbox;
+import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.repository.PaymentRepository;
@@ -29,6 +30,9 @@ public class PaymentService {
 
     @Autowired
     PaymentLogService paymentLogService;
+
+    @Autowired
+    CashboxService cashboxService;
 
     public boolean checkUnic(Cashbox cashbox, String billid) {
         List<Payment> paymentList = paymentRepository.findByCashboxIdAndAndBillId(cashbox.getId(), billid);
@@ -64,10 +68,17 @@ public class PaymentService {
             paymentRepository.save(payment);
 // TODO: сделать логирование изменения статусов
             // TODO: уведомить мерчанта о том что статус изменился
-        }else {
-            logger.error("PaySysPay ID: {}",paySysPayId);
-            logger.error("Payment: {}",payment);
+        } else {
+            logger.error("PaySysPay ID: {}", paySysPayId);
+            logger.error("Payment: {}", payment);
         }
+
+    }
+
+    public Cashbox getCashboxByOrderId(String orderid) {
+        Payment payment = paymentRepository.findTopByPaySysPayId(orderid);
+        Cashbox cashbox = cashboxService.findById(payment.getCashboxId());
+        return cashbox;
 
     }
 }

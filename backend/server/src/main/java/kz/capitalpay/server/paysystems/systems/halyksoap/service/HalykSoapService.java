@@ -1,6 +1,8 @@
 package kz.capitalpay.server.paysystems.systems.halyksoap.service;
 
 import com.google.gson.Gson;
+import kz.capitalpay.server.cashbox.model.Cashbox;
+import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.paysystems.systems.halyksoap.kkbsign.KKBSign;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykCheckOrder;
@@ -25,6 +27,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+import static kz.capitalpay.server.simple.service.SimpleService.PENDING;
 import static kz.capitalpay.server.simple.service.SimpleService.SUCCESS;
 
 @Service
@@ -76,6 +79,7 @@ public class HalykSoapService {
 
     @Autowired
     PaymentService paymentService;
+
 
 
     private String createPaymentOrderXML(HalykPaymentOrder paymentOrder, String cvc, String month, String year, String pan) {
@@ -144,7 +148,7 @@ public class HalykSoapService {
     }
 
     public String paymentOrder(BigDecimal amount, String cardholderName, String cvc, String desc,
-                                String month, String orderid, String pan, String year) {
+                               String month, String orderid, String pan, String year) {
         try {
             HalykPaymentOrder paymentOrder = new HalykPaymentOrder();
             paymentOrder.setTimestamp(System.currentTimeMillis());
@@ -170,14 +174,21 @@ public class HalykSoapService {
             parsePaymentOrderResponse(paymentOrder, response);
             logger.info(gson.toJson(paymentOrder));
 
-            if(paymentOrder.getReturnCode() != null && paymentOrder.getReturnCode().equals("00")){
-                paymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(),SUCCESS);
-            }else{
-                if (paymentOrder.getPareq() != null && paymentOrder.getMd() != null){
-                    Map<String,String> param = new HashMap<>();
-                    param.put("acsUrl",paymentOrder.getAcsUrl());
-                    param.put("MD",paymentOrder.getMd());
-                    param.put("PaReq",paymentOrder.getPareq());
+            if (paymentOrder.getReturnCode() != null && paymentOrder.getReturnCode().equals("00")) {
+                paymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), SUCCESS);
+            } else {
+                if (paymentOrder.getPareq() != null && paymentOrder.getMd() != null) {
+                    // TODO: костыль только на время отладки в песочнице
+                    if (sendOrderActionLink.equals("https://testpay.kkb.kz")) {
+                        paymentOrder.setMd(paymentOrder.getSessionid());
+                        halykPaymentOrderRepository.save(paymentOrder);
+                    }
+
+                    Map<String, String> param = new HashMap<>();
+                    param.put("acsUrl", paymentOrder.getAcsUrl());
+                    param.put("MD", paymentOrder.getMd());
+                    param.put("PaReq", paymentOrder.getPareq());
+                    paymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), PENDING);
                     return gson.toJson(param);
                 }
             }
@@ -386,7 +397,9 @@ public class HalykSoapService {
 
             parsePaymentOrderAcsResponse(paymentOrderAcs, response);
             logger.info(gson.toJson(paymentOrderAcs));
-
+            if (paymentOrderAcs.getReturnCode() != null && paymentOrderAcs.getReturnCode().equals("00")) {
+                paymentService.setStatusByPaySysPayId(paymentOrderAcs.getOrderid(), SUCCESS);
+            }
             return true;
 
         } catch (Exception e) {
@@ -507,4 +520,21 @@ public class HalykSoapService {
         }
     }
 
+    public String getSessionByMD(String md) {
+        HalykPaymentOrder paymentOrder = halykPaymentOrderRepository.findTopByMd(md);
+        return paymentOrder.getSessionid();
+
+    }
+
+    public Cashbox getCashboxByMD(String md) {
+        HalykPaymentOrder paymentOrder = halykPaymentOrderRepository.findTopByMd(md);
+        Cashbox cashbox = paymentService.getCashboxByOrderId(paymentOrder.getOrderid());
+        return cashbox;
+    }
+
+    public Payment getPaymentByMd(String md) {
+        HalykPaymentOrder paymentOrder = halykPaymentOrderRepository.findTopByMd(md);
+        Payment payment = paymentService.getPaymentByOrderId(paymentOrder.getOrderid());
+        return payment;
+    }
 }
