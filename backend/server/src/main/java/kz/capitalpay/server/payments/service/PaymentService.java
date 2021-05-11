@@ -62,9 +62,9 @@ public class PaymentService {
     }
 
     public void setStatusByPaySysPayId(String paySysPayId, String status) {
-        logger.info("PaySysPay ID: {}",paySysPayId);
+        logger.info("PaySysPay ID: {}", paySysPayId);
         Payment payment = paymentRepository.findTopByPaySysPayId(paySysPayId);
-        logger.info("Payment pspid: {}",payment.getPaySysPayId());
+        logger.info("Payment pspid: {}", payment.getPaySysPayId());
         if (payment != null) {
             payment.setStatus(status);
             paymentRepository.save(payment);
