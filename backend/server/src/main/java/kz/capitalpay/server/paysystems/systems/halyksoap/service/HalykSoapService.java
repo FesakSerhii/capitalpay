@@ -179,10 +179,10 @@ public class HalykSoapService {
             } else {
                 if (paymentOrder.getPareq() != null && paymentOrder.getMd() != null) {
                     // TODO: костыль только на время отладки в песочнице
-                    if (sendOrderActionLink.equals("https://testpay.kkb.kz")) {
-                        paymentOrder.setMd(paymentOrder.getSessionid());
-                        halykPaymentOrderRepository.save(paymentOrder);
-                    }
+//                    if (sendOrderActionLink.equals("https://testpay.kkb.kz")) {
+//                        paymentOrder.setMd(paymentOrder.getSessionid());
+//                        halykPaymentOrderRepository.save(paymentOrder);
+//                    }
 
                     Map<String, String> param = new HashMap<>();
                     param.put("acsUrl", paymentOrder.getAcsUrl());
@@ -534,6 +534,19 @@ public class HalykSoapService {
 
     public Payment getPaymentByMd(String md) {
         HalykPaymentOrder paymentOrder = halykPaymentOrderRepository.findTopByMd(md);
+        Payment payment = paymentService.getPaymentByOrderId(paymentOrder.getOrderid());
+        return payment;
+    }
+
+    public String getSessionByPaRes(String paRes) {
+        String pareq = paRes.replace("-OK","");
+        HalykPaymentOrder paymentOrder = halykPaymentOrderRepository.findTopByPareq(pareq);
+        return paymentOrder.getSessionid();
+    }
+
+    public Payment getPaymentByPaRes(String paRes) {
+        String pareq = paRes.replace("-OK","");
+        HalykPaymentOrder paymentOrder = halykPaymentOrderRepository.findTopByPareq(pareq);
         Payment payment = paymentService.getPaymentByOrderId(paymentOrder.getOrderid());
         return payment;
     }

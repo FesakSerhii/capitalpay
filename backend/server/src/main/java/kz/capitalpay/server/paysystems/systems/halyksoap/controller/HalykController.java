@@ -9,6 +9,7 @@ import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapServic
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,6 +35,9 @@ public class HalykController {
     @Autowired
     CashboxService cashboxService;
 
+    @Value("${ kkbsign.send.order.action.link}")
+    String actionLink;
+
 
     @PostMapping("/paysystem/halyk/listener")
     @ResponseBody
@@ -44,11 +48,22 @@ public class HalykController {
         logger.info("MD: {}", MD);
         logger.info("TermUrl: {}", TermUrl);
 
-        String sessionid = halykSoapService.getSessionByMD(MD);
+
+        String sessionid;
+        Payment payment;
+        // TODO: Костыль ради песочницы
+        if (actionLink.equals("https://testpay.kkb.kz")) {
+            sessionid = halykSoapService.getSessionByPaRes(PaRes);
+            payment = halykSoapService.getPaymentByPaRes(PaRes);
+        } else {
+            sessionid = halykSoapService.getSessionByMD(MD);
+            payment = halykSoapService.getPaymentByMd(MD);
+        }
+
 
         boolean result = halykSoapService.paymentOrderAcs(MD, PaRes, sessionid);
         String url = "";
-        Payment payment = halykSoapService.getPaymentByMd(MD);
+
 
         if (result) {
             url = cashboxService.getUrlByPayment(payment, SUCCESS);
