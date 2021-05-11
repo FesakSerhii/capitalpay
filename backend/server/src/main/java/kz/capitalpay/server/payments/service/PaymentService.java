@@ -81,4 +81,8 @@ public class PaymentService {
         return cashbox;
 
     }
+
+    public Payment getByPaySysPayId(String paySysPayId) {
+        return paymentRepository.findTopByPaySysPayId(paySysPayId);
+    }
 }

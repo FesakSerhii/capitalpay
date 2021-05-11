@@ -547,7 +547,8 @@ public class HalykSoapService {
     public Payment getPaymentByPaRes(String paRes) {
         String pareq = paRes.replace("-OK","");
         HalykPaymentOrder paymentOrder = halykPaymentOrderRepository.findTopByPareq(pareq);
-        Payment payment = paymentService.getPaymentByOrderId(paymentOrder.getOrderid());
+        logger.info("PayOrder: {}", gson.toJson(paymentOrder));
+        Payment payment = paymentService.getByPaySysPayId(paymentOrder.getOrderid());
         return payment;
     }
 }
