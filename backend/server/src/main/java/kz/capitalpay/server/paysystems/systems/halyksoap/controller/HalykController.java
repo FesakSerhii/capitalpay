@@ -35,7 +35,7 @@ public class HalykController {
     @Autowired
     CashboxService cashboxService;
 
-    @Value("${ kkbsign.send.order.action.link}")
+    @Value("${kkbsign.send.order.action.link}")
     String actionLink;
 
 
