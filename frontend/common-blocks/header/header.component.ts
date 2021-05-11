@@ -1,4 +1,4 @@
-import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {Component, Input, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {FormControl, FormGroup} from '@angular/forms';
 import {AuthService} from '../../src/app/service/auth.service';
@@ -12,6 +12,7 @@ import {Router} from '@angular/router';
 export class HeaderComponent implements OnInit {
   @ViewChild('login', {static: false}) loginModal: TemplateRef<any> | undefined;
   @ViewChild('register', {static: false}) registerModal: TemplateRef<any> | undefined;
+  @Input() theme: string = 'white';
   constructor(public modalService: NgbModal,public authService:AuthService,private router: Router,) { }
   loginForm = new FormGroup({
     email: new FormControl('+38095384343'),

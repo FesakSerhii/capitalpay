@@ -4,7 +4,6 @@ import {JwtHelperService} from "@auth0/angular-jwt";
 
 const helper = new JwtHelperService();
 const token = 'Bearer '+sessionStorage.getItem('token');
-const user = helper.decodeToken(sessionStorage.getItem('token'))
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +11,9 @@ const user = helper.decodeToken(sessionStorage.getItem('token'))
 export class UserService {
 
   constructor(public apiService: ApiService) { }
-
+  getUserInfo(){
+    return helper.decodeToken(sessionStorage.getItem('token'));
+  }
   getUserList(){
     return this.apiService.postJwt('api','/userlist/list',token).toPromise();
   }
@@ -28,7 +29,9 @@ export class UserService {
   getUserData(id){
     return this.apiService.postJwt('api','/userlist/one',token,{id}).toPromise();
   }
-  getUserInfo(){
-    return user;
+  deleteUser(userId){
+    return this.apiService.postJwt('api','/userlist/deleteuser',token,{userId}).toPromise();
   }
+
+
 }

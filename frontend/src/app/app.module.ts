@@ -11,6 +11,7 @@ import {HttpClientModule} from '@angular/common/http';
 import { MerchantPanelComponent } from './merchant-panel/merchant-panel.component';
 import {PerfectScrollbarModule} from 'ngx-perfect-scrollbar';
 import {CommonBlocksModule} from '../../common-blocks/common-blocks.module';
+import { TermsOfUseComponent } from './terms-of-use/terms-of-use.component';
 // import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
@@ -18,7 +19,8 @@ import {CommonBlocksModule} from '../../common-blocks/common-blocks.module';
     AppComponent,
     MainPageComponent,
     RegisterComponent,
-    MerchantPanelComponent
+    MerchantPanelComponent,
+    TermsOfUseComponent
   ],
     imports: [
         BrowserModule,

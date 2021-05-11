@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {UserService} from "../../service/user.service";
 import {KycService} from "../../service/kyc.service";
 import {CurrencyService} from "../../service/currency.service";
+import {MassageModalComponent} from "../../../../../../common-blocks/massage-modal/massage-modal.component";
+import {PaymentsService} from "../../service/payments.service";
 
 @Component({
   selector: 'app-user-settings',
@@ -11,11 +13,13 @@ import {CurrencyService} from "../../service/currency.service";
   styleUrls: ['./user-settings.component.scss']
 })
 export class UserSettingsComponent implements OnInit {
+  @ViewChild("massageModal", {static: false}) massageModal: MassageModalComponent;
 
   constructor(private router: Router,
               private userService: UserService,
               private activatedRoute: ActivatedRoute,
               private currencyService: CurrencyService,
+              private paymentsService: PaymentsService,
               private kycService: KycService) { }
 // {
 //   "id":18,
@@ -59,6 +63,11 @@ export class UserSettingsComponent implements OnInit {
     ROLE_ADMIN: new FormControl(),
     ROLE_MERCHANT: new FormControl(),
   })
+  modalTypes ={
+    confirm:'userDeleteConfirmation',
+    delete:'userDeleteSuccessful'
+  }
+  modalType = this.modalTypes.confirm;
   isEditMode:boolean;
   userRoles = {
     ROLE_USER: false,
@@ -68,6 +77,8 @@ export class UserSettingsComponent implements OnInit {
   };
   currencies: any;
   currenciesForm = new FormGroup({});
+  paymentMethods: any;
+  paymentMethodsForm = new FormGroup({});
   userId: string;
   ngOnInit(): void {
     this.activatedRoute.queryParamMap.subscribe((param) => {
@@ -98,9 +109,21 @@ export class UserSettingsComponent implements OnInit {
             this.currenciesForm.addControl(currency.alpha, new FormControl())
           }
         });
+        this.paymentsService.getPaymentMethods().then(resp=>{
+          this.paymentMethods = resp.data;
+          for(let paymentMethod of this.paymentMethods){
+            this.paymentMethodsForm.addControl(paymentMethod.name, new FormControl())
+          }
+        });
         this.currencyService.getMerchantCurrencies(id).then(resp=>{
           for(let currency in resp.data){
             this.currenciesForm.controls[currency].setValue(resp.data[currency])
+          }
+        })
+        this.paymentsService.getMerchantPaymentMethods(id).then(resp=>{
+          for(let paymentMethod of resp.data){
+            console.log(paymentMethod);
+            this.paymentMethodsForm.controls[paymentMethod.name].setValue(true)
           }
         })
       }
@@ -117,5 +140,46 @@ export class UserSettingsComponent implements OnInit {
       })
     }
     this.isEditMode = false;
+  }
+  deleteUser(){
+      this.massageModal.open().then(()=>{
+        this.userService.deleteUser(this.userId).then(()=>{
+        this.modalType = this.modalTypes.delete
+        this.massageModal.open().then(()=>{
+        this.navigateToSettings();
+        })
+      })
+    })
+  }
+
+  editUserCurrenciesList() {
+    let obj = {
+      "merchantId": this.userId,
+      "currencyList": []
+    }
+    for(let currency in this.currenciesForm.value){
+      if(this.currenciesForm.value.hasOwnProperty(currency)&&this.currenciesForm.value[currency]){
+        obj.currencyList.push(currency);
+      }
+    }
+    this.currencyService.editUsersCurrenciesList(obj).then(()=>{
+      this.getUserInfo(this.userId);
+    })
+  }
+
+  editUsersPaymentMethodsList() {
+    let obj = {
+      "merchantId": this.userId,
+      "paysystemList": []
+    }
+    for(let currency in this.currenciesForm.value){
+      if(this.currenciesForm.value.hasOwnProperty(currency)&&this.currenciesForm.value[currency]){
+        console.log(this.paymentMethods.filter(el => el.name === currency)[0]);
+        // obj.paysystemList.push();
+      }
+    }
+    this.paymentsService.editMerchantPaymentMethodsList(obj).then(()=>{
+      this.getUserInfo(this.userId);
+    })
   }
 }

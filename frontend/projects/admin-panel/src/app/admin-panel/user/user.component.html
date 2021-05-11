@@ -161,7 +161,7 @@
         </ng-container>
       </form>
       <div class="d-flex justify-content-end">
-        <button class="btn btn-success btn-round" [disabled]="!comparePasswords()||this.newUserForm.valid" [class.disabled]="!comparePasswords()||this.newUserForm.valid" (click)="createUser();close()">Сохранить изменения<div class="ripple-container"></div></button>
+        <button class="btn btn-success btn-round" [disabled]="!comparePasswords()||!this.newUserForm.valid" [class.disabled]="!comparePasswords()||!this.newUserForm.valid" (click)="createUser();close()">Сохранить изменения<div class="ripple-container"></div></button>
       </div>
     </div>
   </div>

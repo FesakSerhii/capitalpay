@@ -21,41 +21,22 @@
                   </label>
                 </div>
               </form>
-            <a href="#" class="btn btn-success btn-round" (click)="$event.preventDefault();">Сохранить<div class="ripple-container"></div></a>
+            <a href="#" class="btn btn-success btn-round" (click)="$event.preventDefault();editUserCurrenciesList()">Сохранить<div class="ripple-container"></div></a>
             <hr>
             <h4 class="title">Платежные методы</h4>
-            <div class="togglebutton">
-              <label>
-                <input type="checkbox" checked="">
-                <span class="toggle"></span>
-                Visa/Mastercard
-              </label>
-            </div>
-            <div class="togglebutton">
-              <label>
-                <input type="checkbox" checked="">
-                <span class="toggle"></span>
-                American Express
-              </label>
-            </div>
-            <div class="togglebutton">
-              <label>
-                <input type="checkbox">
-                <span class="toggle"></span>
-                Union Pay
-              </label>
-            </div>
-            <div class="togglebutton">
-              <label>
-                <input type="checkbox">
-                <span class="toggle"></span>
-                Qiwi
-              </label>
-            </div>
-            <a href="#" class="btn btn-success btn-round" (click)="$event.preventDefault();">Сохранить<div class="ripple-container"></div></a>
+              <form [formGroup]="paymentMethodsForm">
+                <div class="togglebutton" *ngFor="let paymentMethod of paymentMethods">
+                  <label>
+                    <input type="checkbox" [formControlName]="paymentMethod.name">
+                    <span class="toggle"></span>
+                    {{paymentMethod.name}}
+                  </label>
+                </div>
+              </form>
+            <a href="#" class="btn btn-success btn-round" (click)="$event.preventDefault();editUsersPaymentMethodsList()">Сохранить<div class="ripple-container"></div></a>
             <hr>
             </ng-container>
-            <h4 class="title">Switches</h4>
+            <h4 class="title">Информация</h4>
             <form [formGroup]="userInfoForm" *ngIf="!userRoles.ROLE_MERCHANT">
               <div class="form-group has-default bmd-form-group d-flex">
                 <label class="col-form-label w160">Email</label>
@@ -167,7 +148,7 @@
               <div class="d-flex mt-5">
                 <a href="#" class="btn btn-success btn-round btn-back" (click)="$event.preventDefault();">Заблокировать<div class="ripple-container"></div></a>
                 <a href="#" class="btn btn-success btn-round btn-back" (click)="$event.preventDefault();">деактивировать<div class="ripple-container"></div></a>
-                <a href="#" class="btn btn-success btn-round btn-back" (click)="$event.preventDefault();">удалить<div class="ripple-container"></div></a>
+                <a href="#" class="btn btn-success btn-round btn-back" (click)="$event.preventDefault();deleteUser()">удалить<div class="ripple-container"></div></a>
               </div>
             </div>
           </div>
@@ -175,3 +156,4 @@
       </div>
     </perfect-scrollbar>
 </div>
+<app-massage-modal #massageModal [messageType]="modalType"></app-massage-modal>

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {MainPageComponent} from './main-page/main-page.component';
 import {RegisterComponent} from './register/register.component';
+import {TermsOfUseComponent} from "./terms-of-use/terms-of-use.component";
 
 export const routes: Routes = [
   {
@@ -15,6 +16,10 @@ export const routes: Routes = [
   {
     path: 'confirm',
     component: RegisterComponent
+  },
+  {
+    path: 'terms-of-use',
+    component: TermsOfUseComponent
   },
   {
     path: 'merchant',

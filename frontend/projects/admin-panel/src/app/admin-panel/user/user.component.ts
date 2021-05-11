@@ -89,7 +89,7 @@ export class UserComponent implements OnInit {
     }
     this.newUserForm.value.phone ='+'+this.newUserForm.value.phone;
     this.userService.createUser(this.newUserForm.value).then(resp=>{
-      console.log(resp);
+      this.getUsers();
     })
   }
   comparePasswords(){

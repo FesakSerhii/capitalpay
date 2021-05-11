@@ -10,15 +10,16 @@ import { PanelHeaderComponent } from './panel-header/panel-header.component';
 import {CustomSelectComponent} from './custom-select/custom-select.component';
 import {PerfectScrollbarModule} from 'ngx-perfect-scrollbar';
 import {TransactionsLogComponent} from './transactions-log/transactions-log.component';
+import { MassageModalComponent } from './massage-modal/massage-modal.component';
 
 
 
 
 @NgModule({
   declarations: [HeaderComponent, FooterComponent, HexagonLinkComponent,SideMenuComponent,
-    PanelHeaderComponent, CustomSelectComponent, TransactionsLogComponent],
+    PanelHeaderComponent, CustomSelectComponent, TransactionsLogComponent, MassageModalComponent],
   exports: [HeaderComponent, FooterComponent, HexagonLinkComponent, SideMenuComponent,
-    PanelHeaderComponent,CustomSelectComponent, TransactionsLogComponent],
+    PanelHeaderComponent,CustomSelectComponent, TransactionsLogComponent, MassageModalComponent],
   imports: [
     CommonModule,
     RouterModule,

@@ -1,20 +1,26 @@
-<div>
+<div class="header">
   <div class="container-fluid" style="width: 1111px; height: 50px;margin:0 auto; margin-top: 16px;
     margin-bottom: 17px; display:flex;justify-content: space-between;align-items: center;">
     <a href="#">
-      <img src="../../../assets/shapes/Logo_header.svg" alt="logo">
+      <img src="../../../assets/shapes/Logo_header.svg" alt="logo" *ngIf="theme==='white'">
+      <img src="../../../assets/shapes/logo_footer.svg" alt="logo" *ngIf="theme!=='white'">
     </a>
     <div>
-      <a href="#" style="font-size: 16px;color: black;">Get started</a>
-      <a href="#" style="font-size: 16px;color: black;margin-left: 20px">Modules</a>
-      <a href="#" style="font-size: 16px;color: black;margin-left: 20px">Pricing</a>
-      <a href="#" style="font-size: 16px;color: black;margin-left: 20px">API</a>
-      <a href="#" style="font-size: 16px;color: black;margin-left: 20px">Contact</a>
+      <a href="#" class="header-link ml-0" [class.white]="theme!=='white'" >Get started</a>
+      <a href="#" class="header-link" [class.white]="theme!=='white'">Modules</a>
+      <a href="#" class="header-link" [class.white]="theme!=='white'">Pricing</a>
+      <a href="#" class="header-link" [class.white]="theme!=='white'">API</a>
+      <a href="#" class="header-link" [class.white]="theme!=='white'">Contact</a>
     </div>
     <div>
-      <a href="#" style="font-size: 16px;color: black;" (click)="$event.preventDefault();open(loginModal)">Login</a>
-      <a style="margin-left: 20px;padding: 11px 17px; background: #177960; color: white;border-radius: 20px" (click)="$event.preventDefault();open(registerModal)">Sign up</a>
-      <a href="#" style="color: black;margin-left: 20px;">EN</a>
+      <a href="#" class="header-link ml-0" [class.white]="theme!=='white'" (click)="$event.preventDefault();open(loginModal)">Login</a>
+      <a style="margin-left: 20px;padding: 11px 17px; background: #177960; color: white;border-radius: 20px"
+         *ngIf="theme==='white'"
+         (click)="$event.preventDefault();open(registerModal)">Sign up</a>
+      <a style="margin-left: 20px;padding: 11px 17px; background: white; color: #177960;border-radius: 20px"
+         *ngIf="theme!=='white'"
+         (click)="$event.preventDefault();open(registerModal)">Sign up</a>
+      <a href="#" class="header-link" [class.white]="theme!=='white'">EN</a>
     </div>
   </div>
 </div>
