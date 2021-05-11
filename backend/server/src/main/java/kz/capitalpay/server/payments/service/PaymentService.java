@@ -68,6 +68,7 @@ public class PaymentService {
             paymentRepository.save(payment);
 // TODO: сделать логирование изменения статусов
             // TODO: уведомить мерчанта о том что статус изменился
+            logger.info("Change status: {}", gson.toJson(payment));
         } else {
             logger.error("PaySysPay ID: {}", paySysPayId);
             logger.error("Payment: {}", payment);

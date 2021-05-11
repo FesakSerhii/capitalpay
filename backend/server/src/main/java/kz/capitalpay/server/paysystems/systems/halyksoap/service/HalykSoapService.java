@@ -398,6 +398,7 @@ public class HalykSoapService {
             parsePaymentOrderAcsResponse(paymentOrderAcs, response);
             logger.info(gson.toJson(paymentOrderAcs));
             if (paymentOrderAcs.getReturnCode() != null && paymentOrderAcs.getReturnCode().equals("00")) {
+                logger.info("Return code: {}",paymentOrderAcs.getReturnCode() );
                 paymentService.setStatusByPaySysPayId(paymentOrderAcs.getOrderid(), SUCCESS);
             }
             return true;
