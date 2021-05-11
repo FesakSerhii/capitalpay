@@ -42,6 +42,9 @@ public class PublicPaysystemController {
     @Value("${halyk.soap.termurl}")
     String TermUrl;
 
+    @Value("${remote.api.addres}")
+    String apiAddress;
+
 //
 //    @PostMapping("/system/buttonlist")
 //    ResultDTO paysystemButtonList(@RequestBody PaymentRequestDTO request) {
@@ -52,13 +55,13 @@ public class PublicPaysystemController {
 
     @PostMapping("/pay")
     void paymentCardPay(HttpServletRequest httpRequest,
-                          HttpServletResponse httpResponse,
-                          @RequestParam String paymentid,
-                          @RequestParam String cardHolderName,
-                          @RequestParam String cvv,
-                          @RequestParam String month,
-                          @RequestParam String pan,
-                          @RequestParam String year
+                        HttpServletResponse httpResponse,
+                        @RequestParam String paymentid,
+                        @RequestParam String cardHolderName,
+                        @RequestParam String cvv,
+                        @RequestParam String month,
+                        @RequestParam String pan,
+                        @RequestParam String year
     ) {
         String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
         if (ipAddress == null) {
@@ -72,25 +75,28 @@ public class PublicPaysystemController {
 
         String result = halykSoapService.paymentOrder(payment.getTotalAmount(),
                 cardHolderName, cvv, payment.getDescription(), month, payment.getPaySysPayId(), pan, year);
-        if(result.equals("OK")){
+        if (result.equals("OK")) {
             // TODO: сделать нормальную страницу успешного платежа
             httpResponse.setHeader("Location", "https://api.capitalpay.kz/testshop/page");
             httpResponse.setStatus(302);
-        }else if (result.equals("FAIL")){
+        } else if (result.equals("FAIL")) {
             // TODO: сделать нормальную страницу плохого платежа
             httpResponse.setHeader("Location", "https://capitalpay.kz/");
             httpResponse.setStatus(302);
-        }else{
+        } else {
+            logger.info("Result: {}", result);
             try {
                 LinkedHashMap<String, String> param = gson.fromJson(result, LinkedHashMap.class);
 
-                httpResponse.setHeader("Location", param.get("/public/paysystem/secure/redirect" +
-                        "?acsUrl="+param.get("acsUrl")+
-                        "&MD="+param.get("MD")+
-                        "&PaReq="+param.get("PaReq")));
+                String url = apiAddress + "/public/paysystem/secure/redirect" +
+                        "?acsUrl=" + param.get("acsUrl") +
+                        "&MD=" + param.get("MD") +
+                        "&PaReq=" + param.get("PaReq")
+
+                httpResponse.setHeader("Location", url);
 
                 httpResponse.setStatus(302);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
 
             }
@@ -101,12 +107,12 @@ public class PublicPaysystemController {
     @GetMapping("/secure/redirect")
     String secureRedirect(ModelMap modelMap, @RequestParam String acsUrl,
                           @RequestParam String MD,
-                          @RequestParam String PaReq){
+                          @RequestParam String PaReq) {
 
-        modelMap.addAttribute("acsUrl",acsUrl);
-        modelMap.addAttribute("MD",MD);
-        modelMap.addAttribute("PaReq",PaReq);
-        modelMap.addAttribute("TermUrl",TermUrl);
+        modelMap.addAttribute("acsUrl", acsUrl);
+        modelMap.addAttribute("MD", MD);
+        modelMap.addAttribute("PaReq", PaReq);
+        modelMap.addAttribute("TermUrl", TermUrl);
 
         return "paysystems/secureredirect";
 
