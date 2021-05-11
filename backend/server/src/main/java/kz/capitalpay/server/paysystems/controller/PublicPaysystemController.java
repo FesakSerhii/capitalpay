@@ -91,7 +91,7 @@ public class PublicPaysystemController {
                 String url = apiAddress + "/public/paysystem/secure/redirect" +
                         "?acsUrl=" + param.get("acsUrl") +
                         "&MD=" + param.get("MD") +
-                        "&PaReq=" + param.get("PaReq")
+                        "&PaReq=" + param.get("PaReq");
 
                 httpResponse.setHeader("Location", url);
 
