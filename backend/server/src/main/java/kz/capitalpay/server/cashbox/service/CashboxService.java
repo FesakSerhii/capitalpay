@@ -142,11 +142,11 @@ public class CashboxService {
     }
 
 
-    public String getUrlByPayment(Payment payment, String status) {
+    public String getUrlByPayment(Payment payment) {
         try {
-            if (status.equals(SUCCESS)) {
+            if (payment.getStatus().equals(SUCCESS)) {
                 return cashboxSettingsService.getField(payment.getCashboxId(), REDIRECT_SUCCESS_URL);
-            } else if (status.equals(FAILED)) {
+            } else if (payment.getStatus().equals(FAILED)) {
                 return cashboxSettingsService.getField(payment.getCashboxId(), REDIRECT_FAILED_URL);
             } else {
                 return cashboxSettingsService.getField(payment.getCashboxId(), REDIRECT_PENDING_URL);

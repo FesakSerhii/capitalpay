@@ -63,15 +63,9 @@ public class HalykController {
         logger.info(sessionid);
         logger.info(gson.toJson(payment));
 
-        boolean result = halykSoapService.paymentOrderAcs(MD, PaRes, sessionid);
-        String redirectUrl = "";
+        payment = halykSoapService.paymentOrderAcs(MD, PaRes, sessionid);
+        String redirectUrl = cashboxService.getUrlByPayment(payment);
 
-
-        if (result) {
-            redirectUrl = cashboxService.getUrlByPayment(payment, SUCCESS);
-        } else {
-            redirectUrl = cashboxService.getUrlByPayment(payment, FAILED);
-        }
         response.setHeader("Location",
                 redirectUrl + "?paimentid=" + payment.getBillId() + "&status=" + payment.getStatus());
         response.setStatus(302);

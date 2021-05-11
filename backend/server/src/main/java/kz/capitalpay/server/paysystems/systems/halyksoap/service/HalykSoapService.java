@@ -81,7 +81,6 @@ public class HalykSoapService {
     PaymentService paymentService;
 
 
-
     private String createPaymentOrderXML(HalykPaymentOrder paymentOrder, String cvc, String month, String year, String pan) {
 
         String concatString = paymentOrder.getOrderid() + paymentOrder.getAmount() + paymentOrder.getCurrency() +
@@ -376,7 +375,7 @@ public class HalykSoapService {
 
     }
 
-    public boolean paymentOrderAcs(String md, String pares, String sessionid) {
+    public Payment paymentOrderAcs(String md, String pares, String sessionid) {
         try {
             HalykPaymentOrderAcs paymentOrderAcs = new HalykPaymentOrderAcs();
             paymentOrderAcs.setTimestamp(System.currentTimeMillis());
@@ -398,15 +397,16 @@ public class HalykSoapService {
             parsePaymentOrderAcsResponse(paymentOrderAcs, response);
             logger.info(gson.toJson(paymentOrderAcs));
             if (paymentOrderAcs.getReturnCode() != null && paymentOrderAcs.getReturnCode().equals("00")) {
-                logger.info("Return code: {}",paymentOrderAcs.getReturnCode() );
-                paymentService.setStatusByPaySysPayId(paymentOrderAcs.getOrderid(), SUCCESS);
+                logger.info("Return code: {}", paymentOrderAcs.getReturnCode());
+                Payment payment = paymentService.setStatusByPaySysPayId(paymentOrderAcs.getOrderid(), SUCCESS);
+                return payment;
             }
-            return true;
+            return null;
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+        return null;
     }
 
     private HalykPaymentOrderAcs parsePaymentOrderAcsResponse(HalykPaymentOrderAcs paymentOrderAcs, String response) {
@@ -540,13 +540,13 @@ public class HalykSoapService {
     }
 
     public String getSessionByPaRes(String paRes) {
-        String pareq = paRes.replace("-OK","");
+        String pareq = paRes.replace("-OK", "");
         HalykPaymentOrder paymentOrder = halykPaymentOrderRepository.findTopByPareq(pareq);
         return paymentOrder.getSessionid();
     }
 
     public Payment getPaymentByPaRes(String paRes) {
-        String pareq = paRes.replace("-OK","");
+        String pareq = paRes.replace("-OK", "");
         HalykPaymentOrder paymentOrder = halykPaymentOrderRepository.findTopByPareq(pareq);
         logger.info("PayOrder: {}", gson.toJson(paymentOrder));
         Payment payment = paymentService.getByPaySysPayId(paymentOrder.getOrderid());

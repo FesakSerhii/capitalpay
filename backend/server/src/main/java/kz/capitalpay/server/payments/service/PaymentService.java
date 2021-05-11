@@ -61,7 +61,7 @@ public class PaymentService {
         paymentRepository.save(paymentFromBd);
     }
 
-    public void setStatusByPaySysPayId(String paySysPayId, String status) {
+    public Payment setStatusByPaySysPayId(String paySysPayId, String status) {
         logger.info("PaySysPay ID: {}", paySysPayId);
         Payment payment = paymentRepository.findTopByPaySysPayId(paySysPayId);
         logger.info("Payment pspid: {}", payment.getPaySysPayId());
@@ -71,11 +71,12 @@ public class PaymentService {
 // TODO: сделать логирование изменения статусов
             // TODO: уведомить мерчанта о том что статус изменился
             logger.info("Change status: {}", gson.toJson(payment));
+            return payment;
         } else {
             logger.error("PaySysPay ID: {}", paySysPayId);
             logger.error("Payment: {}", payment);
         }
-
+        return null;
     }
 
     public Cashbox getCashboxByOrderId(String orderid) {
