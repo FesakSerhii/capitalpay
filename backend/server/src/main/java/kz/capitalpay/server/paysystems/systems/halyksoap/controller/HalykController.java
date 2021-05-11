@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,11 +19,12 @@ public class HalykController {
     @Autowired
     Gson gson;
 
-    @GetMapping("/paysystem/halyk/listener")
+    @PostMapping("/paysystem/halyk/listener")
     @ResponseBody
     public String listener(HttpServletRequest request, HttpServletResponse response) {
         logger.info("Request:");
         logger.info("3DS: {}", gson.toJson(request.getParameterMap()));
+
         return gson.toJson(request.getParameterMap());
     }
 
