@@ -23,8 +23,8 @@ public class HalykController {
     @ResponseBody
     public String listener(HttpServletRequest request, HttpServletResponse response) {
         logger.info("Request:");
-        logger.info("3DS: {}", gson.toJson(request));
-        return gson.toJson(request);
+        logger.info("3DS: {}", gson.toJson(request.getParameterMap()));
+        return gson.toJson(request.getParameterMap());
     }
 
 
