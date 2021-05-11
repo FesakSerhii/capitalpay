@@ -172,6 +172,14 @@ public class HalykSoapService {
 
             if(paymentOrder.getReturnCode() != null && paymentOrder.getReturnCode().equals("00")){
                 paymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(),SUCCESS);
+            }else{
+                if (paymentOrder.getPareq() != null && paymentOrder.getMd() != null){
+                    Map<String,String> param = new HashMap<>();
+                    param.put("acsUrl",paymentOrder.getAcsUrl());
+                    param.put("MD",paymentOrder.getMd());
+                    param.put("PaReq",paymentOrder.getPareq());
+                    return gson.toJson(param);
+                }
             }
 
             return "OK";
