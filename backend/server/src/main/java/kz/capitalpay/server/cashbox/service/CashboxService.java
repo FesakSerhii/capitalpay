@@ -143,12 +143,18 @@ public class CashboxService {
 
 
     public String getUrlByPayment(Payment payment, String status) {
-        if (status.equals(SUCCESS)) {
-            return cashboxSettingsService.getField(payment.getCashboxId(), REDIRECT_SUCCESS_URL);
-        } else if (status.equals(FAILED)) {
-            return cashboxSettingsService.getField(payment.getCashboxId(), REDIRECT_FAILED_URL);
-        } else {
-            return cashboxSettingsService.getField(payment.getCashboxId(), REDIRECT_PENDING_URL);
+        try {
+            if (status.equals(SUCCESS)) {
+                return cashboxSettingsService.getField(payment.getCashboxId(), REDIRECT_SUCCESS_URL);
+            } else if (status.equals(FAILED)) {
+                return cashboxSettingsService.getField(payment.getCashboxId(), REDIRECT_FAILED_URL);
+            } else {
+                return cashboxSettingsService.getField(payment.getCashboxId(), REDIRECT_PENDING_URL);
+            }
+        }catch (Exception e){
+            logger.error(payment.getCashboxId().toString());
+            e.printStackTrace();
         }
+        return null;
     }
 }

@@ -40,10 +40,10 @@ public class HalykController {
 
 
     @PostMapping("/paysystem/halyk/listener")
-    @ResponseBody
-    public String listener(@RequestParam String PaRes,
-                           @RequestParam String MD,
-                           @RequestParam String TermUrl) {
+    public void listener(@RequestParam String PaRes,
+                         @RequestParam String MD,
+                         @RequestParam String TermUrl,
+                         HttpServletResponse response) {
         logger.info("PaRes: {}", PaRes);
         logger.info("MD: {}", MD);
         logger.info("TermUrl: {}", TermUrl);
@@ -60,17 +60,21 @@ public class HalykController {
             payment = halykSoapService.getPaymentByMd(MD);
         }
 
+        logger.info(sessionid);
+        logger.info(gson.toJson(payment));
 
         boolean result = halykSoapService.paymentOrderAcs(MD, PaRes, sessionid);
-        String url = "";
+        String redirectUrl = "";
 
 
         if (result) {
-            url = cashboxService.getUrlByPayment(payment, SUCCESS);
+            redirectUrl = cashboxService.getUrlByPayment(payment, SUCCESS);
         } else {
-            url = cashboxService.getUrlByPayment(payment, FAILED);
+            redirectUrl = cashboxService.getUrlByPayment(payment, FAILED);
         }
-        return PaRes;
+        response.setHeader("Location",
+                redirectUrl + "?paimentid=" + payment.getBillId() + "&status=" + payment.getStatus());
+        response.setStatus(302);
     }
 
 
