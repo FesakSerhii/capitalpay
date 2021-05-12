@@ -174,7 +174,7 @@ public class HalykSoapService {
             logger.info(gson.toJson(paymentOrder));
 
             if (paymentOrder.getReturnCode() != null && paymentOrder.getReturnCode().equals("00")) {
-                logger.info("Code 00, order: {}",gson.toJson(paymentOrder));
+                logger.info("Code 00, order: {}", gson.toJson(paymentOrder));
                 paymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), SUCCESS);
             } else {
                 if (paymentOrder.getPareq() != null && paymentOrder.getMd() != null) {
@@ -183,7 +183,7 @@ public class HalykSoapService {
                     param.put("acsUrl", paymentOrder.getAcsUrl());
                     param.put("MD", paymentOrder.getMd());
                     param.put("PaReq", paymentOrder.getPareq());
-                    logger.info("Code 00, order: {}",gson.toJson(paymentOrder));
+                    logger.info("Code 00, order: {}", gson.toJson(paymentOrder));
                     paymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), PENDING);
                     return gson.toJson(param);
                 }
@@ -381,6 +381,10 @@ public class HalykSoapService {
             paymentOrderAcs.setPares(pares);
             paymentOrderAcs.setSessionid(sessionid);
 
+            HalykPaymentOrder paymentOrder = getPaymentOrderBySession(sessionid);
+
+            paymentOrderAcs.setOrderid(paymentOrder.getOrderid());
+
             halykPaymentOrderAcsRepository.save(paymentOrderAcs);
 
             String signedXML = createPaymentOrderAcsXML(paymentOrderAcs);
@@ -395,6 +399,7 @@ public class HalykSoapService {
             logger.info(gson.toJson(paymentOrderAcs));
             if (paymentOrderAcs.getReturnCode() != null && paymentOrderAcs.getReturnCode().equals("00")) {
                 logger.info("Return code: {}", paymentOrderAcs.getReturnCode());
+
                 Payment payment = paymentService.setStatusByPaySysPayId(paymentOrderAcs.getOrderid(), SUCCESS);
                 return payment;
             }
@@ -404,6 +409,12 @@ public class HalykSoapService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private HalykPaymentOrder getPaymentOrderBySession(String sessionid) {
+
+        return halykPaymentOrderRepository.findTopBySessionid(sessionid);
+
     }
 
     private HalykPaymentOrderAcs parsePaymentOrderAcsResponse(HalykPaymentOrderAcs paymentOrderAcs, String response) {

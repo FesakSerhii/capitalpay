@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface HalykPaymentOrderRepository extends JpaRepository<HalykPaymentOrder,Long> {
     HalykPaymentOrder findTopByMd(String md);
     HalykPaymentOrder findTopByPareq(String pareq);
+    HalykPaymentOrder findTopBySessionid(String sessionid);
 }
