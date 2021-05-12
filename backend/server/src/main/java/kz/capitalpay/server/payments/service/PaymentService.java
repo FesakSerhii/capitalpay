@@ -89,4 +89,12 @@ public class PaymentService {
     public Payment getByPaySysPayId(String paySysPayId) {
         return paymentRepository.findTopByPaySysPayId(paySysPayId);
     }
+
+    public Payment addPhoneAndEmail(String paymentid, String phone, String email) {
+        Payment payment = getPayment(paymentid);
+        payment.setPhone(phone);
+        payment.setEmail(email);
+        paymentRepository.save(payment);
+        return payment;
+    }
 }

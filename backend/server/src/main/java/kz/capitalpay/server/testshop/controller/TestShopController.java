@@ -59,21 +59,21 @@ public class TestShopController {
         modelMap.addAttribute("status", status);
         return "testshop/paymentstatus";
     }
-
-    @GetMapping("/testshop/success")
-    String showSimpleStatusPageSuccess(ModelMap modelMap) {
-        modelMap.addAttribute("billid", "");
-        modelMap.addAttribute("paymentid", "");
-        modelMap.addAttribute("status", "success");
-        modelMap.addAttribute("color", "green");
-        return "testshop/paymentstatus";
-    }
-    @GetMapping("/testshop/failed")
-    String showSimpleStatusPageFailed(ModelMap modelMap) {
-        modelMap.addAttribute("billid", "");
-        modelMap.addAttribute("paymentid", "");
-        modelMap.addAttribute("status", "failed");
-        modelMap.addAttribute("color", "red");
-        return "testshop/paymentstatus";
-    }
+//
+//    @GetMapping("/testshop/success")
+//    String showSimpleStatusPageSuccess(ModelMap modelMap) {
+//        modelMap.addAttribute("billid", "");
+//        modelMap.addAttribute("paymentid", "");
+//        modelMap.addAttribute("status", "success");
+//        modelMap.addAttribute("color", "green");
+//        return "testshop/paymentstatus";
+//    }
+//    @GetMapping("/testshop/failed")
+//    String showSimpleStatusPageFailed(ModelMap modelMap) {
+//        modelMap.addAttribute("billid", "");
+//        modelMap.addAttribute("paymentid", "");
+//        modelMap.addAttribute("status", "failed");
+//        modelMap.addAttribute("color", "red");
+//        return "testshop/paymentstatus";
+//    }
 }

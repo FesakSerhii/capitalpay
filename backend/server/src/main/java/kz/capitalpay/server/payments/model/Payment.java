@@ -24,6 +24,8 @@ public class Payment {
     BigDecimal totalAmount;
     String currency;
     String description;
+    String phone;
+    String email;
     String param;
     String ipAddress;
     String userAgent;
@@ -123,6 +125,22 @@ public class Payment {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getParam() {

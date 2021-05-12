@@ -61,7 +61,10 @@ public class PublicPaysystemController {
                         @RequestParam String cvv,
                         @RequestParam String month,
                         @RequestParam String pan,
-                        @RequestParam String year
+                        @RequestParam String year,
+                        @RequestParam String phone,
+                        @RequestParam String email
+
     ) {
         String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
         if (ipAddress == null) {
@@ -71,7 +74,7 @@ public class PublicPaysystemController {
         logger.info("Request IP: {}", ipAddress);
         logger.info("Request User-Agent: {}", httpRequest.getHeader("User-Agent"));
 
-        Payment payment = paymentService.getPayment(paymentid);
+        Payment payment = paymentService.addPhoneAndEmail(paymentid, phone, email);
 
         String result = halykSoapService.paymentOrder(payment.getTotalAmount(),
                 cardHolderName, cvv, payment.getDescription(), month, payment.getPaySysPayId(), pan, year);
