@@ -183,6 +183,7 @@ public class HalykSoapService {
                     param.put("acsUrl", paymentOrder.getAcsUrl());
                     param.put("MD", paymentOrder.getMd());
                     param.put("PaReq", paymentOrder.getPareq());
+                    logger.info("Code 00, order: {}",gson.toJson(paymentOrder));
                     paymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), PENDING);
                     return gson.toJson(param);
                 }
