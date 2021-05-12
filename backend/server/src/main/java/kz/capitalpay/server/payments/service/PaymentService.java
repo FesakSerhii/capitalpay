@@ -20,7 +20,7 @@ import static kz.capitalpay.server.simple.service.SimpleService.SUCCESS;
 @Service
 public class PaymentService {
 
-    Logger logger = LoggerFactory.getLogger(PaysystemService.class);
+    Logger logger = LoggerFactory.getLogger(PaymentService.class);
 
     @Autowired
     Gson gson;

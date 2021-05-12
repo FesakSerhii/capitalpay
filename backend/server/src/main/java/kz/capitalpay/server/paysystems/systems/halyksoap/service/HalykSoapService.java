@@ -174,14 +174,10 @@ public class HalykSoapService {
             logger.info(gson.toJson(paymentOrder));
 
             if (paymentOrder.getReturnCode() != null && paymentOrder.getReturnCode().equals("00")) {
+                logger.info("Code 00, order: {}",gson.toJson(paymentOrder));
                 paymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), SUCCESS);
             } else {
                 if (paymentOrder.getPareq() != null && paymentOrder.getMd() != null) {
-                    // TODO: костыль только на время отладки в песочнице
-//                    if (sendOrderActionLink.equals("https://testpay.kkb.kz")) {
-//                        paymentOrder.setMd(paymentOrder.getSessionid());
-//                        halykPaymentOrderRepository.save(paymentOrder);
-//                    }
 
                     Map<String, String> param = new HashMap<>();
                     param.put("acsUrl", paymentOrder.getAcsUrl());
