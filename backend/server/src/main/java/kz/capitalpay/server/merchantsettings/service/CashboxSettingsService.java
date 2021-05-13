@@ -28,6 +28,7 @@ public class CashboxSettingsService {
     public static final String REDIRECT_SUCCESS_URL = "redirectsuccess";
     public static final String REDIRECT_FAILED_URL = "redirectfailed";
     public static final String REDIRECT_PENDING_URL = "redirectpending";
+    public static final String SECRET = "secret";
 
     public String getField(Long cashboxId, String fieldName) {
         CashboxSettings cashboxSettings = cashboxSettingsRepository.findTopByFieldNameAndCashboxId(fieldName, cashboxId);

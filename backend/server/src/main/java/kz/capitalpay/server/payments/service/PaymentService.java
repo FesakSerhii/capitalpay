@@ -97,4 +97,8 @@ public class PaymentService {
         paymentRepository.save(payment);
         return payment;
     }
+
+    public Payment getPaymentByBillAndCashbox(String billid, Long cashboxid) {
+        return paymentRepository.findTopByCashboxIdAndAndBillId(cashboxid,billid);
+    }
 }

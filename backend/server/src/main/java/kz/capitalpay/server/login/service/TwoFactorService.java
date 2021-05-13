@@ -1,5 +1,6 @@
 package kz.capitalpay.server.login.service;
 
+import com.google.gson.Gson;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.model.TwoFactorAuth;
 import kz.capitalpay.server.login.repository.TwoFactorAuthRepository;
@@ -24,6 +25,9 @@ public class TwoFactorService {
     @Autowired
     SendSmsService sendSmsService;
 
+    @Autowired
+    Gson gson;
+
     boolean setTwoFactor(Long userId) {
         TwoFactorAuth twoFactorAuth = new TwoFactorAuth();
         twoFactorAuth.setUserId(userId);
@@ -38,8 +42,13 @@ public class TwoFactorService {
 
 
     public boolean isRequired(ApplicationUser user) {
-        TwoFactorAuth twoFactorAuth = twoFactorAuthRepository.findById(user.getId()).orElse(null);
-        return twoFactorAuth != null;
+        if (user != null) {
+            TwoFactorAuth twoFactorAuth = twoFactorAuthRepository.findById(user.getId()).orElse(null);
+            return twoFactorAuth != null;
+        } else {
+            logger.error("User: {}", gson.toJson(user));
+            return false;
+        }
     }
 
     public void sendSms(ApplicationUser user) {

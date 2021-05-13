@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -77,4 +74,20 @@ public class SimpleController {
 
          */
     }
+
+    // Signature: SHA256(cashboxid + billid + secret)
+
+    @PostMapping("/order")
+    ResultDTO getPaymentInfo(@RequestParam Long cashboxid,  @RequestParam String billid,  @RequestParam String signature,
+                           HttpServletRequest httpRequest,
+                           ModelMap modelMap    ){
+
+
+        ResultDTO resultDTO = simpleService.getPaymentInfo(httpRequest, cashboxid,billid,signature);
+        if(!resultDTO.isResult()){
+            logger.error(gson.toJson(resultDTO));
+        }
+        return resultDTO;
+    }
+
 }

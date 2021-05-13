@@ -384,6 +384,8 @@ public class HalykSoapService {
             HalykPaymentOrder paymentOrder = getPaymentOrderBySession(sessionid);
 
             paymentOrderAcs.setOrderid(paymentOrder.getOrderid());
+            paymentOrderAcs.setPareq(paymentOrder.getPareq());
+            paymentOrderAcs.setAcsUrl(paymentOrder.getAcsUrl());
 
             halykPaymentOrderAcsRepository.save(paymentOrderAcs);
 

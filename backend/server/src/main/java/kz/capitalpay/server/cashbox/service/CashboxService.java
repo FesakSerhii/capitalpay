@@ -14,7 +14,6 @@ import kz.capitalpay.server.login.service.ApplicationRoleService;
 import kz.capitalpay.server.login.service.ApplicationUserService;
 import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.payments.model.Payment;
-import kz.capitalpay.server.paysystems.model.PaysystemInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +21,9 @@ import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Random;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
-import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
-import static kz.capitalpay.server.login.service.ApplicationRoleService.OPERATOR;
 import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.*;
 import static kz.capitalpay.server.simple.service.SimpleService.FAILED;
 import static kz.capitalpay.server.simple.service.SimpleService.SUCCESS;
@@ -35,6 +33,7 @@ public class CashboxService {
 
     Logger logger = LoggerFactory.getLogger(CashboxService.class);
 
+    Random random = new Random();
 
     @Autowired
     Gson gson;
@@ -151,10 +150,25 @@ public class CashboxService {
             } else {
                 return cashboxSettingsService.getField(payment.getCashboxId(), REDIRECT_PENDING_URL);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error(payment.getCashboxId().toString());
             e.printStackTrace();
         }
         return null;
+    }
+
+    public String getSecret(Long cashboxid) {
+        String secret = cashboxSettingsService.getField(cashboxid, SECRET);
+        if (secret.length() == 0) {
+            StringBuilder sb = new StringBuilder();
+            String dictionary = "0123456789QWERTYUPASDFGHJKLZXCVBNMqwertyuipasdfghjkzxcvnm";
+            for (int i = 0; i < 16; i++) {
+                char c = dictionary.charAt(random.nextInt(dictionary.length()));
+                sb.append(c);
+            }
+            secret = sb.toString();
+            cashboxSettingsService.setField(cashboxid, SECRET, secret);
+        }
+        return secret;
     }
 }

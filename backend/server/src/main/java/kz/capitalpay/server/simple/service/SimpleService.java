@@ -12,6 +12,7 @@ import kz.capitalpay.server.merchantsettings.service.MerchantKycService;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.simple.dto.SimpleRequestDTO;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import static javax.xml.crypto.dsig.DigestMethod.SHA256;
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
 
 @Service
@@ -116,7 +118,7 @@ public class SimpleService {
 
     }
 
-    public ResultDTO createPayment(HttpServletRequest httpRequest, Long cashboxid, String billid, Long totalamount, String currency,String description, String param) {
+    public ResultDTO createPayment(HttpServletRequest httpRequest, Long cashboxid, String billid, Long totalamount, String currency, String description, String param) {
         try {
             SimpleRequestDTO request = new SimpleRequestDTO();
 
@@ -135,9 +137,42 @@ public class SimpleService {
             request.setDescription(description);
             request.setParam(param);
 
-            logger.info("Request: {}",gson.toJson(request));
+            logger.info("Request: {}", gson.toJson(request));
 
             return newPayment(request);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultDTO(false, e.getMessage(), -1);
+        }
+    }
+
+    // Signature: SHA256(cashboxid + billid + secret)
+    public ResultDTO getPaymentInfo(HttpServletRequest httpRequest, Long cashboxid, String billid, String signature) {
+        try {
+            String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
+            if (ipAddress == null) {
+                ipAddress = httpRequest.getRemoteAddr();
+            }
+            logger.info("Order details request from IP: {}", ipAddress);
+            logger.info(httpRequest.getHeader("User-Agent"));
+
+            Payment payment = paymentService.getPaymentByBillAndCashbox(billid, cashboxid);
+            if (payment == null) {
+                logger.error("Payment: {}", payment);
+                return new ResultDTO(false, "Payment not found", -1);
+            }
+
+            String secret = cashboxService.getSecret(cashboxid);
+            String sha256hex = DigestUtils.sha256Hex(cashboxid.toString() + billid + secret);
+            if (!sha256hex.equals(signature)) {
+                logger.error("Cashbox ID: {}", cashboxid);
+                logger.error("Bill ID: {}", billid);
+                logger.error("Server sign: {}", sha256hex);
+                logger.error("Client sign: {}", signature);
+                return new ResultDTO(false, "Signature: SHA256(cashboxid + billid + secret)", -1);
+            }
+            return new ResultDTO(true, payment, 0);
 
         } catch (Exception e) {
             e.printStackTrace();

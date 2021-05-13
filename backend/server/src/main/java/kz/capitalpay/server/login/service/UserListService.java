@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -79,7 +80,7 @@ public class UserListService {
             ApplicationUser admin = applicationUserRepository.findByUsername(principal.getName());
 
             systemEventsLogsService.addNewOperatorAction(principal.getName(),
-                    CHANGE_ROLE, gson.toJson(request),applicationUser.getId().toString());
+                    CHANGE_ROLE, gson.toJson(request), applicationUser.getId().toString());
 
             if (admin.getRoles().contains(applicationRoleService.getRole(ADMIN))) {
                 logger.info("Admin!");
@@ -130,19 +131,24 @@ public class UserListService {
 
         ApplicationUser admin = applicationUserRepository.findByUsername(principal.getName());
         Set<ApplicationRole> applicationRoles = new HashSet<>();
-        if (admin.getRoles().contains(applicationRoleService.getRole(ADMIN))) {
+        if (admin.getRoles() == null) {
+            logger.error("Admin role list: {}", admin.getRoles());
 
-            applicationRoles.add(applicationRoleService.getRole(USER));
-            applicationRoles.add(applicationRoleService.getRole(MERCHANT));
-            applicationRoles.add(applicationRoleService.getRole(OPERATOR));
-            applicationRoles.add(applicationRoleService.getRole(ADMIN));
+        } else {
+            if (admin.getRoles().contains(applicationRoleService.getRole(ADMIN))) {
 
-        } else if (admin.getRoles().contains(applicationRoleService.getRole(OPERATOR))) {
+                applicationRoles.add(applicationRoleService.getRole(USER));
+                applicationRoles.add(applicationRoleService.getRole(MERCHANT));
+                applicationRoles.add(applicationRoleService.getRole(OPERATOR));
+                applicationRoles.add(applicationRoleService.getRole(ADMIN));
 
-            applicationRoles.add(applicationRoleService.getRole(USER));
-            applicationRoles.add(applicationRoleService.getRole(MERCHANT));
-            applicationRoles.add(applicationRoleService.getRole(OPERATOR));
-            applicationRoles.add(applicationRoleService.getRole(ADMIN));
+            } else if (admin.getRoles().contains(applicationRoleService.getRole(OPERATOR))) {
+
+                applicationRoles.add(applicationRoleService.getRole(USER));
+                applicationRoles.add(applicationRoleService.getRole(MERCHANT));
+                applicationRoles.add(applicationRoleService.getRole(OPERATOR));
+                applicationRoles.add(applicationRoleService.getRole(ADMIN));
+            }
         }
         return new ResultDTO(true, applicationRoles, 0);
     }
@@ -170,7 +176,7 @@ public class UserListService {
 
             request.setPassword(null);
             systemEventsLogsService.addNewOperatorAction(principal.getName(),
-                    CREATE_USER, gson.toJson(request),applicationUser.getId().toString());
+                    CREATE_USER, gson.toJson(request), applicationUser.getId().toString());
 
             return new ResultDTO(true, resultUser, 0);
         } catch (Exception e) {
@@ -213,7 +219,7 @@ public class UserListService {
             applicationUserRepository.delete(applicationUser);
 
             systemEventsLogsService.addNewOperatorAction(principal.getName(),
-                    DELETE_USER, gson.toJson(request),applicationUser.getId().toString());
+                    DELETE_USER, gson.toJson(request), applicationUser.getId().toString());
 
             return new ResultDTO(true, request.getUserId(), 0);
         } catch (Exception e) {
@@ -246,7 +252,7 @@ public class UserListService {
             applicationUser.setActive(request.isActive());
             applicationUser.setBlocked(request.isBlocked());
 
-            if(request.getRealname()!= null){
+            if (request.getRealname() != null) {
                 applicationUser.setRealname(request.getRealname());
             }
 
@@ -259,7 +265,7 @@ public class UserListService {
 
             request.setPassword(null);
             systemEventsLogsService.addNewOperatorAction(principal.getName(),
-                    EDIT_USER, gson.toJson(request),applicationUser.getId().toString());
+                    EDIT_USER, gson.toJson(request), applicationUser.getId().toString());
 
             return new ResultDTO(true, resultUser, 0);
         } catch (Exception e) {
@@ -279,7 +285,7 @@ public class UserListService {
             ApplicationUser resultUser = maskPassword(applicationUser);
 
             systemEventsLogsService.addNewOperatorAction(principal.getName(),
-                    EDIT_USER, gson.toJson(request),applicationUser.getId().toString());
+                    EDIT_USER, gson.toJson(request), applicationUser.getId().toString());
 
             return new ResultDTO(true, resultUser, 0);
         } catch (Exception e) {
