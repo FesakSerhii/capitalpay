@@ -130,6 +130,11 @@ public class UserListService {
     public ResultDTO roleList(Principal principal) {
 
         ApplicationUser admin = applicationUserRepository.findByUsername(principal.getName());
+        if(admin==null){
+            logger.error(gson.toJson(principal));
+            logger.error("Admin: {}",admin);
+            return error106;
+        }
         Set<ApplicationRole> applicationRoles = new HashSet<>();
         if (admin.getRoles() == null) {
             logger.error("Admin role list: {}", admin.getRoles());
