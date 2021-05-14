@@ -24,34 +24,15 @@
                 <h4 class="card-title ">Валюты</h4>
               </div>
               <div class="card-body mt-4 mb-4">
-                <div class="togglebutton">
-                  <label>
-                    <input type="checkbox" checked="">
-                    <span class="toggle"></span>
-                    KZT
-                  </label>
-                </div>
-                <div class="togglebutton">
-                  <label>
-                    <input type="checkbox" checked="">
-                    <span class="toggle"></span>
-                    USD
-                  </label>
-                </div>
-                <div class="togglebutton">
-                  <label>
-                    <input type="checkbox">
-                    <span class="toggle"></span>
-                    EUR
-                  </label>
-                </div>
-                <div class="togglebutton">
-                  <label>
-                    <input type="checkbox">
-                    <span class="toggle"></span>
-                    RUB
-                  </label>
-                </div>
+                <form [formGroup]="currenciesForm">
+                  <div class="togglebutton" *ngFor="let currency of currencyList">
+                    <label>
+                      <input type="checkbox" [formControlName]="currency.alpha">
+                      <span class="toggle"></span>
+                      {{currency.alpha}}
+                    </label>
+                  </div>
+                </form>
              </div>
               <div class="card-footer d-flex justify-content-end">
                 <a href="#" class="btn btn-success btn-round" (click)="$event.preventDefault();">Сохранить<div class="ripple-container"></div></a>

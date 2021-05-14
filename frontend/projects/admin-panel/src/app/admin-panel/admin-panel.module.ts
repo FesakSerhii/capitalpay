@@ -13,11 +13,13 @@ import { UserSettingsComponent } from './user-settings/user-settings.component';
 import {ReactiveFormsModule} from "@angular/forms";
 import {NgxMaskModule} from "ngx-mask";
 import { ChatComponent } from './chat/chat.component';
+import { DocumentsLayoutsComponent } from './documents-layouts/documents-layouts.component';
+import { DocumentLayoutsEditorComponent } from './document-layouts-editor/document-layouts-editor.component';
 
 
 
 @NgModule({
-  declarations: [DashboardComponent, SettingsComponent, HelpComponent, CurrenciesComponent, PaymentMethodsComponent, UserComponent, UserSettingsComponent, ChatComponent],
+  declarations: [DashboardComponent, SettingsComponent, HelpComponent, CurrenciesComponent, PaymentMethodsComponent, UserComponent, UserSettingsComponent, ChatComponent, DocumentsLayoutsComponent, DocumentLayoutsEditorComponent],
   imports: [
     CommonModule,
     AdminPanelRoutingModule,

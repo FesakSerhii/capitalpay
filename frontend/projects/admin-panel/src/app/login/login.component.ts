@@ -13,8 +13,8 @@ export class LoginComponent implements OnInit {
 
   constructor(public authService:AuthService,private router: Router) { }
   loginForm = new FormGroup({
-    email: new FormControl('+38095384343'),
-    password: new FormControl('heXog0naL5'),
+    email: new FormControl('+37096384345'),
+    password: new FormControl('blablabla'),
     isIpTrusted: new FormControl()
   });
   toggle = {

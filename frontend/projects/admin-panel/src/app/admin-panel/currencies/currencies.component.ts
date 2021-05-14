@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {CurrencyService} from '../../service/currency.service';
+import {FormControl, FormGroup} from '@angular/forms';
 
 @Component({
   selector: 'app-currencies',
@@ -8,7 +10,6 @@ import { Component, OnInit } from '@angular/core';
 export class CurrenciesComponent implements OnInit {
 
   constructor() { }
-
   ngOnInit(): void {
   }
 

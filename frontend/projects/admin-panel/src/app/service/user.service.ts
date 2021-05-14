@@ -23,6 +23,9 @@ export class UserService {
   getUserRolesList(){
     return this.apiService.postJwt('api','/userlist/rolelist',token).toPromise();
   }
+  changeUserRolesList(roles){
+    return this.apiService.postJwt('api','/userlist/changeroles',token,roles).toPromise();
+  }
   editUserData(newUserData) {
     return this.apiService.postJwt('api', '/userlist/edituser', token, newUserData).toPromise();
   }

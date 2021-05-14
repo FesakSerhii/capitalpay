@@ -9,7 +9,9 @@ import {PaymentMethodsComponent} from './payment-methods/payment-methods.compone
 import {UserComponent} from './user/user.component';
 import {TransactionsLogComponent} from '../../../../../common-blocks/transactions-log/transactions-log.component';
 import {UserSettingsComponent} from './user-settings/user-settings.component';
-import {ChatComponent} from "./chat/chat.component";
+import {ChatComponent} from './chat/chat.component';
+import {DocumentsLayoutsComponent} from './documents-layouts/documents-layouts.component';
+import {DocumentLayoutsEditorComponent} from './document-layouts-editor/document-layouts-editor.component';
 
 
 const routes: Routes = [
@@ -52,6 +54,14 @@ const routes: Routes = [
       {
         path: 'user/settings',
         component: UserSettingsComponent
+      },
+      {
+        path: 'documents-layouts',
+        component: DocumentsLayoutsComponent
+      },
+      {
+        path: 'documents-layouts/editor',
+        component: DocumentLayoutsEditorComponent
       },
     ]
   },

@@ -1,11 +1,12 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {UserService} from "../../service/user.service";
-import {KycService} from "../../service/kyc.service";
-import {CurrencyService} from "../../service/currency.service";
-import {MassageModalComponent} from "../../../../../../common-blocks/massage-modal/massage-modal.component";
-import {PaymentsService} from "../../service/payments.service";
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {UserService} from '../../service/user.service';
+import {KycService} from '../../service/kyc.service';
+import {CurrencyService} from '../../service/currency.service';
+import {MassageModalComponent} from '../../../../../../common-blocks/massage-modal/massage-modal.component';
+import {PaymentsService} from '../../service/payments.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-user-settings',
@@ -13,7 +14,7 @@ import {PaymentsService} from "../../service/payments.service";
   styleUrls: ['./user-settings.component.scss']
 })
 export class UserSettingsComponent implements OnInit {
-  @ViewChild("massageModal", {static: false}) massageModal: MassageModalComponent;
+  @ViewChild('massageModal', {static: false}) massageModal: MassageModalComponent;
 
   constructor(private router: Router,
               private userService: UserService,
@@ -34,7 +35,7 @@ export class UserSettingsComponent implements OnInit {
     id: new FormControl(),
     password: new FormControl(),
     email: new FormControl('',[Validators.email]),
-    phone: new FormControl('',[Validators.minLength(11),Validators.maxLength(11)]),
+    phone:new FormControl('',[Validators.required,Validators.minLength(11),Validators.maxLength(11)]),
     realname: new FormControl(''),
     fio: new FormControl(''),
   });
@@ -50,7 +51,7 @@ export class UserSettingsComponent implements OnInit {
     headname: new FormControl(''),
     accountant: new FormControl(''),
     bik: new FormControl(''),
-    mainphone: new FormControl(''),
+    mainphone: new FormControl('',[Validators.minLength(11),Validators.maxLength(11)]),
     iik: new FormControl(''),
     mname: new FormControl(''),
     bankname: new FormControl(''),
@@ -82,7 +83,7 @@ export class UserSettingsComponent implements OnInit {
   userId: string;
   ngOnInit(): void {
     this.activatedRoute.queryParamMap.subscribe((param) => {
-      this.userId = param.get("userId");
+      this.userId = param.get('userId');
       this.getUserInfo(this.userId);
     });
     this.isEditMode = false;
@@ -92,36 +93,54 @@ export class UserSettingsComponent implements OnInit {
   }
   getUserInfo(id){
     this.userService.getUserData(id).then(resp=>{
-      this.userInfoForm.patchValue(resp.data);
-      let roles = resp.data.roles;
-      for(let role in roles){
+      this.userInfoForm.patchValue(resp.data,{ emitEvent: false });
+      const roles = resp.data.roles;
+      for(const role in roles){
         this.userRoles[roles[role].authority] = true;
-        this.userRolesForm.controls[roles[role].authority].setValue(true)
+        this.userRolesForm.controls[roles[role].authority].setValue(true,{ emitEvent: false })
       }
+      const subscription:Subscription = this.userRolesForm.valueChanges.subscribe(()=>{
+        const newRoles = {
+            "userId": this.userId,
+            "roleList": []
+          }
+        ;
+        for(const roleValue in this.userRolesForm.value){
+          if(this.userRolesForm.value[roleValue]){
+            newRoles.roleList.push(roleValue)
+          }
+        }
+        this.userService.changeUserRolesList(newRoles).then(()=>{
+          subscription.unsubscribe();
+          this.getUserInfo(this.userId)
+        })
+      })
       if(this.userRoles.ROLE_MERCHANT){
         this.kycService.getKycInfo(id).then(resp=>{
           this.merchantInfoForm.patchValue(resp.data);
-          this.merchantInfoForm.controls.merchantId.patchValue(this.userId);
+          this.merchantInfoForm.controls.merchantId.patchValue(this.userId,{ emitEvent: false });
+          this.merchantInfoForm.controls.mainphone.patchValue(resp.data.mainphone.replace("+","").replace(/\s/g, ""));
+          this.merchantInfoForm.controls.phone.patchValue(resp.data.phone.replace("+","").replace(/\s/g, ""));
         })
         this.currencyService.getCurrencies().then(resp=>{
           this.currencies = resp.data;
-          for(let currency of this.currencies){
+          for(const currency of this.currencies){
             this.currenciesForm.addControl(currency.alpha, new FormControl())
           }
         });
         this.paymentsService.getPaymentMethods().then(resp=>{
           this.paymentMethods = resp.data;
-          for(let paymentMethod of this.paymentMethods){
+          for(const paymentMethod of this.paymentMethods){
             this.paymentMethodsForm.addControl(paymentMethod.name, new FormControl())
           }
         });
         this.currencyService.getMerchantCurrencies(id).then(resp=>{
-          for(let currency in resp.data){
+          for(const currency in resp.data){
             this.currenciesForm.controls[currency].setValue(resp.data[currency])
           }
         })
         this.paymentsService.getMerchantPaymentMethods(id).then(resp=>{
-          for(let paymentMethod of resp.data){
+          for(const paymentMethod of resp.data){
             console.log(paymentMethod);
             this.paymentMethodsForm.controls[paymentMethod.name].setValue(true)
           }
@@ -131,10 +150,13 @@ export class UserSettingsComponent implements OnInit {
   }
   editUserData() {
     if(this.userRoles.ROLE_MERCHANT){
+      this.merchantInfoForm.value.phone = this.merchantInfoForm.value.phone?'+'+this.merchantInfoForm.value.phone:null;
+      this.merchantInfoForm.value.mainphone = this.merchantInfoForm.value.mainphone?'+'+this.merchantInfoForm.value.mainphone:null;
       this.kycService.setKycInfo(this.merchantInfoForm.value).then(resp=>{
         this.getUserInfo(this.userId)
       })
     }else{
+      this.userInfoForm.value.phone = '+'+this.userInfoForm.value.phone;
       this.userService.editUserData(this.userInfoForm.value).then(resp=>{
         this.getUserInfo(this.userId)
       })
@@ -153,11 +175,11 @@ export class UserSettingsComponent implements OnInit {
   }
 
   editUserCurrenciesList() {
-    let obj = {
-      "merchantId": this.userId,
-      "currencyList": []
+    const obj = {
+      merchantId: this.userId,
+      currencyList: []
     }
-    for(let currency in this.currenciesForm.value){
+    for(const currency in this.currenciesForm.value){
       if(this.currenciesForm.value.hasOwnProperty(currency)&&this.currenciesForm.value[currency]){
         obj.currencyList.push(currency);
       }
@@ -168,18 +190,21 @@ export class UserSettingsComponent implements OnInit {
   }
 
   editUsersPaymentMethodsList() {
-    let obj = {
-      "merchantId": this.userId,
-      "paysystemList": []
+    const obj = {
+      merchantId: this.userId,
+      paysystemList: []
     }
-    for(let currency in this.currenciesForm.value){
-      if(this.currenciesForm.value.hasOwnProperty(currency)&&this.currenciesForm.value[currency]){
-        console.log(this.paymentMethods.filter(el => el.name === currency)[0]);
-        // obj.paysystemList.push();
+    for(const paymentMethod in this.paymentMethodsForm.value){
+      if(this.paymentMethodsForm.value.hasOwnProperty(paymentMethod)&&this.paymentMethodsForm.value[paymentMethod]){
+        obj.paysystemList.push(this.paymentMethods.filter(el => el.name === paymentMethod)[0].id);
       }
     }
     this.paymentsService.editMerchantPaymentMethodsList(obj).then(()=>{
       this.getUserInfo(this.userId);
     })
+  }
+
+  changeRole(role) {
+    // console.log(role);
   }
 }

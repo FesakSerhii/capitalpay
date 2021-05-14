@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import {UserService} from "../../projects/admin-panel/src/app/service/user.service";
+import {UserService} from '../../projects/admin-panel/src/app/service/user.service';
 
 const helper = new JwtHelperService();
 
@@ -69,6 +69,11 @@ export class SideMenuComponent implements OnInit {
         title:'Тех поддержка',
         icon:'question_answer'
       },
+      {
+        route:'documents-layouts',
+        title:'Оформление',
+        icon:'description'
+      },
     ]
   };
   roleList = {
@@ -81,7 +86,7 @@ export class SideMenuComponent implements OnInit {
 
   ngOnInit() {
     this.user = this.userService.getUserInfo();
-    for(let role of this.user.authorities){
+    for(const role of this.user.authorities){
         this.userRoles.push(this.roleList[role])
     }
     this.userRoles.join('/')
