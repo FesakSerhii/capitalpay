@@ -176,7 +176,7 @@ public class SimpleService {
 
             PaymentDetailDTO paymentDetail = signDetail(payment, secret);
 
-            return new ResultDTO(true, payment, 0);
+            return new ResultDTO(true, paymentDetail, 0);
 
         } catch (Exception e) {
             e.printStackTrace();
