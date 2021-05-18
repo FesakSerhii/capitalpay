@@ -19,6 +19,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.security.Principal;
 import java.util.List;
 import java.util.Random;
@@ -187,6 +189,6 @@ public class CashboxService {
             location = location + "&param="+payment.getParam();
         }
 
-        return location;
+        return URLEncoder.encode( location, Charset.defaultCharset());
     }
 }
