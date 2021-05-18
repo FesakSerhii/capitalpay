@@ -66,47 +66,11 @@ public class PublicPaysystemController {
                         @RequestParam String email
 
     ) {
-        String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
-        if (ipAddress == null) {
-            ipAddress = httpRequest.getRemoteAddr();
-        }
-        logger.info("Payment ID: {}", paymentid);
-        logger.info("Request IP: {}", ipAddress);
-        logger.info("Request User-Agent: {}", httpRequest.getHeader("User-Agent"));
 
-        Payment payment = paymentService.addPhoneAndEmail(paymentid, phone, email);
+        httpResponse = paysystemService.paymentPayAndRedirect(
+                httpRequest, httpResponse,
+                paymentid, cardHolderName, cvv, month, pan, year, phone, email);
 
-        String result = halykSoapService.paymentOrder(payment.getTotalAmount(),
-                cardHolderName, cvv, payment.getDescription(), month, payment.getPaySysPayId(), pan, year);
-        if (result.equals("OK")) {
-            logger.info("Redirect to OK");
-            // TODO: сделать нормальную страницу успешного платежа
-            httpResponse.setHeader("Location", "https://api.capitalpay.kz/testshop/page");
-            httpResponse.setStatus(302);
-        } else if (result.equals("FAIL")) {
-            logger.info("Redirect to Fail");
-            // TODO: сделать нормальную страницу плохого платежа
-            httpResponse.setHeader("Location", "https://capitalpay.kz/");
-            httpResponse.setStatus(302);
-        } else {
-            logger.info("Redirect to 3DS");
-            logger.info("Result: {}", result);
-            try {
-                LinkedHashMap<String, String> param = gson.fromJson(result, LinkedHashMap.class);
-
-                String url = apiAddress + "/public/paysystem/secure/redirect" +
-                        "?acsUrl=" + param.get("acsUrl") +
-                        "&MD=" + param.get("MD") +
-                        "&PaReq=" + param.get("PaReq");
-
-                httpResponse.setHeader("Location", url);
-
-                httpResponse.setStatus(302);
-            } catch (Exception e) {
-                e.printStackTrace();
-
-            }
-        }
     }
 
 

@@ -16,12 +16,16 @@ import kz.capitalpay.server.paysystems.dto.PaymentRequestDTO;
 import kz.capitalpay.server.paysystems.model.PaysystemInfo;
 import kz.capitalpay.server.paysystems.repository.PaysystemInfoRepository;
 import kz.capitalpay.server.paysystems.systems.PaySystem;
+import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.util.*;
 
@@ -55,6 +59,13 @@ public class PaysystemService {
 
     @Autowired
     List<PaySystem> paySystemList;
+
+
+    @Value("${remote.api.addres}")
+    String apiAddress;
+
+    @Autowired
+    HalykSoapService halykSoapService;
 
     Map<String, PaySystem> paySystems = new HashMap<>();
 
@@ -145,5 +156,55 @@ public class PaysystemService {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }
+    }
+
+    public HttpServletResponse paymentPayAndRedirect(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
+                                                     String paymentid, String cardHolderName, String cvv,
+                                                     String month, String pan, String year,
+                                                     String phone, String email) {
+
+        String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
+        if (ipAddress == null) {
+            ipAddress = httpRequest.getRemoteAddr();
+        }
+        logger.info("Payment ID: {}", paymentid);
+        logger.info("Request IP: {}", ipAddress);
+        logger.info("Request User-Agent: {}", httpRequest.getHeader("User-Agent"));
+
+        Payment payment = paymentService.addPhoneAndEmail(paymentid, phone, email);
+
+        String result = halykSoapService.paymentOrder(payment.getTotalAmount(),
+                cardHolderName, cvv, payment.getDescription(), month, payment.getPaySysPayId(), pan, year);
+        if (result.equals("OK")) {
+            logger.info("Redirect to OK");
+            // TODO: сделать нормальную страницу успешного платежа
+            httpResponse.setHeader("Location", "https://api.capitalpay.kz/testshop/page");
+            httpResponse.setStatus(302);
+        } else if (result.equals("FAIL")) {
+            logger.info("Redirect to Fail");
+            // TODO: сделать нормальную страницу плохого платежа
+            httpResponse.setHeader("Location", "https://capitalpay.kz/");
+            httpResponse.setStatus(302);
+        } else {
+            logger.info("Redirect to 3DS");
+            logger.info("Result: {}", result);
+            try {
+                LinkedHashMap<String, String> param = gson.fromJson(result, LinkedHashMap.class);
+
+                String url = apiAddress + "/public/paysystem/secure/redirect" +
+                        "?acsUrl=" + param.get("acsUrl") +
+                        "&MD=" + param.get("MD") +
+                        "&PaReq=" + param.get("PaReq");
+
+                httpResponse.setHeader("Location", url);
+
+                httpResponse.setStatus(302);
+            } catch (Exception e) {
+                e.printStackTrace();
+
+            }
+        }
+
+        return httpResponse;
     }
 }
