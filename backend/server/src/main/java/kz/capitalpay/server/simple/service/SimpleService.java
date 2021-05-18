@@ -11,6 +11,7 @@ import kz.capitalpay.server.login.service.ApplicationUserService;
 import kz.capitalpay.server.merchantsettings.service.MerchantKycService;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
+import kz.capitalpay.server.simple.dto.PaymentDetailDTO;
 import kz.capitalpay.server.simple.dto.SimpleRequestDTO;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
@@ -172,11 +173,32 @@ public class SimpleService {
                 logger.error("Client sign: {}", signature);
                 return new ResultDTO(false, "Signature: SHA256(cashboxid + billid + secret)", -1);
             }
+
+            PaymentDetailDTO paymentDetail = signDetail(payment, secret);
+
             return new ResultDTO(true, payment, 0);
 
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }
+    }
+
+    private PaymentDetailDTO signDetail(Payment payment, String secret) {
+
+        PaymentDetailDTO paymentDetail = new PaymentDetailDTO();
+        paymentDetail.setTimestamp(payment.getTimestamp());
+        paymentDetail.setLocalDateTime(payment.getLocalDateTime());
+        paymentDetail.setBillId(payment.getBillId());
+        paymentDetail.setTotalAmount(payment.getTotalAmount());
+        paymentDetail.setCurrency(payment.getCurrency());
+        paymentDetail.setDescription(payment.getDescription());
+        paymentDetail.setParam(payment.getParam());
+        paymentDetail.setStatus(payment.getStatus());
+        //    SHA256(cashboxId + billId + status + secret)
+        String sha256hex = DigestUtils.sha256Hex(payment.getCashboxId().toString()
+                + payment.getBillId() + secret);
+        paymentDetail.setSignature(sha256hex);
+        return paymentDetail;
     }
 }
