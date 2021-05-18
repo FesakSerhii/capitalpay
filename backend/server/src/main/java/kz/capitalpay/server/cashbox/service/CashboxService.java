@@ -183,6 +183,9 @@ public class CashboxService {
                 + "?billid=" + payment.getBillId()
                 + "&status=" + payment.getStatus()
                 + "&paymentid=" + payment.getGuid();
+        if(payment.getParam()!=null && payment.getParam().length()>0){
+            location = location + "&param="+payment.getParam();
+        }
 
         return location;
     }
