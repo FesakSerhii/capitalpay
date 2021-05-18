@@ -185,10 +185,10 @@ public class CashboxService {
                 + "?billid=" + payment.getBillId()
                 + "&status=" + payment.getStatus()
                 + "&paymentid=" + payment.getGuid();
-        if(payment.getParam()!=null && payment.getParam().length()>0){
-            location = location + "&param="+payment.getParam();
+        if (payment.getParam() != null && payment.getParam().length() > 0) {
+            location = location + "&param=" + URLEncoder.encode(payment.getParam(), Charset.defaultCharset());
         }
 
-        return URLEncoder.encode( location, Charset.defaultCharset());
+        return location;
     }
 }
