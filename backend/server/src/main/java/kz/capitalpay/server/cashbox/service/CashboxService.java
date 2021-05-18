@@ -171,4 +171,19 @@ public class CashboxService {
         }
         return secret;
     }
+
+    public String getRedirectForPayment(Payment payment) {
+
+        Cashbox cashbox = cashboxRepository.findById(payment.getCashboxId()).orElse(null);
+        if (cashbox == null) {
+            logger.error("Cashbox: {}", cashbox);
+            return "error";
+        }
+        String location = cashboxSettingsService.getField(payment.getCashboxId(), REDIRECT_URL)
+                + "?billid=" + payment.getBillId()
+                + "&status=" + payment.getStatus()
+                + "&paymentid=" + payment.getGuid();
+
+        return location;
+    }
 }

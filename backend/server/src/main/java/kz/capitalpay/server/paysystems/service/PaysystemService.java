@@ -60,6 +60,9 @@ public class PaysystemService {
     @Autowired
     List<PaySystem> paySystemList;
 
+    @Autowired
+    CashboxService cashboxService;
+
 
     @Value("${remote.api.addres}")
     String apiAddress;
@@ -177,8 +180,9 @@ public class PaysystemService {
                 cardHolderName, cvv, payment.getDescription(), month, payment.getPaySysPayId(), pan, year);
         if (result.equals("OK")) {
             logger.info("Redirect to OK");
-            // TODO: сделать нормальную страницу успешного платежа
-            httpResponse.setHeader("Location", "https://api.capitalpay.kz/testshop/page");
+
+            String location = cashboxService.getRedirectForPayment(payment);
+            httpResponse.setHeader("Location", location);
             httpResponse.setStatus(302);
         } else if (result.equals("FAIL")) {
             logger.info("Redirect to Fail");
