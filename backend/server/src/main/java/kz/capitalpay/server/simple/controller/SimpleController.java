@@ -41,15 +41,15 @@ public class SimpleController {
     ) {
 
 
-        ResultDTO resultDTO = simpleService.createPayment(httpRequest, cashboxid, billid, totalamount, currency,description, param);
+        ResultDTO resultDTO = simpleService.createPayment(httpRequest, cashboxid, billid, totalamount, currency, description, param);
         if (resultDTO.isResult() && resultDTO.getData() instanceof Payment) {
             Payment payment = (Payment) resultDTO.getData();
 
             modelMap.addAttribute("paymentid", payment.getGuid());
             modelMap.addAttribute("billid", payment.getBillId());
-            modelMap.addAttribute("totalamount",payment.getTotalAmount());
-            modelMap.addAttribute("currency",payment.getCurrency());
-            modelMap.addAttribute("description",payment.getDescription());
+            modelMap.addAttribute("totalamount", payment.getTotalAmount());
+            modelMap.addAttribute("currency", payment.getCurrency());
+            modelMap.addAttribute("description", payment.getDescription());
 
             return "paysystems/cardpay";
         } else {
@@ -78,13 +78,14 @@ public class SimpleController {
     // Signature: SHA256(cashboxid + billid + secret)
 
     @PostMapping("/order")
-    ResultDTO getPaymentInfo(@RequestParam Long cashboxid,  @RequestParam String billid,  @RequestParam String signature,
-                           HttpServletRequest httpRequest,
-                           ModelMap modelMap    ){
+    @ResponseBody
+    ResultDTO getPaymentInfo(@RequestParam Long cashboxid, @RequestParam String billid, @RequestParam String signature,
+                             HttpServletRequest httpRequest,
+                             ModelMap modelMap) {
 
 
-        ResultDTO resultDTO = simpleService.getPaymentInfo(httpRequest, cashboxid,billid,signature);
-        if(!resultDTO.isResult()){
+        ResultDTO resultDTO = simpleService.getPaymentInfo(httpRequest, cashboxid, billid, signature);
+        if (!resultDTO.isResult()) {
             logger.error(gson.toJson(resultDTO));
         }
         return resultDTO;
