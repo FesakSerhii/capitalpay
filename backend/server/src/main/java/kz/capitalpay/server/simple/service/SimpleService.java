@@ -197,7 +197,7 @@ public class SimpleService {
         paymentDetail.setStatus(payment.getStatus());
         //    SHA256(cashboxId + billId + status + secret)
         String sha256hex = DigestUtils.sha256Hex(payment.getCashboxId().toString()
-                + payment.getBillId() + secret);
+                + payment.getBillId() + payment.getStatus() + secret);
         paymentDetail.setSignature(sha256hex);
         return paymentDetail;
     }
