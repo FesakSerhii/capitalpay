@@ -95,7 +95,7 @@ public class PaymentService {
             String interactionUrl = cashboxService.getInteractUrl(payment);
             PaymentDetailDTO detailsJson = simpleService.signDetail(payment);
             String response = restTemplate.postForObject(interactionUrl,
-                    detailsJson, String.class, java.util.Optional.ofNullable(null));
+                    gson.toJson(detailsJson), String.class, java.util.Optional.ofNullable(null));
             logger.info(response);
 
 
