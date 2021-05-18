@@ -79,14 +79,17 @@ public class PublicPaysystemController {
         String result = halykSoapService.paymentOrder(payment.getTotalAmount(),
                 cardHolderName, cvv, payment.getDescription(), month, payment.getPaySysPayId(), pan, year);
         if (result.equals("OK")) {
+            logger.info("Redirect to OK");
             // TODO: сделать нормальную страницу успешного платежа
             httpResponse.setHeader("Location", "https://api.capitalpay.kz/testshop/page");
             httpResponse.setStatus(302);
         } else if (result.equals("FAIL")) {
+            logger.info("Redirect to Fail");
             // TODO: сделать нормальную страницу плохого платежа
             httpResponse.setHeader("Location", "https://capitalpay.kz/");
             httpResponse.setStatus(302);
         } else {
+            logger.info("Redirect to 3DS");
             logger.info("Result: {}", result);
             try {
                 LinkedHashMap<String, String> param = gson.fromJson(result, LinkedHashMap.class);
