@@ -174,7 +174,7 @@ public class SimpleService {
                 return new ResultDTO(false, "Signature: SHA256(cashboxid + billid + secret)", -1);
             }
 
-            PaymentDetailDTO paymentDetail = signDetail(payment, secret);
+            PaymentDetailDTO paymentDetail = signDetail(payment);
 
             return new ResultDTO(true, paymentDetail, 0);
 
@@ -184,7 +184,9 @@ public class SimpleService {
         }
     }
 
-    private PaymentDetailDTO signDetail(Payment payment, String secret) {
+    public PaymentDetailDTO signDetail(Payment payment) {
+
+        String secret = cashboxService.getSecret(payment.getCashboxId());
 
         PaymentDetailDTO paymentDetail = new PaymentDetailDTO();
         paymentDetail.setTimestamp(payment.getTimestamp());

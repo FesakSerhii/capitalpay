@@ -7,8 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import static kz.capitalpay.server.simple.service.SimpleService.*;
 
@@ -75,5 +74,14 @@ public class TestShopController {
         modelMap.addAttribute("status", "failed");
         modelMap.addAttribute("color", "red");
         return "testshop/paymentstatus";
+    }
+
+
+    @PostMapping("/testshop/listener")
+    @ResponseBody
+    String interactionUrl(@RequestBody String json){
+        logger.info("Interaction url:");
+        logger.info(json);
+        return "OK";
     }
 }

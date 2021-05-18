@@ -7,10 +7,13 @@ import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.repository.PaymentRepository;
 import kz.capitalpay.server.paysystems.service.PaysystemService;
+import kz.capitalpay.server.simple.dto.PaymentDetailDTO;
+import kz.capitalpay.server.simple.service.SimpleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -33,6 +36,12 @@ public class PaymentService {
 
     @Autowired
     CashboxService cashboxService;
+
+    @Autowired
+    RestTemplate restTemplate;
+
+    @Autowired
+    SimpleService simpleService;
 
     public boolean checkUnic(Cashbox cashbox, String billid) {
         List<Payment> paymentList = paymentRepository.findByCashboxIdAndAndBillId(cashbox.getId(), billid);
@@ -70,6 +79,8 @@ public class PaymentService {
             paymentRepository.save(payment);
 // TODO: сделать логирование изменения статусов
             // TODO: уведомить мерчанта о том что статус изменился
+            notifyMerchant(payment);
+
             logger.info("Change status: {}", gson.toJson(payment));
             return payment;
         } else {
@@ -77,6 +88,20 @@ public class PaymentService {
             logger.error("Payment: {}", payment);
         }
         return null;
+    }
+
+    private void notifyMerchant(Payment payment) {
+        try {
+            String interactionUrl = cashboxService.getInteractUrl(payment);
+            PaymentDetailDTO detailsJson = simpleService.signDetail(payment);
+            String response = restTemplate.postForObject(interactionUrl,
+                    detailsJson, String.class, java.util.Optional.ofNullable(null));
+            logger.info(response);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public Cashbox getCashboxByOrderId(String orderid) {
@@ -99,6 +124,6 @@ public class PaymentService {
     }
 
     public Payment getPaymentByBillAndCashbox(String billid, Long cashboxid) {
-        return paymentRepository.findTopByCashboxIdAndAndBillId(cashboxid,billid);
+        return paymentRepository.findTopByCashboxIdAndAndBillId(cashboxid, billid);
     }
 }

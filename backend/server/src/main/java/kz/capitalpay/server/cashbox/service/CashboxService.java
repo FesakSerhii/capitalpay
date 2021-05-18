@@ -191,4 +191,9 @@ public class CashboxService {
 
         return location;
     }
+
+    public String getInteractUrl(Payment payment) {
+        String interactionUrl = cashboxSettingsService.getField(payment.getCashboxId(), INTERACTION_URL);
+        return interactionUrl;
+    }
 }
