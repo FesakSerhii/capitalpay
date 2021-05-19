@@ -7,6 +7,7 @@ import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.service.ApplicationRoleService;
 import kz.capitalpay.server.login.service.ApplicationUserService;
+import kz.capitalpay.server.payments.dto.OnePaymentDetailsRequestDTO;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.repository.PaymentRepository;
 import kz.capitalpay.server.paysystems.service.PaysystemService;
@@ -22,8 +23,7 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static kz.capitalpay.server.constants.ErrorDictionary.error106;
-import static kz.capitalpay.server.constants.ErrorDictionary.error108;
+import static kz.capitalpay.server.constants.ErrorDictionary.*;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
 import static kz.capitalpay.server.payments.service.PaymentLogService.CREATE_NEW_PAYMENT;
 import static kz.capitalpay.server.simple.service.SimpleService.SUCCESS;
@@ -158,6 +158,38 @@ public class PaymentService {
             paymentList.sort((o1, o2) -> o2.getTimestamp().compareTo(o1.getTimestamp()));
 
             return new ResultDTO(true, paymentList, 0);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultDTO(false, e.getMessage(), -1);
+        }
+
+    }
+
+    public ResultDTO onePayment(Principal principal, OnePaymentDetailsRequestDTO request) {
+        try {
+            ApplicationUser applicationUser = applicationUserService.getUserByLogin(principal.getName());
+            if (applicationUser == null) {
+                return error106;
+            }
+
+            Payment payment = paymentRepository.findByGuid(request.getGuid());
+            if (payment == null) {
+                logger.error("GUID: {}", request.getGuid());
+                logger.error("Payment: {}", payment);
+                return error118;
+            }
+
+            if (!applicationUser.getRoles().contains(applicationRoleService.getRole(OPERATOR))
+                    && !applicationUser.getRoles().contains(applicationRoleService.getRole(ADMIN))) {
+                if (!payment.getMerchantId().equals(applicationUser.getId())) {
+                    logger.error("Payment: {}", gson.toJson(payment));
+                    logger.error("Merchant: {}", gson.toJson(applicationUser));
+                    return error110;
+                }
+            }
+
+            return new ResultDTO(true, payment, 0);
 
         } catch (Exception e) {
             e.printStackTrace();

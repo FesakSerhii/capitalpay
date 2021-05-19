@@ -2,11 +2,13 @@ package kz.capitalpay.server.payments.controller;
 
 import com.google.gson.Gson;
 import kz.capitalpay.server.dto.ResultDTO;
+import kz.capitalpay.server.payments.dto.OnePaymentDetailsRequestDTO;
 import kz.capitalpay.server.payments.service.PaymentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,10 +30,18 @@ public class PaymentController {
     PaymentService paymentService;
 
     @PostMapping("/list")
-    @RolesAllowed({ADMIN, OPERATOR,MERCHANT})
+    @RolesAllowed({ADMIN, OPERATOR, MERCHANT})
     ResultDTO paymentList(Principal principal) {
         logger.info("Payment List");
         return paymentService.paymentList(principal);
+    }
+
+
+    @PostMapping("/one")
+    @RolesAllowed({ADMIN, OPERATOR, MERCHANT})
+    ResultDTO onePayment(Principal principal, @RequestBody OnePaymentDetailsRequestDTO request) {
+        logger.info("One payment");
+        return paymentService.onePayment(principal, request);
     }
 
 
