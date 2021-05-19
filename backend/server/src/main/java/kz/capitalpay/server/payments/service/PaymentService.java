@@ -4,6 +4,9 @@ import com.google.gson.Gson;
 import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.dto.ResultDTO;
+import kz.capitalpay.server.login.model.ApplicationUser;
+import kz.capitalpay.server.login.service.ApplicationRoleService;
+import kz.capitalpay.server.login.service.ApplicationUserService;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.repository.PaymentRepository;
 import kz.capitalpay.server.paysystems.service.PaysystemService;
@@ -15,8 +18,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
+import static kz.capitalpay.server.constants.ErrorDictionary.error106;
+import static kz.capitalpay.server.constants.ErrorDictionary.error108;
+import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
 import static kz.capitalpay.server.payments.service.PaymentLogService.CREATE_NEW_PAYMENT;
 import static kz.capitalpay.server.simple.service.SimpleService.SUCCESS;
 
@@ -42,6 +50,12 @@ public class PaymentService {
 
     @Autowired
     SimpleService simpleService;
+
+    @Autowired
+    ApplicationUserService applicationUserService;
+
+    @Autowired
+    ApplicationRoleService applicationRoleService;
 
     public boolean checkUnic(Cashbox cashbox, String billid) {
         List<Payment> paymentList = paymentRepository.findByCashboxIdAndAndBillId(cashbox.getId(), billid);
@@ -78,7 +92,7 @@ public class PaymentService {
             payment.setStatus(status);
             paymentRepository.save(payment);
 // TODO: сделать логирование изменения статусов
-            // TODO: уведомить мерчанта о том что статус изменился
+
             notifyMerchant(payment);
 
             logger.info("Change status: {}", gson.toJson(payment));
@@ -95,7 +109,7 @@ public class PaymentService {
             String interactionUrl = cashboxService.getInteractUrl(payment);
             PaymentDetailDTO detailsJson = simpleService.signDetail(payment);
             String response = restTemplate.postForObject(interactionUrl,
-                    gson.toJson(detailsJson), String.class, java.util.Optional.ofNullable(null));
+                    detailsJson, String.class, java.util.Optional.ofNullable(null));
             logger.info(response);
 
 
@@ -125,5 +139,30 @@ public class PaymentService {
 
     public Payment getPaymentByBillAndCashbox(String billid, Long cashboxid) {
         return paymentRepository.findTopByCashboxIdAndAndBillId(cashboxid, billid);
+    }
+
+    public ResultDTO paymentList(Principal principal) {
+        try {
+            ApplicationUser applicationUser = applicationUserService.getUserByLogin(principal.getName());
+            if (applicationUser == null) {
+                return error106;
+            }
+            List<Payment> paymentList = new ArrayList<>();
+            if (applicationUser.getRoles().contains(applicationRoleService.getRole(OPERATOR))
+                    || applicationUser.getRoles().contains(applicationRoleService.getRole(ADMIN))) {
+                paymentList = paymentRepository.findAll();
+            } else {
+                paymentList = paymentRepository.findByMerchantId(applicationUser.getId());
+            }
+
+            paymentList.sort((o1, o2) -> o2.getTimestamp().compareTo(o1.getTimestamp()));
+
+            return new ResultDTO(true, paymentList, 0);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultDTO(false, e.getMessage(), -1);
+        }
+
     }
 }

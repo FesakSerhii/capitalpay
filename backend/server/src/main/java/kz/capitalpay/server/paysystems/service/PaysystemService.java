@@ -186,8 +186,7 @@ public class PaysystemService {
             httpResponse.setStatus(302);
         } else if (result.equals("FAIL")) {
             logger.info("Redirect to Fail");
-            // TODO: сделать нормальную страницу плохого платежа
-            httpResponse.setHeader("Location", "https://capitalpay.kz/");
+            httpResponse.setHeader("Location", "https://api.capitalpay.kz/public/paysystem/error");
             httpResponse.setStatus(302);
         } else {
             logger.info("Redirect to 3DS");

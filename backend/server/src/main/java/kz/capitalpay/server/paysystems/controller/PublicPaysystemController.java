@@ -88,4 +88,8 @@ public class PublicPaysystemController {
 
     }
 
+    @GetMapping("/error")
+    String error(){
+        return "paysystems/error";
+    }
 }
