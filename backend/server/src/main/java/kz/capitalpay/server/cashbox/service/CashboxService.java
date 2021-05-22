@@ -196,4 +196,18 @@ public class CashboxService {
         String interactionUrl = cashboxSettingsService.getField(payment.getCashboxId(), INTERACTION_URL);
         return interactionUrl;
     }
+
+    public ResultDTO all() {
+        try {
+
+            List<Cashbox> cashboxList = cashboxRepository.findByDeleted( false);
+
+            return new ResultDTO(true, cashboxList, 0);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultDTO(false, e.getMessage(), -1);
+        }
+
+    }
 }

@@ -58,10 +58,17 @@ public class CashboxController {
 
 
     @PostMapping("/list")
-    @RolesAllowed({ADMIN,OPERATOR,MERCHANT})
+    @RolesAllowed({ADMIN, OPERATOR, MERCHANT})
     ResultDTO list(@Valid @RequestBody MerchantRequestDTO request, Principal principal) {
         logger.info("List Cashbox");
         return cashboxService.list(principal, request);
+    }
+
+    @PostMapping("/all")
+    @RolesAllowed({ADMIN, OPERATOR})
+    ResultDTO all() {
+        logger.info("All system cashbox");
+        return cashboxService.all();
     }
 
 

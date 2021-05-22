@@ -9,4 +9,5 @@ public interface CashboxRepository extends JpaRepository<Cashbox,Long> {
 
     List<Cashbox> findByMerchantIdAndDeleted(Long merchantId, boolean deleted);
 
+    List<Cashbox> findByDeleted(boolean deleted);
 }
