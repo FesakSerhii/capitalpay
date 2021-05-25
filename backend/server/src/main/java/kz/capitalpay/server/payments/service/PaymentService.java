@@ -10,7 +10,6 @@ import kz.capitalpay.server.login.service.ApplicationUserService;
 import kz.capitalpay.server.payments.dto.OnePaymentDetailsRequestDTO;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.repository.PaymentRepository;
-import kz.capitalpay.server.paysystems.service.PaysystemService;
 import kz.capitalpay.server.simple.dto.PaymentDetailDTO;
 import kz.capitalpay.server.simple.service.SimpleService;
 import org.slf4j.Logger;
@@ -19,12 +18,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
-import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
+import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
+import static kz.capitalpay.server.login.service.ApplicationRoleService.OPERATOR;
 import static kz.capitalpay.server.payments.service.PaymentLogService.CREATE_NEW_PAYMENT;
 import static kz.capitalpay.server.simple.service.SimpleService.SUCCESS;
 
@@ -196,5 +199,20 @@ public class PaymentService {
             return new ResultDTO(false, e.getMessage(), -1);
         }
 
+    }
+
+    public Map<String, BigDecimal> getBalance(Long cashboxId) {
+        Map<String, BigDecimal> result = new HashMap<>();
+        List<Payment> paymentList = paymentRepository.findByCashboxIdAndStatus(cashboxId, SUCCESS);
+
+        for (Payment payment : paymentList) {
+            BigDecimal amount = BigDecimal.ZERO;
+            if (result.containsKey(payment.getCurrency())) {
+                amount = result.get(payment.getCurrency());
+            }
+            amount = amount.add(payment.getTotalAmount());
+            result.put(payment.getCurrency(), amount);
+        }
+        return result;
     }
 }

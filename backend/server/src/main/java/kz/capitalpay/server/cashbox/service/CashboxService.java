@@ -2,6 +2,7 @@ package kz.capitalpay.server.cashbox.service;
 
 import com.google.gson.Gson;
 import kz.capitalpay.server.cashbox.dto.CashboxCreateRequestDTO;
+import kz.capitalpay.server.cashbox.dto.CashboxDTO;
 import kz.capitalpay.server.cashbox.dto.CashboxNameRequestDTO;
 import kz.capitalpay.server.cashbox.dto.CashboxRequestDTO;
 import kz.capitalpay.server.cashbox.model.Cashbox;
@@ -14,6 +15,7 @@ import kz.capitalpay.server.login.service.ApplicationRoleService;
 import kz.capitalpay.server.login.service.ApplicationUserService;
 import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.payments.model.Payment;
+import kz.capitalpay.server.payments.service.PaymentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -54,6 +57,9 @@ public class CashboxService {
 
     @Autowired
     ApplicationRoleService applicationRoleService;
+
+    @Autowired
+    PaymentService paymentService;
 
     public ResultDTO createNew(Principal principal, CashboxCreateRequestDTO request) {
         try {
@@ -202,7 +208,7 @@ public class CashboxService {
 
             List<Cashbox> cashboxList = cashboxRepository.findByDeleted( false);
 
-            return new ResultDTO(true, cashboxList, 0);
+            return new ResultDTO(true, addBalance( cashboxList), 0);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -210,4 +216,26 @@ public class CashboxService {
         }
 
     }
+
+    private List<CashboxDTO> addBalance(List<Cashbox> cashboxList) {
+        List<CashboxDTO> result = new ArrayList<>();
+        for(Cashbox cashbox : cashboxList){
+            result.add(addBalance(cashbox));
+        }
+        return result;
+    }
+
+    private CashboxDTO addBalance(Cashbox cashbox) {
+
+        CashboxDTO cashboxDTO = new CashboxDTO();
+        cashboxDTO.setId(cashbox.getId());
+        cashboxDTO.setName(cashbox.getName());
+        cashboxDTO.setMerchantId(cashbox.getMerchantId());
+        cashboxDTO.setDeleted(cashbox.isDeleted());
+
+        cashboxDTO.setCurrencyList(paymentService.getBalance(cashbox.getId()));
+        return cashboxDTO;
+    }
+
+
 }
