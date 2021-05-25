@@ -233,7 +233,7 @@ public class CashboxService {
         cashboxDTO.setMerchantId(cashbox.getMerchantId());
         cashboxDTO.setDeleted(cashbox.isDeleted());
 
-        cashboxDTO.setCurrencyList(paymentService.getBalance(cashbox.getId()));
+        cashboxDTO.setBalance(paymentService.getBalance(cashbox.getId()));
         return cashboxDTO;
     }
 
