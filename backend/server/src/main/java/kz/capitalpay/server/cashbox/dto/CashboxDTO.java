@@ -8,14 +8,13 @@ import java.util.Map;
 
 public class CashboxDTO extends Cashbox {
 
-    Map<String, BigDecimal> currencyList = new HashMap<>();
+    Map<String, BigDecimal> balance = new HashMap<>();
 
-    public Map<String, BigDecimal> getCurrencyList() {
-
-        return currencyList;
+    public Map<String, BigDecimal> getBalance() {
+        return balance;
     }
 
-    public void setCurrencyList(Map<String, BigDecimal> currencyList) {
-        this.currencyList = currencyList;
+    public void setBalance(Map<String, BigDecimal> balance) {
+        this.balance = balance;
     }
 }
