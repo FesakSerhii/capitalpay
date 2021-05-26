@@ -1,6 +1,12 @@
 package kz.capitalpay.server.login.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
 public class TrustIp {
+    @Id @GeneratedValue
     Long id;
     String ip;
     String userId;
