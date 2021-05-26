@@ -62,7 +62,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         } catch (IOException e) {
             e.printStackTrace();
         }
-        logger.info("Cred: {}",gson.toJson(cred));
+
         if (!applicationUserService.validIpAddress(request, cred.getUsername())) {
             throw new AuthenticationException("Bad IP address") {
             };
@@ -98,6 +98,17 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .map(r -> r.getAuthority()).collect(Collectors.toSet());
 
         roles = roleSet.toArray(roles);
+
+        ///////// TEST
+        ApplicationUserDTO cred = null;
+        try {
+            cred = new ObjectMapper().readValue(request.getInputStream(), ApplicationUserDTO.class);
+            logger.info("successfulAuthentication: {}", gson.toJson(cred));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ///////// END TEST
 
         if (applicationUserService.requireTwoFactorAuth(username)) {
             if (applicationUserService.smsNeedCheck(username)) {
