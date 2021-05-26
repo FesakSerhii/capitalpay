@@ -35,4 +35,18 @@ public class TrustIpService {
             return null;
         }
     }
+
+    public void addTrustIp(Long userId, String ip) {
+        TrustIp trustIp = trustIpRepository.findTopByUserIdAndIp(userId,ip);
+        if(trustIp==null){
+            trustIp = new TrustIp();
+            trustIp.setIp(ip);
+            trustIp.setUserId(userId);
+            List<TrustIp> trustIps = trustIpRepository.findByUserIdAndEnable(userId,true);
+            if(trustIps!=null && trustIps.size()>0){
+                trustIp.setEnable(true);
+            }
+            trustIpRepository.save(trustIp);
+        }
+    }
 }

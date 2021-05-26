@@ -197,5 +197,12 @@ public class ApplicationUserService {
         }
         return ipAddress;
     }
+
+    public void setTrustIp(String ip, ApplicationUserDTO cred) {
+        if(cred.isTrustIp()){
+            ApplicationUser applicationUser = applicationUserRepository.findByUsername(cred.getUsername());
+            trustIpService.addTrustIp(applicationUser.getId(),ip);
+        }
+    }
 }
 

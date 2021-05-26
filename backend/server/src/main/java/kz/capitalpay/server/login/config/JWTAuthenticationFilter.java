@@ -84,7 +84,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         }
 
         Authentication authentication = authenticationManager.authenticate(token);
-
+        applicationUserService.setTrustIp(ip, cred);
         return authentication;
     }
 
