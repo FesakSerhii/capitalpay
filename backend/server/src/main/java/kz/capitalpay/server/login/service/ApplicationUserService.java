@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.Collections;
 import java.util.HashSet;
@@ -154,7 +155,7 @@ public class ApplicationUserService {
                 twoFactorService.removeTwoFactorAuth(applicationUser.getId());
             }
 
-            return new ResultDTO(true,"Two Factor Set",0);
+            return new ResultDTO(true, "Two Factor Set", 0);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
@@ -169,6 +170,29 @@ public class ApplicationUserService {
     public ApplicationUser getUserByLogin(String name) {
         ApplicationUser applicationUser = applicationUserRepository.findByUsername(name);
         return applicationUser;
+    }
+
+    public boolean validIpAddress(HttpServletRequest request, String username) {
+
+        String ip = getIpAddress(request);
+        String userAgent = getUserAgent(request);
+        logger.info("IP: {}", ip);
+        logger.info("User-Agent: {}", userAgent);
+// TODO: Сделать нормальную логику проверку IP адреса
+        return true;
+    }
+
+
+    private String getUserAgent(HttpServletRequest servletRequest) {
+        return servletRequest.getHeader("User-Agent");
+    }
+
+    private String getIpAddress(HttpServletRequest servletRequest) {
+        String ipAddress = servletRequest.getHeader("X-FORWARDED-FOR");
+        if (ipAddress == null) {
+            ipAddress = servletRequest.getRemoteAddr();
+        }
+        return ipAddress;
     }
 }
 

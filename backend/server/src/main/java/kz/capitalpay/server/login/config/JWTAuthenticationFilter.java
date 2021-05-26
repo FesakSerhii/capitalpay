@@ -63,6 +63,11 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             e.printStackTrace();
         }
 
+        if(!applicationUserService.validIpAddress(request,cred.getUsername())){
+            throw new AuthenticationException("Bad IP address"){ };
+        }
+
+
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                 cred.getUsername(),
                 cred.getPassword(),
