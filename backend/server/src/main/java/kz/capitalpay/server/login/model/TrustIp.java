@@ -9,7 +9,7 @@ public class TrustIp {
     @Id @GeneratedValue
     Long id;
     String ip;
-    String userId;
+    Long userId;
     boolean enable;
 
     public Long getId() {
@@ -28,11 +28,11 @@ public class TrustIp {
         this.ip = ip;
     }
 
-    public String getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
