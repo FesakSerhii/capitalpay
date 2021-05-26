@@ -21,18 +21,18 @@ public class TrustIpService {
     @Autowired
     TrustIpRepository trustIpRepository;
 
-    public boolean validIpAddress(Long userId, String ip) {
+    public String validIpAddress(Long userId, String ip) {
 
         List<TrustIp> trustIps = trustIpRepository.findByUserIdAndEnable(userId,true);
         if(trustIps== null || trustIps.size()==0){
-            return true;
+            return ip;
         }else{
             for(TrustIp trustIp : trustIps){
                 if(trustIp.getIp().equals(ip)){
-                    return true;
+                    return ip;
                 }
             }
-            return false;
+            return null;
         }
     }
 }

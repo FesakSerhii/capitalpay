@@ -173,7 +173,7 @@ public class ApplicationUserService {
         return applicationUser;
     }
 
-    public boolean validIpAddress(HttpServletRequest request, String username) {
+    public String validIpAddress(HttpServletRequest request, String username) {
 
         String ip = getIpAddress(request);
         String userAgent = getUserAgent(request);

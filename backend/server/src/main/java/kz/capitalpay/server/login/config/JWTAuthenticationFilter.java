@@ -7,7 +7,6 @@ import com.google.gson.Gson;
 import kz.capitalpay.server.ContextProvider;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.login.dto.ApplicationUserDTO;
-import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.service.ApplicationUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +62,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             e.printStackTrace();
         }
 
-        if (!applicationUserService.validIpAddress(request, cred.getUsername())) {
+        String ip = applicationUserService.validIpAddress(request, cred.getUsername());
+        if (ip == null) {
             throw new AuthenticationException("Bad IP address") {
             };
         }
@@ -99,16 +99,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         roles = roleSet.toArray(roles);
 
-        ///////// TEST
-        ApplicationUserDTO cred = null;
-        try {
-            cred = new ObjectMapper().readValue(request.getInputStream(), ApplicationUserDTO.class);
-            logger.info("successfulAuthentication: {}", gson.toJson(cred));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        ///////// END TEST
 
         if (applicationUserService.requireTwoFactorAuth(username)) {
             if (applicationUserService.smsNeedCheck(username)) {
