@@ -10,6 +10,8 @@ public class ApplicationUserDTO {
 
     String sms;
 
+    boolean trustIp;
+
     public String getUsername() {
         return username;
     }
@@ -32,5 +34,13 @@ public class ApplicationUserDTO {
 
     public void setSms(String sms) {
         this.sms = sms;
+    }
+
+    public boolean isTrustIp() {
+        return trustIp;
+    }
+
+    public void setTrustIp(boolean trustIp) {
+        this.trustIp = trustIp;
     }
 }

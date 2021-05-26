@@ -182,7 +182,6 @@ public class ApplicationUserService {
 
         ApplicationUser applicationUser = applicationUserRepository.findByUsername(username);
 
-// TODO: Сделать нормальную логику проверку IP адреса
         return trustIpService.validIpAddress(applicationUser.getId(),ip);
     }
 
