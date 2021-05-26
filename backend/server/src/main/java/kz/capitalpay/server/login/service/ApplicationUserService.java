@@ -6,7 +6,6 @@ import kz.capitalpay.server.login.dto.ApplicationUserDTO;
 import kz.capitalpay.server.login.dto.TwoFactorAuthDTO;
 import kz.capitalpay.server.login.model.ApplicationRole;
 import kz.capitalpay.server.login.model.ApplicationUser;
-import kz.capitalpay.server.login.model.TwoFactorAuth;
 import kz.capitalpay.server.login.repository.ApplicationUserRepository;
 import kz.capitalpay.server.service.SendSmsService;
 import org.slf4j.Logger;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -48,6 +46,9 @@ public class ApplicationUserService {
 
     @Autowired
     SendSmsService sendSmsService;
+
+    @Autowired
+    TrustIpService trustIpService;
 
     Random random = new Random();
 
@@ -178,8 +179,11 @@ public class ApplicationUserService {
         String userAgent = getUserAgent(request);
         logger.info("IP: {}", ip);
         logger.info("User-Agent: {}", userAgent);
+
+        ApplicationUser applicationUser = applicationUserRepository.findByUsername(username);
+
 // TODO: Сделать нормальную логику проверку IP адреса
-        return true;
+        return trustIpService.validIpAddress(applicationUser.getId(),ip);
     }
 
 
