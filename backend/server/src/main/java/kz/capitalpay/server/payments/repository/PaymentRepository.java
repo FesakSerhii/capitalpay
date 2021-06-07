@@ -4,6 +4,7 @@ import kz.capitalpay.server.payments.model.Payment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface PaymentRepository extends JpaRepository<Payment,String> {
@@ -17,5 +18,5 @@ public interface PaymentRepository extends JpaRepository<Payment,String> {
     @Query("SELECT SUM(totalAmount) as totalAmount, merchantId, currency FROM Payment " +
             " WHERE status='SUCCESS' AND localDateTime>?1 AND localDateTime<?2" +
             " GROUP BY merchantId, currency")
-    List<Payment> findTopByLocalDateTime(LocalDate dateTime, LocalDate localDate);
+    List<Payment> findTopByLocalDateTime(LocalDateTime dateTime, LocalDateTime localDate);
 }

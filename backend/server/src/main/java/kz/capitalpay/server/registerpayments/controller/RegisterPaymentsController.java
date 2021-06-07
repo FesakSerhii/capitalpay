@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import java.io.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/v1/registerpaymnets")
@@ -24,7 +25,7 @@ public class RegisterPaymentsController {
 
     @RequestMapping(value = "/download", method = RequestMethod.GET)
     public ResponseEntity<Object> downloadFile() throws IOException {
-        File file = registerPaymentsService.createTextFileForDownload(LocalDate.parse("2021-05-05"));
+        File file = registerPaymentsService.createTextFileForDownload(LocalDateTime.parse("2021-05-05T00:00:00"));
         logger.info("file exist with name" + file.getName());
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
         HttpHeaders headers = new HttpHeaders();

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.io.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class RegisterPaymentsService {
     @Autowired
     private MerchantKycRepository merchantKycRepository;
 
-    public File createTextFileForDownload(LocalDate localDate) {
+    public File createTextFileForDownload(LocalDateTime localDate) {
         File file = new File("write.txt");
         try (Writer writer = new BufferedWriter(new FileWriter(file))) {
             String contents = getRegisterPayments(localDate);
@@ -35,7 +36,7 @@ public class RegisterPaymentsService {
         return file;
     }
 
-    private String getRegisterPayments(LocalDate localDate) {
+    private String getRegisterPayments(LocalDateTime localDate) {
         List<RegisterPaymentDTO> register = new ArrayList<>();
         List<Payment> payment = getPaymentsByDate(localDate);
         for (Payment data: payment) {
@@ -49,9 +50,9 @@ public class RegisterPaymentsService {
         return register.toString();
     }
 
-    private List<Payment> getPaymentsByDate(LocalDate localDate) {
-        LocalDate tomorrow = localDate.minusDays(1L);
-        LocalDate yesterday = localDate.plusDays(1L);
+    private List<Payment> getPaymentsByDate(LocalDateTime localDate) {
+        LocalDateTime tomorrow = localDate.minusDays(1L);
+        LocalDateTime yesterday = localDate.plusDays(1L);
         return  paymentRepository.findTopByLocalDateTime(tomorrow, yesterday);
     }
 }
