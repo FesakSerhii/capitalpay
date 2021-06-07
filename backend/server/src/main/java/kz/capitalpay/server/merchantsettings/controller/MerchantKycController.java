@@ -34,7 +34,7 @@ public class MerchantKycController {
 
 
     @PostMapping("/kyc/set")
-    @RolesAllowed({"ROLE_ADMIN", "ROLE_OPERATOR"})
+    @RolesAllowed({ADMIN, OPERATOR})
     ResultDTO setKyc(@Valid @RequestBody MerchantKycDTO request, Principal principal) {
         logger.info("KYC set");
         return merchantKycService.setKyc(principal, request);
