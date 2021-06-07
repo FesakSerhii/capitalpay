@@ -15,8 +15,7 @@ public interface PaymentRepository extends JpaRepository<Payment,String> {
     Payment findTopByPaySysPayId(String paySysPayId);
     List<Payment> findByMerchantId(Long merchantId);
     List<Payment> findByCashboxIdAndStatus(Long cashboxId, String status);
-    @Query("SELECT SUM(totalAmount) as totalAmount, merchantId, currency FROM Payment " +
-            " WHERE status='SUCCESS' AND localDateTime>?1 AND localDateTime<?2" +
-            " GROUP BY merchantId, currency")
+    @Query("SELECT p FROM Payment p " +
+            " WHERE p.status='SUCCESS' AND p.localDateTime>?1 AND p.localDateTime<?2")
     List<Payment> findTopByLocalDateTime(LocalDateTime dateTime, LocalDateTime localDate);
 }
