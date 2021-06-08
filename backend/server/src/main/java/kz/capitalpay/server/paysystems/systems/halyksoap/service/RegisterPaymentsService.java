@@ -66,7 +66,10 @@ public class RegisterPaymentsService {
             register.add(merchant);
         }
         setIndividualInfoForHalyk(halyk);
-        return register.toString().replace("[", "").replace("]", "") + halyk.toString();
+        return register.toString()
+                .replace("[", "")
+                .replace("]", "")
+                + halyk.toString();
     }
 
     private void setIndividualInfoForHalyk(RegisterPaymentHalykDTO halyk) {

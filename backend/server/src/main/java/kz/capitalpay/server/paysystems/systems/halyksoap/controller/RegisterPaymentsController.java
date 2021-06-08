@@ -14,10 +14,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import javax.annotation.security.RolesAllowed;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.Principal;
+import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
+import static kz.capitalpay.server.login.service.ApplicationRoleService.OPERATOR;
 
 @RestController
 @RequestMapping("/api/v1/paysystems/register")
@@ -31,7 +34,8 @@ public class RegisterPaymentsController {
     private HalykSettingsService halykSettingsService;
 
     @RequestMapping(value = "/download", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> halykRegisterPaymentDownload(@RequestBody HalykDTO halykDTO, Principal principal)
+    @RolesAllowed({ADMIN, OPERATOR})
+    public ResponseEntity<Object> halykRegisterPaymentsDownload(@RequestBody HalykDTO halykDTO, Principal principal)
             throws IOException {
         halykSettingsService.setOrUpdateHalykSettings(principal, halykDTO);
         File file = registerPaymentsService.createTextFileForDownload(halykDTO);
@@ -42,7 +46,6 @@ public class RegisterPaymentsController {
         headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
         headers.add("Pragma", "no-cache");
         headers.add("Expires", "0");
-
         return ResponseEntity.ok().headers(headers).contentLength(file.length()).contentType(
                 MediaType.parseMediaType("application/txt")).body(resource);
     }

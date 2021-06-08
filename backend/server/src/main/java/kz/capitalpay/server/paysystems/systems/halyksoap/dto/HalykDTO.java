@@ -31,13 +31,4 @@ public class HalykDTO {
     public void setDateTo(LocalDateTime dateTo) {
         this.dateTo = dateTo;
     }
-
-    @Override
-    public String toString() {
-        return "HalykDTO{" +
-                "fields=" + fields +
-                ", dateFrom=" + dateFrom +
-                ", dateTo=" + dateTo +
-                '}';
-    }
 }
