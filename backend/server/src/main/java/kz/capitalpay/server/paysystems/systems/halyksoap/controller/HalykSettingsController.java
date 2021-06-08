@@ -10,11 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.security.Principal;
-
 import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.OPERATOR;
 
@@ -30,7 +28,7 @@ public class HalykSettingsController {
     @RolesAllowed({ADMIN, OPERATOR})
     ResultDTO setKyc(@Valid @RequestBody HalykDTO request, Principal principal) {
         logger.info("halyk set");
-        return halykSettingsService.setHalykSettings(principal, request);
+        return halykSettingsService.setOrUpdateHalykSettings(principal, request);
     }
 
 

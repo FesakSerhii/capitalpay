@@ -2,9 +2,7 @@ package kz.capitalpay.server.merchantsettings.service;
 
 import com.google.gson.Gson;
 import kz.capitalpay.server.merchantsettings.model.CashboxSettings;
-import kz.capitalpay.server.merchantsettings.model.MerchantSettings;
 import kz.capitalpay.server.merchantsettings.repository.CashboxSettingsRepository;
-import kz.capitalpay.server.merchantsettings.repository.MerchantSettingsRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

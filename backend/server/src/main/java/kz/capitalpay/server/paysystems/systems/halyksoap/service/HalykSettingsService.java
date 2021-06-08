@@ -19,35 +19,36 @@ import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
 @Service
 public class HalykSettingsService {
     @Autowired
-    ApplicationUserService applicationUserService;
+    private ApplicationUserService applicationUserService;
 
     @Autowired
-    ApplicationRoleService applicationRoleService;
+    private ApplicationRoleService applicationRoleService;
 
     @Autowired
-    HalykSettingsRepository halykSettingsRepository;
+    private HalykSettingsRepository halykSettingsRepository;
 
-    private static final String KOBD = "kobd";
-    private static final String LSKOR = "lskor";
-    private static final String RNNB = "rnnb";
-    private static final String AMOUNT = "amount";
-    private static final String POLUCH = "poluch";
-    private static final String NAZNPL_MERCH = "naznpl_merch";
-    private static final String BCLASSD_MERCH = "bclassd_merch";
-    private static final String KOD_MERCH = "kod_merch";
-    private static final String KNP_MERCH = "knp_merch";
-    private static final String RNNA_MERCH = "rnna_merch";
-    private static final String PLATEL_MERCH = "platel_merch";
-    private static final String NAZNPL = "naznpl";
-    private static final String BCLASSD = "bclassd";
-    private static final String KOD = "kod";
-    private static final String KNP = "knp";
-    private static final String RNNA = "rnna";
-    private static final String PLATEL = "platel";
-    private static final String ORDER_NUMBER_REPORT = "order_number";
-    private static final String DATE_LAST_DOWNLOADS = "date_last_downloads";
+    public static final String KOBD = "kobd";
+    public static final String LSKOR = "lskor";
+    public static final String RNNB = "rnnb";
+    public static final String POLUCH = "poluch";
 
-    public ResultDTO setHalykSettings(Principal principal, HalykDTO request) {
+    public static final String NAZNPL_MERCH = "naznpl_merch";
+    public static final String BCLASSD_MERCH = "bclassd_merch";
+    public static final String KOD_MERCH = "kod_merch";
+    public static final String KNP_MERCH = "knp_merch";
+    public static final String RNNA_MERCH = "rnna_merch";
+    public static final String PLATEL_MERCH = "platel_merch";
+
+    public static final String NAZNPL = "naznpl";
+    public static final String BCLASSD = "bclassd";
+    public static final String KOD = "kod";
+    public static final String KNP = "knp";
+    public static final String RNNA = "rnna";
+    public static final String PLATEL = "platel";
+    public static final String ORDER_NUMBER_REPORT = "order_number";
+    public static final String DATE_LAST_DOWNLOADS = "date_last_downloads";
+
+    public ResultDTO setOrUpdateHalykSettings(Principal principal, HalykDTO request) {
         try {
             ApplicationUser admin = applicationUserService.getUserByLogin(principal.getName());
             if (admin.getRoles().contains(applicationRoleService.getRole(ADMIN))
@@ -85,7 +86,6 @@ public class HalykSettingsService {
                 result.put(KOBD, getField(KOBD));
                 result.put(LSKOR, getField(LSKOR));
                 result.put(RNNB, getField(RNNB));
-                result.put(AMOUNT, getField(AMOUNT));
                 result.put(POLUCH, getField(POLUCH));
                 result.put(NAZNPL_MERCH, getField(NAZNPL_MERCH));
                 result.put(BCLASSD_MERCH, getField(BCLASSD_MERCH));

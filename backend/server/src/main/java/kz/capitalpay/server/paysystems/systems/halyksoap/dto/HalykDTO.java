@@ -1,18 +1,12 @@
 package kz.capitalpay.server.paysystems.systems.halyksoap.dto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class HalykDTO {
-    private long halykId;
     private List<HalykFieldsDTO> fields;
-
-    public long getHalykId() {
-        return halykId;
-    }
-
-    public void setHalykId(long halykId) {
-        this.halykId = halykId;
-    }
+    private LocalDateTime dateFrom;
+    private LocalDateTime dateTo;
 
     public List<HalykFieldsDTO> getFields() {
         return fields;
@@ -20,5 +14,30 @@ public class HalykDTO {
 
     public void setFields(List<HalykFieldsDTO> fields) {
         this.fields = fields;
+    }
+
+    public LocalDateTime getDateFrom() {
+        return dateFrom;
+    }
+
+    public void setDateFrom(LocalDateTime dateFrom) {
+        this.dateFrom = dateFrom;
+    }
+
+    public LocalDateTime getDateTo() {
+        return dateTo;
+    }
+
+    public void setDateTo(LocalDateTime dateTo) {
+        this.dateTo = dateTo;
+    }
+
+    @Override
+    public String toString() {
+        return "HalykDTO{" +
+                "fields=" + fields +
+                ", dateFrom=" + dateFrom +
+                ", dateTo=" + dateTo +
+                '}';
     }
 }

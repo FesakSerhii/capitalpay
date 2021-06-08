@@ -54,7 +54,6 @@ public class MerchantKycService {
     public static final String IIK = "iik";
     public static final String BIK = "bik";
 
-
     public ResultDTO setKyc(Principal principal, MerchantKycDTO request) {
         try {
 
@@ -63,9 +62,9 @@ public class MerchantKycService {
                 return error106;
             }
 
-//            if (!applicationUser.getRoles().contains(applicationRoleService.getRole(MERCHANT))) {
-//                return error108;
-//            }
+            if (!applicationUser.getRoles().contains(applicationRoleService.getRole(MERCHANT))) {
+                return error108;
+            }
 
             for (MerchantKycFieldDTO field : request.getFields()) {
                 setField(applicationUser.getId(), field);
