@@ -13,8 +13,9 @@ public interface PaymentStatisticRepository extends CrudRepository<Payment, Long
             " p.currency as currency, " +
             " p.cashboxId as cashboxId " +
             " FROM Payment p" +
-            " WHERE p.status='SUCCESS' AND p.localDateTime>?1 AND p.localDateTime<?2" +
+//            " WHERE p.status='SUCCESS' AND p.localDateTime>?1 AND p.localDateTime<?2" +
             " GROUP BY p.merchantId, p.currency, p.cashboxId")
-    List<PaymentStatistic> findAll(LocalDateTime dateTime, LocalDateTime localDate);
+    List<PaymentStatistic> findAllByLocalDateTimeIsBeforeAndLocalDateTimeIsAfterAndStatus(LocalDateTime dateTime,
+                                                                                          LocalDateTime localDate, String status);
     //TODO:should fix name method
 }

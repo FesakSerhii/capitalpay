@@ -139,15 +139,10 @@ public class RegisterPaymentsService {
     private List<PaymentStatistic> getPaymentsByDate(HalykDTO halykDTO) {
         LocalDateTime tomorrow = halykDTO.getDateFrom().minusDays(1L);
         LocalDateTime yesterday = halykDTO.getDateTo().plusDays(1L);
-        return paymentStatisticRepository.findAll(tomorrow, yesterday);
+        return paymentStatisticRepository.findAllByLocalDateTimeIsBeforeAndLocalDateTimeIsAfterAndStatus(tomorrow, yesterday, "SUCCESS");
     }
 
     private String createNameFile() {
-        HalykSettings one = new HalykSettings();
-        one.setId(13132L);
-        one.setFieldName("");
-        one.setFieldValue("");
-        halykSettingsRepository.save(one);
         StringBuilder nameFile = new StringBuilder();
         nameFile.append(CONSTANT_NAME_REGISTER);
         HalykSettings orderNumber = halykSettingsRepository.findTopByFieldName(ORDER_NUMBER_REPORT);

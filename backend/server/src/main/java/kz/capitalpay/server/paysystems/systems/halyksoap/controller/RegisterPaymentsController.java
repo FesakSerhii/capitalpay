@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.security.Principal;
 
 @RestController
-@RequestMapping("/api/v1/paysystems")
+@RequestMapping("/api/v1/paysystems/register")
 public class RegisterPaymentsController {
     private final Logger logger = LoggerFactory.getLogger(RegisterPaymentsController.class);
 
