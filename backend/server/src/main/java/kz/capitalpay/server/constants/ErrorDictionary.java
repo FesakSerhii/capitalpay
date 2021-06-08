@@ -23,5 +23,6 @@ public class ErrorDictionary {
     public static final ResultDTO error117 = new ResultDTO(false, "Length param > 255 byte", 117);
     public static final ResultDTO error118 = new ResultDTO(false, "Payment not found", 118);
     public static final ResultDTO error119 = new ResultDTO(false, "Page not found", 119);
+    public static final ResultDTO error120 = new ResultDTO(false, "Action available only for admin or operator", 120);
 
 }

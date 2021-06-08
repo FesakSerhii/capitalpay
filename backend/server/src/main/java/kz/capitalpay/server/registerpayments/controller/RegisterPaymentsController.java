@@ -28,6 +28,7 @@ public class RegisterPaymentsController {
 
     @RequestMapping(value = "/download", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> downloadFile(@RequestBody ContributorDTO contributorDTO)
+            //halykRegisterPaymentsDownload
             throws IOException {
         File file = registerPaymentsService.createTextFileForDownload(contributorDTO);
         logger.info("file exist with name" + file.getName());

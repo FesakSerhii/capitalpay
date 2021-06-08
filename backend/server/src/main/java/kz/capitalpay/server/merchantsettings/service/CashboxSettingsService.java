@@ -29,6 +29,7 @@ public class CashboxSettingsService {
     public static final String REDIRECT_FAILED_URL = "redirectfailed";
     public static final String REDIRECT_PENDING_URL = "redirectpending";
     public static final String SECRET = "secret";
+    public static final String PERCENT_PAYMENT_SYSTEM = "percent_payment_system";
 
     public String getField(Long cashboxId, String fieldName) {
         CashboxSettings cashboxSettings = cashboxSettingsRepository.findTopByFieldNameAndCashboxId(fieldName, cashboxId);
