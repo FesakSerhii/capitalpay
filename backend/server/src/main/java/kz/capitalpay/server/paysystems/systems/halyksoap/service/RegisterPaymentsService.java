@@ -66,7 +66,7 @@ public class RegisterPaymentsService {
             register.add(merchant);
         }
         setIndividualInfoForHalyk(halyk);
-        return register.toString() + halyk.toString();
+        return register.toString().replace("[", "").replace("]", "") + halyk.toString();
     }
 
     private void setIndividualInfoForHalyk(RegisterPaymentHalykDTO halyk) {
@@ -121,7 +121,7 @@ public class RegisterPaymentsService {
         merchant.setKod_merch(kod_merch.getFieldValue());
         merchant.setKnp_merch(knp_merch.getFieldValue());
         merchant.setRnna_merch(rnna_merch.getFieldValue());
-        merchant.setPlatel_merch(platel_merch.getFieldName());
+        merchant.setPlatel_merch(platel_merch.getFieldValue());
     }
 
     private void setIndividualDataForMerchant(RegisterPaymentMerchantDTO merchant,
@@ -162,7 +162,9 @@ public class RegisterPaymentsService {
         LocalDateTime lastDownloads = LocalDateTime.parse(lastDownloadsRegister.getFieldValue());
         if (dateNow.getYear() == lastDownloads.getYear() && dateNow.getMonth() == lastDownloads.getMonth()
                 && dateNow.getDayOfMonth() == lastDownloads.getDayOfMonth()) {
-            number++;
+            logger.info("before " + number);
+            ++number;
+            logger.info("after " + number);
             nameFile.append(number);
         } else {
             number = 1;
@@ -171,6 +173,7 @@ public class RegisterPaymentsService {
         nameFile.append(formatViewDayOrMonth(dateNow.getMonthValue()))
                 .append(formatViewDayOrMonth(dateNow.getDayOfMonth()))
                 .append(".text");
+        logger.info("before save " + number);
         saveNumberAndDateDownloadRegister(dateNow, number);
         return nameFile.toString();
     }
