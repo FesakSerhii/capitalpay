@@ -13,5 +13,4 @@ public interface PaymentStatisticRepository extends CrudRepository<Payment, Long
             " WHERE p.status='SUCCESS' AND p.localDateTime>?1 AND p.localDateTime<?2" +
             " GROUP BY p.merchantId, p.currency")
     List<PaymentStatistic> findTopByLocalDateTime(LocalDateTime dateTime, LocalDateTime localDate);
-
 }
