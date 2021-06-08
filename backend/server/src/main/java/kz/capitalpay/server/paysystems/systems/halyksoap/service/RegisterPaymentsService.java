@@ -174,12 +174,25 @@ public class RegisterPaymentsService {
                 .append(formatViewDayOrMonth(dateNow.getDayOfMonth()))
                 .append(".txt");
         logger.info("before save " + number);
-        saveNumberAndDateDownloadRegister(dateNow, number);
+        saveNumberAndDateDownloadRegister(orderNumber.getId(),dateNow, number);
         return nameFile.toString();
     }
 
     private String formatViewDayOrMonth(int dayOrMonth) {
         return dayOrMonth < 10 ? "0" + dayOrMonth : String.valueOf(dayOrMonth);
+    }
+
+    private void saveNumberAndDateDownloadRegister(Long halykId, LocalDateTime localDateTime, int numberOrder) {
+        HalykSettings halykSettingsDate = new HalykSettings();
+        halykSettingsDate.setId(halykId);
+        halykSettingsDate.setFieldName(DATE_LAST_DOWNLOADS);
+        halykSettingsDate.setFieldValue(localDateTime.toString());
+        halykSettingsRepository.save(halykSettingsDate);
+        HalykSettings halykSettingsNumber = new HalykSettings();
+        halykSettingsNumber.setId(halykId);
+        halykSettingsNumber.setFieldName(ORDER_NUMBER_REPORT);
+        halykSettingsNumber.setFieldValue(String.valueOf(numberOrder));
+        halykSettingsRepository.save(halykSettingsNumber);
     }
 
     private void saveNumberAndDateDownloadRegister(LocalDateTime localDateTime, int numberOrder) {
