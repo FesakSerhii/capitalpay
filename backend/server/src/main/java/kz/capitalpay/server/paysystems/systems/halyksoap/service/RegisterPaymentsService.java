@@ -61,8 +61,8 @@ public class RegisterPaymentsService {
             RegisterPaymentMerchantDTO merchant = new RegisterPaymentMerchantDTO();
             setIndividualDataForMerchant(merchant, Long.parseLong(data.getMerchantId()));
             setHalykCommonDataForMerchant(merchant);
-            logger.info(" data.getTotalAmount().toString() " + data.getTotalAmount().toString());
-            divideMoneyBetweenMerchantAndHalyk(data.getCashboxId(), Double.parseDouble(data.getTotalAmount().toString()), halyk, merchant);
+            divideMoneyBetweenMerchantAndHalyk(data.getCashboxId(),
+                    Double.parseDouble(data.getTotalAmount().toString()), halyk, merchant);
             register.add(merchant);
         }
         setIndividualInfoForHalyk(halyk);
@@ -139,25 +139,11 @@ public class RegisterPaymentsService {
     private List<PaymentStatistic> getPaymentsByDate(HalykDTO halykDTO) {
         LocalDateTime tomorrow = halykDTO.getDateFrom().minusDays(1L);
         LocalDateTime yesterday = halykDTO.getDateTo().plusDays(1L);
-        return paymentStatisticRepository.findAllByLocalDateTimeIsBeforeAndLocalDateTimeIsAfterAndStatus(tomorrow, yesterday, "SUCCESS");
+        return paymentStatisticRepository.findAllByLocalDateTimeIsBeforeAndLocalDateTimeIsAfterAndStatus(tomorrow,
+                yesterday, "SUCCESS");
     }
 
     private String createNameFile() {
-        HalykSettings one = new HalykSettings();
-        one.setId(13125L);
-        one.setFieldName(" ");
-        one.setFieldValue(" ");
-        halykSettingsRepository.delete(one);
-        HalykSettings two = new HalykSettings();
-        two.setId(13122L);
-        two.setFieldName(" ");
-        two.setFieldValue(" ");
-        halykSettingsRepository.delete(two);
-        HalykSettings three = new HalykSettings();
-        three.setId(13117L);
-        three.setFieldName(" ");
-        three.setFieldValue(" ");
-        halykSettingsRepository.delete(three);
         StringBuilder nameFile = new StringBuilder();
         nameFile.append(CONSTANT_NAME_REGISTER);
         HalykSettings orderNumber = halykSettingsRepository.findTopByFieldName(ORDER_NUMBER_REPORT);
@@ -176,9 +162,7 @@ public class RegisterPaymentsService {
         LocalDateTime lastDownloads = LocalDateTime.parse(lastDownloadsRegister.getFieldValue());
         if (dateNow.getYear() == lastDownloads.getYear() && dateNow.getMonth() == lastDownloads.getMonth()
                 && dateNow.getDayOfMonth() == lastDownloads.getDayOfMonth()) {
-            logger.info("before " + number);
             number = number + 1;
-            logger.info("after " + number);
             nameFile.append(number);
         } else {
             number = 1;
@@ -187,7 +171,6 @@ public class RegisterPaymentsService {
         nameFile.append(formatViewDayOrMonth(dateNow.getMonthValue()))
                 .append(formatViewDayOrMonth(dateNow.getDayOfMonth()))
                 .append(".txt");
-        logger.info("before save " + number);
         saveNumberAndDateDownloadRegister(lastDownloadsRegister.getId(), orderNumber.getId(),dateNow, number);
         return nameFile.toString();
     }
