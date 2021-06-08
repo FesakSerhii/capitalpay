@@ -143,10 +143,24 @@ public class RegisterPaymentsService {
     }
 
     private String createNameFile() {
+        HalykSettings one = new HalykSettings();
+        one.setId(13125L);
+        one.setFieldName(" ");
+        one.setFieldValue(" ");
+        halykSettingsRepository.delete(one);
+        HalykSettings two = new HalykSettings();
+        two.setId(13122L);
+        two.setFieldName(" ");
+        two.setFieldValue(" ");
+        halykSettingsRepository.delete(two);
+        HalykSettings three = new HalykSettings();
+        three.setId(13117L);
+        three.setFieldName(" ");
+        three.setFieldValue(" ");
+        halykSettingsRepository.delete(three);
         StringBuilder nameFile = new StringBuilder();
         nameFile.append(CONSTANT_NAME_REGISTER);
         HalykSettings orderNumber = halykSettingsRepository.findTopByFieldName(ORDER_NUMBER_REPORT);
-        logger.info("orderNumber " + orderNumber.getFieldValue());
         int number = orderNumber == null ? 0 : Integer.parseInt(orderNumber.getFieldValue());
         LocalDateTime dateNow = LocalDateTime.now();
         if (number == 0) {
@@ -159,7 +173,6 @@ public class RegisterPaymentsService {
             return nameFile.toString();
         }
         HalykSettings lastDownloadsRegister = halykSettingsRepository.findTopByFieldName(DATE_LAST_DOWNLOADS);
-        logger.info("lastDownloadsRegister " + lastDownloadsRegister.getFieldValue());
         LocalDateTime lastDownloads = LocalDateTime.parse(lastDownloadsRegister.getFieldValue());
         if (dateNow.getYear() == lastDownloads.getYear() && dateNow.getMonth() == lastDownloads.getMonth()
                 && dateNow.getDayOfMonth() == lastDownloads.getDayOfMonth()) {
@@ -175,7 +188,7 @@ public class RegisterPaymentsService {
                 .append(formatViewDayOrMonth(dateNow.getDayOfMonth()))
                 .append(".txt");
         logger.info("before save " + number);
-        saveNumberAndDateDownloadRegister(orderNumber.getId(),dateNow, number);
+        saveNumberAndDateDownloadRegister(lastDownloadsRegister.getId(), orderNumber.getId(),dateNow, number);
         return nameFile.toString();
     }
 
@@ -183,14 +196,14 @@ public class RegisterPaymentsService {
         return dayOrMonth < 10 ? "0" + dayOrMonth : String.valueOf(dayOrMonth);
     }
 
-    private void saveNumberAndDateDownloadRegister(Long halykId, LocalDateTime localDateTime, int numberOrder) {
+    private void saveNumberAndDateDownloadRegister(Long halykIdDate, Long halykIdNumber, LocalDateTime localDateTime, int numberOrder) {
         HalykSettings halykSettingsDate = new HalykSettings();
-        halykSettingsDate.setId(halykId);
+        halykSettingsDate.setId(halykIdDate);
         halykSettingsDate.setFieldName(DATE_LAST_DOWNLOADS);
         halykSettingsDate.setFieldValue(localDateTime.toString());
         halykSettingsRepository.save(halykSettingsDate);
         HalykSettings halykSettingsNumber = new HalykSettings();
-        halykSettingsNumber.setId(halykId);
+        halykSettingsNumber.setId(halykIdNumber);
         halykSettingsNumber.setFieldName(ORDER_NUMBER_REPORT);
         halykSettingsNumber.setFieldValue(String.valueOf(numberOrder));
         halykSettingsRepository.save(halykSettingsNumber);
