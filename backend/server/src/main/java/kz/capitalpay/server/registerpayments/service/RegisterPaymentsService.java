@@ -4,7 +4,9 @@ import kz.capitalpay.server.merchantsettings.model.MerchantKyc;
 import kz.capitalpay.server.merchantsettings.repository.MerchantKycRepository;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.repository.PaymentRepository;
+import kz.capitalpay.server.registerpayments.dto.PaymentStatistic;
 import kz.capitalpay.server.registerpayments.dto.RegisterPaymentDTO;
+import kz.capitalpay.server.registerpayments.repository.PaymentStatisticsRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,9 @@ public class RegisterPaymentsService {
     private PaymentRepository paymentRepository;
 
     @Autowired
+    private PaymentStatisticsRepository paymentStatisticsRepository;
+
+    @Autowired
     private MerchantKycRepository merchantKycRepository;
 
     public File createTextFileForDownload(LocalDateTime localDate) {
@@ -38,8 +43,8 @@ public class RegisterPaymentsService {
 
     private String getRegisterPayments(LocalDateTime localDate) {
         List<RegisterPaymentDTO> register = new ArrayList<>();
-        List<Payment> payment = getPaymentsByDate(localDate);
-        for (Payment data: payment) {
+        List<PaymentStatistic> payment = getPaymentsByDate(localDate);
+        for (PaymentStatistic data: payment) {
             RegisterPaymentDTO registerPayments = new RegisterPaymentDTO();
             registerPayments.setTotalAmountPayment(String.valueOf(data.getTotalAmount()));
             MerchantKyc merchantKyc = merchantKycRepository.findTopByFieldNameAndMerchantId("bankname", 29L);
@@ -50,9 +55,9 @@ public class RegisterPaymentsService {
         return register.toString();
     }
 
-    private List<Payment> getPaymentsByDate(LocalDateTime localDate) {
+    private List<PaymentStatistic> getPaymentsByDate(LocalDateTime localDate) {
         LocalDateTime tomorrow = localDate.minusDays(1L);
         LocalDateTime yesterday = localDate.plusDays(1L);
-        return  paymentRepository.findTopByLocalDateTime(tomorrow, yesterday);
+        return  paymentStatisticsRepository.findTopByLocalDateTime(tomorrow, yesterday);
     }
 }
