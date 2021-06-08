@@ -2,17 +2,15 @@ package kz.capitalpay.server.registerpayments.service;
 
 import kz.capitalpay.server.merchantsettings.model.MerchantKyc;
 import kz.capitalpay.server.merchantsettings.repository.MerchantKycRepository;
-import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.repository.PaymentRepository;
 import kz.capitalpay.server.registerpayments.dto.PaymentStatistic;
 import kz.capitalpay.server.registerpayments.dto.RegisterPaymentDTO;
-import kz.capitalpay.server.registerpayments.repository.PaymentStatisticsRepository;
+import kz.capitalpay.server.registerpayments.repository.PaymentStatisticRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.io.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +23,7 @@ public class RegisterPaymentsService {
     private PaymentRepository paymentRepository;
 
     @Autowired
-    private PaymentStatisticsRepository paymentStatisticsRepository;
+    private PaymentStatisticRepository paymentStatisticRepository;
 
     @Autowired
     private MerchantKycRepository merchantKycRepository;
@@ -44,6 +42,7 @@ public class RegisterPaymentsService {
     private String getRegisterPayments(LocalDateTime localDate) {
         List<RegisterPaymentDTO> register = new ArrayList<>();
         List<PaymentStatistic> payment = getPaymentsByDate(localDate);
+        logger.info("paymentStatistic " + payment.toString());
         for (PaymentStatistic data: payment) {
             RegisterPaymentDTO registerPayments = new RegisterPaymentDTO();
             registerPayments.setTotalAmountPayment(String.valueOf(data.getTotalAmount()));
@@ -58,6 +57,6 @@ public class RegisterPaymentsService {
     private List<PaymentStatistic> getPaymentsByDate(LocalDateTime localDate) {
         LocalDateTime tomorrow = localDate.minusDays(1L);
         LocalDateTime yesterday = localDate.plusDays(1L);
-        return  paymentStatisticsRepository.findTopByLocalDateTime(tomorrow, yesterday);
+        return  paymentStatisticRepository.findTopByLocalDateTime(tomorrow, yesterday);
     }
 }

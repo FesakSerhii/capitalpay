@@ -94,7 +94,7 @@ public class RegisterPaymentDTO {
 
     @Override
     public String toString() {
-        return "RegisterPaymentDTO " +
+        return
                 "receivingMerchantBank='" + receivingMerchantBank + '\'' +
                 ", binMerchant='" + binMerchant + '\'' +
                 ", totalAmountPayment='" + totalAmountPayment + '\'' +
