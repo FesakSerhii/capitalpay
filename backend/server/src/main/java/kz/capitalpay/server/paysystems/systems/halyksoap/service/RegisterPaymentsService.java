@@ -146,9 +146,9 @@ public class RegisterPaymentsService {
         StringBuilder nameFile = new StringBuilder();
         nameFile.append(CONSTANT_NAME_REGISTER);
         HalykSettings orderNumber = halykSettingsRepository.findTopByFieldName(ORDER_NUMBER_REPORT);
+        logger.info("orderNumber " + orderNumber.getFieldValue());
         int number = orderNumber == null ? 0 : Integer.parseInt(orderNumber.getFieldValue());
         LocalDateTime dateNow = LocalDateTime.now();
-
         if (number == 0) {
             number = 1;
             nameFile.append(number)
@@ -159,6 +159,7 @@ public class RegisterPaymentsService {
             return nameFile.toString();
         }
         HalykSettings lastDownloadsRegister = halykSettingsRepository.findTopByFieldName(DATE_LAST_DOWNLOADS);
+        logger.info("lastDownloadsRegister " + lastDownloadsRegister.getFieldValue());
         LocalDateTime lastDownloads = LocalDateTime.parse(lastDownloadsRegister.getFieldValue());
         if (dateNow.getYear() == lastDownloads.getYear() && dateNow.getMonth() == lastDownloads.getMonth()
                 && dateNow.getDayOfMonth() == lastDownloads.getDayOfMonth()) {
