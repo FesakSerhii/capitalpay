@@ -154,7 +154,7 @@ public class RegisterPaymentsService {
             nameFile.append(number)
                     .append(formatViewDayOrMonth(dateNow.getMonthValue()))
                     .append(formatViewDayOrMonth(dateNow.getDayOfMonth()))
-                    .append(".text");
+                    .append(".txt");
             saveNumberAndDateDownloadRegister(dateNow, number);
             return nameFile.toString();
         }
@@ -163,7 +163,7 @@ public class RegisterPaymentsService {
         if (dateNow.getYear() == lastDownloads.getYear() && dateNow.getMonth() == lastDownloads.getMonth()
                 && dateNow.getDayOfMonth() == lastDownloads.getDayOfMonth()) {
             logger.info("before " + number);
-            ++number;
+            number = number + 1;
             logger.info("after " + number);
             nameFile.append(number);
         } else {
@@ -172,7 +172,7 @@ public class RegisterPaymentsService {
         }
         nameFile.append(formatViewDayOrMonth(dateNow.getMonthValue()))
                 .append(formatViewDayOrMonth(dateNow.getDayOfMonth()))
-                .append(".text");
+                .append(".txt");
         logger.info("before save " + number);
         saveNumberAndDateDownloadRegister(dateNow, number);
         return nameFile.toString();

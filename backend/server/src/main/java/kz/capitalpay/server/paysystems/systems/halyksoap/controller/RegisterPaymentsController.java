@@ -35,7 +35,7 @@ public class RegisterPaymentsController {
             throws IOException {
         halykSettingsService.setOrUpdateHalykSettings(principal, halykDTO);
         File file = registerPaymentsService.createTextFileForDownload(halykDTO);
-        logger.info("file exist with name" + file.getName());
+        logger.info("file exist with name " + file.getName());
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", String.format("attachment; filename=\"%s\"", file.getName()));
