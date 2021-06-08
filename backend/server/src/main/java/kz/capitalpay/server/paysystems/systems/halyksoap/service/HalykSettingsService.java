@@ -50,27 +50,27 @@ public class HalykSettingsService {
     public ResultDTO setHalykSettings(Principal principal, HalykDTO request) {
         try {
             ApplicationUser admin = applicationUserService.getUserByLogin(principal.getName());
-            if (!admin.getRoles().contains(applicationRoleService.getRole(ADMIN))
-                    || !admin.getRoles().contains(applicationRoleService.getRole(OPERATOR))) {
+            if (admin.getRoles().contains(applicationRoleService.getRole(ADMIN))
+                    || admin.getRoles().contains(applicationRoleService.getRole(OPERATOR))) {
+                for (HalykFieldsDTO field : request.getFields()) {
+                    setField(field);
+                }
+                return new ResultDTO(true, request.getFields(), 0);
+            } else {
                 return error120;
             }
-            for (HalykFieldsDTO field : request.getFields()) {
-                setField(admin.getId(), field);
-            }
-            return new ResultDTO(true, request.getFields(), 0);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }
     }
 
-    private void setField(Long adminId, HalykFieldsDTO field) {
+    private void setField(HalykFieldsDTO field) {
         HalykSettings halykSettings = halykSettingsRepository.
-                findTopByFieldNameAndId(field.getFieldName(), adminId);
+                findTopByFieldName(field.getFieldName());
         if (halykSettings == null) {
             halykSettings = new HalykSettings();
             halykSettings.setFieldName(field.getFieldName());
-            halykSettings.setId(adminId);
         }
         halykSettings.setFieldValue(field.getFieldValue());
         halykSettingsRepository.save(halykSettings);
@@ -79,43 +79,42 @@ public class HalykSettingsService {
     public ResultDTO getHalykSettings(Principal principal, HalykDTO request) {
         try {
             ApplicationUser admin = applicationUserService.getUserByLogin(principal.getName());
-            if (!admin.getRoles().contains(applicationRoleService.getRole(ADMIN))
-                    || !admin.getRoles().contains(applicationRoleService.getRole(OPERATOR))) {
+            if (admin.getRoles().contains(applicationRoleService.getRole(ADMIN))
+                    || admin.getRoles().contains(applicationRoleService.getRole(OPERATOR))) {
+                Map<String, String> result = new HashMap<>();
+                result.put(KOBD, getField(KOBD));
+                result.put(LSKOR, getField(LSKOR));
+                result.put(RNNB, getField(RNNB));
+                result.put(AMOUNT, getField(AMOUNT));
+                result.put(POLUCH, getField(POLUCH));
+                result.put(NAZNPL_MERCH, getField(NAZNPL_MERCH));
+                result.put(BCLASSD_MERCH, getField(BCLASSD_MERCH));
+                result.put(KOD_MERCH, getField(KOD_MERCH));
+                result.put(KNP_MERCH, getField(KNP_MERCH));
+                result.put(RNNA_MERCH, getField(RNNA_MERCH));
+                result.put(PLATEL_MERCH, getField(PLATEL_MERCH));
+                result.put(NAZNPL, getField(NAZNPL));
+                result.put(BCLASSD, getField(BCLASSD));
+                result.put(KOD, getField(KOD));
+                result.put(KNP, getField(KNP));
+                result.put(RNNA, getField(RNNA));
+                result.put(PLATEL, getField(PLATEL));
+                result.put(ORDER_NUMBER_REPORT, getField(ORDER_NUMBER_REPORT));
+                result.put(DATE_LAST_DOWNLOADS, getField(DATE_LAST_DOWNLOADS));
+                return new ResultDTO(true, result, 0);
+            } else {
                 return error120;
             }
-            Map<String, String> result = new HashMap<>();
-            result.put(KOBD, getField(admin.getId(), KOBD));
-            result.put(LSKOR, getField(admin.getId(), LSKOR));
-            result.put(RNNB, getField(admin.getId(), RNNB));
-            result.put(AMOUNT, getField(admin.getId(), AMOUNT));
-            result.put(POLUCH, getField(admin.getId(), POLUCH));
-            result.put(NAZNPL_MERCH, getField(admin.getId(), NAZNPL_MERCH));
-            result.put(BCLASSD_MERCH, getField(admin.getId(), BCLASSD_MERCH));
-            result.put(KOD_MERCH, getField(admin.getId(), KOD_MERCH));
-            result.put(KNP_MERCH, getField(admin.getId(), KNP_MERCH));
-            result.put(RNNA_MERCH, getField(admin.getId(), RNNA_MERCH));
-            result.put(PLATEL_MERCH, getField(admin.getId(), PLATEL_MERCH));
-            result.put(NAZNPL, getField(admin.getId(), NAZNPL));
-            result.put(BCLASSD, getField(admin.getId(), BCLASSD));
-            result.put(KOD, getField(admin.getId(), KOD));
-            result.put(KNP, getField(admin.getId(), KNP));
-            result.put(RNNA, getField(admin.getId(), RNNA));
-            result.put(PLATEL, getField(admin.getId(), PLATEL));
-
-            result.put(ORDER_NUMBER_REPORT, getField(admin.getId(), ORDER_NUMBER_REPORT));
-            result.put(DATE_LAST_DOWNLOADS, getField(admin.getId(), DATE_LAST_DOWNLOADS));
-            return new ResultDTO(true, result, 0);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }
     }
 
-    public String getField(Long adminId, String fieldName) {
-        HalykSettings halykSettings = halykSettingsRepository.findTopByFieldNameAndId(fieldName, adminId);
+    public String getField(String fieldName) {
+        HalykSettings halykSettings = halykSettingsRepository.findTopByFieldName(fieldName);
         if (halykSettings == null) {
             halykSettings = new HalykSettings();
-            halykSettings.setId(adminId);
             halykSettings.setFieldName(fieldName);
             halykSettings.setFieldValue("");
             halykSettingsRepository.save(halykSettings);
