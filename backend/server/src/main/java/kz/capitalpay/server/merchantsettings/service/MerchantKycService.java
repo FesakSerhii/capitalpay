@@ -63,9 +63,9 @@ public class MerchantKycService {
                 return error106;
             }
 
-            if (!applicationUser.getRoles().contains(applicationRoleService.getRole(MERCHANT))) {
-                return error108;
-            }
+//            if (!applicationUser.getRoles().contains(applicationRoleService.getRole(MERCHANT))) {
+//                return error108;
+//            }
 
             for (MerchantKycFieldDTO field : request.getFields()) {
                 setField(applicationUser.getId(), field);
