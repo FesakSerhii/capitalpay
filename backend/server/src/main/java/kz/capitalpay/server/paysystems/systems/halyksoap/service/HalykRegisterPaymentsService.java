@@ -10,7 +10,7 @@ import kz.capitalpay.server.paysystems.systems.halyksoap.dto.RegisterPaymentHaly
 import kz.capitalpay.server.paysystems.systems.halyksoap.dto.RegisterPaymentMerchantDTO;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykSettings;
 import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykSettingsRepository;
-import kz.capitalpay.server.paysystems.systems.halyksoap.repository.PaymentStatisticRepository;
+import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykPaymentStatisticRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +24,13 @@ import static kz.capitalpay.server.merchantsettings.service.MerchantKycService.*
 import static kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSettingsService.*;
 
 @Service
-public class RegisterPaymentsService {
+public class HalykRegisterPaymentsService {
     private final static String CONSTANT_NAME_REGISTER = "register";
 
-    private final Logger logger = LoggerFactory.getLogger(RegisterPaymentsService.class);
+    private final Logger logger = LoggerFactory.getLogger(HalykRegisterPaymentsService.class);
 
     @Autowired
-    private PaymentStatisticRepository paymentStatisticRepository;
+    private HalykPaymentStatisticRepository halykPaymentStatisticRepository;
 
     @Autowired
     private MerchantKycRepository merchantKycRepository;
@@ -142,7 +142,7 @@ public class RegisterPaymentsService {
     private List<PaymentStatistic> getPaymentsByDate(HalykDTO halykDTO) {
         LocalDateTime tomorrow = halykDTO.getDateFrom().minusDays(1L);
         LocalDateTime yesterday = halykDTO.getDateTo().plusDays(1L);
-        return paymentStatisticRepository.findAllByLocalDateTimeIsBeforeAndLocalDateTimeIsAfterAndStatus(tomorrow,
+        return halykPaymentStatisticRepository.findAllByLocalDateTimeIsBeforeAndLocalDateTimeIsAfterAndStatus(tomorrow,
                 yesterday, "SUCCESS");
     }
 

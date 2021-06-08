@@ -7,7 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface PaymentStatisticRepository extends CrudRepository<Payment, Long> {
+public interface HalykPaymentStatisticRepository extends CrudRepository<Payment, Long> {
     @Query("SELECT SUM(p.totalAmount) as totalAmount, " +
             " p.merchantId as merchantId, " +
             " p.currency as currency, " +
