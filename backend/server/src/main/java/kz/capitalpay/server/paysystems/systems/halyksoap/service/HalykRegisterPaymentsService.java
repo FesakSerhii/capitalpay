@@ -39,11 +39,11 @@ public class HalykRegisterPaymentsService {
     @Autowired
     private HalykPaymentStatisticRepository halykPaymentStatisticRepository;
 
-    public File createTextFileForDownload(HalykDTO halykDTO) {
+    public File createTextFileForDownload(RegisterPaymentsDateDTO registerPaymentsDateDTO) {
         String nameFile = createNameFile();
         File file = new File(nameFile);
         try (Writer writer = new BufferedWriter(new FileWriter(file))) {
-            String contents = getRegisterPayments(halykDTO);
+            String contents = getRegisterPayments(registerPaymentsDateDTO);
             writer.write(contents);
         } catch (IOException e) {
             e.printStackTrace();
@@ -51,8 +51,8 @@ public class HalykRegisterPaymentsService {
         return file;
     }
 
-    private String getRegisterPayments(HalykDTO halykDTO) {
-        List<PaymentStatistic> statistic = getPaymentsByDate(halykDTO);
+    private String getRegisterPayments(RegisterPaymentsDateDTO registerPaymentsDateDTO) {
+        List<PaymentStatistic> statistic = getPaymentsByDate(registerPaymentsDateDTO);
         List<RegisterPaymentsMerchantDTO> register = new ArrayList<>();
         RegisterPaymentsCommonMerchantFieldsDTO commonMerchantFields = getHalykCommonDataForMerchant();
         RegisterPaymentsHalykDTO halyk = new RegisterPaymentsHalykDTO();
@@ -151,11 +151,11 @@ public class HalykRegisterPaymentsService {
         merchant.setBankname(banknameInfo.getFieldValue());
     }
 
-    private List<PaymentStatistic> getPaymentsByDate(HalykDTO halykDTO) {
-        LocalDateTime tomorrow = halykDTO.getDateFrom().minusDays(1L);
-        LocalDateTime yesterday = halykDTO.getDateTo().plusDays(1L);
-        return halykPaymentStatisticRepository.findAllByLocalDateTimeIsBeforeAndLocalDateTimeIsAfterAndStatus(tomorrow,
-                yesterday, "SUCCESS");
+    private List<PaymentStatistic> getPaymentsByDate(RegisterPaymentsDateDTO registerPaymentsDateDTO) {
+        long after = registerPaymentsDateDTO.getTimestampNanoSecondsAfter();
+        long before = registerPaymentsDateDTO.getTimestampNanoSecondsBefore();
+        return halykPaymentStatisticRepository.findAllByTimestampAfterAndTimestampBeforeAndStatus(after, before,
+                "SUCCESS");
     }
 
     private String createNameFile() {
@@ -175,7 +175,6 @@ public class HalykRegisterPaymentsService {
         }
         HalykSettings lastDownloadsRegister = halykSettingsRepository.findTopByFieldName(DATE_LAST_DOWNLOADS);
         LocalDateTime lastDownloads = LocalDateTime.parse(lastDownloadsRegister.getFieldValue());
-        //TODO: change to timestamp
         if (dateNow.getYear() == lastDownloads.getYear() && dateNow.getMonth() == lastDownloads.getMonth()
                 && dateNow.getDayOfMonth() == lastDownloads.getDayOfMonth()) {
             number = number + 1;

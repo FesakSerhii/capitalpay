@@ -14,6 +14,5 @@ public interface HalykPaymentStatisticRepository extends CrudRepository<Payment,
             " p.cashboxId as cashboxId " +
             " FROM Payment p" +
             " GROUP BY p.merchantId, p.currency, p.cashboxId")
-    List<PaymentStatistic> findAllByLocalDateTimeIsBeforeAndLocalDateTimeIsAfterAndStatus(LocalDateTime before,
-                                                                                          LocalDateTime after, String status);
+    List<PaymentStatistic> findAllByTimestampAfterAndTimestampBeforeAndStatus(long before, long after, String status);
 }

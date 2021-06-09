@@ -1,6 +1,7 @@
 package kz.capitalpay.server.paysystems.systems.halyksoap.controller;
 
 import kz.capitalpay.server.paysystems.systems.halyksoap.dto.HalykDTO;
+import kz.capitalpay.server.paysystems.systems.halyksoap.dto.RegisterPaymentsDateDTO;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykSettings;
 import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykSettingsRepository;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSettingsService;
@@ -19,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.Principal;
+
 import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.OPERATOR;
 
@@ -30,16 +32,11 @@ public class HalykRegisterPaymentsController {
     @Autowired
     private HalykRegisterPaymentsService halykRegisterPaymentsService;
 
-    @Autowired
-    private HalykSettingsService halykSettingsService;
-
     @RequestMapping(value = "/download", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed({ADMIN, OPERATOR})
-    public ResponseEntity<Object> halykRegisterPaymentsDownload(@RequestBody HalykDTO halykDTO, Principal principal)
+    public ResponseEntity<Object> halykRegisterPaymentsDownload(@RequestBody RegisterPaymentsDateDTO dateDTO)
             throws IOException {
-        //TODO:simplify to timestamp
-        halykSettingsService.setOrUpdateHalykSettings(principal, halykDTO);
-        File file = halykRegisterPaymentsService.createTextFileForDownload(halykDTO);
+        File file = halykRegisterPaymentsService.createTextFileForDownload(dateDTO);
         logger.info("file exist with name " + file.getName());
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
         HttpHeaders headers = new HttpHeaders();
