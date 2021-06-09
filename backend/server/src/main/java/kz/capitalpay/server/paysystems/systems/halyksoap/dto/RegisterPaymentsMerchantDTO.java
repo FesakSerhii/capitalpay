@@ -1,10 +1,12 @@
 package kz.capitalpay.server.paysystems.systems.halyksoap.dto;
 
+import java.math.BigDecimal;
+
 public class RegisterPaymentsMerchantDTO {
     private String iik;
     private String bik;
     private String iinbin;
-    private String amount;
+    private BigDecimal amount;
     private String bankname;
     private String naznpl_merch;
     private String bclassd_merch;
@@ -37,11 +39,11 @@ public class RegisterPaymentsMerchantDTO {
         this.iinbin = iinbin;
     }
 
-    public String getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(String amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 

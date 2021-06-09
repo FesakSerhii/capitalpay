@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.io.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +61,7 @@ public class HalykRegisterPaymentsService {
             setIndividualDataForMerchant(merchant, Long.parseLong(data.getMerchantId()));
             setHalykCommonDataForMerchant(merchant, commonMerchantFields);
             divideMoneyBetweenMerchantAndHalyk(data.getCashboxId(),
-                    Double.parseDouble(data.getTotalAmount().toString()), halyk, merchant);
+                    data.getTotalAmount(), halyk, merchant);
             register.add(merchant);
         }
         setIndividualInfoForHalyk(halyk);
@@ -93,21 +94,22 @@ public class HalykRegisterPaymentsService {
         halyk.setPlatel(platel.getFieldValue());
     }
 
-    private void divideMoneyBetweenMerchantAndHalyk(long cashBoxId, Double amount, RegisterPaymentsHalykDTO halyk,
+    private void divideMoneyBetweenMerchantAndHalyk(long cashBoxId, BigDecimal amount, RegisterPaymentsHalykDTO halyk,
                                                     RegisterPaymentsMerchantDTO merchant) {
         CashboxSettings percentForHalyk = cashboxSettingsService
                 .getCashboxSettingByFieldNameAndCashboxId(PERCENT_PAYMENT_SYSTEM, cashBoxId);
-        double percent = 0.0;//TODO:BigDecimal
+        BigDecimal percent = new BigDecimal("0.0");
         try {
-            percent = Double.parseDouble(percentForHalyk.getFieldValue());
+            percent = BigDecimal.valueOf(Double.parseDouble(percentForHalyk.getFieldValue()));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        double halykMoney = amount * percent / 100;
-        double merchantMoney = amount - halykMoney;
-        double currentHalykMoney = halyk.getAmount() == null ? 0.0 : Double.parseDouble(halyk.getAmount());
-        halyk.setAmount(String.valueOf(halykMoney + currentHalykMoney));
-        merchant.setAmount(String.valueOf(merchantMoney));
+        percent = percent.divide(new BigDecimal("100"));
+        BigDecimal halykMoney = amount.multiply(percent);
+        BigDecimal merchantMoney = amount.subtract(halykMoney);
+        BigDecimal currentHalykMoney = halyk.getAmount() == null ? new BigDecimal("0.0") : halyk.getAmount();
+        halyk.setAmount(halykMoney.add(currentHalykMoney));
+        merchant.setAmount(merchantMoney);
     }
 
     private RegisterPaymentsCommonMerchantFieldsDTO getHalykCommonDataForMerchant() {
