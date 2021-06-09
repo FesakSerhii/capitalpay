@@ -6,10 +6,9 @@ import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSettingsSe
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.security.Principal;
@@ -26,16 +25,16 @@ public class HalykSettingsController {
 
     @PostMapping("/set")
     @RolesAllowed({ADMIN, OPERATOR})
-    ResultDTO setKyc(@Valid @RequestBody HalykDTO request, Principal principal) {
+    public ResultDTO setHalykSettings(@Valid @RequestBody HalykDTO request, Principal principal) {
         logger.info("halyk set");
         return halykSettingsService.setOrUpdateHalykSettings(principal, request);
     }
 
-
-    @PostMapping("/get")
+    @GetMapping("/view")
     @RolesAllowed({ADMIN, OPERATOR})
-    ResultDTO getKyc(@Valid @RequestBody HalykDTO request, Principal principal) {
-        logger.info("halyk get");
-        return halykSettingsService.getHalykSettings(principal, request);
+    public String viewHalykSettings(Principal principal, Model model) {
+        logger.info(" halyk data " + halykSettingsService.getHalykSettings(principal).getData());
+        model.addAttribute("halykSettings", halykSettingsService.getHalykSettings(principal).getData());
+        return "halyksettings";
     }
 }

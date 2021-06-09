@@ -77,7 +77,7 @@ public class HalykSettingsService {
         halykSettingsRepository.save(halykSettings);
     }
 
-    public ResultDTO getHalykSettings(Principal principal, HalykDTO request) {
+    public ResultDTO getHalykSettings(Principal principal) {
         try {
             ApplicationUser admin = applicationUserService.getUserByLogin(principal.getName());
             if (admin.getRoles().contains(applicationRoleService.getRole(ADMIN))
