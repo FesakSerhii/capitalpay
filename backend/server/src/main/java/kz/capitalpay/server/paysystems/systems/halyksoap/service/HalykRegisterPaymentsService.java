@@ -16,7 +16,10 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.PERCENT_PAYMENT_SYSTEM;
 import static kz.capitalpay.server.merchantsettings.service.MerchantKycService.*;
 import static kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSettingsService.*;
@@ -53,19 +56,25 @@ public class HalykRegisterPaymentsService {
 
     private String getRegisterPayments(RegisterPaymentsDateDTO registerPaymentsDateDTO) {
         List<PaymentStatistic> statistic = getPaymentsByDate(registerPaymentsDateDTO);
-        List<RegisterPaymentsMerchantDTO> register = new ArrayList<>();
+        Map<String, RegisterPaymentsMerchantDTO> register = new HashMap<>();
         RegisterPaymentsCommonMerchantFieldsDTO commonMerchantFields = getHalykCommonDataForMerchant();
         RegisterPaymentsHalykDTO halyk = new RegisterPaymentsHalykDTO();
         for (PaymentStatistic data : statistic) {
+            if(register.containsKey(data.getMerchantId())) {
+                divideMoneyBetweenMerchantAndHalyk(data.getCashboxId(),
+                        data.getTotalAmount(), halyk, register.get(data.getMerchantId()));
+                continue;
+            }
             RegisterPaymentsMerchantDTO merchant = new RegisterPaymentsMerchantDTO();
             setIndividualDataForMerchant(merchant, Long.parseLong(data.getMerchantId()));
             setHalykCommonDataForMerchant(merchant, commonMerchantFields);
             divideMoneyBetweenMerchantAndHalyk(data.getCashboxId(),
                     data.getTotalAmount(), halyk, merchant);
-            register.add(merchant);
+            register.put(data.getMerchantId(),merchant);
         }
         setIndividualInfoForHalyk(halyk);
-        return register.toString()
+        List<RegisterPaymentsMerchantDTO> result = new ArrayList<>(register.values());
+        return result.toString()
                 .replace("[", "")
                 .replace("]", "")
                 + halyk.toString();
