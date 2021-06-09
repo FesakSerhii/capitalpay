@@ -33,27 +33,6 @@ public class HalykRegisterPaymentsController {
     @Autowired
     private HalykSettingsService halykSettingsService;
 
-    @Autowired
-    private HalykSettingsRepository halykSettingsRepository;
-
-    @GetMapping("/delete")
-    public Boolean temporaryContollerForDeleteRedundantFields() {
-        HalykSettings one = new HalykSettings();
-        one.setId(13086L);
-        halykSettingsRepository.delete(one);
-        one.setId(13093L);
-        halykSettingsRepository.delete(one);
-        one.setId(13118L);
-        halykSettingsRepository.delete(one);
-        long id = 13120L;
-        while (id < 13136L) {
-            one.setId(id);
-            halykSettingsRepository.delete(one);
-            id++;
-        }
-        return true;
-    }
-
     @RequestMapping(value = "/download", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed({ADMIN, OPERATOR})
     public ResponseEntity<Object> halykRegisterPaymentsDownload(@RequestBody HalykDTO halykDTO, Principal principal)
