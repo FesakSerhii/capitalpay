@@ -6,7 +6,6 @@ import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSettingsSe
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +28,13 @@ public class HalykSettingsController {
     public ResultDTO setHalykSettings(@Valid @RequestBody HalykDTO request, Principal principal) {
         logger.info("halyk set");
         return halykSettingsService.setOrUpdateHalykSettings(principal, request);
+    }
+
+    @PostMapping("/get")
+    @RolesAllowed({ADMIN, OPERATOR})
+    public ResultDTO getHalykSettings(Principal principal) {
+        logger.info("halyk get");
+        return halykSettingsService.getHalykSettings(principal);
     }
 
     @GetMapping("/view")
