@@ -37,6 +37,7 @@ public class HalykRegisterPaymentsController {
     @RolesAllowed({ADMIN, OPERATOR})
     public ResponseEntity<Object> halykRegisterPaymentsDownload(@RequestBody HalykDTO halykDTO, Principal principal)
             throws IOException {
+        //TODO:simplify to timestamp
         halykSettingsService.setOrUpdateHalykSettings(principal, halykDTO);
         File file = halykRegisterPaymentsService.createTextFileForDownload(halykDTO);
         logger.info("file exist with name " + file.getName());

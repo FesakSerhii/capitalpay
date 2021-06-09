@@ -26,22 +26,13 @@ public class HalykSettingsController {
     @PostMapping("/set")
     @RolesAllowed({ADMIN, OPERATOR})
     public ResultDTO setHalykSettings(@Valid @RequestBody HalykDTO request, Principal principal) {
-        logger.info("halyk set");
         return halykSettingsService.setOrUpdateHalykSettings(principal, request);
     }
 
     @PostMapping("/get")
     @RolesAllowed({ADMIN, OPERATOR})
     public ResultDTO getHalykSettings(Principal principal) {
-        logger.info("halyk get");
         return halykSettingsService.getHalykSettings(principal);
     }
 
-    @GetMapping("/view")
-    @RolesAllowed({ADMIN, OPERATOR})
-    public String viewHalykSettings(Principal principal, ModelMap modelMap) {
-        logger.info(" halyk data " + halykSettingsService.getHalykSettings(principal).getData());
-        modelMap.addAttribute("halykSettings", halykSettingsService.getHalykSettings(principal).getData());
-        return "halyksettings";
-    }
 }

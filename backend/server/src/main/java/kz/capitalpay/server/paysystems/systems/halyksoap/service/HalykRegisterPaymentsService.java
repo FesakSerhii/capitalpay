@@ -37,6 +37,7 @@ public class HalykRegisterPaymentsService {
 
     @Autowired
     private CashboxSettingsRepository cashboxSettingsRepository;
+    //TODO from service not repository
 
     public File createTextFileForDownload(HalykDTO halykDTO) {
         String nameFile = createNameFile();
@@ -97,7 +98,7 @@ public class HalykRegisterPaymentsService {
                                                     RegisterPaymentsMerchantDTO merchant) {
         CashboxSettings percentForHalyk = cashboxSettingsRepository
                 .findTopByFieldNameAndCashboxId(PERCENT_PAYMENT_SYSTEM, cashBoxId);
-        double percent = 0.0;
+        double percent = 0.0;//TODO:BigDecimal
         try {
             percent = Double.parseDouble(percentForHalyk.getFieldValue());
         } catch (Exception e) {
@@ -173,6 +174,7 @@ public class HalykRegisterPaymentsService {
         }
         HalykSettings lastDownloadsRegister = halykSettingsRepository.findTopByFieldName(DATE_LAST_DOWNLOADS);
         LocalDateTime lastDownloads = LocalDateTime.parse(lastDownloadsRegister.getFieldValue());
+        //TODO: change to timestamp
         if (dateNow.getYear() == lastDownloads.getYear() && dateNow.getMonth() == lastDownloads.getMonth()
                 && dateNow.getDayOfMonth() == lastDownloads.getDayOfMonth()) {
             number = number + 1;
