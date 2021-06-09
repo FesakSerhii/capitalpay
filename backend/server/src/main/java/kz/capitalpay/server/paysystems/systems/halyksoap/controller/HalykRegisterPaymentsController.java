@@ -1,6 +1,8 @@
 package kz.capitalpay.server.paysystems.systems.halyksoap.controller;
 
 import kz.capitalpay.server.paysystems.systems.halyksoap.dto.HalykDTO;
+import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykSettings;
+import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykSettingsRepository;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSettingsService;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykRegisterPaymentsService;
 import org.slf4j.Logger;
@@ -10,10 +12,8 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import javax.annotation.security.RolesAllowed;
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,6 +32,27 @@ public class HalykRegisterPaymentsController {
 
     @Autowired
     private HalykSettingsService halykSettingsService;
+
+    @Autowired
+    private HalykSettingsRepository halykSettingsRepository;
+
+    @GetMapping("/delete")
+    public Boolean temporaryContollerForDeleteRedundantFields() {
+        HalykSettings one = new HalykSettings();
+        one.setId(13086L);
+        halykSettingsRepository.delete(one);
+        one.setId(13093L);
+        halykSettingsRepository.delete(one);
+        one.setId(13118L);
+        halykSettingsRepository.delete(one);
+        long id = 13120L;
+        while (id < 13136L) {
+            one.setId(id);
+            halykSettingsRepository.delete(one);
+            id++;
+        }
+        return true;
+    }
 
     @RequestMapping(value = "/download", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed({ADMIN, OPERATOR})
