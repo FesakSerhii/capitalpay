@@ -1,6 +1,5 @@
 package kz.capitalpay.server.paysystems.systems.halyksoap.dto;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class HalykDTO {
