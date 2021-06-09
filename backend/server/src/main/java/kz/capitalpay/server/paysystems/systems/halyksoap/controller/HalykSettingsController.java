@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
@@ -32,9 +33,9 @@ public class HalykSettingsController {
 
     @GetMapping("/view")
     @RolesAllowed({ADMIN, OPERATOR})
-    public String viewHalykSettings(Principal principal, Model model) {
+    public String viewHalykSettings(Principal principal, ModelMap modelMap) {
         logger.info(" halyk data " + halykSettingsService.getHalykSettings(principal).getData());
-        model.addAttribute("halykSettings", halykSettingsService.getHalykSettings(principal).getData());
+        modelMap.addAttribute("halykSettings", halykSettingsService.getHalykSettings(principal).getData());
         return "halyksettings";
     }
 }
