@@ -115,8 +115,8 @@ public class HalykRegisterPaymentsService {
         }
         percent = percent.divide(new BigDecimal("100"));
 
-        BigDecimal currentHalykMoney = halyk.getAmount();
-        BigDecimal currentMerchantMoney = merchant.getAmount();
+        BigDecimal currentHalykMoney = halyk.getAmount() == null ? new BigDecimal("0.0") : halyk.getAmount();
+        BigDecimal currentMerchantMoney = merchant.getAmount() == null ? new BigDecimal("0.0") : merchant.getAmount();
 
         BigDecimal moneyForHalyk = amount.multiply(percent);
         BigDecimal moneyForMerchant = amount.subtract(moneyForHalyk).add(currentMerchantMoney);
