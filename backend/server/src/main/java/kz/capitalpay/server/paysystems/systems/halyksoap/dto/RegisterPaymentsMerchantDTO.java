@@ -103,17 +103,16 @@ public class RegisterPaymentsMerchantDTO {
 
     @Override
     public String toString() {
-        return iik + " " +
-                bik + " " +
-                " " +
-                iinbin + " " +
-                amount + " " +
-                bankname + " " +
-                naznpl_merch + " " +
-                bclassd_merch + " " +
-                kod_merch + " " +
-                knp_merch + " " +
-                rnna_merch + " " +
+        return iik + "¤" +
+                bik + "¤¤" +
+                iinbin + "¤" +
+                amount + "¤" +
+                bankname + "¤" +
+                naznpl_merch + "¤      ¤" +
+                bclassd_merch + "¤" +
+                kod_merch + "¤" +
+                knp_merch + "¤" +
+                rnna_merch + "¤" +
                 platel_merch + "\n";
     }
 }

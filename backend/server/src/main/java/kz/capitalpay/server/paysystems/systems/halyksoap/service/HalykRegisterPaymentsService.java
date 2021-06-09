@@ -2,8 +2,8 @@ package kz.capitalpay.server.paysystems.systems.halyksoap.service;
 
 import kz.capitalpay.server.merchantsettings.model.CashboxSettings;
 import kz.capitalpay.server.merchantsettings.model.MerchantKyc;
-import kz.capitalpay.server.merchantsettings.repository.CashboxSettingsRepository;
-import kz.capitalpay.server.merchantsettings.repository.MerchantKycRepository;
+import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
+import kz.capitalpay.server.merchantsettings.service.MerchantKycService;
 import kz.capitalpay.server.paysystems.systems.halyksoap.dto.*;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykSettings;
 import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykSettingsRepository;
@@ -27,17 +27,16 @@ public class HalykRegisterPaymentsService {
     private final Logger logger = LoggerFactory.getLogger(HalykRegisterPaymentsService.class);
 
     @Autowired
-    private HalykPaymentStatisticRepository halykPaymentStatisticRepository;
+    private MerchantKycService merchantKycService;
 
     @Autowired
-    private MerchantKycRepository merchantKycRepository;
+    private CashboxSettingsService cashboxSettingsService;
 
     @Autowired
     private HalykSettingsRepository halykSettingsRepository;
 
     @Autowired
-    private CashboxSettingsRepository cashboxSettingsRepository;
-    //TODO from service not repository
+    private HalykPaymentStatisticRepository halykPaymentStatisticRepository;
 
     public File createTextFileForDownload(HalykDTO halykDTO) {
         String nameFile = createNameFile();
@@ -96,8 +95,8 @@ public class HalykRegisterPaymentsService {
 
     private void divideMoneyBetweenMerchantAndHalyk(long cashBoxId, Double amount, RegisterPaymentsHalykDTO halyk,
                                                     RegisterPaymentsMerchantDTO merchant) {
-        CashboxSettings percentForHalyk = cashboxSettingsRepository
-                .findTopByFieldNameAndCashboxId(PERCENT_PAYMENT_SYSTEM, cashBoxId);
+        CashboxSettings percentForHalyk = cashboxSettingsService
+                .getCashboxSettingByFieldNameAndCashboxId(PERCENT_PAYMENT_SYSTEM, cashBoxId);
         double percent = 0.0;//TODO:BigDecimal
         try {
             percent = Double.parseDouble(percentForHalyk.getFieldValue());
@@ -140,10 +139,10 @@ public class HalykRegisterPaymentsService {
 
     private void setIndividualDataForMerchant(RegisterPaymentsMerchantDTO merchant,
                                               Long merchantId) {
-        MerchantKyc iikInfo = merchantKycRepository.findTopByFieldNameAndMerchantId(IIK, merchantId);
-        MerchantKyc bikInfo = merchantKycRepository.findTopByFieldNameAndMerchantId(BIK, merchantId);
-        MerchantKyc iinbinInfo = merchantKycRepository.findTopByFieldNameAndMerchantId(IINBIN, merchantId);
-        MerchantKyc banknameInfo = merchantKycRepository.findTopByFieldNameAndMerchantId(BANKNAME, merchantId);
+        MerchantKyc iikInfo = merchantKycService.getMerchantKycByFieldNameAndMerchantId(IIK, merchantId);
+        MerchantKyc bikInfo = merchantKycService.getMerchantKycByFieldNameAndMerchantId(BIK, merchantId);
+        MerchantKyc iinbinInfo = merchantKycService.getMerchantKycByFieldNameAndMerchantId(IINBIN, merchantId);
+        MerchantKyc banknameInfo = merchantKycService.getMerchantKycByFieldNameAndMerchantId(BANKNAME, merchantId);
         merchant.setIik(iikInfo.getFieldValue());
         merchant.setBik(bikInfo.getFieldValue());
         merchant.setIinbin(iinbinInfo.getFieldValue());

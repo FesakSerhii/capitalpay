@@ -103,17 +103,16 @@ public class RegisterPaymentsHalykDTO {
 
     @Override
     public String toString() {
-        return kobd + " " +
-                lskor + " " +
-                " " +
-                rnnb + " " +
-                amount + " " +
-                poluch + " " +
-                naznpl + " " +
-                bclassd + " " +
-                kod + " " +
-                knp + " " +
-                rnna + " " +
+        return kobd + "¤" +
+                lskor + "¤¤" +
+                rnnb + "¤" +
+                amount + "¤" +
+                poluch + "¤" +
+                naznpl + "¤      ¤" +
+                bclassd + "¤" +
+                kod + "¤" +
+                knp + "¤" +
+                rnna + "¤" +
                 platel + "\n";
     }
 }

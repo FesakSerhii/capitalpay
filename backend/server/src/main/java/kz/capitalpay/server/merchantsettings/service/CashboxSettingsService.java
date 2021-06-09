@@ -106,4 +106,16 @@ public class CashboxSettingsService {
         cashboxSettings.setFieldValue(fieldValue);
         cashboxSettingsRepository.save(cashboxSettings);
     }
+
+    public CashboxSettings getCashboxSettingByFieldNameAndCashboxId(String fieldName, Long cashboxId) {
+        CashboxSettings cashboxSettings = cashboxSettingsRepository.findTopByFieldNameAndCashboxId(fieldName, cashboxId);
+        if (cashboxSettings == null) {
+            cashboxSettings = new CashboxSettings();
+            cashboxSettings.setCashboxId(cashboxId);
+            cashboxSettings.setFieldName(fieldName);
+            cashboxSettings.setFieldValue("");
+            cashboxSettingsRepository.save(cashboxSettings);
+        }
+        return cashboxSettings;
+    }
 }

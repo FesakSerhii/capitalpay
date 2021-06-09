@@ -144,4 +144,16 @@ public class MerchantKycService {
         }
         return merchantKyc.getFieldValue();
     }
+
+    public MerchantKyc getMerchantKycByFieldNameAndMerchantId(String fieldName, Long merchantId) {
+        MerchantKyc merchantKyc = merchantKycRepository.findTopByFieldNameAndMerchantId(fieldName, merchantId);
+        if (merchantKyc == null) {
+            merchantKyc = new MerchantKyc();
+            merchantKyc.setMerchantId(merchantId);
+            merchantKyc.setFieldName(fieldName);
+            merchantKyc.setFieldValue("");
+            merchantKycRepository.save(merchantKyc);
+        }
+        return merchantKyc;
+    }
 }
