@@ -1,6 +1,6 @@
 package kz.capitalpay.server.paysystems.systems.halyksoap.dto;
 
-public class RegisterPaymentHalykDTO {
+public class RegisterPaymentsHalykDTO {
     private String kobd;
     private String lskor;
     private String rnnb;

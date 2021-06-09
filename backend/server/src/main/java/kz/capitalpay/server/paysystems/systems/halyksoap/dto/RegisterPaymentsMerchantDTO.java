@@ -1,6 +1,6 @@
 package kz.capitalpay.server.paysystems.systems.halyksoap.dto;
 
-public class RegisterPaymentMerchantDTO {
+public class RegisterPaymentsMerchantDTO {
     private String iik;
     private String bik;
     private String iinbin;

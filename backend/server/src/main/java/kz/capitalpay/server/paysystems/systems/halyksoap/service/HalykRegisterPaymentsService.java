@@ -4,10 +4,7 @@ import kz.capitalpay.server.merchantsettings.model.CashboxSettings;
 import kz.capitalpay.server.merchantsettings.model.MerchantKyc;
 import kz.capitalpay.server.merchantsettings.repository.CashboxSettingsRepository;
 import kz.capitalpay.server.merchantsettings.repository.MerchantKycRepository;
-import kz.capitalpay.server.paysystems.systems.halyksoap.dto.HalykDTO;
-import kz.capitalpay.server.paysystems.systems.halyksoap.dto.PaymentStatistic;
-import kz.capitalpay.server.paysystems.systems.halyksoap.dto.RegisterPaymentHalykDTO;
-import kz.capitalpay.server.paysystems.systems.halyksoap.dto.RegisterPaymentMerchantDTO;
+import kz.capitalpay.server.paysystems.systems.halyksoap.dto.*;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykSettings;
 import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykSettingsRepository;
 import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykPaymentStatisticRepository;
@@ -55,12 +52,13 @@ public class HalykRegisterPaymentsService {
 
     private String getRegisterPayments(HalykDTO halykDTO) {
         List<PaymentStatistic> statistic = getPaymentsByDate(halykDTO);
-        List<RegisterPaymentMerchantDTO> register = new ArrayList<>();
-        RegisterPaymentHalykDTO halyk = new RegisterPaymentHalykDTO();
+        List<RegisterPaymentsMerchantDTO> register = new ArrayList<>();
+        RegisterPaymentsCommonMerchantFieldsDTO commonMerchantFields = getHalykCommonDataForMerchant();
+        RegisterPaymentsHalykDTO halyk = new RegisterPaymentsHalykDTO();
         for (PaymentStatistic data : statistic) {
-            RegisterPaymentMerchantDTO merchant = new RegisterPaymentMerchantDTO();
+            RegisterPaymentsMerchantDTO merchant = new RegisterPaymentsMerchantDTO();
             setIndividualDataForMerchant(merchant, Long.parseLong(data.getMerchantId()));
-            setHalykCommonDataForMerchant(merchant);
+            setHalykCommonDataForMerchant(merchant, commonMerchantFields);
             divideMoneyBetweenMerchantAndHalyk(data.getCashboxId(),
                     Double.parseDouble(data.getTotalAmount().toString()), halyk, merchant);
             register.add(merchant);
@@ -72,7 +70,7 @@ public class HalykRegisterPaymentsService {
                 + halyk.toString();
     }
 
-    private void setIndividualInfoForHalyk(RegisterPaymentHalykDTO halyk) {
+    private void setIndividualInfoForHalyk(RegisterPaymentsHalykDTO halyk) {
         HalykSettings kobd = halykSettingsRepository.findTopByFieldName(KOBD);
         HalykSettings lskor = halykSettingsRepository.findTopByFieldName(LSKOR);
         HalykSettings rnnb = halykSettingsRepository.findTopByFieldName(RNNB);
@@ -95,8 +93,8 @@ public class HalykRegisterPaymentsService {
         halyk.setPlatel(platel.getFieldValue());
     }
 
-    private void divideMoneyBetweenMerchantAndHalyk(long cashBoxId, Double amount, RegisterPaymentHalykDTO halyk,
-                                                    RegisterPaymentMerchantDTO merchant) {
+    private void divideMoneyBetweenMerchantAndHalyk(long cashBoxId, Double amount, RegisterPaymentsHalykDTO halyk,
+                                                    RegisterPaymentsMerchantDTO merchant) {
         CashboxSettings percentForHalyk = cashboxSettingsRepository
                 .findTopByFieldNameAndCashboxId(PERCENT_PAYMENT_SYSTEM, cashBoxId);
         double percent = 0.0;
@@ -112,22 +110,34 @@ public class HalykRegisterPaymentsService {
         merchant.setAmount(String.valueOf(merchantMoney));
     }
 
-    private void setHalykCommonDataForMerchant(RegisterPaymentMerchantDTO merchant) {
+    private RegisterPaymentsCommonMerchantFieldsDTO getHalykCommonDataForMerchant() {
+        RegisterPaymentsCommonMerchantFieldsDTO commonData = new RegisterPaymentsCommonMerchantFieldsDTO();
         HalykSettings naznpl_merch = halykSettingsRepository.findTopByFieldName(NAZNPL_MERCH);
         HalykSettings bclassd_merch = halykSettingsRepository.findTopByFieldName(BCLASSD_MERCH);
         HalykSettings kod_merch = halykSettingsRepository.findTopByFieldName(KOD_MERCH);
         HalykSettings knp_merch = halykSettingsRepository.findTopByFieldName(KNP_MERCH);
         HalykSettings rnna_merch = halykSettingsRepository.findTopByFieldName(RNNA_MERCH);
         HalykSettings platel_merch = halykSettingsRepository.findTopByFieldName(PLATEL_MERCH);
-        merchant.setNaznpl_merch(naznpl_merch.getFieldValue());
-        merchant.setBclassd_merch(bclassd_merch.getFieldValue());
-        merchant.setKod_merch(kod_merch.getFieldValue());
-        merchant.setKnp_merch(knp_merch.getFieldValue());
-        merchant.setRnna_merch(rnna_merch.getFieldValue());
-        merchant.setPlatel_merch(platel_merch.getFieldValue());
+        commonData.setNaznpl_merch(naznpl_merch.getFieldValue());
+        commonData.setBclassd_merch(bclassd_merch.getFieldValue());
+        commonData.setKod_merch(kod_merch.getFieldValue());
+        commonData.setKnp_merch(knp_merch.getFieldValue());
+        commonData.setRnna_merch(rnna_merch.getFieldValue());
+        commonData.setPlatel_merch(platel_merch.getFieldValue());
+        return commonData;
     }
 
-    private void setIndividualDataForMerchant(RegisterPaymentMerchantDTO merchant,
+    private void setHalykCommonDataForMerchant(RegisterPaymentsMerchantDTO merchant,
+                                               RegisterPaymentsCommonMerchantFieldsDTO commonData) {
+        merchant.setNaznpl_merch(commonData.getNaznpl_merch());
+        merchant.setBclassd_merch(commonData.getBclassd_merch());
+        merchant.setKod_merch(commonData.getKod_merch());
+        merchant.setKnp_merch(commonData.getKnp_merch());
+        merchant.setRnna_merch(commonData.getRnna_merch());
+        merchant.setPlatel_merch(commonData.getPlatel_merch());
+    }
+
+    private void setIndividualDataForMerchant(RegisterPaymentsMerchantDTO merchant,
                                               Long merchantId) {
         MerchantKyc iikInfo = merchantKycRepository.findTopByFieldNameAndMerchantId(IIK, merchantId);
         MerchantKyc bikInfo = merchantKycRepository.findTopByFieldNameAndMerchantId(BIK, merchantId);
