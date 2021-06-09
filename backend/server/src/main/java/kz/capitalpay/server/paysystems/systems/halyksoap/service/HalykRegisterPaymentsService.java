@@ -114,11 +114,15 @@ public class HalykRegisterPaymentsService {
             e.printStackTrace();
         }
         percent = percent.divide(new BigDecimal("100"));
-        BigDecimal halykMoney = amount.multiply(percent);
-        BigDecimal merchantMoney = amount.subtract(halykMoney);
-        BigDecimal currentHalykMoney = halyk.getAmount() == null ? new BigDecimal("0.0") : halyk.getAmount();
-        halyk.setAmount(halykMoney.add(currentHalykMoney));
-        merchant.setAmount(merchantMoney);
+
+        BigDecimal currentHalykMoney = halyk.getAmount();
+        BigDecimal currentMerchantMoney = merchant.getAmount();
+
+        BigDecimal moneyForHalyk = amount.multiply(percent);
+        BigDecimal moneyForMerchant = amount.subtract(moneyForHalyk).add(currentMerchantMoney);
+
+        halyk.setAmount(currentHalykMoney.add(moneyForHalyk));
+        merchant.setAmount(currentMerchantMoney.add(moneyForMerchant));
     }
 
     private RegisterPaymentsCommonMerchantFieldsDTO getHalykCommonDataForMerchant() {
