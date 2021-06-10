@@ -2,7 +2,7 @@ package kz.capitalpay.server.paysystems.systems.halyksoap.dto;
 
 import java.math.BigDecimal;
 
-public interface PaymentStatistic {
+public interface RegisterPaymentStatistic {
     String getMerchantId();
     BigDecimal getTotalAmount();
     String getCurrency();
