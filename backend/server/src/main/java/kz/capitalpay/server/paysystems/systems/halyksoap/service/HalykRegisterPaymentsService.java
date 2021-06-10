@@ -7,6 +7,7 @@ import kz.capitalpay.server.merchantsettings.service.MerchantKycService;
 import kz.capitalpay.server.paysystems.systems.halyksoap.dto.*;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykSettings;
 import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykRegisterPaymentsRepository;
+import kz.capitalpay.server.paysystems.systems.halyksoap.repository.projection.RegisterPaymentsStatistic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.PERCENT_PAYMENT_SYSTEM;
 import static kz.capitalpay.server.merchantsettings.service.MerchantKycService.*;
 import static kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSettingsService.*;
@@ -54,11 +54,11 @@ public class HalykRegisterPaymentsService {
     }
 
     private String getRegisterPayments(RegisterPaymentsDateDTO registerPaymentsDateDTO) {
-        List<RegisterPaymentStatistic> statistic = getPaymentsByDate(registerPaymentsDateDTO);
+        List<RegisterPaymentsStatistic> statistic = getPaymentsByDate(registerPaymentsDateDTO);
         Map<String, RegisterPaymentsMerchantDTO> register = new HashMap<>();
         RegisterPaymentsCommonMerchantFieldsDTO commonMerchantFields = getHalykCommonDataForMerchant();
         RegisterPaymentsHalykDTO halyk = new RegisterPaymentsHalykDTO();
-        for (RegisterPaymentStatistic data : statistic) {
+        for (RegisterPaymentsStatistic data : statistic) {
             if(register.containsKey(data.getMerchantId())) {
                 divideMoneyBetweenMerchantAndHalyk(data.getCashboxId(),
                         data.getTotalAmount(), halyk, register.get(data.getMerchantId()));
@@ -147,7 +147,7 @@ public class HalykRegisterPaymentsService {
         merchant.setBankname(banknameInfo.getFieldValue());
     }
 
-    private List<RegisterPaymentStatistic> getPaymentsByDate(RegisterPaymentsDateDTO registerPaymentsDateDTO) {
+    private List<RegisterPaymentsStatistic> getPaymentsByDate(RegisterPaymentsDateDTO registerPaymentsDateDTO) {
         long after = registerPaymentsDateDTO.getTimestampNanoSecondsAfter();
         long before = registerPaymentsDateDTO.getTimestampNanoSecondsBefore();
         return halykRegisterPaymentsRepository.findAllByTimestampAfterAndTimestampBeforeAndStatus(after, before,

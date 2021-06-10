@@ -1,7 +1,7 @@
 package kz.capitalpay.server.paysystems.systems.halyksoap.repository;
 
 import kz.capitalpay.server.payments.model.Payment;
-import kz.capitalpay.server.paysystems.systems.halyksoap.dto.RegisterPaymentStatistic;
+import kz.capitalpay.server.paysystems.systems.halyksoap.repository.projection.RegisterPaymentsStatistic;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
@@ -14,6 +14,6 @@ public interface HalykRegisterPaymentsRepository extends CrudRepository<Payment,
             " p.cashboxId as cashboxId " +
             " FROM Payment p" +
             " GROUP BY p.merchantId, p.currency, p.cashboxId")
-    List<RegisterPaymentStatistic> findAllByTimestampAfterAndTimestampBeforeAndStatus(long before, long after,
-                                                                                      String status);
+    List<RegisterPaymentsStatistic> findAllByTimestampAfterAndTimestampBeforeAndStatus(long before, long after,
+                                                                                       String status);
 }

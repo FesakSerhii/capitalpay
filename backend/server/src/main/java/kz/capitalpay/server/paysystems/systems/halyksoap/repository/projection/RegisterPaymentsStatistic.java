@@ -1,8 +1,8 @@
-package kz.capitalpay.server.paysystems.systems.halyksoap.dto;
+package kz.capitalpay.server.paysystems.systems.halyksoap.repository.projection;
 
 import java.math.BigDecimal;
 
-public interface RegisterPaymentStatistic {
+public interface RegisterPaymentsStatistic {
     String getMerchantId();
     BigDecimal getTotalAmount();
     String getCurrency();
