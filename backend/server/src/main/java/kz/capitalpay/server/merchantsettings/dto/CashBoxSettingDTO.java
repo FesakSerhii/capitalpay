@@ -1,12 +1,12 @@
 package kz.capitalpay.server.merchantsettings.dto;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import java.util.List;
 
 public class CashBoxSettingDTO {
-    @NotEmpty
-    private long cashBoxId;
-    @NotEmpty
-    private String fieldValue;
+    @NotNull
+    private Long cashBoxId;
+    private List<CashBoxSettingFieldDTO> fields;
 
     public long getCashBoxId() {
         return cashBoxId;
@@ -16,11 +16,11 @@ public class CashBoxSettingDTO {
         this.cashBoxId = cashBoxId;
     }
 
-    public String getFieldValue() {
-        return fieldValue;
+    public List<CashBoxSettingFieldDTO> getFields() {
+        return fields;
     }
 
-    public void setFieldValue(String fieldValue) {
-        this.fieldValue = fieldValue;
+    public void setFields(List<CashBoxSettingFieldDTO> fields) {
+        this.fields = fields;
     }
 }

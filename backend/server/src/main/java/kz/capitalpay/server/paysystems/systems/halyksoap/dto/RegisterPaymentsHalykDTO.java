@@ -1,10 +1,12 @@
 package kz.capitalpay.server.paysystems.systems.halyksoap.dto;
 
+import java.math.BigDecimal;
+
 public class RegisterPaymentsHalykDTO {
     private String kobd;
     private String lskor;
     private String rnnb;
-    private String amount;
+    private BigDecimal amount;
     private String poluch;
     private String naznpl;
     private String bclassd;
@@ -37,11 +39,11 @@ public class RegisterPaymentsHalykDTO {
         this.rnnb = rnnb;
     }
 
-    public String getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(String amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
@@ -103,17 +105,16 @@ public class RegisterPaymentsHalykDTO {
 
     @Override
     public String toString() {
-        return kobd + " " +
-                lskor + " " +
-                " " +
-                rnnb + " " +
-                amount + " " +
-                poluch + " " +
-                naznpl + " " +
-                bclassd + " " +
-                kod + " " +
-                knp + " " +
-                rnna + " " +
+        return kobd + "¤" +
+                lskor + "¤¤" +
+                rnnb + "¤" +
+                amount + "¤" +
+                poluch + "¤" +
+                naznpl + "¤      ¤" +
+                bclassd + "¤" +
+                kod + "¤" +
+                knp + "¤" +
+                rnna + "¤" +
                 platel + "\n";
     }
 }
