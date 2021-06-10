@@ -174,9 +174,7 @@ public class SimpleService {
                 .getField(cashboxId, PERCENT_MERCHANT)));
 
         BigDecimal percentMerchantWantPaySystem = percentForCashboxFromSystem
-                .subtract(percentForCashboxFromSystem
-                        .multiply(percentForCustomerFromCashbox
-                                .divide(oneHundred)));
+                .subtract(percentForCustomerFromCashbox);
 
         BigDecimal totalAmountThatMerchantWantReceived = totalAmount
                 .subtract(totalAmount
