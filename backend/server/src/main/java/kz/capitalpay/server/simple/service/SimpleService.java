@@ -182,9 +182,9 @@ public class SimpleService {
                                 .divide(oneHundred)));
 
         BigDecimal finalPriceCustomerAfterAdjustment = totalAmountThatMerchantWantReceived
-                .divide(new BigDecimal("1", MathContext.DECIMAL128)
+                .divide(new BigDecimal("1")
                         .subtract(percentForCashboxFromSystem
-                                .divide(oneHundred, MathContext.DECIMAL128)));
+                                .divide(oneHundred, MathContext.DECIMAL128)),MathContext.DECIMAL128);
 
         return finalPriceCustomerAfterAdjustment.movePointLeft(2).setScale(2, RoundingMode.HALF_UP);
     }
