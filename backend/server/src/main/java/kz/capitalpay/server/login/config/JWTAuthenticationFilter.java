@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import kz.capitalpay.server.ContextProvider;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.login.dto.ApplicationUserDTO;
+import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.service.ApplicationUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,6 +100,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         roles = roleSet.toArray(roles);
 
+        ApplicationUser applicationUser =  applicationUserService.getUserByLogin(username);
 
         if (applicationUserService.requireTwoFactorAuth(username)) {
             if (applicationUserService.smsNeedCheck(username)) {
@@ -107,6 +109,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                             .withSubject(username)
                             .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                             .withArrayClaim("authorities", roles)
+                            .withClaim("merchantId", applicationUser.getId())
                             .withJWTId(UUID.randomUUID().toString())
                             .sign(getAlgorithm());
                     response.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
@@ -128,6 +131,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                     .withSubject(username)
                     .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                     .withArrayClaim("authorities", roles)
+                    .withClaim("merchantId", applicationUser.getId())
                     .withJWTId(UUID.randomUUID().toString())
                     .sign(getAlgorithm());
             response.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
