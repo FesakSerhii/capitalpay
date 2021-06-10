@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
+import java.math.BigDecimal;
 
 @Controller
 @RequestMapping(value = "/payment/simple", produces = "application/json;charset=UTF-8")
@@ -32,7 +33,7 @@ public class SimpleController {
     @PostMapping("/pay")
     String pay(@RequestParam Long cashboxid,
                @RequestParam String billid,
-               @RequestParam Long totalamount,
+               @RequestParam BigDecimal totalamount,
                @RequestParam String currency,
                @RequestParam(defaultValue = "") String description,
                @RequestParam(required = false) String param,

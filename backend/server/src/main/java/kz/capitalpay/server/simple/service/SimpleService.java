@@ -8,6 +8,7 @@ import kz.capitalpay.server.currency.service.CurrencyService;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.service.ApplicationUserService;
+import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.merchantsettings.service.MerchantKycService;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
@@ -25,8 +26,9 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static javax.xml.crypto.dsig.DigestMethod.SHA256;
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
+import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.PERCENT_MERCHANT;
+import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.PERCENT_PAYMENT_SYSTEM;
 
 @Service
 public class SimpleService {
@@ -54,6 +56,9 @@ public class SimpleService {
     @Autowired
     MerchantKycService merchantKycService;
 
+    @Autowired
+    CashboxSettingsService cashboxSettingsService;
+
     // Payment Status
     public static final String NEW_PAYMENT = "NEW";
     public static final String SUCCESS = "SUCCESS";
@@ -80,7 +85,7 @@ public class SimpleService {
 
             String merchantName = merchantKycService.getField(merchant.getId(), MerchantKycService.MNAME);
 
-            BigDecimal totalAmount = BigDecimal.valueOf(request.getTotalamount())
+            BigDecimal totalAmount = request.getTotalamount()
                     .movePointLeft(2).setScale(2, RoundingMode.HALF_UP);
 
             if (!cashboxCurrencyService.checkCurrencyEnable(cashbox.getId(), merchant.getId(), request.getCurrency())) {
@@ -119,7 +124,7 @@ public class SimpleService {
 
     }
 
-    public ResultDTO createPayment(HttpServletRequest httpRequest, Long cashboxid, String billid, Long totalamount, String currency, String description, String param) {
+    public ResultDTO createPayment(HttpServletRequest httpRequest, Long cashboxid, String billid, BigDecimal totalamount, String currency, String description, String param) {
         try {
             SimpleRequestDTO request = new SimpleRequestDTO();
 
@@ -134,7 +139,7 @@ public class SimpleService {
 
             request.setCashboxid(cashboxid);
             request.setBillid(billid);
-            request.setTotalamount(totalamount);
+            request.setTotalamount(adjustmentPriceForCustomerByMerchantPercentage(cashboxid, totalamount));
             request.setCurrency(currency);
             request.setDescription(description);
             request.setParam(param);
@@ -147,6 +152,40 @@ public class SimpleService {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }
+    }
+
+    private BigDecimal adjustmentPriceForCustomerByMerchantPercentage(Long cashboxId, BigDecimal totalAmount) {
+        // example
+        // price  = 1000
+        // percent system - 10%
+        // merchant want divide this value with customer 50:50
+        // It means merchant would receive 950 after subtract pay system
+        // Price for customer
+        // result = 950/ (price - price*10%) or 950/(1 - 10%)
+        // result = 1055.5556, system got 10% 1055.555,  merchant received 950
+        BigDecimal oneHundred = new BigDecimal("100");
+        BigDecimal percentForCashboxFromSystem = BigDecimal.valueOf(Long.parseLong(cashboxSettingsService
+                .getField(cashboxId, PERCENT_PAYMENT_SYSTEM)));
+
+        BigDecimal percentForCustomerFromCashbox = BigDecimal.valueOf(Long.parseLong(cashboxSettingsService
+                .getField(cashboxId, PERCENT_MERCHANT)));
+
+        BigDecimal percentMerchantWantPaySystem = percentForCashboxFromSystem
+                .subtract(percentForCashboxFromSystem
+                        .multiply(percentForCustomerFromCashbox
+                                .divide(oneHundred)));
+
+        BigDecimal totalAmountThatMerchantWantReceived = totalAmount
+                .subtract(totalAmount
+                        .multiply(percentMerchantWantPaySystem
+                                .divide(oneHundred)));
+
+        BigDecimal finalPriceCustomerAfterAdjustment = totalAmountThatMerchantWantReceived
+                .divide(new BigDecimal("1")
+                        .subtract(percentForCashboxFromSystem
+                                .divide(oneHundred)));
+
+        return finalPriceCustomerAfterAdjustment.movePointLeft(2).setScale(2, RoundingMode.HALF_UP);
     }
 
     // Signature: SHA256(cashboxid + billid + secret)

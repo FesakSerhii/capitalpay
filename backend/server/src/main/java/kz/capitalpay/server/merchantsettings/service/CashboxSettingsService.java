@@ -37,6 +37,7 @@ public class CashboxSettingsService {
     public static final String REDIRECT_PENDING_URL = "redirectpending";
     public static final String SECRET = "secret";
     public static final String PERCENT_PAYMENT_SYSTEM = "percent_payment_system";
+    public static final String PERCENT_MERCHANT = "percent_merchant";
 
     public ResultDTO setOrUpdateCashboxSettings(Principal principal, CashBoxSettingDTO request) {
         try {
@@ -73,6 +74,7 @@ public class CashboxSettingsService {
                 result.put(REDIRECT_PENDING_URL, getField(cashBoxDTO.getCashBoxId(), REDIRECT_PENDING_URL));
                 result.put(SECRET, getField(cashBoxDTO.getCashBoxId(), SECRET));
                 result.put(PERCENT_PAYMENT_SYSTEM, getField(cashBoxDTO.getCashBoxId(), PERCENT_PAYMENT_SYSTEM));
+                result.put(PERCENT_MERCHANT, getField(cashBoxDTO.getCashBoxId(), PERCENT_PAYMENT_SYSTEM));
                 return new ResultDTO(true, result, 0);
             } else {
                 return error121;
