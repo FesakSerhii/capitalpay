@@ -190,8 +190,8 @@ public class SimpleService {
                         .subtract(percentForCashboxFromSystem
                                 .divide(oneHundred, MathContext.DECIMAL128)),MathContext.DECIMAL128);
 
-        logger.info("\n finalPriceCustomerAfterAdjustment  " + percentForCashboxFromSystem);
-        return finalPriceCustomerAfterAdjustment.movePointLeft(2).setScale(2, RoundingMode.HALF_UP);
+        logger.info("\n finalPriceCustomerAfterAdjustment  " + finalPriceCustomerAfterAdjustment);
+        return finalPriceCustomerAfterAdjustment;
     }
 
     // Signature: SHA256(cashboxid + billid + secret)
