@@ -128,6 +128,7 @@ public class SimpleService {
                 ipAddress = httpRequest.getRemoteAddr();
             }
             request.setIpAddress(ipAddress);
+            //TODO
 
             request.setUserAgent(httpRequest.getHeader("User-Agent"));
 
