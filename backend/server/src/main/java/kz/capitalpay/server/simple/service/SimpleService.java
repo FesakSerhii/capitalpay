@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -181,9 +182,9 @@ public class SimpleService {
                                 .divide(oneHundred)));
 
         BigDecimal finalPriceCustomerAfterAdjustment = totalAmountThatMerchantWantReceived
-                .divide(new BigDecimal("1")
+                .divide(new BigDecimal("1", MathContext.DECIMAL128)
                         .subtract(percentForCashboxFromSystem
-                                .divide(oneHundred)));
+                                .divide(oneHundred, MathContext.DECIMAL128)));
 
         return finalPriceCustomerAfterAdjustment.movePointLeft(2).setScale(2, RoundingMode.HALF_UP);
     }
