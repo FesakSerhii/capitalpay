@@ -189,18 +189,18 @@ public class SimpleService {
         BigDecimal finalPriceCustomerAfterAdjustment = totalAmountThatMerchantWantReceived
                 .divide(new BigDecimal("1")
                         .subtract(percentForCashboxFromSystem
-                                .divide(oneHundred, MathContext.DECIMAL128)),MathContext.DECIMAL128);
+                                .divide(oneHundred, MathContext.DECIMAL128)),MathContext.DECIMAL128).setScale(2, RoundingMode.HALF_UP);
 
         logger.info("\n\n ============================ finalPriceCustomerAfterAdjustment  " + finalPriceCustomerAfterAdjustment);
 
         BigDecimal totalAmountThatMerchantReceivedAfterSubtractSystem = finalPriceCustomerAfterAdjustment
                 .subtract(finalPriceCustomerAfterAdjustment
                         .multiply(percentForCashboxFromSystem
-                        .divide(oneHundred, MathContext.DECIMAL128)),MathContext.DECIMAL128);
+                        .divide(oneHundred, MathContext.DECIMAL128)),MathContext.DECIMAL128).setScale(2, RoundingMode.HALF_UP);
 
         logger.info("\n\n totalAmountThatMerchantReceivedAfterSubtractSystem  " + totalAmountThatMerchantReceivedAfterSubtractSystem);
 
-        return finalPriceCustomerAfterAdjustment.setScale(2, RoundingMode.HALF_UP);
+        return finalPriceCustomerAfterAdjustment;
     }
 
     // Signature: SHA256(cashboxid + billid + secret)
