@@ -167,6 +167,7 @@ public class SimpleService {
         BigDecimal oneHundred = new BigDecimal("100");
         BigDecimal percentForCashboxFromSystem = BigDecimal.valueOf(Long.parseLong(cashboxSettingsService
                 .getField(cashboxId, PERCENT_PAYMENT_SYSTEM)));
+        logger.info(" percentForCashboxFromSystem  " + percentForCashboxFromSystem);
 
         BigDecimal percentForCustomerFromCashbox = BigDecimal.valueOf(Long.parseLong(cashboxSettingsService
                 .getField(cashboxId, PERCENT_MERCHANT)));
@@ -180,11 +181,11 @@ public class SimpleService {
                 .subtract(totalAmount
                         .multiply(percentMerchantWantPaySystem
                                 .divide(oneHundred)));
+        logger.info(" percentForCashboxFromSystem  " + percentForCashboxFromSystem);
 
         BigDecimal finalPriceCustomerAfterAdjustment = totalAmountThatMerchantWantReceived
                 .divide(new BigDecimal("1")
-                        .subtract(percentForCashboxFromSystem
-                                .divide(oneHundred, MathContext.DECIMAL128)),MathContext.DECIMAL128);
+                        .subtract(percentForCashboxFromSystem),MathContext.DECIMAL128);
 
         return finalPriceCustomerAfterAdjustment.movePointLeft(2).setScale(2, RoundingMode.HALF_UP);
     }
