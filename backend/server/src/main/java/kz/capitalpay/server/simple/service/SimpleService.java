@@ -28,8 +28,8 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
-import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.PERCENT_MERCHANT;
-import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.PERCENT_PAYMENT_SYSTEM;
+import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.CLIENT_FEE;
+import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.TOTAL_FEE;
 
 @Service
 public class SimpleService {
@@ -156,22 +156,11 @@ public class SimpleService {
     }
 
     private BigDecimal adjustmentPriceForCustomerByMerchantPercentage(Long cashboxId, BigDecimal totalAmount) {
-        // example
-        // price  = 1000
-        // percent system - 10%
-        // merchant want divide this value with customer 50:50
-        // It means merchant would receive 950 after subtract pay system
-        // Price for customer
-        // result = 950/ (price - price*10%) or 950/(1 - 10%)
-        // result = 1055.5556, system got 10% 1055.555,  merchant received 950
-        BigDecimal oneHundred = new BigDecimal("100");
+        BigDecimal oneHundred = new BigDecimal(100);
         BigDecimal percentForCashboxFromSystem = BigDecimal.valueOf(Long.parseLong(cashboxSettingsService
-                .getField(cashboxId, PERCENT_PAYMENT_SYSTEM)));
-        logger.info(" \n\n =========================== totalAmount  " + totalAmount);
-        logger.info("\n \n =========================== percentForCashboxFromSystem  " + percentForCashboxFromSystem);
-
+                .getField(cashboxId, TOTAL_FEE)));
         BigDecimal percentForCustomerFromCashbox = BigDecimal.valueOf(Long.parseLong(cashboxSettingsService
-                .getField(cashboxId, PERCENT_MERCHANT)));
+                .getField(cashboxId, CLIENT_FEE)));
 
         BigDecimal percentMerchantWantPaySystem = percentForCashboxFromSystem
                 .subtract(percentForCustomerFromCashbox);
@@ -180,25 +169,14 @@ public class SimpleService {
                 .subtract(totalAmount
                         .multiply(percentMerchantWantPaySystem
                                 .divide(oneHundred)));
-        logger.info("\n \n =========================== percentForCustomerFromCashbox  " + percentForCustomerFromCashbox);
-        logger.info(" \n\n =========================== percentMerchantWantPaySystem  " + percentMerchantWantPaySystem);
-        logger.info("\n \n =========================== totalAmountThatMerchantWantReceived  " + totalAmountThatMerchantWantReceived);
 
-        BigDecimal finalPriceCustomerAfterAdjustment = totalAmountThatMerchantWantReceived
+        BigDecimal finalPriceCustomerAfterAdjustmentInPenny = totalAmountThatMerchantWantReceived
                 .divide(new BigDecimal("1")
                         .subtract(percentForCashboxFromSystem
-                                .divide(oneHundred, MathContext.DECIMAL128)),MathContext.DECIMAL128).setScale(2, RoundingMode.HALF_UP);
+                                .divide(oneHundred, MathContext.DECIMAL128)),MathContext.DECIMAL128)
+                .multiply(oneHundred);
 
-        logger.info("\n\n ============================ finalPriceCustomerAfterAdjustment  " + finalPriceCustomerAfterAdjustment);
-
-        BigDecimal totalAmountThatMerchantReceivedAfterSubtractSystem = finalPriceCustomerAfterAdjustment
-                .subtract(finalPriceCustomerAfterAdjustment
-                        .multiply(percentForCashboxFromSystem
-                        .divide(oneHundred, MathContext.DECIMAL128)),MathContext.DECIMAL128).setScale(2, RoundingMode.HALF_UP);
-
-        logger.info("\n\n totalAmountThatMerchantReceivedAfterSubtractSystem  " + totalAmountThatMerchantReceivedAfterSubtractSystem);
-
-        return finalPriceCustomerAfterAdjustment;
+        return finalPriceCustomerAfterAdjustmentInPenny.setScale(0, RoundingMode.HALF_UP);
     }
 
     // Signature: SHA256(cashboxid + billid + secret)

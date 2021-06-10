@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.PERCENT_PAYMENT_SYSTEM;
+import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.TOTAL_FEE;
 import static kz.capitalpay.server.merchantsettings.service.MerchantKycService.*;
 import static kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSettingsService.*;
 
@@ -95,7 +95,7 @@ public class HalykRegisterPaymentsService {
     private void divideMoneyBetweenMerchantAndHalyk(long cashBoxId, BigDecimal amount, RegisterPaymentsHalykDTO halyk,
                                                     RegisterPaymentsMerchantDTO merchant) {
         CashboxSettings percentForHalyk = cashboxSettingsService
-                .getCashboxSettingByFieldNameAndCashboxId(PERCENT_PAYMENT_SYSTEM, cashBoxId);
+                .getCashboxSettingByFieldNameAndCashboxId(TOTAL_FEE, cashBoxId);
         BigDecimal percent = new BigDecimal("0.0");
         try {
             percent = BigDecimal.valueOf(Double.parseDouble(percentForHalyk.getFieldValue()));
