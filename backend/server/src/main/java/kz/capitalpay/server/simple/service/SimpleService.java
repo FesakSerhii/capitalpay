@@ -167,8 +167,8 @@ public class SimpleService {
         BigDecimal oneHundred = new BigDecimal("100");
         BigDecimal percentForCashboxFromSystem = BigDecimal.valueOf(Long.parseLong(cashboxSettingsService
                 .getField(cashboxId, PERCENT_PAYMENT_SYSTEM)));
-        logger.info(" \n =========================== totalAmount  " + totalAmount);
-        logger.info(" \n =========================== percentForCashboxFromSystem  " + percentForCashboxFromSystem);
+        logger.info(" \n\n =========================== totalAmount  " + totalAmount);
+        logger.info("\n \n =========================== percentForCashboxFromSystem  " + percentForCashboxFromSystem);
 
         BigDecimal percentForCustomerFromCashbox = BigDecimal.valueOf(Long.parseLong(cashboxSettingsService
                 .getField(cashboxId, PERCENT_MERCHANT)));
@@ -182,22 +182,23 @@ public class SimpleService {
                 .subtract(totalAmount
                         .multiply(percentMerchantWantPaySystem
                                 .divide(oneHundred)));
-        logger.info(" \n =========================== percentForCustomerFromCashbox  " + percentForCustomerFromCashbox);
-        logger.info(" \n =========================== percentMerchantWantPaySystem  " + percentMerchantWantPaySystem);
-        logger.info(" \n =========================== totalAmountThatMerchantWantReceived  " + totalAmountThatMerchantWantReceived);
-        logger.info(" \n =========================== totalAmount  " + totalAmount);
+        logger.info("\n \n =========================== percentForCustomerFromCashbox  " + percentForCustomerFromCashbox);
+        logger.info(" \n\n =========================== percentMerchantWantPaySystem  " + percentMerchantWantPaySystem);
+        logger.info("\n \n =========================== totalAmountThatMerchantWantReceived  " + totalAmountThatMerchantWantReceived);
 
         BigDecimal finalPriceCustomerAfterAdjustment = totalAmountThatMerchantWantReceived
                 .divide(new BigDecimal("1")
                         .subtract(percentForCashboxFromSystem
                                 .divide(oneHundred, MathContext.DECIMAL128)),MathContext.DECIMAL128);
 
-        logger.info("\n ============================ finalPriceCustomerAfterAdjustment  " + finalPriceCustomerAfterAdjustment);
+        logger.info("\n\n ============================ finalPriceCustomerAfterAdjustment  " + finalPriceCustomerAfterAdjustment);
 
         BigDecimal totalAmountThatMerchantReceivedAfterSubtractSystem = finalPriceCustomerAfterAdjustment
-                .subtract(finalPriceCustomerAfterAdjustment.multiply(percentForCashboxFromSystem));
+                .subtract(finalPriceCustomerAfterAdjustment
+                        .multiply(percentForCashboxFromSystem
+                        .divide(oneHundred, MathContext.DECIMAL128)),MathContext.DECIMAL128);
 
-        logger.info("\n totalAmountThatMerchantReceivedAfterSubtractSystem  " + totalAmountThatMerchantReceivedAfterSubtractSystem);
+        logger.info("\n\n totalAmountThatMerchantReceivedAfterSubtractSystem  " + totalAmountThatMerchantReceivedAfterSubtractSystem);
 
         return finalPriceCustomerAfterAdjustment.setScale(2, RoundingMode.HALF_UP);
     }
