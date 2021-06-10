@@ -6,7 +6,6 @@ import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.merchantsettings.service.MerchantKycService;
 import kz.capitalpay.server.paysystems.systems.halyksoap.dto.*;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykSettings;
-import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykSettingsRepository;
 import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykPaymentStatisticRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +36,7 @@ public class HalykRegisterPaymentsService {
     private CashboxSettingsService cashboxSettingsService;
 
     @Autowired
-    private HalykSettingsRepository halykSettingsRepository;
+    private HalykSettingsService halykSettingsService;
 
     @Autowired
     private HalykPaymentStatisticRepository halykPaymentStatisticRepository;
@@ -81,26 +80,16 @@ public class HalykRegisterPaymentsService {
     }
 
     private void setIndividualInfoForHalyk(RegisterPaymentsHalykDTO halyk) {
-        HalykSettings kobd = halykSettingsRepository.findTopByFieldName(KOBD);
-        HalykSettings lskor = halykSettingsRepository.findTopByFieldName(LSKOR);
-        HalykSettings rnnb = halykSettingsRepository.findTopByFieldName(RNNB);
-        HalykSettings poluch = halykSettingsRepository.findTopByFieldName(POLUCH);
-        HalykSettings naznpl = halykSettingsRepository.findTopByFieldName(NAZNPL);
-        HalykSettings bclassd = halykSettingsRepository.findTopByFieldName(BCLASSD);
-        HalykSettings kod = halykSettingsRepository.findTopByFieldName(KOD);
-        HalykSettings knp = halykSettingsRepository.findTopByFieldName(KNP);
-        HalykSettings rnna = halykSettingsRepository.findTopByFieldName(RNNA);
-        HalykSettings platel = halykSettingsRepository.findTopByFieldName(PLATEL);
-        halyk.setKobd(kobd.getFieldValue());
-        halyk.setLskor(lskor.getFieldValue());
-        halyk.setRnnb(rnnb.getFieldValue());
-        halyk.setPoluch(poluch.getFieldValue());
-        halyk.setNaznpl(naznpl.getFieldValue());
-        halyk.setBclassd(bclassd.getFieldValue());
-        halyk.setKod(kod.getFieldValue());
-        halyk.setKnp(knp.getFieldValue());
-        halyk.setRnna(rnna.getFieldValue());
-        halyk.setPlatel(platel.getFieldValue());
+        halyk.setKobd(halykSettingsService.getFieldValue(KOBD));
+        halyk.setLskor(halykSettingsService.getFieldValue(LSKOR));
+        halyk.setRnnb(halykSettingsService.getFieldValue(RNNB));
+        halyk.setPoluch(halykSettingsService.getFieldValue(POLUCH));
+        halyk.setNaznpl(halykSettingsService.getFieldValue(NAZNPL));
+        halyk.setBclassd(halykSettingsService.getFieldValue(BCLASSD));
+        halyk.setKod(halykSettingsService.getFieldValue(KOD));
+        halyk.setKnp(halykSettingsService.getFieldValue(KNP));
+        halyk.setRnna(halykSettingsService.getFieldValue(RNNA));
+        halyk.setPlatel(halykSettingsService.getFieldValue(PLATEL));
     }
 
     private void divideMoneyBetweenMerchantAndHalyk(long cashBoxId, BigDecimal amount, RegisterPaymentsHalykDTO halyk,
@@ -127,18 +116,12 @@ public class HalykRegisterPaymentsService {
 
     private RegisterPaymentsCommonMerchantFieldsDTO getHalykCommonDataForMerchant() {
         RegisterPaymentsCommonMerchantFieldsDTO commonData = new RegisterPaymentsCommonMerchantFieldsDTO();
-        HalykSettings naznpl_merch = halykSettingsRepository.findTopByFieldName(NAZNPL_MERCH);
-        HalykSettings bclassd_merch = halykSettingsRepository.findTopByFieldName(BCLASSD_MERCH);
-        HalykSettings kod_merch = halykSettingsRepository.findTopByFieldName(KOD_MERCH);
-        HalykSettings knp_merch = halykSettingsRepository.findTopByFieldName(KNP_MERCH);
-        HalykSettings rnna_merch = halykSettingsRepository.findTopByFieldName(RNNA_MERCH);
-        HalykSettings platel_merch = halykSettingsRepository.findTopByFieldName(PLATEL_MERCH);
-        commonData.setNaznpl_merch(naznpl_merch.getFieldValue());
-        commonData.setBclassd_merch(bclassd_merch.getFieldValue());
-        commonData.setKod_merch(kod_merch.getFieldValue());
-        commonData.setKnp_merch(knp_merch.getFieldValue());
-        commonData.setRnna_merch(rnna_merch.getFieldValue());
-        commonData.setPlatel_merch(platel_merch.getFieldValue());
+        commonData.setNaznpl_merch(halykSettingsService.getFieldValue(NAZNPL_MERCH));
+        commonData.setBclassd_merch(halykSettingsService.getFieldValue(BCLASSD_MERCH));
+        commonData.setKod_merch(halykSettingsService.getFieldValue(KOD_MERCH));
+        commonData.setKnp_merch(halykSettingsService.getFieldValue(KNP_MERCH));
+        commonData.setRnna_merch(halykSettingsService.getFieldValue(RNNA_MERCH));
+        commonData.setPlatel_merch(halykSettingsService.getFieldValue(PLATEL_MERCH));
         return commonData;
     }
 
@@ -174,7 +157,7 @@ public class HalykRegisterPaymentsService {
     private String createNameFile() {
         StringBuilder nameFile = new StringBuilder();
         nameFile.append(CONSTANT_NAME_REGISTER);
-        HalykSettings orderNumber = halykSettingsRepository.findTopByFieldName(ORDER_NUMBER_REPORT);
+        HalykSettings orderNumber = halykSettingsService.getHalykSettingByFieldName(ORDER_NUMBER_REPORT);
         int number = orderNumber == null ? 0 : Integer.parseInt(orderNumber.getFieldValue());
         LocalDateTime dateNow = LocalDateTime.now();
         if (number == 0) {
@@ -186,7 +169,7 @@ public class HalykRegisterPaymentsService {
             saveNumberAndDateDownloadRegister(dateNow, number);
             return nameFile.toString();
         }
-        HalykSettings lastDownloadsRegister = halykSettingsRepository.findTopByFieldName(DATE_LAST_DOWNLOADS);
+        HalykSettings lastDownloadsRegister = halykSettingsService.getHalykSettingByFieldName(DATE_LAST_DOWNLOADS);
         LocalDateTime lastDownloads = LocalDateTime.parse(lastDownloadsRegister.getFieldValue());
         if (dateNow.getYear() == lastDownloads.getYear() && dateNow.getMonth() == lastDownloads.getMonth()
                 && dateNow.getDayOfMonth() == lastDownloads.getDayOfMonth()) {
@@ -212,22 +195,22 @@ public class HalykRegisterPaymentsService {
         halykSettingsDate.setId(halykIdDate);
         halykSettingsDate.setFieldName(DATE_LAST_DOWNLOADS);
         halykSettingsDate.setFieldValue(localDateTime.toString());
-        halykSettingsRepository.save(halykSettingsDate);
+        halykSettingsService.saveHalykSettings(halykSettingsDate);
         HalykSettings halykSettingsNumber = new HalykSettings();
         halykSettingsNumber.setId(halykIdNumber);
         halykSettingsNumber.setFieldName(ORDER_NUMBER_REPORT);
         halykSettingsNumber.setFieldValue(String.valueOf(numberOrder));
-        halykSettingsRepository.save(halykSettingsNumber);
+        halykSettingsService.saveHalykSettings(halykSettingsNumber);
     }
 
     private void saveNumberAndDateDownloadRegister(LocalDateTime localDateTime, int numberOrder) {
         HalykSettings halykSettingsDate = new HalykSettings();
         halykSettingsDate.setFieldName(DATE_LAST_DOWNLOADS);
         halykSettingsDate.setFieldValue(localDateTime.toString());
-        halykSettingsRepository.save(halykSettingsDate);
+        halykSettingsService.saveHalykSettings(halykSettingsDate);
         HalykSettings halykSettingsNumber = new HalykSettings();
         halykSettingsNumber.setFieldName(ORDER_NUMBER_REPORT);
         halykSettingsNumber.setFieldValue(String.valueOf(numberOrder));
-        halykSettingsRepository.save(halykSettingsNumber);
+        halykSettingsService.saveHalykSettings(halykSettingsNumber);
     }
 }

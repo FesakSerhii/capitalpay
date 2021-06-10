@@ -83,24 +83,24 @@ public class HalykSettingsService {
             if (admin.getRoles().contains(applicationRoleService.getRole(ADMIN))
                     || admin.getRoles().contains(applicationRoleService.getRole(OPERATOR))) {
                 Map<String, String> result = new HashMap<>();
-                result.put(KOBD, getField(KOBD));
-                result.put(LSKOR, getField(LSKOR));
-                result.put(RNNB, getField(RNNB));
-                result.put(POLUCH, getField(POLUCH));
-                result.put(NAZNPL_MERCH, getField(NAZNPL_MERCH));
-                result.put(BCLASSD_MERCH, getField(BCLASSD_MERCH));
-                result.put(KOD_MERCH, getField(KOD_MERCH));
-                result.put(KNP_MERCH, getField(KNP_MERCH));
-                result.put(RNNA_MERCH, getField(RNNA_MERCH));
-                result.put(PLATEL_MERCH, getField(PLATEL_MERCH));
-                result.put(NAZNPL, getField(NAZNPL));
-                result.put(BCLASSD, getField(BCLASSD));
-                result.put(KOD, getField(KOD));
-                result.put(KNP, getField(KNP));
-                result.put(RNNA, getField(RNNA));
-                result.put(PLATEL, getField(PLATEL));
-                result.put(ORDER_NUMBER_REPORT, getField(ORDER_NUMBER_REPORT));
-                result.put(DATE_LAST_DOWNLOADS, getField(DATE_LAST_DOWNLOADS));
+                result.put(KOBD, getFieldValue(KOBD));
+                result.put(LSKOR, getFieldValue(LSKOR));
+                result.put(RNNB, getFieldValue(RNNB));
+                result.put(POLUCH, getFieldValue(POLUCH));
+                result.put(NAZNPL_MERCH, getFieldValue(NAZNPL_MERCH));
+                result.put(BCLASSD_MERCH, getFieldValue(BCLASSD_MERCH));
+                result.put(KOD_MERCH, getFieldValue(KOD_MERCH));
+                result.put(KNP_MERCH, getFieldValue(KNP_MERCH));
+                result.put(RNNA_MERCH, getFieldValue(RNNA_MERCH));
+                result.put(PLATEL_MERCH, getFieldValue(PLATEL_MERCH));
+                result.put(NAZNPL, getFieldValue(NAZNPL));
+                result.put(BCLASSD, getFieldValue(BCLASSD));
+                result.put(KOD, getFieldValue(KOD));
+                result.put(KNP, getFieldValue(KNP));
+                result.put(RNNA, getFieldValue(RNNA));
+                result.put(PLATEL, getFieldValue(PLATEL));
+                result.put(ORDER_NUMBER_REPORT, getFieldValue(ORDER_NUMBER_REPORT));
+                result.put(DATE_LAST_DOWNLOADS, getFieldValue(DATE_LAST_DOWNLOADS));
                 return new ResultDTO(true, result, 0);
             } else {
                 return error120;
@@ -111,7 +111,7 @@ public class HalykSettingsService {
         }
     }
 
-    public String getField(String fieldName) {
+    public String getFieldValue(String fieldName) {
         HalykSettings halykSettings = halykSettingsRepository.findTopByFieldName(fieldName);
         if (halykSettings == null) {
             halykSettings = new HalykSettings();
@@ -120,5 +120,13 @@ public class HalykSettingsService {
             halykSettingsRepository.save(halykSettings);
         }
         return halykSettings.getFieldValue();
+    }
+
+    public HalykSettings getHalykSettingByFieldName(String fieldName) {
+        return halykSettingsRepository.findTopByFieldName(fieldName);
+    }
+
+    public HalykSettings saveHalykSettings(HalykSettings halykSettings) {
+        return halykSettingsRepository.save(halykSettings);
     }
 }
