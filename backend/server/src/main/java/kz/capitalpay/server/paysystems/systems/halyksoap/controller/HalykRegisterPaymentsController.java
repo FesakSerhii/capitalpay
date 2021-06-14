@@ -1,10 +1,6 @@
 package kz.capitalpay.server.paysystems.systems.halyksoap.controller;
 
-import kz.capitalpay.server.paysystems.systems.halyksoap.dto.HalykDTO;
 import kz.capitalpay.server.paysystems.systems.halyksoap.dto.RegisterPaymentsDateDTO;
-import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykSettings;
-import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykSettingsRepository;
-import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSettingsService;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykRegisterPaymentsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,13 +9,14 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.security.RolesAllowed;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.security.Principal;
 
 import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.OPERATOR;

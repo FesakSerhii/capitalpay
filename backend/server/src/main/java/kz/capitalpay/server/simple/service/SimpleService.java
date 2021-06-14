@@ -134,13 +134,10 @@ public class SimpleService {
                 ipAddress = httpRequest.getRemoteAddr();
             }
             request.setIpAddress(ipAddress);
-            //TODO
-
             request.setUserAgent(httpRequest.getHeader("User-Agent"));
-
             request.setCashboxid(cashboxid);
             request.setBillid(billid);
-            request.setTotalamount(adjustmentPriceForCustomerByMerchantPercentage(cashboxid, totalamount));
+            request.setTotalamount(adjustmentPriceForClientByClientFee(cashboxid, totalamount));
             request.setCurrency(currency);
             request.setDescription(description);
             request.setParam(param);
@@ -155,15 +152,14 @@ public class SimpleService {
         }
     }
 
-    private BigDecimal adjustmentPriceForCustomerByMerchantPercentage(Long cashboxId, BigDecimal totalAmount) {
+    private BigDecimal adjustmentPriceForClientByClientFee(Long cashboxId, BigDecimal totalAmount) {
         BigDecimal oneHundred = new BigDecimal(100);
-        BigDecimal percentForCashboxFromSystem = BigDecimal.valueOf(Long.parseLong(cashboxSettingsService
+        BigDecimal totalFee = BigDecimal.valueOf(Long.parseLong(cashboxSettingsService
                 .getField(cashboxId, TOTAL_FEE)));
-        BigDecimal percentForCustomerFromCashbox = BigDecimal.valueOf(Long.parseLong(cashboxSettingsService
+        BigDecimal clientFee = BigDecimal.valueOf(Long.parseLong(cashboxSettingsService
                 .getField(cashboxId, CLIENT_FEE)));
 
-        BigDecimal percentMerchantWantPaySystem = percentForCashboxFromSystem
-                .subtract(percentForCustomerFromCashbox);
+        BigDecimal percentMerchantWantPaySystem = totalFee.subtract(clientFee);
 
         BigDecimal totalAmountThatMerchantWantReceived = totalAmount
                 .subtract(totalAmount
@@ -172,7 +168,7 @@ public class SimpleService {
 
         BigDecimal finalPriceCustomerAfterAdjustmentInPenny = totalAmountThatMerchantWantReceived
                 .divide(new BigDecimal("1")
-                        .subtract(percentForCashboxFromSystem
+                        .subtract(totalFee
                                 .divide(oneHundred, MathContext.DECIMAL128)),MathContext.DECIMAL128)
                 .multiply(oneHundred);
 
