@@ -89,11 +89,10 @@ public class CashboxPaysystemService {
                 paySystemListDTO.setId(ps.getId());
                 paySystemListDTO.setName(ps.getName());
                 paySystemListDTO.setEnabled(paysystemList.contains(ps.getId()));
-                logger.info("paySystemListDTO " + paySystemListDTO.toString());
 
                 result.add(paySystemListDTO);
             }
-
+            logger.info("paySystemListDTO " + result.toString());
             return new ResultDTO(true, result, 0);
 
         } catch (Exception e) {
