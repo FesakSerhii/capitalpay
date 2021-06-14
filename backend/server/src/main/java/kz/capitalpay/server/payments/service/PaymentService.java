@@ -28,6 +28,7 @@ import java.util.Map;
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.OPERATOR;
+import static kz.capitalpay.server.payments.service.PaymentLogService.CHANGE_STATUS_PAYMENT;
 import static kz.capitalpay.server.payments.service.PaymentLogService.CREATE_NEW_PAYMENT;
 import static kz.capitalpay.server.simple.service.SimpleService.SUCCESS;
 
@@ -94,10 +95,9 @@ public class PaymentService {
         if (payment != null) {
             payment.setStatus(status);
             paymentRepository.save(payment);
-// TODO: сделать логирование изменения статусов
-
+            paymentLogService.newEvent(payment.getGuid(), payment.getIpAddress(), CHANGE_STATUS_PAYMENT,
+                    gson.toJson(payment));
             notifyMerchant(payment);
-
             logger.info("Change status: {}", gson.toJson(payment));
             return payment;
         } else {

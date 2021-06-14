@@ -14,6 +14,7 @@ public class PaymentLogService {
     Logger logger = LoggerFactory.getLogger(PaymentLogService.class);
 
     public static final String CREATE_NEW_PAYMENT = "create new payment";
+    public static final String CHANGE_STATUS_PAYMENT = "change_status_payment";
 
     @Autowired
     Gson gson;
