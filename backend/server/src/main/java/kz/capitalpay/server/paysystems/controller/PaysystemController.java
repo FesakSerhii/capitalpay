@@ -4,10 +4,15 @@ package kz.capitalpay.server.paysystems.controller;
 import com.google.gson.Gson;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.paysystems.dto.ActivatePaysystemDTO;
+import kz.capitalpay.server.paysystems.dto.PaySystemListDTO;
+import kz.capitalpay.server.paysystems.model.PaysystemInfo;
+import kz.capitalpay.server.paysystems.repository.PaysystemInfoRepository;
 import kz.capitalpay.server.paysystems.service.PaysystemService;
+import kz.capitalpay.server.paysystems.systems.PaySystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Role;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -30,6 +35,19 @@ public class PaysystemController {
 
     @Autowired
     PaysystemService paysystemService;
+
+    @Autowired
+    PaysystemInfoRepository paysystemInfoRepository;
+
+    @PostMapping("/change/bankname")
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_OPERATOR"})
+    public Boolean changeNameBank(@RequestBody PaySystemListDTO paySystemListDTO) {
+        PaysystemInfo paysystemInfo = paysystemInfoRepository.findTopByComponentName(paySystemListDTO.getName());
+        paysystemInfo.setName(paySystemListDTO.getSecondName());
+        logger.info(" pay system info " + paysystemInfo.toString());
+        paysystemInfoRepository.save(paysystemInfo);
+        return true;
+    }
 
     @PostMapping("/system/list")
     @RolesAllowed({"ROLE_ADMIN", "ROLE_OPERATOR"})

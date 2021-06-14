@@ -60,4 +60,15 @@ public class PaysystemInfo {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
+
+    @Override
+    public String toString() {
+        return "PaysystemInfo{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", componentName='" + componentName + '\'' +
+                ", priority=" + priority +
+                ", enabled=" + enabled +
+                '}';
+    }
 }
