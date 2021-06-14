@@ -2,10 +2,12 @@ package kz.capitalpay.server.simple.dto;
 
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.math.BigDecimal;
+
 public class SimpleRequestDTO {
     Long cashboxid;
     String billid;
-    Long totalamount;
+    BigDecimal totalamount;
     String currency;
     String description;
     String param;
@@ -28,11 +30,11 @@ public class SimpleRequestDTO {
         this.billid = billid;
     }
 
-    public Long getTotalamount() {
+    public BigDecimal getTotalamount() {
         return totalamount;
     }
 
-    public void setTotalamount(Long totalamount) {
+    public void setTotalamount(BigDecimal totalamount) {
         this.totalamount = totalamount;
     }
 

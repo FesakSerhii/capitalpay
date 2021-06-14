@@ -54,7 +54,6 @@ public class MerchantKycService {
     public static final String IIK = "iik";
     public static final String BIK = "bik";
 
-
     public ResultDTO setKyc(Principal principal, MerchantKycDTO request) {
         try {
 
@@ -144,5 +143,17 @@ public class MerchantKycService {
             merchantKycRepository.save(merchantKyc);
         }
         return merchantKyc.getFieldValue();
+    }
+
+    public MerchantKyc getMerchantKycByFieldNameAndMerchantId(String fieldName, Long merchantId) {
+        MerchantKyc merchantKyc = merchantKycRepository.findTopByFieldNameAndMerchantId(fieldName, merchantId);
+        if (merchantKyc == null) {
+            merchantKyc = new MerchantKyc();
+            merchantKyc.setMerchantId(merchantId);
+            merchantKyc.setFieldName(fieldName);
+            merchantKyc.setFieldValue("");
+            merchantKycRepository.save(merchantKyc);
+        }
+        return merchantKyc;
     }
 }

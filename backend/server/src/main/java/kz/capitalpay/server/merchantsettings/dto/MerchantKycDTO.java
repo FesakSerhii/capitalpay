@@ -1,6 +1,5 @@
 package kz.capitalpay.server.merchantsettings.dto;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 

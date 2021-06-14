@@ -1,9 +1,7 @@
 package kz.capitalpay.server.paysystems.systems.halyksoap.controller;
 
 import com.google.gson.Gson;
-import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.cashbox.service.CashboxService;
-import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import org.slf4j.Logger;
@@ -13,13 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import static kz.capitalpay.server.simple.service.SimpleService.FAILED;
-import static kz.capitalpay.server.simple.service.SimpleService.SUCCESS;
 
 @Controller
 public class HalykController {
@@ -69,6 +61,4 @@ public class HalykController {
         response.setHeader("Location", redirectUrl);
         response.setStatus(302);
     }
-
-
 }

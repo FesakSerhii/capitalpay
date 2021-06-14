@@ -8,6 +8,7 @@ import kz.capitalpay.server.currency.service.CurrencyService;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.service.ApplicationUserService;
+import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.merchantsettings.service.MerchantKycService;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
@@ -21,12 +22,14 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static javax.xml.crypto.dsig.DigestMethod.SHA256;
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
+import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.CLIENT_FEE;
+import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.TOTAL_FEE;
 
 @Service
 public class SimpleService {
@@ -54,6 +57,9 @@ public class SimpleService {
     @Autowired
     MerchantKycService merchantKycService;
 
+    @Autowired
+    CashboxSettingsService cashboxSettingsService;
+
     // Payment Status
     public static final String NEW_PAYMENT = "NEW";
     public static final String SUCCESS = "SUCCESS";
@@ -80,7 +86,7 @@ public class SimpleService {
 
             String merchantName = merchantKycService.getField(merchant.getId(), MerchantKycService.MNAME);
 
-            BigDecimal totalAmount = BigDecimal.valueOf(request.getTotalamount())
+            BigDecimal totalAmount = request.getTotalamount()
                     .movePointLeft(2).setScale(2, RoundingMode.HALF_UP);
 
             if (!cashboxCurrencyService.checkCurrencyEnable(cashbox.getId(), merchant.getId(), request.getCurrency())) {
@@ -119,7 +125,7 @@ public class SimpleService {
 
     }
 
-    public ResultDTO createPayment(HttpServletRequest httpRequest, Long cashboxid, String billid, Long totalamount, String currency, String description, String param) {
+    public ResultDTO createPayment(HttpServletRequest httpRequest, Long cashboxid, String billid, BigDecimal totalamount, String currency, String description, String param) {
         try {
             SimpleRequestDTO request = new SimpleRequestDTO();
 
@@ -128,12 +134,10 @@ public class SimpleService {
                 ipAddress = httpRequest.getRemoteAddr();
             }
             request.setIpAddress(ipAddress);
-
             request.setUserAgent(httpRequest.getHeader("User-Agent"));
-
             request.setCashboxid(cashboxid);
             request.setBillid(billid);
-            request.setTotalamount(totalamount);
+            request.setTotalamount(adjustmentPriceForClientByClientFee(cashboxid, totalamount));
             request.setCurrency(currency);
             request.setDescription(description);
             request.setParam(param);
@@ -146,6 +150,29 @@ public class SimpleService {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }
+    }
+
+    private BigDecimal adjustmentPriceForClientByClientFee(Long cashboxId, BigDecimal totalAmount) {
+        BigDecimal oneHundred = new BigDecimal(100);
+        BigDecimal totalFee = BigDecimal.valueOf(Long.parseLong(cashboxSettingsService
+                .getField(cashboxId, TOTAL_FEE)));
+        BigDecimal clientFee = BigDecimal.valueOf(Long.parseLong(cashboxSettingsService
+                .getField(cashboxId, CLIENT_FEE)));
+
+        BigDecimal percentMerchantWantPaySystem = totalFee.subtract(clientFee);
+
+        BigDecimal totalAmountThatMerchantWantReceived = totalAmount
+                .subtract(totalAmount
+                        .multiply(percentMerchantWantPaySystem
+                                .divide(oneHundred)));
+
+        BigDecimal finalPriceCustomerAfterAdjustmentInPenny = totalAmountThatMerchantWantReceived
+                .divide(new BigDecimal("1")
+                        .subtract(totalFee
+                                .divide(oneHundred, MathContext.DECIMAL128)),MathContext.DECIMAL128)
+                .multiply(oneHundred);
+
+        return finalPriceCustomerAfterAdjustmentInPenny.setScale(0, RoundingMode.HALF_UP);
     }
 
     // Signature: SHA256(cashboxid + billid + secret)

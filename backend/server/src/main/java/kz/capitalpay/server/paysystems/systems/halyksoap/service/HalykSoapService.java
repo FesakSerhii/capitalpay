@@ -81,6 +81,8 @@ public class HalykSoapService {
     PaymentService paymentService;
 
 
+
+
     private String createPaymentOrderXML(HalykPaymentOrder paymentOrder, String cvc, String month, String year, String pan) {
 
         String concatString = paymentOrder.getOrderid() + paymentOrder.getAmount() + paymentOrder.getCurrency() +
