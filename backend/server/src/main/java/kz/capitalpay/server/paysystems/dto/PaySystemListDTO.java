@@ -37,4 +37,14 @@ public class PaySystemListDTO {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
+
+    @Override
+    public String toString() {
+        return "PaySystemListDTO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", secondName='" + secondName + '\'' +
+                ", enabled=" + enabled +
+                '}';
+    }
 }
