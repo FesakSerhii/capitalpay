@@ -24,13 +24,13 @@ public class CashBoxSettingController {
 
     @PostMapping("/set")
     @RolesAllowed({ADMIN, OPERATOR, MERCHANT})
-    ResultDTO setKyc(@Valid @RequestBody CashBoxSettingDTO request, Principal principal) {
+    ResultDTO setCashBoxSettings(@Valid @RequestBody CashBoxSettingDTO request, Principal principal) {
         return cashboxSettingsService.setOrUpdateCashboxSettings(principal, request);
     }
 
     @PostMapping("/get")
     @RolesAllowed({ADMIN, OPERATOR,MERCHANT})
-    ResultDTO getKyc(@Valid @RequestBody CashBoxSettingDTO request, Principal principal) {
+    ResultDTO getCashBoxSettings(@Valid @RequestBody CashBoxSettingDTO request, Principal principal) {
         return cashboxSettingsService.getCashboxSettings(principal, request);
     }
 

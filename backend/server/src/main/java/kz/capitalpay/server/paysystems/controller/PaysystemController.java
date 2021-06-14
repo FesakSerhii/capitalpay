@@ -36,19 +36,6 @@ public class PaysystemController {
     @Autowired
     PaysystemService paysystemService;
 
-    @Autowired
-    PaysystemInfoRepository paysystemInfoRepository;
-
-    @PostMapping("/change/bankname")
-    @RolesAllowed({"ROLE_ADMIN", "ROLE_OPERATOR"})
-    public Boolean changeNameBank(@RequestBody PaySystemListDTO paySystemListDTO) {
-        PaysystemInfo paysystemInfo = paysystemInfoRepository.findTopByComponentName(paySystemListDTO.getName());
-        paysystemInfo.setName(paySystemListDTO.getSecondName());
-        logger.info(" pay system info " + paysystemInfo.toString());
-        paysystemInfoRepository.save(paysystemInfo);
-        return true;
-    }
-
     @PostMapping("/system/list")
     @RolesAllowed({"ROLE_ADMIN", "ROLE_OPERATOR"})
     ResultDTO paysystemList() {

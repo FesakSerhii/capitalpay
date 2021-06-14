@@ -1,7 +1,5 @@
 package kz.capitalpay.server.paysystems.model;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -61,14 +59,4 @@ public class PaysystemInfo {
         this.enabled = enabled;
     }
 
-    @Override
-    public String toString() {
-        return "PaysystemInfo{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", componentName='" + componentName + '\'' +
-                ", priority=" + priority +
-                ", enabled=" + enabled +
-                '}';
-    }
 }

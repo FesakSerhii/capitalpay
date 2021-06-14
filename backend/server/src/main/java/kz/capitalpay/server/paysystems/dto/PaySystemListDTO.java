@@ -3,16 +3,7 @@ package kz.capitalpay.server.paysystems.dto;
 public class PaySystemListDTO {
     Long id;
     String name;
-    String secondName;
     boolean enabled;
-
-    public String getSecondName() {
-        return secondName;
-    }
-
-    public void setSecondName(String secondName) {
-        this.secondName = secondName;
-    }
 
     public Long getId() {
         return id;
@@ -38,13 +29,4 @@ public class PaySystemListDTO {
         this.enabled = enabled;
     }
 
-    @Override
-    public String toString() {
-        return "PaySystemListDTO{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", secondName='" + secondName + '\'' +
-                ", enabled=" + enabled +
-                '}';
-    }
 }
