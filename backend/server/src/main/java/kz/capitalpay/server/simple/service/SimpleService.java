@@ -160,12 +160,10 @@ public class SimpleService {
                 .getField(cashboxId, CLIENT_FEE)));
 
         BigDecimal percentMerchantWantPaySystem = totalFee.subtract(clientFee);
-
         BigDecimal totalAmountThatMerchantWantReceived = totalAmount
                 .subtract(totalAmount
                         .multiply(percentMerchantWantPaySystem
                                 .divide(oneHundred)));
-
         BigDecimal finalPriceCustomerAfterAdjustmentInPenny = totalAmountThatMerchantWantReceived
                 .divide(new BigDecimal("1")
                         .subtract(totalFee

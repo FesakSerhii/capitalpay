@@ -28,4 +28,5 @@ public class PaySystemListDTO {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
+
 }

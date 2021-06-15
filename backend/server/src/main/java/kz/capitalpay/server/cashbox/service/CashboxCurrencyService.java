@@ -3,6 +3,7 @@ package kz.capitalpay.server.cashbox.service;
 import com.google.gson.Gson;
 import kz.capitalpay.server.cashbox.dto.CashboxCurrencyEditListDTO;
 import kz.capitalpay.server.cashbox.dto.CashboxRequestDTO;
+import kz.capitalpay.server.cashbox.dto.CurrencyDTO;
 import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.cashbox.repository.CashboxRepository;
 import kz.capitalpay.server.currency.model.SystemCurrency;
@@ -81,10 +82,10 @@ public class CashboxCurrencyService {
             Set<String> currencySet = new HashSet<>(currencyList);
             logger.info("Set: {}", gson.toJson(currencySet));
             List<SystemCurrency> systemCurrencyList = merchantCurrencyService.currencyList(owner.getId());
-            Map<String, Boolean> result = new HashMap<>();
+            List<CurrencyDTO> result = new ArrayList<>() ;
             for (SystemCurrency sk : systemCurrencyList) {
                 logger.info("contains: {}", currencySet.contains(sk.getAlpha()));
-                result.put(sk.getAlpha(), currencySet.contains(sk.getAlpha()));
+                result.add(new CurrencyDTO(sk.getAlpha(), sk.getNumber(), sk.getUnicode(), sk.getName(), sk.isEnabled()));
             }
 
             return new ResultDTO(true, result, 0);

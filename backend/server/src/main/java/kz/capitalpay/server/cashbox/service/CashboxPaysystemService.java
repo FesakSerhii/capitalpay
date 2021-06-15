@@ -89,10 +89,8 @@ public class CashboxPaysystemService {
                 paySystemListDTO.setId(ps.getId());
                 paySystemListDTO.setName(ps.getName());
                 paySystemListDTO.setEnabled(paysystemList.contains(ps.getId()));
-
                 result.add(paySystemListDTO);
             }
-
             return new ResultDTO(true, result, 0);
 
         } catch (Exception e) {
