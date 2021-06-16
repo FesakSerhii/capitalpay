@@ -14,6 +14,7 @@ import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
+import static kz.capitalpay.server.constants.ErrorDictionary.error120;
 import static kz.capitalpay.server.constants.ErrorDictionary.error121;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
 
@@ -77,6 +78,24 @@ public class CashboxSettingsService {
                 return new ResultDTO(true, result, 0);
             } else {
                 return error121;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultDTO(false, e.getMessage(), -1);
+        }
+    }
+
+    public ResultDTO deleteCashboxSettings(Principal principal, CashBoxSettingFieldDTO request) {
+        try {
+            ApplicationUser admin = applicationUserService.getUserByLogin(principal.getName());
+            if (admin.getRoles().contains(applicationRoleService.getRole(ADMIN))
+                    || admin.getRoles().contains(applicationRoleService.getRole(OPERATOR))) {
+                CashboxSettings cashboxSettings = cashboxSettingsRepository.findTopByFieldNameAndCashboxId(request.getFieldName(),
+                        request.getCashBoxId());
+                cashboxSettingsRepository.delete(cashboxSettings);
+                return new ResultDTO(true, "settings was deleted", 0);
+            } else {
+                return error120;
             }
         } catch (Exception e) {
             e.printStackTrace();
