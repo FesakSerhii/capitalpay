@@ -45,16 +45,18 @@ public class CashboxFeeService {
     }
 
     private String getClientFee(Long cashBoxId) {
-        return cashboxSettingsService.getField(cashBoxId, CashboxSettingsService.CLIENT_FEE);
+        String clientFee = cashboxSettingsService.getField(cashBoxId, CashboxSettingsService.CLIENT_FEE);
+        return clientFee.equals("") ? "0.0" : clientFee;
     }
 
     private String getTotalFee(Long merchantId) {
-        return merchantKycService.getField(merchantId, MerchantKycService.TOTAL_FEE);
+        String totalFee = merchantKycService.getField(merchantId, MerchantKycService.TOTAL_FEE);
+        return totalFee.equals("") ? "0.0" : totalFee;
     }
 
-    private String getMerchantFee(Long cashBoxId, Long merchantId) {
-        double clientFee = getClientFee(cashBoxId).equals("") ? 0.0 : Double.parseDouble(getClientFee(cashBoxId));
-        double totalFee = getTotalFee(merchantId).equals("") ? 0.0 : Double.parseDouble(getTotalFee(merchantId));
+    private String getMerchantFee(Long merchantId, Long cashBoxId) {
+        double totalFee = Double.parseDouble(getTotalFee(merchantId));
+        double clientFee = Double.parseDouble(getClientFee(cashBoxId));
         double merchantFee = totalFee - clientFee;
         return merchantFee == 0.0 ? "0.0" : String.valueOf(merchantFee);
     }
