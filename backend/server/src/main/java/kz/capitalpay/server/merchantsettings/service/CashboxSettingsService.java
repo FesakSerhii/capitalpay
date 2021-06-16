@@ -126,5 +126,4 @@ public class CashboxSettingsService {
         cashboxSettings.setFieldValue(fieldValue);
         cashboxSettingsRepository.save(cashboxSettings);
     }
-
 }

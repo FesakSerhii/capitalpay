@@ -1,5 +1,6 @@
 package kz.capitalpay.server.cashbox.service;
 
+import kz.capitalpay.server.cashbox.dto.CashBoxFeeDto;
 import kz.capitalpay.server.cashbox.dto.CashBoxFeeListDto;
 import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.cashbox.repository.CashboxRepository;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
+import static kz.capitalpay.server.constants.ErrorDictionary.error122;
+import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.CLIENT_FEE;
 
 @Service
 public class CashboxFeeService {
@@ -33,7 +36,7 @@ public class CashboxFeeService {
             ApplicationUser owner = applicationUserService.getUserByLogin(principal.getName());
             List<Cashbox> cashboxList = cashboxRepository.findByMerchantIdAndDeleted(owner.getId(), false);
             List<CashBoxFeeListDto> result = cashboxList.stream()
-                            .map(o -> new CashBoxFeeListDto(o.getName(), getTotalFee(o.getMerchantId()),
+                            .map(o -> new CashBoxFeeListDto(o.getId(), o.getName(), getTotalFee(o.getMerchantId()),
                                     getClientFee(o.getId()), getMerchantFee(o.getMerchantId(), o.getId())))
                     .collect(Collectors.toList());
             return new ResultDTO(true, result, 0);
@@ -44,8 +47,24 @@ public class CashboxFeeService {
         }
     }
 
+    public ResultDTO saveCashBoxFeeList(CashBoxFeeDto feeDto, Principal principal) {
+        try {
+            ApplicationUser owner = applicationUserService.getUserByLogin(principal.getName());
+            if(owner.getId() != feeDto.getMerchantId()) {
+                return error122;
+            }
+            for(CashBoxFeeListDto data : feeDto.getFeeList()) {
+                cashboxSettingsService.setField(data.getCashBoxId(), CLIENT_FEE, data.getClientFee());
+            }
+            return getCashBoxFeeList(principal);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultDTO(false, e.getMessage(), -1);
+        }
+    }
+
     private String getClientFee(Long cashBoxId) {
-        String clientFee = cashboxSettingsService.getField(cashBoxId, CashboxSettingsService.CLIENT_FEE);
+        String clientFee = cashboxSettingsService.getField(cashBoxId, CLIENT_FEE);
         return clientFee.equals("") ? "0.0" : clientFee;
     }
 

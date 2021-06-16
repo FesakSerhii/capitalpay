@@ -25,5 +25,5 @@ public class ErrorDictionary {
     public static final ResultDTO error119 = new ResultDTO(false, "Page not found", 119);
     public static final ResultDTO error120 = new ResultDTO(false, "Action available only for admin or operator", 120);
     public static final ResultDTO error121 = new ResultDTO(false, "Action available only for admin, operator or merchant.", 121);
-
+    public static final ResultDTO error122 = new ResultDTO(false, "Action available only for owner cashboxes.", 122);
 }
