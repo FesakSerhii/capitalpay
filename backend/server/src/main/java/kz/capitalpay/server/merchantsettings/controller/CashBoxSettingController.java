@@ -2,6 +2,8 @@ package kz.capitalpay.server.merchantsettings.controller;
 
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.merchantsettings.dto.CashBoxSettingDTO;
+import kz.capitalpay.server.merchantsettings.model.CashboxSettings;
+import kz.capitalpay.server.merchantsettings.repository.CashboxSettingsRepository;
 import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +15,8 @@ import javax.validation.Valid;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+
 import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
 
 @RestController
@@ -21,6 +25,12 @@ public class CashBoxSettingController {
 
     @Autowired
     private CashboxSettingsService cashboxSettingsService;
+
+    @PostMapping("/delete")
+    @RolesAllowed({ADMIN, OPERATOR})
+    public Boolean deleteSetting(@Valid @RequestBody CashBoxSettingDTO request, Principal principal) {
+        return cashboxSettingsService.deleteCashBoxSetting(request.getCashBoxId(), principal);
+    }
 
     @PostMapping("/set")
     @RolesAllowed({ADMIN, OPERATOR, MERCHANT})

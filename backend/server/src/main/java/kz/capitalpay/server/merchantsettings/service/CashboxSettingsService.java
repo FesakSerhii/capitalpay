@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+
 import static kz.capitalpay.server.constants.ErrorDictionary.error121;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
 
@@ -36,7 +38,6 @@ public class CashboxSettingsService {
     public static final String REDIRECT_FAILED_URL = "redirectfailed";
     public static final String REDIRECT_PENDING_URL = "redirectpending";
     public static final String SECRET = "secret";
-    public static final String TOTAL_FEE = "total_fee";
     public static final String CLIENT_FEE = "client_fee";
 
     public ResultDTO setOrUpdateCashboxSettings(Principal principal, CashBoxSettingDTO request) {
@@ -73,8 +74,7 @@ public class CashboxSettingsService {
                 result.put(REDIRECT_FAILED_URL, getField(cashBoxDTO.getCashBoxId(), REDIRECT_FAILED_URL));
                 result.put(REDIRECT_PENDING_URL, getField(cashBoxDTO.getCashBoxId(), REDIRECT_PENDING_URL));
                 result.put(SECRET, getField(cashBoxDTO.getCashBoxId(), SECRET));
-                result.put(TOTAL_FEE, getField(cashBoxDTO.getCashBoxId(), TOTAL_FEE));
-                result.put(CLIENT_FEE, getField(cashBoxDTO.getCashBoxId(), TOTAL_FEE));
+                result.put(CLIENT_FEE, getField(cashBoxDTO.getCashBoxId(), CLIENT_FEE));
                 return new ResultDTO(true, result, 0);
             } else {
                 return error121;
@@ -109,15 +109,14 @@ public class CashboxSettingsService {
         cashboxSettingsRepository.save(cashboxSettings);
     }
 
-    public CashboxSettings getCashboxSettingByFieldNameAndCashboxId(String fieldName, Long cashboxId) {
-        CashboxSettings cashboxSettings = cashboxSettingsRepository.findTopByFieldNameAndCashboxId(fieldName, cashboxId);
-        if (cashboxSettings == null) {
-            cashboxSettings = new CashboxSettings();
-            cashboxSettings.setCashboxId(cashboxId);
-            cashboxSettings.setFieldName(fieldName);
-            cashboxSettings.setFieldValue("");
-            cashboxSettingsRepository.save(cashboxSettings);
+    public boolean deleteCashBoxSetting(Long cashBoxId, Principal principal) {
+        ApplicationUser admin = applicationUserService.getUserByLogin(principal.getName());
+        if (admin.getRoles().contains(applicationRoleService.getRole(ADMIN))
+                || admin.getRoles().contains(applicationRoleService.getRole(OPERATOR))) {
+            Optional<CashboxSettings> cashboxSettings = cashboxSettingsRepository.findById(cashBoxId);
+            return cashboxSettingsRepository.delete(cashboxSettings);
+        } else {
+            return false;
         }
-        return cashboxSettings;
     }
 }

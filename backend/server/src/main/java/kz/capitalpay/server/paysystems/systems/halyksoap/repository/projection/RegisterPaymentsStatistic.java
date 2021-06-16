@@ -6,5 +6,4 @@ public interface RegisterPaymentsStatistic {
     String getMerchantId();
     BigDecimal getTotalAmount();
     String getCurrency();
-    Long getCashboxId();
 }

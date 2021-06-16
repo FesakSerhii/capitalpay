@@ -53,6 +53,7 @@ public class MerchantKycService {
     public static final String BANKNAME = "bankname";
     public static final String IIK = "iik";
     public static final String BIK = "bik";
+    public static final String TOTAL_FEE = "totalfee";
 
     public ResultDTO setKyc(Principal principal, MerchantKycDTO request) {
         try {
@@ -124,6 +125,7 @@ public class MerchantKycService {
             result.put(BANKNAME, getField(merchant.getId(), BANKNAME));
             result.put(IIK, getField(merchant.getId(), IIK));
             result.put(BIK, getField(merchant.getId(), BIK));
+            result.put(TOTAL_FEE, getField(merchant.getId(), TOTAL_FEE));
             logger.info(gson.toJson(result));
             return new ResultDTO(true, result, 0);
 
@@ -145,15 +147,4 @@ public class MerchantKycService {
         return merchantKyc.getFieldValue();
     }
 
-    public MerchantKyc getMerchantKycByFieldNameAndMerchantId(String fieldName, Long merchantId) {
-        MerchantKyc merchantKyc = merchantKycRepository.findTopByFieldNameAndMerchantId(fieldName, merchantId);
-        if (merchantKyc == null) {
-            merchantKyc = new MerchantKyc();
-            merchantKyc.setMerchantId(merchantId);
-            merchantKyc.setFieldName(fieldName);
-            merchantKyc.setFieldValue("");
-            merchantKycRepository.save(merchantKyc);
-        }
-        return merchantKyc;
-    }
 }
