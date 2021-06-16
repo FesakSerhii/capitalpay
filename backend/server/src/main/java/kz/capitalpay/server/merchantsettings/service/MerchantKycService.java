@@ -53,7 +53,7 @@ public class MerchantKycService {
     public static final String BANKNAME = "bankname";
     public static final String IIK = "iik";
     public static final String BIK = "bik";
-    public static final String TOTAL_FEE = "totalfee";
+    public static final String TOTAL_FEE = "total_fee";
 
     public ResultDTO setKyc(Principal principal, MerchantKycDTO request) {
         try {
