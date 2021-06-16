@@ -1,8 +1,5 @@
 package kz.capitalpay.server.paysystems.systems.halyksoap.service;
 
-import kz.capitalpay.server.merchantsettings.model.CashboxSettings;
-import kz.capitalpay.server.merchantsettings.model.MerchantKyc;
-import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.merchantsettings.service.MerchantKycService;
 import kz.capitalpay.server.paysystems.systems.halyksoap.dto.*;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykSettings;

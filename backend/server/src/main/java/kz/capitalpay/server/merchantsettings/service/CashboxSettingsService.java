@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.error121;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
@@ -109,14 +108,4 @@ public class CashboxSettingsService {
         cashboxSettingsRepository.save(cashboxSettings);
     }
 
-    public boolean deleteCashBoxSetting(Long cashBoxId, Principal principal) {
-        ApplicationUser admin = applicationUserService.getUserByLogin(principal.getName());
-        if (admin.getRoles().contains(applicationRoleService.getRole(ADMIN))
-                || admin.getRoles().contains(applicationRoleService.getRole(OPERATOR))) {
-            Optional<CashboxSettings> cashboxSettings = cashboxSettingsRepository.findById(cashBoxId);
-            return cashboxSettingsRepository.delete(cashboxSettings);
-        } else {
-            return false;
-        }
-    }
 }
