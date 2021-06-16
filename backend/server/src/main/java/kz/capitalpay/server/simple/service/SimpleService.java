@@ -26,10 +26,8 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.UUID;
-
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
 import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.CLIENT_FEE;
-import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.TOTAL_FEE;
 
 @Service
 public class SimpleService {
@@ -154,8 +152,9 @@ public class SimpleService {
 
     private BigDecimal adjustmentPriceForClientByClientFee(Long cashboxId, BigDecimal totalAmount) {
         BigDecimal oneHundred = new BigDecimal(100);
-        BigDecimal totalFee = BigDecimal.valueOf(Long.parseLong(cashboxSettingsService
-                .getField(cashboxId, TOTAL_FEE)));
+        Cashbox cashbox = cashboxService.findById(cashboxId);
+        BigDecimal totalFee = BigDecimal.valueOf(Long.parseLong(merchantKycService.getField(cashbox.getMerchantId(),
+                MerchantKycService.TOTAL_FEE)));
         BigDecimal clientFee = BigDecimal.valueOf(Long.parseLong(cashboxSettingsService
                 .getField(cashboxId, CLIENT_FEE)));
 

@@ -16,10 +16,7 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.TOTAL_FEE;
 import static kz.capitalpay.server.merchantsettings.service.MerchantKycService.*;
 import static kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSettingsService.*;
 
@@ -31,9 +28,6 @@ public class HalykRegisterPaymentsService {
 
     @Autowired
     private MerchantKycService merchantKycService;
-
-    @Autowired
-    private CashboxSettingsService cashboxSettingsService;
 
     @Autowired
     private HalykSettingsService halykSettingsService;
@@ -55,25 +49,19 @@ public class HalykRegisterPaymentsService {
 
     private String getRegisterPayments(RegisterPaymentsDateDTO registerPaymentsDateDTO) {
         List<RegisterPaymentsStatistic> statistic = getPaymentsByDate(registerPaymentsDateDTO);
-        Map<String, RegisterPaymentsMerchantDTO> register = new HashMap<>();
+        List<RegisterPaymentsMerchantDTO> register = new ArrayList<>();
         RegisterPaymentsCommonMerchantFieldsDTO commonMerchantFields = getHalykCommonDataForMerchant();
         RegisterPaymentsHalykDTO halyk = new RegisterPaymentsHalykDTO();
         for (RegisterPaymentsStatistic data : statistic) {
-            if(register.containsKey(data.getMerchantId())) {
-                divideMoneyBetweenMerchantAndHalyk(data.getCashboxId(),
-                        data.getTotalAmount(), halyk, register.get(data.getMerchantId()));
-                continue;
-            }
             RegisterPaymentsMerchantDTO merchant = new RegisterPaymentsMerchantDTO();
             setIndividualDataForMerchant(merchant, Long.parseLong(data.getMerchantId()));
             setHalykCommonDataForMerchant(merchant, commonMerchantFields);
-            divideMoneyBetweenMerchantAndHalyk(data.getCashboxId(),
+            divideMoneyBetweenMerchantAndHalyk(Long.parseLong(data.getMerchantId()),
                     data.getTotalAmount(), halyk, merchant);
-            register.put(data.getMerchantId(),merchant);
+            register.add(merchant);
         }
         setIndividualInfoForHalyk(halyk);
-        List<RegisterPaymentsMerchantDTO> result = new ArrayList<>(register.values());
-        return result.toString()
+        return register.toString()
                 .replace("[", "")
                 .replace("]", "")
                 + halyk.toString();
@@ -94,24 +82,22 @@ public class HalykRegisterPaymentsService {
 
     private void divideMoneyBetweenMerchantAndHalyk(long cashBoxId, BigDecimal amount, RegisterPaymentsHalykDTO halyk,
                                                     RegisterPaymentsMerchantDTO merchant) {
-        CashboxSettings percentForHalyk = cashboxSettingsService
-                .getCashboxSettingByFieldNameAndCashboxId(TOTAL_FEE, cashBoxId);
-        BigDecimal percent = new BigDecimal("0.0");
+        String percentForHalyk = merchantKycService.getField(cashBoxId, TOTAL_FEE);
+        BigDecimal percent = BigDecimal.ZERO;
         try {
-            percent = BigDecimal.valueOf(Double.parseDouble(percentForHalyk.getFieldValue()));
+            percent = BigDecimal.valueOf(Double.parseDouble(percentForHalyk));
         } catch (Exception e) {
             e.printStackTrace();
         }
         percent = percent.divide(new BigDecimal("100"));
 
-        BigDecimal currentHalykMoney = halyk.getAmount() == null ? new BigDecimal("0.0") : halyk.getAmount();
-        BigDecimal currentMerchantMoney = merchant.getAmount() == null ? new BigDecimal("0.0") : merchant.getAmount();
-
+        BigDecimal currentHalykMoney = halyk.getAmount() == null ? BigDecimal.ZERO : halyk.getAmount();
         BigDecimal moneyForHalyk = amount.multiply(percent);
+
         BigDecimal moneyForMerchant = amount.subtract(moneyForHalyk);
 
         halyk.setAmount(currentHalykMoney.add(moneyForHalyk));
-        merchant.setAmount(currentMerchantMoney.add(moneyForMerchant));
+        merchant.setAmount(moneyForMerchant);
     }
 
     private RegisterPaymentsCommonMerchantFieldsDTO getHalykCommonDataForMerchant() {
@@ -137,14 +123,10 @@ public class HalykRegisterPaymentsService {
 
     private void setIndividualDataForMerchant(RegisterPaymentsMerchantDTO merchant,
                                               Long merchantId) {
-        MerchantKyc iikInfo = merchantKycService.getMerchantKycByFieldNameAndMerchantId(IIK, merchantId);
-        MerchantKyc bikInfo = merchantKycService.getMerchantKycByFieldNameAndMerchantId(BIK, merchantId);
-        MerchantKyc iinbinInfo = merchantKycService.getMerchantKycByFieldNameAndMerchantId(IINBIN, merchantId);
-        MerchantKyc banknameInfo = merchantKycService.getMerchantKycByFieldNameAndMerchantId(BANKNAME, merchantId);
-        merchant.setIik(iikInfo.getFieldValue());
-        merchant.setBik(bikInfo.getFieldValue());
-        merchant.setIinbin(iinbinInfo.getFieldValue());
-        merchant.setBankname(banknameInfo.getFieldValue());
+        merchant.setIik(merchantKycService.getField(merchantId, IIK));
+        merchant.setBik(merchantKycService.getField(merchantId, BIK));
+        merchant.setIinbin(merchantKycService.getField(merchantId, IINBIN));
+        merchant.setBankname(merchantKycService.getField(merchantId, BANKNAME));
     }
 
     private List<RegisterPaymentsStatistic> getPaymentsByDate(RegisterPaymentsDateDTO registerPaymentsDateDTO) {
@@ -182,7 +164,7 @@ public class HalykRegisterPaymentsService {
         nameFile.append(formatViewDayOrMonth(dateNow.getMonthValue()))
                 .append(formatViewDayOrMonth(dateNow.getDayOfMonth()))
                 .append(".txt");
-        saveNumberAndDateDownloadRegister(lastDownloadsRegister.getId(), orderNumber.getId(),dateNow, number);
+        saveNumberAndDateDownloadRegister(lastDownloadsRegister.getId(), orderNumber.getId(), dateNow, number);
         return nameFile.toString();
     }
 
