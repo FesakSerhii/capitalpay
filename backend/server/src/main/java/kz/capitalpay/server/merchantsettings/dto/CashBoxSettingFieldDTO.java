@@ -1,14 +1,13 @@
 package kz.capitalpay.server.merchantsettings.dto;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 public class CashBoxSettingFieldDTO {
-    @NotEmpty
+    @NotNull
     private long cashBoxId;
-    @NotBlank
+    @NotEmpty
     private String fieldName;
-    @NotBlank
     private String fieldValue;
 
     public long getCashBoxId() {
