@@ -108,15 +108,4 @@ public class CashboxSettingsService {
         cashboxSettingsRepository.save(cashboxSettings);
     }
 
-    public boolean deleteCashBoxSetting(CashBoxSettingFieldDTO fieldDto, Principal principal) {
-        ApplicationUser admin = applicationUserService.getUserByLogin(principal.getName());
-        if (admin.getRoles().contains(applicationRoleService.getRole(ADMIN))
-                || admin.getRoles().contains(applicationRoleService.getRole(OPERATOR))) {
-            CashboxSettings cashboxSettings = cashboxSettingsRepository.findTopByFieldNameAndCashboxId(fieldDto.getFieldName(), fieldDto.getCashBoxId());
-            cashboxSettingsRepository.delete(cashboxSettings);
-            return true;
-        } else {
-            return false;
-        }
-    }
 }

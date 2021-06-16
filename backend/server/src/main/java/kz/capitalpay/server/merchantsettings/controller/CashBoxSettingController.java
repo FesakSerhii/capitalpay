@@ -23,12 +23,6 @@ public class CashBoxSettingController {
     @Autowired
     private CashboxSettingsService cashboxSettingsService;
 
-    @PostMapping("/delete")
-    @RolesAllowed({ADMIN, OPERATOR})
-    public Boolean deleteSetting(@Valid @RequestBody CashBoxSettingFieldDTO request, Principal principal) {
-        return cashboxSettingsService.deleteCashBoxSetting(request, principal);
-    }
-
     @PostMapping("/set")
     @RolesAllowed({ADMIN, OPERATOR, MERCHANT})
     ResultDTO setCashBoxSettings(@Valid @RequestBody CashBoxSettingDTO request, Principal principal) {
