@@ -48,10 +48,6 @@ public class CashboxFeeService {
 
     public ResultDTO saveCashBoxFeeList(CashBoxFeeDto feeDto, Principal principal) {
         try {
-            ApplicationUser owner = applicationUserService.getUserByLogin(principal.getName());
-            if(owner.getId() != feeDto.getMerchantId()) {
-                return error122;
-            }
             for(CashBoxFeeListDto data : feeDto.getFeeList()) {
                 cashboxSettingsService.setField(data.getCashBoxId(), CLIENT_FEE, data.getClientFee());
             }
