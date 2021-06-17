@@ -65,7 +65,7 @@ public class CashboxService {
         try {
             ApplicationUser owner = applicationUserService.getUserByLogin(principal.getName());
             Cashbox cashbox = new Cashbox();
-            cashbox.setMerchantId(owner.getId());
+            cashbox.setMerchantId(request.getMerchantId());
             cashbox.setName(request.getName());
 
             cashboxRepository.save(cashbox);
