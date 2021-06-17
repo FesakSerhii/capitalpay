@@ -31,10 +31,9 @@ public class CashboxFeeService {
     @Autowired
     MerchantKycService merchantKycService;
 
-    public ResultDTO getCashBoxFeeList(Principal principal) {
+    public ResultDTO getCashBoxFeeList(CashBoxFeeDto feeDto) {
         try {
-            ApplicationUser owner = applicationUserService.getUserByLogin(principal.getName());
-            List<Cashbox> cashboxList = cashboxRepository.findByMerchantIdAndDeleted(owner.getId(), false);
+            List<Cashbox> cashboxList = cashboxRepository.findByMerchantIdAndDeleted(feeDto.getMerchantId(), false);
             List<CashBoxFeeListDto> result = cashboxList.stream()
                             .map(o -> new CashBoxFeeListDto(o.getId(), o.getName(), getTotalFee(o.getMerchantId()),
                                     getClientFee(o.getId()), getMerchantFee(o.getMerchantId(), o.getId())))
@@ -56,7 +55,7 @@ public class CashboxFeeService {
             for(CashBoxFeeListDto data : feeDto.getFeeList()) {
                 cashboxSettingsService.setField(data.getCashBoxId(), CLIENT_FEE, data.getClientFee());
             }
-            return getCashBoxFeeList(principal);
+            return getCashBoxFeeList(feeDto);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);

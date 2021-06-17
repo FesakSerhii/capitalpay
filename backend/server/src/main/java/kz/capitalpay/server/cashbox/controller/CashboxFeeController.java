@@ -26,8 +26,8 @@ public class CashboxFeeController {
 
     @PostMapping("/cashbox/list")
     @RolesAllowed({MERCHANT})
-    ResultDTO listCashBoxByFee(Principal principal) {
-        return cashboxFeeService.getCashBoxFeeList(principal);
+    ResultDTO listCashBoxByFee(@Valid @RequestBody CashBoxFeeDto feeDto) {
+        return cashboxFeeService.getCashBoxFeeList(feeDto);
     }
 
     @PostMapping("/cashbox/list/save")
