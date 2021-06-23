@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
+import kz.capitalpay.server.paysystems.systems.halyksoap.dto.HalykTransferOrderDTO;
 import kz.capitalpay.server.paysystems.systems.halyksoap.kkbsign.KKBSign;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykCheckOrder;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykPaymentOrder;
@@ -80,7 +81,43 @@ public class HalykSoapService {
     @Autowired
     PaymentService paymentService;
 
-
+    private String createTransferOrder(HalykTransferOrderDTO paymentOrder, String cvc, String month, String year, String pan) {
+        String concatString = paymentOrder.getOrderid() + paymentOrder.getAmount() + paymentOrder.getCurrency() +
+                paymentOrder.getTrtype() + pan + paymentOrder.getMerchantid();
+        KKBSign kkbSign = new KKBSign();
+        String signatureValue = kkbSign.sign64(concatString, keystore, clientAlias, keypass, storepass);
+        String transferXml = String.format("<soapenv:Envelope xmlns:soapenv=\"http://www.w3.org/2003/05/soap-envelope\">" +
+                        "<soapenv:Body>" +
+                        "<ns4:transferOrder xmlns:ns4=\"http://ws.epay.kkb.kz/xsd\">" +
+                        "<transferOrder xmlns:ns2=\"http://models.ws.epay.kkb.kz/xsd\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ns2:TransferOrder\">" +
+                        "<amount>%s</amount>" +
+                        "<currency>%s</currency>" +
+                        "<cvc>%s</cvc>" +
+                        "<desc>%s</desc>" +
+                        "<merchantid>%s</merchantid>" +
+                        "<month>%s</month>" +
+                        "<orderid>%s</orderid>" +
+                        "<pan>%s</pan>" +
+                        "<year>%s</year>" +
+                        "<trtype>%d</trtype>" +
+                        "<paymentto>%s</paymentto>" +
+                        "<fromName>%s</fromName>" +
+                        "<toName>%s</toName>" +
+                        "<fromAddress>%s</fromAddress>" +
+                        "<toAddress>%s</toAddress>" +
+                        "</transferOrder>" +
+                        "<requestSignature>" +
+                        "<merchantCertificate>%s</merchantCertificate>" +
+                        "<merchantId>%s</merchantId>" +
+                        "<signatureValue>%s</signatureValue>" +
+                        "</requestSignature>" +
+                        "</ns4:transferOrder>" +
+                        "</soapenv:Body>" +
+                        "</soapenv:Envelope>", paymentOrder.getAmount(), paymentOrder.getCurrency(), cvc, paymentOrder.getDesc(),
+                paymentOrder.getMerchantid(), month, paymentOrder.getOrderid(), pan, year, paymentOrder.getTrtype(), paymentOrder.getPaymentTo(),
+                paymentOrder.getFromName(), paymentOrder.getToName(), paymentOrder.getFromAddress(), paymentOrder.getToAddress(), merchantCertificate, merchantid, signatureValue);
+        return transferXml;
+    }
 
 
     private String createPaymentOrderXML(HalykPaymentOrder paymentOrder, String cvc, String month, String year, String pan) {
@@ -146,6 +183,38 @@ public class HalykSoapService {
                 md, pares, sessionid, merchantCertificate, merchantid, signatureValue
         );
         return xml;
+    }
+
+    public String transferOrder(BigDecimal amount, String cardholderName, String cvc, String desc,
+                                String month, String orderid, String pan, String year) {
+        try {
+            HalykTransferOrderDTO paymentOrder = new HalykTransferOrderDTO();
+            paymentOrder.setOrderid("1");
+            paymentOrder.setTimestamp(System.currentTimeMillis());
+            paymentOrder.setLocalDateTime(LocalDateTime.now());
+            paymentOrder.setAmount(amount.setScale(2).toString());
+            paymentOrder.setCardholderName(cardholderName);
+            paymentOrder.setCurrency(currency);
+            paymentOrder.setDesc(desc);
+            paymentOrder.setMerchantid(merchantid);
+            paymentOrder.setOrderid(orderid);
+            paymentOrder.setTrtype(1);
+            paymentOrder.setPaymentTo("5483185000000293");
+            paymentOrder.setToName("to name");
+            paymentOrder.setFromName("from name");
+            paymentOrder.setFromName("from address");
+            paymentOrder.setToAddress("to address");
+            String signedXML = createTransferOrder(paymentOrder, cvc, month, year, pan);
+
+            String response = restTemplate.postForObject(sendOrderActionLink + "/axis2/services/EpayService.EpayServiceHttpSoap12Endpoint/",
+                    signedXML, String.class, java.util.Optional.empty());
+            logger.info("response: {}", response);
+            return "Ok test";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "Fail test";
     }
 
     public String paymentOrder(BigDecimal amount, String cardholderName, String cvc, String desc,
