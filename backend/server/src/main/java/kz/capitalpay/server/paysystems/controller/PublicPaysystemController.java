@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 
 @Controller
@@ -45,13 +46,29 @@ public class PublicPaysystemController {
     @Value("${remote.api.addres}")
     String apiAddress;
 
-//
+    //
 //    @PostMapping("/system/buttonlist")
 //    ResultDTO paysystemButtonList(@RequestBody PaymentRequestDTO request) {
 //        logger.info("Paysystem Button List");
 //        return paysystemService.systemButtonList(request);
 //    }
 //
+    @PostMapping("/transfer")
+    void transferCardTransfer(@RequestParam BigDecimal paymentid,
+                        @RequestParam String cardHolderName,
+                        @RequestParam String cvv,
+                        @RequestParam String month,
+                        @RequestParam String pan,
+                        @RequestParam String year,
+                        @RequestParam String phone,
+                        @RequestParam String email
+
+    ) {
+
+        String paymentService = halykSoapService.transferOrder(paymentid, cardHolderName, cvv, month, pan, year, phone, email);
+        logger.info("from public controller /transfer " + paymentService);
+
+    }
 
     @PostMapping("/pay")
     void paymentCardPay(HttpServletRequest httpRequest,
@@ -89,7 +106,7 @@ public class PublicPaysystemController {
     }
 
     @GetMapping("/error")
-    String error(){
+    String error() {
         return "paysystems/error";
     }
 }
