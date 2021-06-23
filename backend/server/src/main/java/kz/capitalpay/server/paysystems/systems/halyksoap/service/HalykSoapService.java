@@ -185,37 +185,6 @@ public class HalykSoapService {
         return xml;
     }
 
-    public String transferOrder(BigDecimal amount, String cardholderName, String cvc, String desc,
-                                String month, String orderid, String pan, String year) {
-        try {
-            HalykTransferOrderDTO paymentOrder = new HalykTransferOrderDTO();
-            paymentOrder.setTimestamp(System.currentTimeMillis());
-            paymentOrder.setLocalDateTime(LocalDateTime.now());
-            paymentOrder.setAmount(amount.setScale(2).toString());
-            paymentOrder.setCardholderName(cardholderName);
-            paymentOrder.setCurrency(currency);
-            paymentOrder.setDesc(desc);
-            paymentOrder.setMerchantid(merchantid);
-            paymentOrder.setOrderid(orderid);
-            paymentOrder.setTrtype(8);
-            paymentOrder.setPaymentTo("5483185000000293");
-            paymentOrder.setToName("to name");
-            paymentOrder.setFromName("from name");
-            paymentOrder.setFromName("from address");
-            paymentOrder.setToAddress("to address");
-            String signedXML = createTransferOrder(paymentOrder, cvc, month, year, pan);
-
-            String response = restTemplate.postForObject(sendOrderActionLink + "/axis2/services/EpayService.EpayServiceHttpSoap12Endpoint/",
-                    signedXML, String.class, java.util.Optional.empty());
-            logger.info("response: {}", response);
-            return "Ok test";
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "Fail test";
-    }
-
     public String paymentOrder(BigDecimal amount, String cardholderName, String cvc, String desc,
                                String month, String orderid, String pan, String year) {
         try {
