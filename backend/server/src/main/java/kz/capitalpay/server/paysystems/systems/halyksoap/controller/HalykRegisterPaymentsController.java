@@ -41,7 +41,9 @@ public class HalykRegisterPaymentsController {
         headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
         headers.add("Pragma", "no-cache");
         headers.add("Expires", "0");
-        return ResponseEntity.ok().headers(headers).contentLength(file.length()).contentType(
-                MediaType.parseMediaType("application/txt")).body(resource);
+        return ResponseEntity.ok().headers(headers)
+                .contentLength(file.length())
+                .contentType(MediaType.TEXT_PLAIN)
+                .body(resource);
     }
 }
