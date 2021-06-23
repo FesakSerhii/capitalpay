@@ -189,7 +189,6 @@ public class HalykSoapService {
                                 String month, String orderid, String pan, String year) {
         try {
             HalykTransferOrderDTO paymentOrder = new HalykTransferOrderDTO();
-            paymentOrder.setOrderid("1");
             paymentOrder.setTimestamp(System.currentTimeMillis());
             paymentOrder.setLocalDateTime(LocalDateTime.now());
             paymentOrder.setAmount(amount.setScale(2).toString());
@@ -198,7 +197,7 @@ public class HalykSoapService {
             paymentOrder.setDesc(desc);
             paymentOrder.setMerchantid(merchantid);
             paymentOrder.setOrderid(orderid);
-            paymentOrder.setTrtype(1);
+            paymentOrder.setTrtype(8);
             paymentOrder.setPaymentTo("5483185000000293");
             paymentOrder.setToName("to name");
             paymentOrder.setFromName("from name");
