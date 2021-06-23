@@ -54,18 +54,18 @@ public class PublicPaysystemController {
 //    }
 //
     @PostMapping("/transfer")
-    void transferCardTransfer(@RequestParam BigDecimal paymentid,
-                        @RequestParam String cardHolderName,
-                        @RequestParam String cvv,
-                        @RequestParam String month,
-                        @RequestParam String pan,
-                        @RequestParam String year,
-                        @RequestParam String phone,
-                        @RequestParam String email
+    void transferMoney(@RequestParam String paymentid,
+                       @RequestParam String cardHolderName,
+                       @RequestParam String cvv,
+                       @RequestParam String month,
+                       @RequestParam String pan,
+                       @RequestParam String year,
+                       @RequestParam String phone,
+                       @RequestParam String email
 
     ) {
 
-        String paymentService = halykSoapService.transferOrder(paymentid, cardHolderName, cvv, month, pan, year, phone, email);
+        String paymentService = paysystemService.transferMoney(paymentid, cardHolderName, cvv, month, pan, year, phone, email);
         logger.info("from public controller /transfer " + paymentService);
 
     }
