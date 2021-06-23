@@ -53,22 +53,6 @@ public class PublicPaysystemController {
 //        return paysystemService.systemButtonList(request);
 //    }
 //
-    @PostMapping("/transfer")
-    void transferMoney(@RequestParam String paymentid,
-                       @RequestParam String cardHolderName,
-                       @RequestParam String cvv,
-                       @RequestParam String month,
-                       @RequestParam String pan,
-                       @RequestParam String year,
-                       @RequestParam String phone,
-                       @RequestParam String email
-
-    ) {
-
-        String paymentService = paysystemService.transferMoney(paymentid, cardHolderName, cvv, month, pan, year, phone, email);
-        logger.info("from public controller /transfer " + paymentService);
-
-    }
 
     @PostMapping("/pay")
     void paymentCardPay(HttpServletRequest httpRequest,

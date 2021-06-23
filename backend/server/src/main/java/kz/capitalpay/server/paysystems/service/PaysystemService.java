@@ -161,17 +161,6 @@ public class PaysystemService {
         }
     }
 
-    public String transferMoney(String paymentid, String cardHolderName, String cvv,
-                                String month, String pan, String year,
-                                String phone, String email) {
-
-        Payment payment = paymentService.addPhoneAndEmail(paymentid, phone, email);
-
-        return halykSoapService.transferOrder(payment.getTotalAmount(),
-                cardHolderName, cvv, payment.getDescription(), month, payment.getPaySysPayId(), pan, year);
-
-    }
-
     public HttpServletResponse paymentPayAndRedirect(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
                                                      String paymentid, String cardHolderName, String cvv,
                                                      String month, String pan, String year,
