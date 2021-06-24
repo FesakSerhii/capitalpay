@@ -8,9 +8,12 @@ import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.eventlog.service.SystemEventsLogsService;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.service.ApplicationUserService;
+import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
+import kz.capitalpay.server.merchantsettings.service.MerchantKycService;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.paysystems.dto.ActivatePaysystemDTO;
+import kz.capitalpay.server.paysystems.dto.BillPaymentDto;
 import kz.capitalpay.server.paysystems.dto.PaySystemButonResponceDTO;
 import kz.capitalpay.server.paysystems.dto.PaymentRequestDTO;
 import kz.capitalpay.server.paysystems.model.PaysystemInfo;
@@ -21,20 +24,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.security.Principal;
-import java.time.LocalDateTime;
 import java.util.*;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.error114;
 import static kz.capitalpay.server.constants.ErrorDictionary.error118;
 import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.ACTIVATE_PAYSYSTEM;
+import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.CLIENT_FEE;
+import static kz.capitalpay.server.merchantsettings.service.MerchantKycService.TOTAL_FEE;
 
 @Service
 public class PaysystemService {
@@ -59,6 +64,11 @@ public class PaysystemService {
     @Autowired
     CashboxPaysystemService cashboxPaysystemService;
 
+    @Autowired
+    MerchantKycService merchantKycService;
+
+    @Autowired
+    CashboxSettingsService cashboxSettingsService;
 
     @Autowired
     List<PaySystem> paySystemList;
@@ -95,7 +105,7 @@ public class PaysystemService {
             paysystemInfoRepository.save(paysystemInfo);
             paysystemInfoList.add(paysystemInfo);
         }
-        logger.info("paysystemInfoList: {}",gson.toJson(paysystemInfoList));
+        logger.info("paysystemInfoList: {}", gson.toJson(paysystemInfoList));
         return paysystemInfoList;
     }
 
@@ -164,25 +174,44 @@ public class PaysystemService {
         }
     }
 
-    private void createBill(Payment payment, HttpServletRequest httpRequest) {
-        String merchantName = payment.getMerchantName();
-        String merchantSite = "";
-        String numberOrder = payment.getBillId();
-        LocalDateTime transactionDate = payment.getLocalDateTime();
-        String transactionType = "1";
-        String transactionNumber = payment.getPaySysPayId();
-        String paySystemName = "visa";
-        String purposePayment = payment.getDescription();
+    private String createBill(Payment payment, HttpServletRequest httpRequest, String cardHolderName, String pan, String result) {
+        BillPaymentDto billPaymentDto = new BillPaymentDto();
+        billPaymentDto.setStatusBill(result);
+        billPaymentDto.setMerchantName(payment.getMerchantName());
+        billPaymentDto.setWebSiteMerchant(httpRequest.getServerName());
+        billPaymentDto.setOrderId(payment.getBillId());
+        billPaymentDto.setDateTransaction(payment.getLocalDateTime());
+        billPaymentDto.setTypeTransaction(1);
+        billPaymentDto.setNumberTransaction(payment.getPaySysPayId());
+        billPaymentDto.setCardNumber(cardHolderName);
+        billPaymentDto.setCardNumber(pan);
+        billPaymentDto.setPaySystemName(pan);
+        billPaymentDto.setPurposePayment(payment.getDescription());
+        setAmountFields(payment.getCashboxId(), payment.getTotalAmount(), billPaymentDto, payment.getCurrency());
+        return gson.toJson(billPaymentDto);
+    }
 
-        logger.info("merchantName - " + merchantName + " , numberOrder - " + numberOrder + " , transactionDate - " + transactionDate
-        + ", transactionNumber - " + transactionNumber + " , purposePayment - " + purposePayment);
+    private void setAmountFields(Long cashboxId, BigDecimal totalAmount, BillPaymentDto billPaymentDto, String currency) {
+        BigDecimal oneHundred = new BigDecimal(100);
+        Cashbox cashbox = cashboxService.findById(cashboxId);
+        BigDecimal totalFee = BigDecimal.valueOf(Long.parseLong(merchantKycService.getField(cashbox.getMerchantId(),
+                TOTAL_FEE)));
+        BigDecimal clientFee = BigDecimal.valueOf(Long.parseLong(cashboxSettingsService
+                .getField(cashboxId, CLIENT_FEE)));
 
-        String url = UriComponentsBuilder.fromHttpRequest(new ServletServerHttpRequest(httpRequest)).build().toUriString();
-
-        logger.info(" 1 " + httpRequest.getServletPath() + "\n 2 " + httpRequest.getRequestURI()
-        + "\n 3 " + httpRequest.getRequestURL() + "\n 4 " + httpRequest.getQueryString() + " 5 success " + httpRequest.getServerName()
-        + " 6 " + httpRequest.getContextPath() + " 7 " + url);
-
+        BigDecimal amountWithoutClientFee = totalAmount
+                .divide((BigDecimal.ONE
+                                .subtract(clientFee
+                                        .divide(oneHundred, MathContext.DECIMAL128))
+                                .divide(BigDecimal.ONE
+                                                .subtract(totalFee
+                                                        .divide(oneHundred, MathContext.DECIMAL128)),
+                                        MathContext.DECIMAL128)),
+                        MathContext.DECIMAL128)
+                .setScale(0, RoundingMode.HALF_UP);
+        billPaymentDto.setTotalAmount(totalAmount.toString(), currency);
+        billPaymentDto.setAmountPayment(amountWithoutClientFee.toString(), currency);
+        billPaymentDto.setAmountFee(totalAmount.subtract(amountWithoutClientFee).toString(), currency);
     }
 
     public HttpServletResponse paymentPayAndRedirect(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
@@ -199,12 +228,15 @@ public class PaysystemService {
         logger.info("Request User-Agent: {}", httpRequest.getHeader("User-Agent"));
 
         Payment payment = paymentService.addPhoneAndEmail(paymentid, phone, email);
-        createBill(payment, httpRequest);
+
 
         String result = halykSoapService.paymentOrder(payment.getTotalAmount(),
                 cardHolderName, cvv, payment.getDescription(), month, payment.getPaySysPayId(), pan, year);
+
         if (result.equals("OK")) {
             logger.info("Redirect to OK");
+            String bill = createBill(payment, httpRequest, cardHolderName, pan, result);
+            logger.info(" bill " + bill);
 
             String location = cashboxService.getRedirectForPayment(payment);
             httpResponse.setHeader("Location", location);
