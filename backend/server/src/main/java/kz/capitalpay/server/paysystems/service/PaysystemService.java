@@ -238,9 +238,16 @@ public class PaysystemService {
             String bill = createBill(payment, httpRequest, cardHolderName, pan, result);
             logger.info(" bill " + bill);
 
-            String location = cashboxService.getRedirectForPayment(payment);
-            httpResponse.setHeader("Location", location);
+            String url = apiAddress + "/public/paysystem/bill" +
+                    "?bill=" + bill;
+
+            httpResponse.setHeader("Location", url);
+
             httpResponse.setStatus(302);
+
+//            String location = cashboxService.getRedirectForPayment(payment);
+//            httpResponse.setHeader("Location", location);
+//            httpResponse.setStatus(302);
         } else if (result.equals("FAIL")) {
             logger.info("Redirect to Fail");
             httpResponse.setHeader("Location", "https://api.capitalpay.kz/public/paysystem/error");
