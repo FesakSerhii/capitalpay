@@ -93,4 +93,9 @@ public class PublicPaysystemController {
     String error() {
         return "paysystems/error";
     }
+
+    @GetMapping("/bill")
+    String bill() {
+        return "paysystems/bill";
+    }
 }
