@@ -21,7 +21,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -165,17 +167,21 @@ public class PaysystemService {
     private void createBill(Payment payment, HttpServletRequest httpRequest) {
         String merchantName = payment.getMerchantName();
         String merchantSite = "";
-        String numberOrder = payment.getPaySysPayId();
+        String numberOrder = payment.getBillId();
         LocalDateTime transactionDate = payment.getLocalDateTime();
         String transactionType = "1";
-        String transactionNumber = payment.getBillId();
+        String transactionNumber = payment.getPaySysPayId();
         String paySystemName = "visa";
         String purposePayment = payment.getDescription();
+
         logger.info("merchantName - " + merchantName + " , numberOrder - " + numberOrder + " , transactionDate - " + transactionDate
         + ", transactionNumber - " + transactionNumber + " , purposePayment - " + purposePayment);
+
+        String url = UriComponentsBuilder.fromHttpRequest(new ServletServerHttpRequest(httpRequest)).build().toUriString();
+
         logger.info(" 1 " + httpRequest.getServletPath() + "\n 2 " + httpRequest.getRequestURI()
         + "\n 3 " + httpRequest.getRequestURL() + "\n 4 " + httpRequest.getQueryString() + " 5 success " + httpRequest.getServerName()
-        + " 6 " + httpRequest.getContextPath());
+        + " 6 " + httpRequest.getContextPath() + " 7 " + url);
 
     }
 
