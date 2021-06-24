@@ -95,7 +95,6 @@ public class PublicPaysystemController {
 
     @GetMapping("/bill")
     String bill(@ModelAttribute("bill") BillPaymentDto bill) {
-        logger.info("bill " + bill.toString());
         return "paysystems/bill";
     }
 }
