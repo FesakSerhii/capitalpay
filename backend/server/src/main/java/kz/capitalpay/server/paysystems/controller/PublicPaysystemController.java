@@ -3,6 +3,7 @@ package kz.capitalpay.server.paysystems.controller;
 import com.google.gson.Gson;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
+import kz.capitalpay.server.paysystems.dto.BillPaymentDto;
 import kz.capitalpay.server.paysystems.service.PaysystemService;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import org.slf4j.Logger;
@@ -96,7 +97,7 @@ public class PublicPaysystemController {
     }
 
     @GetMapping("/bill")
-    String bill(Model model, @RequestParam String bill) {
+    String bill(Model model, @RequestParam BillPaymentDto bill) {
         model.addAttribute("bill", bill);
         return "paysystems/bill";
     }
