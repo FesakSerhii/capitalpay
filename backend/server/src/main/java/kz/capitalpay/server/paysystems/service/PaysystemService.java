@@ -174,7 +174,8 @@ public class PaysystemService {
         logger.info("merchantName - " + merchantName + " , numberOrder - " + numberOrder + " , transactionDate - " + transactionDate
         + ", transactionNumber - " + transactionNumber + " , purposePayment - " + purposePayment);
         logger.info(" 1 " + httpRequest.getServletPath() + "\n 2 " + httpRequest.getRequestURI()
-        + "\n 3 " + httpRequest.getRequestURL() + "\n 4 " + httpRequest.getQueryString() + " 5 " + httpRequest.getServerName());
+        + "\n 3 " + httpRequest.getRequestURL() + "\n 4 " + httpRequest.getQueryString() + " 5 success " + httpRequest.getServerName()
+        + " 6 " + httpRequest.getContextPath());
 
     }
 
