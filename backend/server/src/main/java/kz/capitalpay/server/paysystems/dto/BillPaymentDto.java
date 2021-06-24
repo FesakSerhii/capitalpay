@@ -56,7 +56,7 @@ public class BillPaymentDto {
     }
 
     public void setDateTransaction(LocalDateTime dateTransaction) {
-        this.dateTransaction = dateTransaction.format(DateTimeFormatter.ofPattern("dd.MM.yyyy hh:mm:ss"));
+        this.dateTransaction = dateTransaction.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"));
     }
 
     public String getTypeTransaction() {
@@ -80,7 +80,7 @@ public class BillPaymentDto {
     }
 
     public void setNumberTransaction(String numberTransaction) {
-        this.numberTransaction = numberTransaction;
+        this.numberTransaction = numberTransaction.replaceFirst("0*", "");
     }
 
     public String getCardHolderName() {
