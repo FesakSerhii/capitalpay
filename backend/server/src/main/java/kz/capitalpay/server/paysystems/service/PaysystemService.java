@@ -174,7 +174,7 @@ public class PaysystemService {
         }
     }
 
-    private String createBill(Payment payment, HttpServletRequest httpRequest, String cardHolderName, String pan, String result) {
+    private BillPaymentDto createBill(Payment payment, HttpServletRequest httpRequest, String cardHolderName, String pan, String result) {
         BillPaymentDto billPaymentDto = new BillPaymentDto();
         billPaymentDto.setStatusBill(result);
         billPaymentDto.setMerchantName(payment.getMerchantName());
@@ -188,7 +188,7 @@ public class PaysystemService {
         billPaymentDto.setPaySystemName(pan);
         billPaymentDto.setPurposePayment(payment.getDescription());
         setAmountFields(payment.getCashboxId(), payment.getTotalAmount(), billPaymentDto, payment.getCurrency());
-        return gson.toJson(billPaymentDto);
+        return billPaymentDto;
     }
 
     private void setAmountFields(Long cashboxId, BigDecimal totalAmount, BillPaymentDto billPaymentDto, String currency) {
@@ -235,11 +235,10 @@ public class PaysystemService {
 
         if (result.equals("OK")) {
             logger.info("Redirect to OK");
-            String bill = createBill(payment, httpRequest, cardHolderName, pan, result);
-            logger.info(" bill " + bill);
+            BillPaymentDto bill = createBill(payment, httpRequest, cardHolderName, pan, result);
 
             String url = apiAddress + "/public/paysystem/bill" +
-                    "?bill=" + bill;
+                    "?bill=" + bill.getCardHolderName();
 
             httpResponse.setHeader("Location", url);
 
