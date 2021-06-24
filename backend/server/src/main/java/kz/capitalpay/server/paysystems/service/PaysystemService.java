@@ -27,6 +27,7 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.error114;
@@ -161,6 +162,22 @@ public class PaysystemService {
         }
     }
 
+    private void createBill(Payment payment, HttpServletRequest httpRequest) {
+        String merchantName = payment.getMerchantName();
+        String merchantSite = "";
+        String numberOrder = payment.getPaySysPayId();
+        LocalDateTime transactionDate = payment.getLocalDateTime();
+        String transactionType = "1";
+        String transactionNumber = payment.getBillId();
+        String paySystemName = "visa";
+        String purposePayment = payment.getDescription();
+        logger.info("merchantName - " + merchantName + " , numberOrder - " + numberOrder + " , transactionDate - " + transactionDate
+        + ", transactionNumber - " + transactionNumber + " , purposePayment - " + purposePayment);
+        logger.info(" 1 " + httpRequest.getServletPath() + "\n 2 " + httpRequest.getRequestURI()
+        + "\n 3 " + httpRequest.getRequestURL() + "\n 4 " + httpRequest.getQueryString());
+
+    }
+
     public HttpServletResponse paymentPayAndRedirect(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
                                                      String paymentid, String cardHolderName, String cvv,
                                                      String month, String pan, String year,
@@ -175,6 +192,7 @@ public class PaysystemService {
         logger.info("Request User-Agent: {}", httpRequest.getHeader("User-Agent"));
 
         Payment payment = paymentService.addPhoneAndEmail(paymentid, phone, email);
+        createBill(payment, httpRequest);
 
         String result = halykSoapService.paymentOrder(payment.getTotalAmount(),
                 cardHolderName, cvv, payment.getDescription(), month, payment.getPaySysPayId(), pan, year);
