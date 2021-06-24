@@ -1,7 +1,5 @@
 package kz.capitalpay.server.simple.dto;
 
-import org.springframework.web.bind.annotation.RequestParam;
-
 import java.math.BigDecimal;
 
 public class SimpleRequestDTO {
