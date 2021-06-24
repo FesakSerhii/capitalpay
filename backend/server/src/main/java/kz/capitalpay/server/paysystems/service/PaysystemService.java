@@ -238,7 +238,7 @@ public class PaysystemService {
             BillPaymentDto bill = createBill(payment, httpRequest, cardHolderName, pan, result);
 
             String url = apiAddress + "/public/paysystem/bill" +
-                    "?bill=" + bill.getCardHolderName();
+                    "?bill=" + bill;
 
             httpResponse.setHeader("Location", url);
 
