@@ -97,7 +97,7 @@ public class PublicPaysystemController {
     }
 
     @GetMapping("/bill")
-    String bill(Model model, @RequestParam BillPaymentDto bill) {
+    String bill(Model model, BillPaymentDto bill) {
         model.addAttribute("bill", bill);
         return "paysystems/bill";
     }
