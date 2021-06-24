@@ -236,12 +236,9 @@ public class PaysystemService {
         if (result.equals("OK")) {
             logger.info("Redirect to OK");
             BillPaymentDto bill = createBill(payment, httpRequest, cardHolderName, pan, result);
-
             String url = apiAddress + "/public/paysystem/bill" +
                     "?bill=" + bill;
-
             httpResponse.setHeader("Location", url);
-
             httpResponse.setStatus(302);
 
 //            String location = cashboxService.getRedirectForPayment(payment);

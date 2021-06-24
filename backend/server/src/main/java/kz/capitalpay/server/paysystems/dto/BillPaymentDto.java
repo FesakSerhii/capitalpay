@@ -171,4 +171,24 @@ public class BillPaymentDto {
         }
         return "Unknown pay system";
     }
+
+    @Override
+    public String toString() {
+        return "BillPaymentDto{" +
+                "statusBill='" + statusBill + '\'' +
+                ", merchantName='" + merchantName + '\'' +
+                ", webSiteMerchant='" + webSiteMerchant + '\'' +
+                ", orderId='" + orderId + '\'' +
+                ", dateTransaction='" + dateTransaction + '\'' +
+                ", typeTransaction='" + typeTransaction + '\'' +
+                ", paySystemName='" + paySystemName + '\'' +
+                ", numberTransaction='" + numberTransaction + '\'' +
+                ", cardHolderName='" + cardHolderName + '\'' +
+                ", cardNumber='" + cardNumber + '\'' +
+                ", purposePayment='" + purposePayment + '\'' +
+                ", amountPayment='" + amountPayment + '\'' +
+                ", amountFee='" + amountFee + '\'' +
+                ", totalAmount='" + totalAmount + '\'' +
+                '}';
+    }
 }
