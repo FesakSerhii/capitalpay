@@ -19,6 +19,9 @@ public class BillPaymentDto {
     private String amountFee;
     private String totalAmount;
 
+    public BillPaymentDto() {
+    }
+
     public String getStatusBill() {
         return statusBill;
     }
