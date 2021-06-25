@@ -97,7 +97,7 @@ public class PublicPaysystemController {
 
     @GetMapping("/bill")
     String bill(@RequestParam String bill, Model model) throws JsonProcessingException {
-        model.addAttribute("bill", new ObjectMapper().readValue(bill, BillPaymentDto.class));
+        model.addAttribute("bill", gson.fromJson(bill, BillPaymentDto.class));
         return "paysystems/bill";
     }
 }
