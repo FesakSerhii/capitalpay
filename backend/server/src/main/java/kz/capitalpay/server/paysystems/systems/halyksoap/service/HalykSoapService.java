@@ -156,7 +156,6 @@ public class HalykSoapService {
                 merchantCertificate, merchantid, signatureValue
         );
         return xml;
-
     }
 
     String createPaymentOrderAcsXML(String md, String pares, String sessionid) {
@@ -227,14 +226,12 @@ public class HalykSoapService {
                     return gson.toJson(param);
                 }
             }
-
             return "OK";
         } catch (Exception e) {
             e.printStackTrace();
         }
         return "FAIL";
     }
-
 
     public String checkOrder(String orderid) {
         try {

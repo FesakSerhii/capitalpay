@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class BillPaymentDto {
-    private String statusBill;
+    private String resultPayment;
     private String merchantName;
     private String webSiteMerchant;
     private String orderId;
@@ -22,12 +22,12 @@ public class BillPaymentDto {
     public BillPaymentDto() {
     }
 
-    public String getStatusBill() {
-        return statusBill;
+    public String getResultPayment() {
+        return resultPayment;
     }
 
-    public void setStatusBill(String statusBill) {
-        this.statusBill = statusBill;
+    public void setResultPayment(String resultPayment) {
+        this.resultPayment = resultPayment;
     }
 
     public String getMerchantName() {
