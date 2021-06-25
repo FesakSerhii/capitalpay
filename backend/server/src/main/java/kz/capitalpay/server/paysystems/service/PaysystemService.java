@@ -174,7 +174,7 @@ public class PaysystemService {
         }
     }
 
-    private BillPaymentDto createBill(Payment payment, HttpServletRequest httpRequest, String cardHolderName, String pan, String result) {
+    private String createBill(Payment payment, HttpServletRequest httpRequest, String cardHolderName, String pan, String result) {
         BillPaymentDto billPaymentDto = new BillPaymentDto();
         billPaymentDto.setStatusBill(result);
         billPaymentDto.setMerchantName(payment.getMerchantName());
@@ -188,7 +188,7 @@ public class PaysystemService {
         billPaymentDto.setPaySystemName(pan);
         billPaymentDto.setPurposePayment(payment.getDescription());
         setAmountFields(payment.getCashboxId(), payment.getTotalAmount(), billPaymentDto, payment.getCurrency());
-        return billPaymentDto;
+        return new Gson().toJson(billPaymentDto);
     }
 
     private void setAmountFields(Long cashboxId, BigDecimal totalAmount, BillPaymentDto billPaymentDto, String currency) {
@@ -235,15 +235,15 @@ public class PaysystemService {
 
         if (result.equals("OK")) {
             logger.info("Redirect to OK");
-//            BillPaymentDto bill = createBill(payment, httpRequest, cardHolderName, pan, result);
-//            String url = apiAddress + "/public/paysystem/bill" +
-//                    "?bill=" + bill;
-//            httpResponse.setHeader("Location", url);
-//            httpResponse.setStatus(302);
-
-            String location = cashboxService.getRedirectForPayment(payment);
-            httpResponse.setHeader("Location", location);
+            String bill = createBill(payment, httpRequest, cardHolderName, pan, result);
+            String url = apiAddress + "/public/paysystem/bill" +
+                    "?bill=" + bill;
+            httpResponse.setHeader("Location", url);
             httpResponse.setStatus(302);
+
+//            String location = cashboxService.getRedirectForPayment(payment);
+//            httpResponse.setHeader("Location", location);
+//            httpResponse.setStatus(302);
         } else if (result.equals("FAIL")) {
             logger.info("Redirect to Fail");
             httpResponse.setHeader("Location", "https://api.capitalpay.kz/public/paysystem/error");

@@ -1,5 +1,7 @@
 package kz.capitalpay.server.paysystems.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
@@ -94,7 +96,8 @@ public class PublicPaysystemController {
     }
 
     @GetMapping("/bill")
-    String bill(@ModelAttribute("bill") BillPaymentDto bill) {
+    String bill(@RequestParam String bill, Model model) throws JsonProcessingException {
+        model.addAttribute("bill", new ObjectMapper().readValue(bill, BillPaymentDto.class));
         return "paysystems/bill";
     }
 }
