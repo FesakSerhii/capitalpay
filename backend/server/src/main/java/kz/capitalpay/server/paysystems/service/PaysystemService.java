@@ -174,21 +174,21 @@ public class PaysystemService {
         }
     }
 
-    private String createBill(Payment payment, HttpServletRequest httpRequest, String cardHolderName, String pan, String result) {
+    private BillPaymentDto createBill(Payment payment, HttpServletRequest httpRequest, String cardHolderName, String pan, String result) {
         BillPaymentDto billPaymentDto = new BillPaymentDto();
-        billPaymentDto.setStatusBill(result);
+        billPaymentDto.setResultPayment(result);
         billPaymentDto.setMerchantName(payment.getMerchantName());
         billPaymentDto.setWebSiteMerchant(httpRequest.getServerName());
         billPaymentDto.setOrderId(payment.getBillId());
         billPaymentDto.setDateTransaction(payment.getLocalDateTime());
         billPaymentDto.setTypeTransaction(1);
         billPaymentDto.setNumberTransaction(payment.getPaySysPayId());
-        billPaymentDto.setCardNumber(cardHolderName);
+        billPaymentDto.setCardHolderName(cardHolderName);
         billPaymentDto.setCardNumber(pan);
         billPaymentDto.setPaySystemName(pan);
         billPaymentDto.setPurposePayment(payment.getDescription());
         setAmountFields(payment.getCashboxId(), payment.getTotalAmount(), billPaymentDto, payment.getCurrency());
-        return new Gson().toJson(billPaymentDto);
+        return billPaymentDto;
     }
 
     private void setAmountFields(Long cashboxId, BigDecimal totalAmount, BillPaymentDto billPaymentDto, String currency) {
@@ -214,6 +214,41 @@ public class PaysystemService {
         billPaymentDto.setAmountFee(totalAmount.subtract(amountWithoutClientFee).toString(), currency);
     }
 
+    private HttpServletResponse redirectAfterPay(HttpServletResponse httpResponse, BillPaymentDto bill) {
+        if (("OK").equals(bill.getResultPayment()) || "FAIL".equals(bill.getResultPayment())) {
+            logger.info("Redirect to " + bill.getResultPayment());
+
+            String url = apiAddress + "/public/paysystem/bill" +
+                    "?bill=" + gson.toJson(bill);
+            httpResponse.setHeader("Location", url);
+
+//            String location = cashboxService.getRedirectForPayment(payment);
+//            httpResponse.setHeader("Location", location);
+//            httpResponse.setStatus(302);
+//        } else if ("FAIL".equals(bill.getResultPayment())) {
+//            logger.info("Redirect to Fail");
+//            httpResponse.setHeader("Location", "https://api.capitalpay.kz/public/paysystem/error");
+        } else {
+            logger.info("Redirect to 3DS");
+            logger.info("Result: {}", bill.getResultPayment());
+            try {
+                LinkedHashMap<String, String> param = gson.fromJson(bill.getResultPayment(), LinkedHashMap.class);
+
+                String url = apiAddress + "/public/paysystem/secure/redirect" +
+                        "?acsUrl=" + param.get("acsUrl") +
+                        "&MD=" + param.get("MD") +
+                        "&PaReq=" + param.get("PaReq") +
+                        "&bill=" +  gson.toJson(bill);
+                httpResponse.setHeader("Location", url);
+            } catch (Exception e) {
+                e.printStackTrace();
+
+            }
+        }
+        httpResponse.setStatus(302);
+        return httpResponse;
+    }
+
     public HttpServletResponse paymentPayAndRedirect(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
                                                      String paymentid, String cardHolderName, String cvv,
                                                      String month, String pan, String year,
@@ -229,45 +264,11 @@ public class PaysystemService {
 
         Payment payment = paymentService.addPhoneAndEmail(paymentid, phone, email);
 
-
         String result = halykSoapService.paymentOrder(payment.getTotalAmount(),
                 cardHolderName, cvv, payment.getDescription(), month, payment.getPaySysPayId(), pan, year);
 
-        if (result.equals("OK")) {
-            logger.info("Redirect to OK");
-            String bill = createBill(payment, httpRequest, cardHolderName, pan, result);
-            String url = apiAddress + "/public/paysystem/bill" +
-                    "?bill=" + bill;
-            httpResponse.setHeader("Location", url);
-            httpResponse.setStatus(302);
+        BillPaymentDto bill = createBill(payment, httpRequest, cardHolderName, pan, result);
 
-//            String location = cashboxService.getRedirectForPayment(payment);
-//            httpResponse.setHeader("Location", location);
-//            httpResponse.setStatus(302);
-        } else if (result.equals("FAIL")) {
-            logger.info("Redirect to Fail");
-            httpResponse.setHeader("Location", "https://api.capitalpay.kz/public/paysystem/error");
-            httpResponse.setStatus(302);
-        } else {
-            logger.info("Redirect to 3DS");
-            logger.info("Result: {}", result);
-            try {
-                LinkedHashMap<String, String> param = gson.fromJson(result, LinkedHashMap.class);
-
-                String url = apiAddress + "/public/paysystem/secure/redirect" +
-                        "?acsUrl=" + param.get("acsUrl") +
-                        "&MD=" + param.get("MD") +
-                        "&PaReq=" + param.get("PaReq");
-
-                httpResponse.setHeader("Location", url);
-
-                httpResponse.setStatus(302);
-            } catch (Exception e) {
-                e.printStackTrace();
-
-            }
-        }
-
-        return httpResponse;
+        return redirectAfterPay(httpResponse, bill);
     }
 }

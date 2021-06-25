@@ -79,12 +79,14 @@ public class PublicPaysystemController {
     @GetMapping("/secure/redirect")
     String secureRedirect(ModelMap modelMap, @RequestParam String acsUrl,
                           @RequestParam String MD,
-                          @RequestParam String PaReq) {
+                          @RequestParam String PaReq,
+                          @RequestParam String bill) {
 
         modelMap.addAttribute("acsUrl", acsUrl);
         modelMap.addAttribute("MD", MD);
         modelMap.addAttribute("PaReq", PaReq);
         modelMap.addAttribute("TermUrl", TermUrl);
+        modelMap.addAttribute("bill", gson.fromJson(bill, BillPaymentDto.class));
 
         return "paysystems/secureredirect";
 
@@ -96,7 +98,7 @@ public class PublicPaysystemController {
     }
 
     @GetMapping("/bill")
-    String bill(@RequestParam String bill, Model model) throws JsonProcessingException {
+    String bill(@RequestParam String bill, Model model) {
         model.addAttribute("bill", gson.fromJson(bill, BillPaymentDto.class));
         return "paysystems/bill";
     }
