@@ -235,6 +235,23 @@ public class UserListService {
 
     }
 
+    public ResultDTO editUserTest(EditUserDtoTest request) {
+        try {
+            ApplicationUser applicationUser = applicationUserService.getUserById(request.getId());
+
+            applicationUser.setRealname(request.getRealname());
+            applicationUser.setTimestamp(request.getTimestamp());
+            applicationUserRepository.save(applicationUser);
+            ApplicationUser resultUser = maskPassword(applicationUser);
+
+            return new ResultDTO(true, resultUser, 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultDTO(false, e.getMessage(), -1);
+        }
+
+    }
+
     public ResultDTO editUser(Principal principal, EditUserDTO request) {
         try {
             ApplicationUser applicationUser = applicationUserService.getUserById(request.getId());
@@ -257,7 +274,6 @@ public class UserListService {
             applicationUser.setUsername(request.getPhone());
             applicationUser.setActive(request.isActive());
             applicationUser.setBlocked(request.isBlocked());
-            applicationUser.setTimestamp(request.getTimestamp());
 
             if (request.getRealname() != null) {
                 applicationUser.setRealname(request.getRealname());
