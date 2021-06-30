@@ -1,6 +1,5 @@
 package kz.capitalpay.server.login.dto;
 
-import javax.persistence.Column;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -16,6 +15,7 @@ public class EditUserDTO {
     String email;
     @Pattern(regexp = "[+]\\d{11}", message = "Phone number standard E.164: +77012345678")
     String phone;
+    Long timestamp;
 
     String realname;
     boolean active;
@@ -76,5 +76,13 @@ public class EditUserDTO {
 
     public void setBlocked(boolean blocked) {
         this.blocked = blocked;
+    }
+
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
     }
 }

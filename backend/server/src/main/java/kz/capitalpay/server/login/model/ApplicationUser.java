@@ -14,6 +14,7 @@ public class ApplicationUser implements Serializable, Cloneable {
     String password;
     String realname;
     String email;
+    Long timestamp;
     @Column(name = "active", columnDefinition = "boolean default false", nullable = false)
     boolean active;
     @Column(name = "blocked", columnDefinition = "boolean default false", nullable = false)
@@ -21,6 +22,14 @@ public class ApplicationUser implements Serializable, Cloneable {
 
     @ManyToMany(fetch = FetchType.EAGER)
     Set<ApplicationRole> roles;
+
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
+    }
 
     public Long getId() {
         return id;

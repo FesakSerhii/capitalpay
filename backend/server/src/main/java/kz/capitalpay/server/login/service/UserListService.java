@@ -167,6 +167,7 @@ public class UserListService {
             logger.info(gson.toJson(result));
             ApplicationUser applicationUser = applicationUserRepository.findByUsername((String) result.getData());
             applicationUser.setEmail(request.getEmail());
+            applicationUser.setTimestamp(System.currentTimeMillis());
             applicationUser.setActive(true);
             ApplicationUser admin = applicationUserRepository.findByUsername(principal.getName());
 
@@ -256,6 +257,7 @@ public class UserListService {
             applicationUser.setUsername(request.getPhone());
             applicationUser.setActive(request.isActive());
             applicationUser.setBlocked(request.isBlocked());
+            applicationUser.setTimestamp(request.getTimestamp());
 
             if (request.getRealname() != null) {
                 applicationUser.setRealname(request.getRealname());
