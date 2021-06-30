@@ -73,6 +73,12 @@ public class CreateUserController {
         return userListService.editUser(principal, request);
     }
 
+    @PostMapping("/editusertest")
+    ResultDTO editUserTest(@RequestBody EditUserDtoTest request) {
+        logger.info(gson.toJson(request));
+        return userListService.editUserTest(request);
+    }
+
 
     @PostMapping("/one")
     @RolesAllowed({"ROLE_ADMIN", "ROLE_OPERATOR"})
