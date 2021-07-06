@@ -73,20 +73,12 @@ public class CreateUserController {
         return userListService.editUser(principal, request);
     }
 
-    @PostMapping("/editusertest")
-    ResultDTO editUserTest(@RequestBody EditUserDtoTest request) {
-        logger.info(gson.toJson(request));
-        return userListService.editUserTest(request);
-    }
-
-
     @PostMapping("/one")
     @RolesAllowed({"ROLE_ADMIN", "ROLE_OPERATOR"})
     ResultDTO oneUser(Principal principal, @Valid @RequestBody OneUserDTO request) {
         logger.info(gson.toJson(request));
         return userListService.oneUser(principal, request);
     }
-
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
