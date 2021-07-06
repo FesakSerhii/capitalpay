@@ -99,7 +99,11 @@ public class PublicPaysystemController {
 
     @GetMapping("/bill")
     String bill(@RequestParam String bill, Model model) {
-        model.addAttribute("bill", gson.fromJson(bill, BillPaymentDto.class));
+        BillPaymentDto billPaymentDto = gson.fromJson(bill, BillPaymentDto.class);
+        model.addAttribute("bill", billPaymentDto);
+        if(!"ok".equalsIgnoreCase(billPaymentDto.getResultPayment())) {
+            return "paysystems/errorbill";
+        }
         return "paysystems/bill";
     }
 }
