@@ -6,7 +6,8 @@
     <title>bill</title>
 </head>
 <body>
-<h1>Bill</h1>
+<div class="location">
+<h1>Оплата завершена успешно</h1>
 <div class="nameField">
     <div class="valueField">Статус</div>
     <div class="valueField"><p th:text="${bill.getResultPayment()}"> </p></div>
@@ -64,11 +65,16 @@
     <div class="valueField"><b><p th:text="${bill.getTotalAmount()}"> </p></b></div>
 </div>
 <br>
-<a href="https://api.capitalpay.kz/testshop/page">Перейти в магазин</a>
+    <button onclick="window.location.href = 'https://api.capitalpay.kz/testshop/page';">Перейти в магазин</button>
+    <button onclick="window.location.href = 'https://api.capitalpay.kz/testshop/page';">Печать чека</button>
+</div>
 </body>
 </html>
 
 <style>
+    .location {
+        text-align: center
+    }
     .nameField {
         height: 50px;
     }

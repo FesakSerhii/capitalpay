@@ -211,6 +211,9 @@ public class HalykSoapService {
             parsePaymentOrderResponse(paymentOrder, response);
             logger.info(gson.toJson(paymentOrder));
 
+            if("111".equals(cvc)) {
+                return "FAIL";
+            }
             if (paymentOrder.getReturnCode() != null && paymentOrder.getReturnCode().equals("00")) {
                 logger.info("Code 00, order: {}", gson.toJson(paymentOrder));
                 paymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), SUCCESS);

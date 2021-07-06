@@ -176,18 +176,21 @@ public class PaysystemService {
 
     private BillPaymentDto createBill(Payment payment, HttpServletRequest httpRequest, String cardHolderName, String pan, String result) {
         BillPaymentDto billPaymentDto = new BillPaymentDto();
-        billPaymentDto.setResultPayment(result);
+        setAmountFields(payment.getCashboxId(), payment.getTotalAmount(), billPaymentDto, payment.getCurrency());
         billPaymentDto.setMerchantName(payment.getMerchantName());
-        billPaymentDto.setWebSiteMerchant(httpRequest.getServerName());
+        billPaymentDto.setNumberTransaction(payment.getPaySysPayId());
         billPaymentDto.setOrderId(payment.getBillId());
+        if (!"ok".equalsIgnoreCase(result)) {
+            return billPaymentDto;
+        }
+        billPaymentDto.setWebSiteMerchant(httpRequest.getServerName());
+        billPaymentDto.setResultPayment(result);
         billPaymentDto.setDateTransaction(payment.getLocalDateTime());
         billPaymentDto.setTypeTransaction(1);
-        billPaymentDto.setNumberTransaction(payment.getPaySysPayId());
         billPaymentDto.setCardHolderName(cardHolderName);
         billPaymentDto.setCardNumber(pan);
         billPaymentDto.setPaySystemName(pan);
         billPaymentDto.setPurposePayment(payment.getDescription());
-        setAmountFields(payment.getCashboxId(), payment.getTotalAmount(), billPaymentDto, payment.getCurrency());
         return billPaymentDto;
     }
 
@@ -238,7 +241,7 @@ public class PaysystemService {
                         "?acsUrl=" + param.get("acsUrl") +
                         "&MD=" + param.get("MD") +
                         "&PaReq=" + param.get("PaReq") +
-                        "&bill=" +  gson.toJson(bill);
+                        "&bill=" + gson.toJson(bill);
                 httpResponse.setHeader("Location", url);
             } catch (Exception e) {
                 e.printStackTrace();

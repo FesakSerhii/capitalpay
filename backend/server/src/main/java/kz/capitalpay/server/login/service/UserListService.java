@@ -235,22 +235,6 @@ public class UserListService {
 
     }
 
-    public ResultDTO editUserTest(EditUserDtoTest request) {
-        try {
-            ApplicationUser applicationUser = applicationUserService.getUserById(request.getId());
-
-            applicationUser.setRealname(request.getRealname());
-            applicationUser.setTimestamp(request.getTimestamp());
-            applicationUserRepository.save(applicationUser);
-            ApplicationUser resultUser = maskPassword(applicationUser);
-
-            return new ResultDTO(true, resultUser, 0);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResultDTO(false, e.getMessage(), -1);
-        }
-
-    }
 
     public ResultDTO editUser(Principal principal, EditUserDTO request) {
         try {
