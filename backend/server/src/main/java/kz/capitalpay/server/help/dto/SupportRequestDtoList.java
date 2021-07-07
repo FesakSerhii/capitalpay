@@ -1,34 +1,19 @@
-package kz.capitalpay.server.help.model;
+package kz.capitalpay.server.help.dto;
 
-import javax.persistence.*;
-
-@Entity
-public class SupportRequest {
-
-    @Id
-    @GeneratedValue
+public class SupportRequestDtoList {
     Long id;
-
     Long authorId;
     Long timestamp;
-
+    String email;
+    String username;
     String theme;
     String subject;
-    @Column(length = 16383)
     String text;
-
     String fileIdList;
-
     String status;
-    @Column(name = "important", columnDefinition = "boolean default false", nullable = false)
     boolean important;
 
-    public Long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
+    public SupportRequestDtoList() {
     }
 
     public Long getId() {
@@ -45,6 +30,30 @@ public class SupportRequest {
 
     public void setAuthorId(Long authorId) {
         this.authorId = authorId;
+    }
+
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getTheme() {
