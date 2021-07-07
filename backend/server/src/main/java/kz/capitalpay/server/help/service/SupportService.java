@@ -120,7 +120,7 @@ public class SupportService {
         supportRequestDtoList.setTheme(supportRequest.getTheme());
         supportRequestDtoList.setSubject(supportRequest.getSubject());
         supportRequestDtoList.setText(supportRequest.getText());
-        supportRequestDtoList.setSubject(supportRequest.getStatus());
+        supportRequestDtoList.setStatus(supportRequest.getStatus());
         supportRequestDtoList.setFileIdList(supportRequest.getFileIdList());
         supportRequestDtoList.setImportant(supportRequest.isImportant());
         return supportRequestDtoList;
