@@ -72,8 +72,4 @@ public class SupportController {
         logger.info(gson.toJson(request));
         return supportService.sendSupportAnswer(principal,request);
     }
-
-
-
-
 }

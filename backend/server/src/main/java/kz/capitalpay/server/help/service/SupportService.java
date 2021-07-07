@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.error109;
 import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.ANSWER_SUPPORT_REQUEST;
@@ -72,6 +73,7 @@ public class SupportService {
             supportRequest.setText(request.getText());
             supportRequest.setFileIdList(gson.toJson(request.getFileList()));
             supportRequest.setStatus(NEW_SUPPORT_REQUEST);
+            supportRequest.setTimestamp(System.currentTimeMillis());
 
             supportRequestRepository.save(supportRequest);
 
@@ -92,7 +94,10 @@ public class SupportService {
 
     public ResultDTO requestList() {
         try {
-            List<SupportRequest> requestList = supportRequestRepository.findAll();
+            List<SupportRequestDtoList> requestList = supportRequestRepository.findAll().stream()
+                    .map(this::createSupportRequestDtoListObject)
+                    .collect(Collectors.toList());
+
             if (requestList == null) requestList = new ArrayList<>();
 
             return new ResultDTO(true, requestList, 0);
@@ -101,6 +106,24 @@ public class SupportService {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }
+    }
+
+    public SupportRequestDtoList createSupportRequestDtoListObject(SupportRequest supportRequest) {
+        ApplicationUser applicationUser = applicationUserService.getUserById(supportRequest.getAuthorId());
+        SupportRequestDtoList supportRequestDtoList = new SupportRequestDtoList();
+        supportRequestDtoList.setId(supportRequest.getId());
+        supportRequestDtoList.setAuthorId(supportRequest.getAuthorId());
+        supportRequestDtoList.setTimestamp(supportRequest.getTimestamp() == null ? System.currentTimeMillis() :
+                supportRequest.getTimestamp());
+        supportRequestDtoList.setEmail(applicationUser.getEmail());
+        supportRequestDtoList.setUsername(applicationUser.getUsername());
+        supportRequestDtoList.setTheme(supportRequest.getTheme());
+        supportRequestDtoList.setSubject(supportRequest.getSubject());
+        supportRequestDtoList.setText(supportRequest.getText());
+        supportRequestDtoList.setSubject(supportRequest.getStatus());
+        supportRequestDtoList.setFileIdList(supportRequest.getFileIdList());
+        supportRequestDtoList.setImportant(supportRequest.isImportant());
+        return supportRequestDtoList;
     }
 
     public ResultDTO oneRequest(OneRequestDTO request) {
@@ -137,13 +160,13 @@ public class SupportService {
             if (supportAnswerList != null && supportAnswerList.size() > 0) {
 
                 List<SupportAnswerDTO> supportAnswerDTOS = new ArrayList<>();
-                for(SupportAnswer sa : supportAnswerList){
+                for (SupportAnswer sa : supportAnswerList) {
                     SupportAnswerDTO supportAnswer = new SupportAnswerDTO();
                     supportAnswer.setId(sa.getId());
                     supportAnswer.setOperatorId(sa.getOperatorId());
                     supportAnswer.setText(sa.getText());
-                    if(sa.getFileIdList()!= null && sa.getFileIdList().length()>0){
-                        List<Double> doubleList = gson.fromJson(sa.getFileIdList(),List.class);
+                    if (sa.getFileIdList() != null && sa.getFileIdList().length() > 0) {
+                        List<Double> doubleList = gson.fromJson(sa.getFileIdList(), List.class);
                         List<Long> fileIdList = new ArrayList<>();
                         doubleList.forEach(aDouble -> fileIdList.add(aDouble.longValue()));
                         supportAnswer.setFileList(fileStorageService.getFilListById(fileIdList));
