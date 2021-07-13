@@ -113,10 +113,9 @@ public class CashboxService {
             if (cashbox == null) {
                 return error113;
             }
-            //TODO:раскомментировать после проверки функционала
-//            if (!cashbox.getMerchantId().equals(owner.getId())) {
-//                return error110;
-//            }
+            if (!cashbox.getMerchantId().equals(owner.getId())) {
+                return error110;
+            }
             cashbox.setDeleted(true);
 
             cashboxRepository.save(cashbox);

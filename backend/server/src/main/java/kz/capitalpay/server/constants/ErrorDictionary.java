@@ -30,4 +30,8 @@ public class ErrorDictionary {
     public static final ResultDTO error124 = new ResultDTO(false, "BIN or IIN contains 12 identical digits.", 124);
     public static final ResultDTO error125 = new ResultDTO(false, "BIN or IIN must contains only digits.", 125);
     public static final ResultDTO error126 = new ResultDTO(false, "BIN or IIN isn't valid! Check input and try again.", 126);
+    public static final ResultDTO error127 = new ResultDTO(false, "Client fee cannot be grater than total fee.", 127);
+    public static final ResultDTO error128 = new ResultDTO(false, "BIN or IIN isn't valid! Check input and try again.", 128);
+
 }
+
