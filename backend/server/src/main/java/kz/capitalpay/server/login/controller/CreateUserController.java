@@ -38,6 +38,7 @@ public class CreateUserController {
 
     @PostMapping("/numbersSession")
     public int countNumberSessionPerUser(Principal principal) {
+        logger.info("principal " + principal.getName());
         List<SessionInformation> list = sessionRegistry.getAllSessions(principal, true);
         for (SessionInformation data :list) {
             logger.info("getSessionId() " + data.getSessionId());
