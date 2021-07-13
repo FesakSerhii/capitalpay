@@ -26,4 +26,8 @@ public class ErrorDictionary {
     public static final ResultDTO error120 = new ResultDTO(false, "Action available only for admin or operator", 120);
     public static final ResultDTO error121 = new ResultDTO(false, "Action available only for admin, operator or merchant.", 121);
     public static final ResultDTO error122 = new ResultDTO(false, "Action available only for owner cashboxes.", 122);
+    public static final ResultDTO error123 = new ResultDTO(false, "BIN or IIN must contain 12 digits.", 123);
+    public static final ResultDTO error124 = new ResultDTO(false, "BIN or IIN contains 12 identical digits.", 124);
+    public static final ResultDTO error125 = new ResultDTO(false, "BIN or IIN must contains only digits.", 125);
+    public static final ResultDTO error126 = new ResultDTO(false, "BIN or IIN isn't valid! Check input and try again.", 126);
 }

@@ -8,11 +8,14 @@ import kz.capitalpay.server.paysystems.systems.halyksoap.dto.HalykDTO;
 import kz.capitalpay.server.paysystems.systems.halyksoap.dto.HalykFieldsDTO;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykSettings;
 import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykSettingsRepository;
+import kz.capitalpay.server.validation.BinIinValidatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
+
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
 
@@ -23,6 +26,9 @@ public class HalykSettingsService {
 
     @Autowired
     private ApplicationRoleService applicationRoleService;
+
+    @Autowired
+    private BinIinValidatorService binIinValidatorService;
 
     @Autowired
     private HalykSettingsRepository halykSettingsRepository;
@@ -54,6 +60,13 @@ public class HalykSettingsService {
             if (admin.getRoles().contains(applicationRoleService.getRole(ADMIN))
                     || admin.getRoles().contains(applicationRoleService.getRole(OPERATOR))) {
                 for (HalykFieldsDTO field : request.getFields()) {
+                    if (field.getFieldName().equals(RNNA) || field.getFieldName().equals(RNNA_MERCH)
+                            || field.getFieldName().equals(RNNB)) {
+                        ResultDTO resultCheck = binIinValidatorService.checkBinIin(field.getFieldValue());
+                        if (!resultCheck.isResult()) {
+                            return resultCheck;
+                        }
+                    }
                     setField(field);
                 }
                 return new ResultDTO(true, request.getFields(), 0);
