@@ -10,6 +10,7 @@ import kz.capitalpay.server.merchantsettings.dto.MerchantKycDTO;
 import kz.capitalpay.server.merchantsettings.dto.MerchantKycFieldDTO;
 import kz.capitalpay.server.merchantsettings.model.MerchantKyc;
 import kz.capitalpay.server.merchantsettings.repository.MerchantKycRepository;
+import kz.capitalpay.server.validation.BinIinValidatorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,9 @@ public class MerchantKycService {
     @Autowired
     SystemEventsLogsService systemEventsLogsService;
 
+    @Autowired
+    BinIinValidatorService binIinValidatorService;
+
     public static final String IINBIN = "iinbin";
     public static final String MNAME = "mname";
     public static final String UADDRESS = "uaddress";
@@ -68,6 +72,13 @@ public class MerchantKycService {
             }
 
             for (MerchantKycFieldDTO field : request.getFields()) {
+                if (field.getFieldName().equals(IINBIN) || field.getFieldName().equals(BIK)
+                        || field.getFieldName().equals(IIK)) {
+                    ResultDTO resultCheck = binIinValidatorService.checkBinIin(field.getFieldValue());
+                    if (!resultCheck.isResult()) {
+                        return resultCheck;
+                    }
+                }
                 setField(applicationUser.getId(), field);
             }
 
