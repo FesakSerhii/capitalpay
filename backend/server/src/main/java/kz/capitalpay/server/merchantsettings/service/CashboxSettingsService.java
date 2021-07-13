@@ -1,5 +1,7 @@
 package kz.capitalpay.server.merchantsettings.service;
 
+import kz.capitalpay.server.cashbox.model.Cashbox;
+import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.service.ApplicationRoleService;
@@ -7,22 +9,31 @@ import kz.capitalpay.server.login.service.ApplicationUserService;
 import kz.capitalpay.server.merchantsettings.dto.CashBoxSettingDTO;
 import kz.capitalpay.server.merchantsettings.dto.CashBoxSettingFieldDTO;
 import kz.capitalpay.server.merchantsettings.model.CashboxSettings;
+import kz.capitalpay.server.merchantsettings.model.MerchantKyc;
 import kz.capitalpay.server.merchantsettings.repository.CashboxSettingsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.security.Principal;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-import static kz.capitalpay.server.constants.ErrorDictionary.error120;
-import static kz.capitalpay.server.constants.ErrorDictionary.error121;
+import static kz.capitalpay.server.constants.ErrorDictionary.*;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
+import static kz.capitalpay.server.merchantsettings.service.MerchantKycService.TOTAL_FEE;
 
 @Service
 public class CashboxSettingsService {
 
     @Autowired
     private CashboxSettingsRepository cashboxSettingsRepository;
+
+    @Autowired
+    private CashboxService cashboxService;
+
+    @Autowired
+    private MerchantKycService merchantKycService;
 
     @Autowired
     private ApplicationUserService applicationUserService;
@@ -47,6 +58,14 @@ public class CashboxSettingsService {
                     || admin.getRoles().contains(applicationRoleService.getRole(OPERATOR))
                     || admin.getRoles().contains(applicationRoleService.getRole(MERCHANT))) {
                 for (CashBoxSettingFieldDTO field : request.getFields()) {
+                    if(field.getFieldName().equalsIgnoreCase(CLIENT_FEE)) {
+                        ResultDTO resultDTO = savedClientFee(field.getCashBoxId(), field.getFieldName(),
+                                field.getFieldValue());
+                        if(!resultDTO.isResult()) {
+                            return resultDTO;
+                        }
+                        continue;
+                    }
                     setField(field.getCashBoxId(), field.getFieldName(), field.getFieldValue());
                 }
                 return new ResultDTO(true, request.getFields(), 0);
@@ -125,5 +144,21 @@ public class CashboxSettingsService {
         }
         cashboxSettings.setFieldValue(fieldValue);
         cashboxSettingsRepository.save(cashboxSettings);
+    }
+
+    public ResultDTO savedClientFee(Long cashboxId, String fieldName, String fieldValue) {
+        Cashbox cashbox = cashboxService.findById(cashboxId);
+        double total_fee = Double.parseDouble(merchantKycService.getField(cashbox.getMerchantId(), TOTAL_FEE));
+        if (Double.parseDouble(fieldValue) > total_fee) {
+            return error127;
+        }
+        if (fieldValue.trim().isEmpty()) {
+            fieldValue = "0.0";
+        }
+        String pattern = "#.###";
+        DecimalFormat decimalFormat = new DecimalFormat(pattern);
+        fieldValue = decimalFormat.format(Double.parseDouble(fieldValue)).replace(",", ".");
+        setField(cashboxId, fieldName, fieldValue);
+        return new ResultDTO(true, "Client fee saved!", 0);
     }
 }
