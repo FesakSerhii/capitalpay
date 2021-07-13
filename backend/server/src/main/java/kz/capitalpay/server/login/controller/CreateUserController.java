@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.session.SessionInformation;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -29,6 +32,20 @@ public class CreateUserController {
 
     @Autowired
     UserListService userListService;
+
+    @Autowired
+    SessionRegistry sessionRegistry;
+
+    @PostMapping("/numbersSession")
+    public int countNumberSessionPerUser(Principal principal) {
+        List<SessionInformation> list = sessionRegistry.getAllSessions(principal, true);
+        for (SessionInformation data :list) {
+            logger.info("getSessionId() " + data.getSessionId());
+            logger.info("getLastRequest() " + data.getLastRequest());
+            logger.info("data.getPrincipal() " + data.getPrincipal());
+        }
+        return list.size();
+    }
 
     @PostMapping("/list")
     @RolesAllowed({"ROLE_ADMIN", "ROLE_OPERATOR"})
