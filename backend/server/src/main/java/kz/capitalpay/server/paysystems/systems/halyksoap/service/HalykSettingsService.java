@@ -60,8 +60,8 @@ public class HalykSettingsService {
             if (admin.getRoles().contains(applicationRoleService.getRole(ADMIN))
                     || admin.getRoles().contains(applicationRoleService.getRole(OPERATOR))) {
                 for (HalykFieldsDTO field : request.getFields()) {
-                    if (field.getFieldName().equals(RNNA) || field.getFieldName().equals(RNNA_MERCH)
-                            || field.getFieldName().equals(RNNB)) {
+                    if (field.getFieldName().equalsIgnoreCase(RNNA) || field.getFieldName().equalsIgnoreCase(RNNA_MERCH)
+                            || field.getFieldName().equalsIgnoreCase(RNNB)) {
                         ResultDTO resultCheck = binIinValidatorService.checkBinIin(field.getFieldValue());
                         if (!resultCheck.isResult()) {
                             return resultCheck;

@@ -72,8 +72,8 @@ public class MerchantKycService {
             }
 
             for (MerchantKycFieldDTO field : request.getFields()) {
-                if (field.getFieldName().equals(IINBIN) || field.getFieldName().equals(BIK)
-                        || field.getFieldName().equals(IIK)) {
+                if (field.getFieldName().equalsIgnoreCase(IINBIN) || field.getFieldName().equalsIgnoreCase(BIK)
+                        || field.getFieldName().equalsIgnoreCase(IIK)) {
                     ResultDTO resultCheck = binIinValidatorService.checkBinIin(field.getFieldValue());
                     if (!resultCheck.isResult()) {
                         return resultCheck;
