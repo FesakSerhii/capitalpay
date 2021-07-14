@@ -2,19 +2,18 @@ package kz.capitalpay.server.cashbox.dto;
 
 import kz.capitalpay.server.cashbox.model.Cashbox;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+
 
 public class CashboxDTO extends Cashbox {
 
-    Map<String, BigDecimal> balance = new HashMap<>();
+    private List<CashboxBalanceDTO> balance;
 
-    public Map<String, BigDecimal> getBalance() {
+    public List<CashboxBalanceDTO> getBalance() {
         return balance;
     }
 
-    public void setBalance(Map<String, BigDecimal> balance) {
+    public void setBalance(List<CashboxBalanceDTO> balance) {
         this.balance = balance;
     }
 }

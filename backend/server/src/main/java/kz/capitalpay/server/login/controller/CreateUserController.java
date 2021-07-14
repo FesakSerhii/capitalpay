@@ -37,9 +37,9 @@ public class CreateUserController {
     SessionRegistry sessionRegistry;
 
     @PostMapping("/numbersSession")
-    public int countNumberSessionPerUser(Principal principal) {
+    public boolean countNumberSessionPerUser(Principal principal) {
         logger.info("principal " + principal.getName());
-        return sessionRegistry.getAllSessions(principal, true).size();
+        return sessionRegistry.getAllSessions(principal, true).size() > 1;
     }
 
     @PostMapping("/list")
