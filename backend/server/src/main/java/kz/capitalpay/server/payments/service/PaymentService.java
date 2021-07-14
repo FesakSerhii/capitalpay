@@ -215,6 +215,7 @@ public class PaymentService {
             amount = amount.add(payment.getTotalAmount());
             result.put(payment.getCurrency(), amount);
         }
+        logger.info("result " + result.toString());
 
         return result.entrySet().stream()
                 .map(o -> new CashboxBalanceDTO(o.getKey(), o.getValue()))
