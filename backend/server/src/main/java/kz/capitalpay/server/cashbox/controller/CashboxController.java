@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import kz.capitalpay.server.cashbox.dto.CashboxCreateRequestDTO;
 import kz.capitalpay.server.cashbox.dto.CashboxNameRequestDTO;
 import kz.capitalpay.server.cashbox.dto.CashboxRequestDTO;
+import kz.capitalpay.server.cashbox.model.Cashbox;
+import kz.capitalpay.server.cashbox.repository.CashboxRepository;
 import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.currency.dto.MerchantRequestDTO;
 import kz.capitalpay.server.dto.ResultDTO;
@@ -34,6 +36,20 @@ public class CashboxController {
 
     @Autowired
     CashboxService cashboxService;
+
+    @Autowired
+    CashboxRepository cashboxRepository;
+
+    @PostMapping("/return")
+    boolean returnDeletedCashBox() {
+        Cashbox cashbox = new Cashbox();
+        cashbox.setId(1L);
+        cashbox.setMerchantId(12L);
+        cashbox.setName("Касса 1");
+        cashbox.setDeleted(false);
+        cashboxRepository.save(cashbox);
+        return true;
+    }
 
     @PostMapping("/create")
     @RolesAllowed({MERCHANT})
