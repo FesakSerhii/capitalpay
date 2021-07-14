@@ -40,17 +40,6 @@ public class CashboxController {
     @Autowired
     CashboxRepository cashboxRepository;
 
-    @PostMapping("/return")
-    boolean returnDeletedCashBox() {
-        Cashbox cashbox = new Cashbox();
-        cashbox.setId(1L);
-        cashbox.setMerchantId(12L);
-        cashbox.setName("Касса 1");
-        cashbox.setDeleted(false);
-        cashboxRepository.save(cashbox);
-        return true;
-    }
-
     @PostMapping("/create")
     @RolesAllowed({MERCHANT})
     ResultDTO cashboxCreate(@Valid @RequestBody CashboxCreateRequestDTO request, Principal principal) {
