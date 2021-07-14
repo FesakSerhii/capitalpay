@@ -1,6 +1,7 @@
 package kz.capitalpay.server.payments.service;
 
 import com.google.gson.Gson;
+import kz.capitalpay.server.cashbox.dto.CashboxBalanceDTO;
 import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.dto.ResultDTO;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
@@ -201,7 +203,7 @@ public class PaymentService {
 
     }
 
-    public Map<String, BigDecimal> getBalance(Long cashboxId) {
+    public List<CashboxBalanceDTO>  getBalance(Long cashboxId) {
         Map<String, BigDecimal> result = new HashMap<>();
         List<Payment> paymentList = paymentRepository.findByCashboxIdAndStatus(cashboxId, SUCCESS);
 
@@ -213,6 +215,9 @@ public class PaymentService {
             amount = amount.add(payment.getTotalAmount());
             result.put(payment.getCurrency(), amount);
         }
-        return result;
+
+        return result.entrySet().stream()
+                .map(o -> new CashboxBalanceDTO(o.getKey(), o.getValue()))
+                .collect(Collectors.toList());
     }
 }
