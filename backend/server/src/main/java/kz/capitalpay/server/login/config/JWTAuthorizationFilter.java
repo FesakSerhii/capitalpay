@@ -48,22 +48,22 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         }
         logger.info("step1");
 
-        UsernamePasswordAuthenticationToken authenticationToken = getAuthentication(request);
+        UsernamePasswordAuthenticationToken authenticationToken = getAuthentication(header);
 
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         chain.doFilter(request, response);
     }
 
-    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
+    private UsernamePasswordAuthenticationToken getAuthentication(String header) {
         logger.info("step2");
-        String token = request.getHeader(HEADER_STRING);
-        logger.info("token " + token);
+//        String token = request.getHeader(HEADER_STRING);
+        logger.info("token " + header);
 
-        if (token != null) {
+        if (header != null) {
             try {
                 DecodedJWT decodedJWT = JWT.require(getAlgorithm())
                         .build()
-                        .verify(token.replace(TOKEN_PREFIX, ""));
+                        .verify(header.replace(TOKEN_PREFIX, ""));
 
                 String user = decodedJWT.getSubject();
                 String[] authorities = decodedJWT.getClaim("authorities").asArray(String.class);
