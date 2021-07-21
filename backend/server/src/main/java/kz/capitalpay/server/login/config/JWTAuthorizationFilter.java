@@ -43,6 +43,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             chain.doFilter(request, response);
             return;
         }
+        logger.info("step1");
 
         UsernamePasswordAuthenticationToken authenticationToken = getAuthentication(request);
 
@@ -51,7 +52,9 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
+        logger.info("step2");
         String token = request.getHeader(HEADER_STRING);
+        logger.info("token " + token);
 
         if (token != null) {
             try {

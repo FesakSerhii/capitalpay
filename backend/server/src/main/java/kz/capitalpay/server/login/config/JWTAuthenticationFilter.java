@@ -55,15 +55,17 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-
+        logger.info("step3");
         ApplicationUserDTO cred = null;
         try {
             cred = new ObjectMapper().readValue(request.getInputStream(), ApplicationUserDTO.class);
+            logger.info("cred " + cred);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         String ip = applicationUserService.validIpAddress(request, cred.getUsername());
+        logger.info("ip " + ip);
         if (ip == null) {
             throw new AuthenticationException("Bad IP address") {
             };
@@ -75,6 +77,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 cred.getPassword(),
                 new ArrayList<>()
         );
+        logger.info("token from auth " + token);
 
         if (applicationUserService.requireTwoFactorAuth(cred.getUsername())) {
             if (cred.getSms() == null) {
@@ -85,6 +88,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         }
 
         Authentication authentication = authenticationManager.authenticate(token);
+        logger.info("authentication " + authentication.getPrincipal().toString());
         applicationUserService.setTrustIp(ip, cred);
         return authentication;
     }
@@ -101,10 +105,12 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         roles = roleSet.toArray(roles);
 
         ApplicationUser applicationUser =  applicationUserService.getUserByLogin(username);
+        logger.info("application User" + applicationUser);
 
         if (applicationUserService.requireTwoFactorAuth(username)) {
             if (applicationUserService.smsNeedCheck(username)) {
                 if (applicationUserService.smsCheckResult(username)) {
+                    logger.info("step4");
                     String token = JWT.create()
                             .withSubject(username)
                             .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
@@ -113,19 +119,23 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                             .withJWTId(UUID.randomUUID().toString())
                             .sign(getAlgorithm());
                     response.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
+                    logger.info("token step4" + token);
 
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                     response.getWriter().write(gson.toJson(new ResultDTO(true, username, 0)));
                 } else {
+                    logger.info("step5");
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                     response.getWriter().write(gson.toJson(new ResultDTO(true, "SMS sent", 0)));
                 }
             } else {
+                logger.info("step6");
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                 response.getWriter().write(gson.toJson(new ResultDTO(true, "SMS sent", 0)));
             }
 
         } else {
+            logger.info("step7");
 
             String token = JWT.create()
                     .withSubject(username)
@@ -134,6 +144,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                     .withClaim("merchantId", applicationUser.getId())
                     .withJWTId(UUID.randomUUID().toString())
                     .sign(getAlgorithm());
+            logger.info("ste7 token " + token);
             response.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
 
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
