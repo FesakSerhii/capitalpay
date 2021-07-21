@@ -52,7 +52,6 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
         String token = request.getHeader(HEADER_STRING);
-        logger.info("\n\n" + token);
 
         if (token != null) {
             try {
@@ -78,7 +77,6 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private Algorithm getAlgorithm() {
-logger.info("inside algorithm");
 
         final InputStream inputStreamPriv = getClass().getClassLoader()
                 .getResourceAsStream("rsa/privatekey.pem");
@@ -106,7 +104,6 @@ logger.info("inside algorithm");
             RSAPrivateKey privateKey = (RSAPrivateKey) kf.generatePrivate(keySpecX509priv);
 
             Algorithm algorithm = Algorithm.RSA256(publicKey, privateKey);
-            logger.info(algorithm);
             return algorithm;
         } catch (Exception e) {
             e.printStackTrace();
