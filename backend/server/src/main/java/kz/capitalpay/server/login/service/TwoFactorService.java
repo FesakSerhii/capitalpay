@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.Random;
 
 @Service
@@ -18,6 +19,9 @@ public class TwoFactorService {
     Logger logger = LoggerFactory.getLogger(TwoFactorService.class);
 
     Random random = new Random();
+
+    @Autowired
+    ApplicationUserService applicationUserService;
 
     @Autowired
     TwoFactorAuthRepository twoFactorAuthRepository;
@@ -49,6 +53,11 @@ public class TwoFactorService {
             logger.error("User: {}", gson.toJson(user));
             return false;
         }
+    }
+
+    public boolean isAvailableTwoFactorAuth(Principal principal) {
+        ApplicationUser applicationUser = applicationUserService.getUserByLogin(principal.getName());
+        return isRequired(applicationUser);
     }
 
     public void sendSms(ApplicationUser user) {

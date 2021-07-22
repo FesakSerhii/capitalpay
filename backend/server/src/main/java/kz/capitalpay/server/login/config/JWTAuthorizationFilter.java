@@ -56,11 +56,11 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
         logger.info("step2");
-        String token = request.getHeader(HEADER_STRING).replace("null", "").trim();
+        String token = request.getHeader(HEADER_STRING);
 
         logger.info("token " + token);
 
-        if (token != null && !token.equalsIgnoreCase("bearer")) {
+        if (token != null) {
             try {
                 DecodedJWT decodedJWT = JWT.require(getAlgorithm())
                         .build()
