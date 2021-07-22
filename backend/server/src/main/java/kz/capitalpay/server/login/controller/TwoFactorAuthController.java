@@ -36,7 +36,7 @@ public class TwoFactorAuthController {
         return  applicationUserService.twoFactorAuth(principal,request);
     }
 
-    @PostMapping("/")
+    @PostMapping("/available")
     boolean isAvailableTwoFactorAuth(Principal principal) {
         return twoFactorService.isAvailableTwoFactorAuth(principal);
     }
