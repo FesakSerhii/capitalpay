@@ -73,9 +73,9 @@ public class UserListService {
     public ResultDTO changeRoles(Principal principal, ChangeRolesDTO request) {
         try {
             ApplicationUser applicationUser = applicationUserService.getUserById(request.getUserId());
-            if (applicationUser == null) {
-                return error106;
-            }
+//            if (applicationUser == null) {
+//                return error106;
+//            }
 
             ApplicationUser admin = applicationUserRepository.findByUsername(principal.getName());
 
@@ -92,19 +92,19 @@ public class UserListService {
             } else if (admin.getRoles().contains(applicationRoleService.getRole(OPERATOR))) {
                 logger.info("Operator!");
 
-                if (request.getRoleList().contains(OPERATOR) || request.getRoleList().contains(ADMIN)) {
-                    return error107;
-                }
+//                if (request.getRoleList().contains(OPERATOR) || request.getRoleList().contains(ADMIN)) {
+//                    return error107;
+//                }
 
                 Set<ApplicationRole> newRoles = roleListFromStringList(request.getRoleList());
 
                 Set<ApplicationRole> needToRemove = applicationUser.getRoles();
                 needToRemove.removeAll(newRoles);
 
-                if (needToRemove.contains(applicationRoleService.getRole(OPERATOR)) ||
-                        needToRemove.contains(applicationRoleService.getRole(ADMIN))) {
-                    return error107;
-                }
+//                if (needToRemove.contains(applicationRoleService.getRole(OPERATOR)) ||
+//                        needToRemove.contains(applicationRoleService.getRole(ADMIN))) {
+//                    return error107;
+//                }
 
                 applicationUser.setRoles(newRoles);
                 applicationUserRepository.save(applicationUser);

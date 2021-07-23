@@ -181,6 +181,7 @@ public class ApplicationUserService {
         logger.info("User-Agent: {}", userAgent);
 
         ApplicationUser applicationUser = applicationUserRepository.findByUsername(username);
+        logger.info(" archer id " + applicationUser.getId() + " userName " + username);
 
         return trustIpService.validIpAddress(applicationUser.getId(),ip);
     }
