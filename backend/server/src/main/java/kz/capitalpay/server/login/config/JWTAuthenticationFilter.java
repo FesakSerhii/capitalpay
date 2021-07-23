@@ -63,7 +63,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        logger.info("archer before " + cred.getUsername());
         String ip = applicationUserService.validIpAddress(request, cred.getUsername());
         logger.info("ip " + ip);
         if (ip == null) {
