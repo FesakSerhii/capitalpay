@@ -104,7 +104,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         roles = roleSet.toArray(roles);
 
-        ApplicationUser applicationUser =  applicationUserService.getUserByLogin(username);
+        ApplicationUser applicationUser = applicationUserService.getUserByLogin(username);
         logger.info("application User" + applicationUser);
 
         if (applicationUserService.requireTwoFactorAuth(username)) {
@@ -126,12 +126,19 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 } else {
                     logger.info("step5");
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                    response.getWriter().write(gson.toJson(new ResultDTO(true, "SMS sent", 0)));
+//                    response.getWriter().write(gson.toJson(new ResultDTO(true, "SMS sent", 0)));
+                    //TODO:костыль для тестирования двухфакторной аутентификации
+                    response.getWriter().write(gson.toJson(new ResultDTO(true, "SMS sent", 0,
+                            applicationUserService.findSmsCode(applicationUser))));
+
                 }
             } else {
                 logger.info("step6");
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                response.getWriter().write(gson.toJson(new ResultDTO(true, "SMS sent", 0)));
+//                response.getWriter().write(gson.toJson(new ResultDTO(true, "SMS sent", 0)));
+                //TODO:костыль для тестирования двухфакторной аутентификации
+                response.getWriter().write(gson.toJson(new ResultDTO(true, "SMS sent", 0,
+                        applicationUserService.findSmsCode(applicationUser))));
             }
 
         } else {

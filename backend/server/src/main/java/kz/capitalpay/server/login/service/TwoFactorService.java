@@ -32,6 +32,11 @@ public class TwoFactorService {
     @Autowired
     Gson gson;
 
+    public String findCodeFromSms(ApplicationUser user) {
+        TwoFactorAuth twoFactorAuth = twoFactorAuthRepository.findById(user.getId()).orElse(null);
+        return twoFactorAuth == null ? "" : twoFactorAuth.getSmscode();
+    }
+
     boolean setTwoFactor(Long userId) {
         TwoFactorAuth twoFactorAuth = new TwoFactorAuth();
         twoFactorAuth.setUserId(userId);

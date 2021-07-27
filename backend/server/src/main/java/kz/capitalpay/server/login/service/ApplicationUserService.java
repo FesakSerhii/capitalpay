@@ -52,6 +52,10 @@ public class ApplicationUserService {
 
     Random random = new Random();
 
+    public String findSmsCode(ApplicationUser applicationUser) {
+        return twoFactorService.findCodeFromSms(applicationUser);
+    }
+
     public void signUp(ApplicationUser applicationUser) {
         if (!existsUser(applicationUser)) {
             applicationUser.setPassword(bCryptPasswordEncoder.encode(applicationUser.getPassword()));
