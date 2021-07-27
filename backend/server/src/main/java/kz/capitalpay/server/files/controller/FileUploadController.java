@@ -25,9 +25,10 @@ public class FileUploadController {
     FileStorageService fileStorageService;
 
     @PostMapping("/upload")
-    @CrossOrigin(origins = "https://capitalpay.kz")
     ResultDTO uploadFile(Principal principal, @RequestParam MultipartFile multipartFile) {
-        logger.info(multipartFile.getOriginalFilename());
+        logger.info(" \n\n\n\n");
+
+        logger.info(" original name " + multipartFile.getOriginalFilename());
         return fileStorageService.uploadFile(multipartFile,principal);
     }
 }
