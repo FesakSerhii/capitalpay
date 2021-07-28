@@ -68,7 +68,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         configuration.setAllowedOrigins(Arrays.asList("https://capitalpay.kz", "https://admin.capitalpay.kz"));
         configuration.setAllowedMethods(Arrays.asList("GET","OPTIONS","POST"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration("*/**", configuration);
         return source;
     }
 }
