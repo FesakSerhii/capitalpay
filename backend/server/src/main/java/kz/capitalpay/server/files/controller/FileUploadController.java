@@ -14,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.security.Principal;
 
 @RestController
-@CrossOrigin
 @RequestMapping("/api/v1/file")
 public class FileUploadController {
 
