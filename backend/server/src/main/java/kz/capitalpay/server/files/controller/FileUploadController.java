@@ -25,10 +25,9 @@ public class FileUploadController {
     @Autowired
     FileStorageService fileStorageService;
 
-    @PostMapping(value= "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value= "/upload")
     ResultDTO uploadFile(Principal principal, @RequestParam MultipartFile multipartFile) {
         logger.info("\n\n\n I'm here ");
-
         logger.info(" original name " + multipartFile.getOriginalFilename());
         return fileStorageService.uploadFile(multipartFile,principal);
     }
