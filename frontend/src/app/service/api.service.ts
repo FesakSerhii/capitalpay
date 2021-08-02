@@ -41,7 +41,16 @@ export class ApiService {
     const body = JSON.stringify(data);
     return this.http.post(this.apiBase + url, body, {headers});
   }
+  public postJwt(url: string, token, data: any = {},): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json','Authorization':token});
+    const body = JSON.stringify(data);
+    return this.http.post(this.apiBase + url, body, {headers});
+  }
 
+  public postFormData(url, token, data: FormData): Observable<any> {
+    const headers = new HttpHeaders({ 'Mime-Type': 'multipart/form-data','Authorization':token });
+    return this.http.post(this.apiBase + url, data, { headers });
+  }
 
   public put(url: string, data: any = {}): Observable<any> {
     console.log(url);

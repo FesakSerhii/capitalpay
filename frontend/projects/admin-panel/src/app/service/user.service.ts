@@ -35,6 +35,12 @@ export class UserService {
   deleteUser(userId){
     return this.apiService.postJwt('api','/userlist/deleteuser',token,{userId}).toPromise();
   }
+  getUsersCommissions(merchantId){
+    return this.apiService.postJwt('api','/fee/cashbox/list',token,{merchantId}).toPromise();
+  }
+  editUsersCommissions(data){
+    return this.apiService.postJwt('api','/fee/cashbox/list/save',token,data).toPromise();
+  }
 
 
 }

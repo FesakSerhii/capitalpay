@@ -10,7 +10,7 @@
       <a href="#" class="header-link" [class.white]="theme!=='white'">Modules</a>
       <a href="#" class="header-link" [class.white]="theme!=='white'">Pricing</a>
       <a href="#" class="header-link" [class.white]="theme!=='white'">API</a>
-      <a href="#" class="header-link" [class.white]="theme!=='white'">Contact</a>
+      <a class="header-link" [class.white]="theme!=='white'" [routerLink]="'/feedback'">Contact</a>
     </div>
     <div>
       <a href="#" class="header-link ml-0" [class.white]="theme!=='white'" (click)="$event.preventDefault();open(loginModal)">Login</a>
@@ -86,17 +86,20 @@
       </button>
     </div>
     <div>
-      <p class="title">Login</p>
+      <p class="title" *ngIf="!isTwoFactor">Login</p>
+      <p class="title" *ngIf="isTwoFactor">Two-factor authentication</p>
+      <p class="title small" *ngIf="isTwoFactor">Please input check code you received on mobile number</p>
+      <p class="title small" *ngIf="isTwoFactor">{{loginForm.value.email}}</p>
     </div>
-    <form [formGroup]="loginForm" class="registration-form">
+    <form [formGroup]="loginForm" class="registration-form" *ngIf="!isTwoFactor">
       <div class="form-field">
         <span class="input-title">Email *</span>
         <input type="email" formControlName="email">
       </div>
       <div class="form-field">
         <span class="input-title">Password</span>
-        <input formControlName="password">
-        <img class="password-toggle" src="../../../assets/shapes/eye.svg" alt="eye">
+        <input formControlName="password" [type]="toggle['showPass']?'text':'password'">
+        <img class="password-toggle" src="../../../assets/shapes/eye.svg" alt="eye" (click)="toggle['showPass']=!toggle['showPass']">
       </div>
       <div class="d-flex">
         <input formControlName="isIpTrusted" type="checkbox" style="height: 21px;width: 21px">
@@ -104,8 +107,15 @@
       </div>
       <button class="section-btn" (click)="$event.preventDefault();loginAction()">Login</button>
     </form>
+    <form class="registration-form" *ngIf="isTwoFactor">
+      <div class="form-field">
+        <span class="input-title">Code from sms</span>
+        <input type="text" [formControl]="sms">
+      </div>
+      <button class="section-btn" (click)="$event.preventDefault();confirmCode()">Confirm</button>
+    </form>
     <div class="modal-footer">
-      <p class="m-0 m-auto">Don't have an account yet? <a href="#" class="switch-modal-link" (click)="$event.preventDefault();switchToLogin(registerModal)">Sign Up</a></p>
+      <p class="m-0 m-auto" *ngIf="!isTwoFactor">Don't have an account yet? <a href="#" class="switch-modal-link" (click)="$event.preventDefault();switchToLogin(registerModal)">Sign Up</a></p>
     </div>
   </div>
 </ng-template>

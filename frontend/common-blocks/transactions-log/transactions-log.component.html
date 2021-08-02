@@ -1,90 +1,91 @@
 <div>
-  <ul class="nav nav-pills nav-pills-success" role="tablist">
-    <li class="nav-item">
-      <a class="nav-link" [class.active]="activeTab==='tab1'" (click)="$event.preventDefault();activeTab='tab1'">
-        Касса 1
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" [class.active]="activeTab==='tab2'" (click)="$event.preventDefault();activeTab='tab2'">
-        Касса 2
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" [class.active]="activeTab==='tab3'" (click)="$event.preventDefault();activeTab='tab3'">
-        Касса 3
-      </a>
-    </li>
-  </ul>
-  <perfect-scrollbar style="max-height: 605px; max-width: 100%;overflow-y: scroll">
+  <button class="btn btn-success btn-round btn-back" (click)="formRegistre()">Выгрузить реестр</button>
+
   <div class="row mr-0">
     <div>
       <div class="card w1060">
-        <div class="card-header">
-          <h4 class="card-title">Фильтр
-            <!--        <small class="description">Horizontal Tabs</small>-->
-          </h4>
-        </div>
         <div class="card-body">
-          <div class="row mr-0">
-            <div class="col-md-3">
-              <app-custom-select classes="mr-5" [values]="[1,2,3,4,5,6,7,8,9,10]"></app-custom-select>
-              <app-custom-select [values]="[1,2,3,4,5,6,7,8,9,10]"></app-custom-select>
-            </div>
-            <div class="col-md-3">
-              <app-custom-select classes="mr-5" [values]="[1,2,3,4,5,6,7,8,9,10]"></app-custom-select>
-              <app-custom-select [values]="[1,2,3,4,5,6,7,8,9,10]"></app-custom-select>
-            </div>
-            <div class="col-md-6">
-              <div class="row mr-0">
-                <label class="col-form-label label-checkbox pt-0">Checkboxes and radios</label>
-                <div class="row mr-0 ml-1">
-                  <div>
-                    <div class="form-check">
-                      <label class="form-check-label">
-                        <input class="form-check-input" type="checkbox" value=""> First Checkbox
-                        <span class="form-check-sign">
-                              <span class="check"></span>
-                            </span>
-                      </label>
-                    </div>
-                    <div class="form-check">
-                      <label class="form-check-label">
-                        <input class="form-check-input" type="checkbox" value=""> Second Checkbox
-                        <span class="form-check-sign">
-                              <span class="check"></span>
-                            </span>
-                      </label>
-                    </div>
+          <div class="d-flex justify-content-between">
+            <form class="form-horizontal" [formGroup]="filter">
+              <div class="d-flex justify-content-between">
+                <div class="d-flex">
+                  <label class="col-form-label">Валюта</label>
+                  <div class="form-group has-default bmd-form-group">
+                    <app-custom-select classes="special mr-3" formControlName="currency" [values]="currencyList"></app-custom-select>
                   </div>
-                  <div>
-                    <div class="form-check">
-                      <label class="form-check-label">
-                        <input class="form-check-input" type="radio" name="exampleRadios" value="option2" checked=""> First Radio
-                        <span class="circle">
-                              <span class="check"></span>
-                            </span>
-                      </label>
-                    </div>
-                    <div class="form-check">
-                      <label class="form-check-label">
-                        <input class="form-check-input" type="radio" name="exampleRadios" value="option1"> Second Radio
-                        <span class="circle">
-                              <span class="check"></span>
-                            </span>
-                      </label>
-                    </div>
+                </div>
+                <div style="width: 350px!important;display: flex;justify-content: space-around;">
+                  <label class="col-form-label">Время создания</label>
+                  <div class="form-group bmd-form-group position-relative">
+                    <input type="text" class="form-control" formControlName="dateStart"
+                           ngbDatepicker [autoClose]="true"
+                           readonly #start="ngbDatepicker"
+                           style="width: 80px!important">
+                    <a (click)="$event.preventDefault();filter.controls.dateStart.reset();start.open()"><i class="material-icons icon-color position-absolute" style="top: 10px;right: -22px">date_range</i></a>
+                  </div>
+                  <div class="form-group bmd-form-group position-relative">
+                    <input type="text" class="form-control" formControlName="dateEnd"
+                           ngbDatepicker [autoClose]="true"
+                           readonly #end="ngbDatepicker"
+                           style="width: 80px!important">
+                    <a (click)="$event.preventDefault();filter.controls.dateEnd.reset();end.open()"><i class="material-icons icon-color position-absolute" style="top: 10px;right: -22px">date_range</i></a>
+                  </div>
+                </div>
+                <div class="d-flex">
+                  <label class="col-form-label">Номер счета</label>
+                  <div class="form-group has-default bmd-form-group">
+                    <input type="text" class="form-control" formControlName="paySysPayId">
+                  </div>
+                </div>
+                <!--                <div class="d-flex">-->
+                <!--                  <label class="col-form-label">ФИО</label>-->
+                <!--                  <div class="form-group has-default bmd-form-group">-->
+                <!--                    <input type="text" class="form-control">-->
+                <!--                  </div>-->
+                <!--                </div>-->
+              </div>
+              <div class="d-flex justify-content-around">
+                <div class="d-flex">
+                  <label class="col-form-label">Мерчант</label>
+                  <div class="form-group has-default bmd-form-group">
+                    <input type="text" class="form-control" formControlName="merchantName">
+                  </div>
+                </div>
+                <div class="d-flex">
+                  <label class="col-form-label">ID платежа</label>
+                  <div class="form-group has-default bmd-form-group">
+                    <input type="text" class="form-control" formControlName="billId">
+                  </div>
+                </div>
+                <div class="d-flex">
+                  <label class="col-form-label">Название кассы</label>
+                  <div class="form-group has-default bmd-form-group">
+                    <input type="text" class="form-control" formControlName="cashboxName">
+                  </div>
+                </div>
+                <div class="d-flex">
+                  <label class="col-form-label">Сумма</label>
+                  <div class="form-group has-default bmd-form-group">
+                    <input type="text" class="form-control" formControlName="totalAmount">
                   </div>
                 </div>
               </div>
+            </form>
+            <div class="d-flex flex-column align-items-center justify-content-around">
+<!--              style="display: flex;flex-direction: column;align-items: center;justify-content: space-around;">-->
+              <button class="btn slim btn-success btn-round" (click)="filterFields()">Показать</button>
+              <button class="btn btn-transparent" (click)="clearFilter()">
+                <i class="material-icons-outlined">close</i> Очистить
+                <div class="ripple-container"></div></button>
             </div>
           </div>
         </div>
       </div>
-      <div class="card w1060">
+
+      <div class="card w1060" style="margin-bottom: 0;">
         <div class="card-header card-header-success card-header-icon">
           <div class="card-icon">
-            <i class="material-icons">assignment</i>
+            <i class="material-icons-outlined">sync_alt</i>
           </div>
           <h4 class="card-title ">История транзакций</h4>
         </div>
@@ -96,18 +97,14 @@
                   <div class="row mr-0">
                     <div class="col-sm-12 col-md-6">
                       <div class="dataTables_length" id="datatables_length">
-                        <label>Show <select name="datatables_length" aria-controls="datatables" class="custom-select custom-select-sm form-control form-control-sm">
-                          <option value="10">10</option>
-                          <option value="25">25</option>
-                          <option value="50">50</option>
-                          <option value="-1">All</option>
-                        </select> entries</label>
+                        <label class="d-flex align-items-baseline">Show <app-custom-select classes="tight" [values]="[10,20,50]" [placeholder]="10"></app-custom-select> entries</label>
                       </div>
                     </div>
                     <div class="col-sm-12 col-md-6">
                       <div class="dataTables_filter">
                         <label>INPUT<span class="bmd-form-group bmd-form-group-sm">
-                          <input type="search" class="form-control form-control-sm" placeholder="Search records" aria-controls="datatables">
+                          <input type="search" class="form-control form-control-sm" placeholder="Search records" aria-controls="datatables"
+                          [formControl]="tableSearch">
                         </span>
                         </label>
                       </div>
@@ -115,78 +112,59 @@
                   </div>
                   <div class="row mr-0">
                     <div class="col-sm-12">
-                      <table class="table table-striped table-no-bordered table-hover dataTable dtr-inline" cellspacing="0" width="100%" style="width: 100%;" role="grid" aria-describedby="datatables_info">
-                        <thead>
-                        <tr role="row mr-0">
-                          <th class="sorting_asc" tabindex="0" aria-controls="datatables" row mr-0span="1" colspan="1" style="width: 178px;" aria-sort="ascending" aria-label="Name: activate to sort column descending">ID платежа</th>
-                          <th class="sorting" tabindex="0" aria-controls="datatables" row mr-0span="1" colspan="1" style="width: 262px;" aria-label="Position: activate to sort column ascending">Время создания</th>
-                          <th *ngIf="idAdmin" class="sorting" tabindex="0" aria-controls="datatables" row mr-0span="1" colspan="1" style="width: 134px;" aria-label="Office: activate to sort column ascending">Мерчант</th>
-                          <th class="sorting" tabindex="0" aria-controls="datatables" row mr-0span="1" colspan="1" style="width: 48px;" aria-label="Age: activate to sort column ascending">Касса</th>
-                          <th class="sorting" tabindex="0" aria-controls="datatables" row mr-0span="1" colspan="1" style="width: 115px;" aria-label="Date: activate to sort column ascending">Номер счета</th>
-                          <th class="sorting" tabindex="0" aria-controls="datatables" row mr-0span="1" colspan="1" style="width: 208px;" aria-label="Actions: activate to sort column ascending">Сумма</th>
-                          <th class="sorting" tabindex="0" aria-controls="datatables" row mr-0span="1" colspan="1" style="width: 208px;" aria-label="Actions: activate to sort column ascending">Валюта</th>
-                          <th *ngIf="idAdmin" class="sorting" tabindex="0" aria-controls="datatables" row mr-0span="1" colspan="1" style="width: 208px;" aria-label="Actions: activate to sort column ascending">Статус</th>
-                        </tr>
-                        </thead>
-                        <tfoot>
-                        <tr><th row mr-0span="1" colspan="1">ID платежа</th>
-                          <th row mr-0span="1" colspan="1">Время создания</th>
-                          <th *ngIf="idAdmin" row mr-0span="1" colspan="1">Мерчант</th>
-                          <th row mr-0span="1" colspan="1">Касса</th>
-                          <th row mr-0span="1" colspan="1">Номер счетаe</th>
-                          <th row mr-0span="1" colspan="1">Сумма</th>
-                          <th row mr-0span="1" colspan="1">Валюта</th>
-                          <th *ngIf="idAdmin" row mr-0span="1" colspan="1">Статус</th>
-                        </tr>
-                        </tfoot>
-                        <tbody>
-                        <tr role="row mr-0" class="odd">
-                          <td tabindex="0" class="sorting_1">c04f30d0-6a2b-432a-8483-4881ecd44198 c04f30d0-6a2b-432a-8483-48</td>
-                          <td>21.05.2021 | 11:34:09</td>
-                          <td *ngIf="idAdmin">ТОО «Мобайл Телеком-Сервис»</td>
-                          <td>Касса 1</td>
-                          <td>ORD-0125-2021-01-25-A</td>
-                          <td>43875.00</td>
-                          <td>KZT</td>
-                          <td *ngIf="idAdmin" class="text-right">
-                            <a href="#" class="btn btn-link btn-info btn-just-icon like"><i class="material-icons">favorite</i></a>
-                          </td>
-                        </tr>
-                        </tbody>
-                      </table>
+                      <ng-scrollbar class="transactions-scroll" [visibility]="'always'">
+                        <table class="table table-striped table-no-bordered table-hover dataTable dtr-inline" cellspacing="0" width="100%" style="width: 100%;" role="grid" aria-describedby="datatables_info">
+                          <thead>
+                          <tr role="row mr-0">
+                            <th class="sortable-th" (click)="nextSort('billId')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'billId'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'billId'">ID платежа</span></th>
+                            <th class="sortable-th" (click)="nextSort('timestamp')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'timestamp'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'timestamp'">Время создания</span></th>
+                            <th *ngIf="isAdmin" class="sortable-th" (click)="nextSort('merchantName')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'merchantName'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'merchantName'">Мерчант</span></th>
+                            <th class="sortable-th" (click)="nextSort('cashboxName')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'cashboxName'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'cashboxName'">Касса</span></th>
+                            <th class="sortable-th" (click)="nextSort('paySysPayId')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'paySysPayId'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'paySysPayId'">Номер счета</span></th>
+                            <th class="sortable-th" (click)="nextSort('totalAmount')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'totalAmount'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'totalAmount'">Сумма</span></th>
+                            <th class="sortable-th" (click)="nextSort('currency')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'currency'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'currency'">Валюта</span></th>
+                            <th class="sortable-th" (click)="nextSort('status')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'status'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'status'">Статус</span></th>
+                          </tr>
+                          </thead>
+                          <tfoot>
+                          <tr><th  >ID платежа</th>
+                            <th  >Время создания</th>
+                            <th *ngIf="isAdmin"  >Мерчант</th>
+                            <th  >Касса</th>
+                            <th  >Номер счетаe</th>
+                            <th  >Сумма</th>
+                            <th  >Валюта</th>
+                            <th  >Статус</th>
+                          </tr>
+                          </tfoot>
+                          <tbody *ngIf="visible">
+                          <tr *ngFor="let transaction of sortedActions | paginate: { itemsPerPage: 10, currentPage: currentPage }" class="cursor-pointer"
+                              [class.selectedItem]="transactionDetails!==null&&transaction.guid===getGuid(transactionDetails)"
+                              (click)="getTransactionDetails(transaction.guid)">
+                            <td tabindex="0" class="sorting_1">{{transaction.billId}}</td>
+                            <td>{{transaction.timestamp|date:'dd.MM.yyyy | hh:mm:ss'}}</td>
+                            <td *ngIf="isAdmin">{{transaction.merchantName}}</td>
+                            <td>{{transaction.cashboxName}}</td>
+                            <td>{{transaction.paySysPayId}}</td>
+                            <td>{{transaction.totalAmount}}</td>
+                            <td>{{transaction.currency}}</td>
+                            <td>
+                              <i *ngIf="transaction.status==='SUCCESS'" class="material-icons material-icons-outlined text-success">check_circle_outline</i>
+                              <i *ngIf="transaction.status==='NEW'" class="material-icons material-icons-outlined text-warning">restore</i>
+                              <i *ngIf="transaction.status==='DELETED'" class="material-icons material-icons-outlined text-danger">highlight_off</i>
+                              <i *ngIf="transaction.status==='PENDING'" class="material-icons material-icons-outlined text-info">cached</i>
+                            </td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </ng-scrollbar>
                     </div>
                   </div>
-                  <div class="row mr-0">
+                  <div class="row mr-0 mt-4">
                     <div class="col-sm-12 col-md-5">
                       <div class="dataTables_info" role="status" aria-live="polite">Showing 1 to 10 of 40 entries</div>
                     </div><div class="col-sm-12 col-md-7">
-<!--                    <div class="dataTables_paginate paging_full_numbers">-->
-<!--                      <ul class="pagination">-->
-<!--                        <li class="paginate_button page-item first disabled" >-->
-<!--                          <a href="#" aria-controls="datatables" data-dt-idx="0" tabindex="0" class="page-link">First</a>-->
-<!--                        </li><li class="paginate_button page-item previous disabled">-->
-<!--                        <a href="#" aria-controls="datatables" data-dt-idx="1" tabindex="0" class="page-link">Prev</a>-->
-<!--                      </li>-->
-<!--                        <li class="paginate_button page-item active">-->
-<!--                          <a href="#" aria-controls="datatables" data-dt-idx="2" tabindex="0" class="page-link">1</a>-->
-<!--                        </li>-->
-<!--                        <li class="paginate_button page-item ">-->
-<!--                          <a href="#" aria-controls="datatables" data-dt-idx="3" tabindex="0" class="page-link">2</a>-->
-<!--                        </li>-->
-<!--                        <li class="paginate_button page-item ">-->
-<!--                          <a href="#" aria-controls="datatables" data-dt-idx="4" tabindex="0" class="page-link">3</a>-->
-<!--                        </li>-->
-<!--                        <li class="paginate_button page-item ">-->
-<!--                          <a href="#" aria-controls="datatables" data-dt-idx="5" tabindex="0" class="page-link">4</a>-->
-<!--                        </li>-->
-<!--                        <li class="paginate_button page-item next">-->
-<!--                          <a href="#" aria-controls="datatables" data-dt-idx="6" tabindex="0" class="page-link">Next</a>-->
-<!--                        </li>-->
-<!--                        <li class="paginate_button page-item last" id="datatables_last">-->
-<!--                          <a href="#" aria-controls="datatables" data-dt-idx="7" tabindex="0" class="page-link">Last</a>-->
-<!--                        </li>-->
-<!--                      </ul>-->
-<!--                    </div>-->
+                    <pagination-controls (pageChange)="changePage($event)"></pagination-controls>
                   </div>
                   </div>
                 </div>
@@ -196,101 +174,30 @@
         </div>
       </div>
     </div>
-    <div class="card w514 ml-3">
-      <div class="card-header">
-        <h4 class="card-title">Детали транзакции
-          <!--        <small class="description">Horizontal Tabs</small>-->
-        </h4>
-      </div>
-      <div class="card-body">
-        <div class="d-flex flex-column" *ngIf="idAdmin">
-          <span>ID: 87453478</span>
-          <span>Tx-ID: 4454th657gf</span>
-          <span>Tx-Key: cc348y478</span>
-          <span>Order-ID:  OID874458</span>
-          <div class="d-flex mt-3 mb-3 justify-content-around">
-            <a href="#" class="btn btn-success btn-round btn-back">Возврат<div class="ripple-container"></div></a>
-            <a href="#" class="btn btn-success btn-round btn-back">Отмена<div class="ripple-container"></div></a>
-            <a href="#" class="btn btn-success btn-round btn-back">Проверить статус<div class="ripple-container"></div></a>
+
+    <div class="card w514 ml-3" *ngIf="transactionDetails" style="margin-bottom: 0;">
+      <ng-scrollbar class="calc300" [visibility]="'always'">
+        <div class="card-header">
+          <h4 class="card-title">Детали транзакции
+            <!--        <small class="description">Horizontal Tabs</small>-->
+          </h4>
+        </div>
+        <div class="card-body">
+<!--          <div class="d-flex flex-column" *ngIf="isAdmin">-->
+<!--            <span>ID: 87453478</span>-->
+<!--            <span>Tx-ID: 4454th657gf</span>-->
+<!--            <span>Tx-Key: cc348y478</span>-->
+<!--            <span>Order-ID:  OID874458</span>-->
+<!--            <div class="d-flex mt-3 mb-3 justify-content-around">-->
+<!--              <button class="btn btn-success btn-round btn-back">Возврат</button>-->
+<!--              <button class="btn btn-success btn-round btn-back">Отмена</button>-->
+              <button class="btn slim btn-success btn-round btn-back" *ngIf="isAdmin">Проверить статус</button>
+          <div class="form-group has-default bmd-form-group d-flex" *ngFor="let item of transactionDetails">
+            <label class="col-form-label text-left w160">{{item.field}}</label>
+            <input type="text" class="form-control" readonly [value]="item.value">
           </div>
         </div>
-        <div class="table-responsive">
-          <table class="table">
-            <thead class="text-success">
-            <tr>
-              <th>
-                Name
-              </th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <td>
-                Minerva Hooper
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Sage Rodriguez
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Philip Chaney
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Doris Greene
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Mason Porter
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="table-responsive">
-          <table class="table">
-            <thead class="text-success">
-            <tr>
-              <th>
-                Name
-              </th>
-            </tr></thead>
-            <tbody>
-            <tr>
-              <td>
-                Minerva Hooper
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Sage Rodriguez
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Philip Chaney
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Doris Greene
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Mason Porter
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      </ng-scrollbar>
     </div>
   </div>
-  </perfect-scrollbar>
 </div>

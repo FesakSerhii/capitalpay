@@ -15,31 +15,32 @@
     <div>
       <div class="tab-content tab-space">
         <div class="tab-pane" [class.active]="activeTab==='tab1'">
-          <div class="card" style="width: 380px;position:relative;">
-            <div class="card-header card-header-success card-header-icon">
-              <div class="card-icon">
-                <i class="material-icons">description</i>
+          <div class="d-flex flex-wrap" style="width: calc(100vw - 300px);">
+            <div class="card mr-2" style="width: 380px;position:relative;" *ngFor="let page of pagesList">
+              <div class="card-header card-header-success card-header-icon">
+                <div class="card-icon">
+                  <i class="material-icons-outlined">description</i>
+                </div>
+                <h4 class="card-title ">{{page.name}}</h4>
               </div>
-              <h4 class="card-title ">Пользовательское соглашение</h4>
-            </div>
-            <div class="card-body mt-4 mb-4">
-
-            </div>
-            <hr>
-            <div class="card-footer">
-              <span>21.05.2021 | 11:34:09</span>
-              <a (click)="$event.preventDefault();isActive=!isActive"><img src="../../../assets/img/dots.svg" alt="dots"></a>
-            </div>
-            <div *ngIf="isActive" class="card m-0 d-flex flex-column justify-content-around pl-2" style="position: absolute;
+              <div class="card-body">
+              </div>
+              <hr>
+              <div class="card-footer">
+                <span>21.05.2021 | 11:34:09</span>
+                <a (click)="$event.preventDefault();activePage?activePage=null:activePage=page"><img src="../../../assets/img/dots.svg" alt="dots"></a>
+              </div>
+              <div *ngIf="activePage!==null&&activePage.id===page.id" class="card m-0 d-flex flex-column justify-content-around pl-2" style="position: absolute;
     width: 160px;
     height: 120px;
-    top: 206px;
+    top: 161px;
     right: 0;">
-              <a href="#" style="color: black" (click)="$event.preventDefault();isActive=!isActive;delete()">Удалить</a>
-              <a href="#" style="color: black" (click)="$event.preventDefault();isActive=!isActive;navigateToEditor()">Открыть в редакторе</a>
+                <a href="#" style="color: black" (click)="$event.preventDefault();delete(page.tag)">Удалить</a>
+                <a href="#" style="color: black" (click)="$event.preventDefault();navigateToEditor(page.tag)">Открыть в редакторе</a>
+              </div>
             </div>
           </div>
-          <a href="#" class="btn btn-success btn-round" (click)="$event.preventDefault();">Добавить страницу<div class="ripple-container"></div></a>
+          <a href="#" class="btn btn-success btn-round" (click)="$event.preventDefault();navigateToEditor()">Добавить страницу<div class="ripple-container"></div></a>
         </div>
         <div class="tab-pane" [class.active]="activeTab==='tab2'">
 
@@ -48,3 +49,4 @@
     </div>
   </div>
 </div>
+<app-confirm-action-modal #confirmContent [messageType]="'deleteLayout'"></app-confirm-action-modal>

@@ -17,4 +17,23 @@ export class PaymentsService {
   editMerchantPaymentMethodsList(obj){
     return this.apiService.postJwt('api','/paysystem/merchant/edit',token,obj).toPromise();
   }
+  editEnable(obj){
+    return this.apiService.postJwt('api','/paysystem/system/enable',token,obj).toPromise();
+  }
+  getRegistries(){
+    return this.apiService.postJwt('api','/paysystems/halyk/get',token).toPromise();
+  }
+  editRegistries(fields){
+    return this.apiService.postJwt('api','/paysystems/halyk/set',token,{fields}).toPromise();
+  }
+  getTransactionsList(){
+    return this.apiService.postJwt('api','/payments/list',token).toPromise();
+  }
+  getTransactionDetails(guid){
+    return this.apiService.postJwt('api','/payments/one',token,{guid}).toPromise();
+  }
+  getFile(timestampAfter,timestampBefore){
+    return this.apiService.postJwtFile('api','/paysystems/register/download',token,{timestampAfter,timestampBefore}).toPromise();
+  }
+
 }

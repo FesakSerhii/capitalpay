@@ -1,17 +1,22 @@
 <div [class]='"stselect " + classes' [class.opened]="opened" [class.direction-top]="isDirectionTop">
   <div class='head' (click)="!disabled ? opened = !opened: false; onTouched()" #selectElem >
     {{value !== null ? getValueTitle(value) : getCurrentValuesText()}}
-    <i class="material-icons" style="position: absolute;top: 8px;right: 15px;">arrow_drop_down</i>
+    <i class="material-icons-outlined" style="cursor: pointer;position: absolute;top: 8px;right: 2px;">arrow_drop_down</i>
   </div>
 
   <ul>
     <li *ngIf="hasSearch">
       <p class="my-0"><input class="form-control form-control-sm" [formControl]="searchStr" [placeholder]="'Пошук'"></p>
     </li>
-    <perfect-scrollbar style="max-height: 400px; max-width: 100%;overflow-y: scroll">
+    <ng-scrollbar [visibility]="'always'"
+                  [class.single]="filteredValues.length===1"
+                  [class.duo]="filteredValues.length===2"
+                  [class.trio]="filteredValues.length===3"
+                  [class.normal]="filteredValues.length>3"
+                  style="width: 100%">
       <li *ngFor="let v of filteredValues" (click)="updateValue(v);">
         <p>{{getValueTitle(getValueValue(v))}}</p>
       </li>
-    </perfect-scrollbar>
+    </ng-scrollbar>
   </ul>
 </div>

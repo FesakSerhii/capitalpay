@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import {UserService} from '../../projects/admin-panel/src/app/service/user.service';
+import {AuthService} from '../../src/app/service/auth.service';
 
 const helper = new JwtHelperService();
 
@@ -14,13 +15,13 @@ const helper = new JwtHelperService();
 export class SideMenuComponent implements OnInit {
   @Input() type: string;
   user: any;
-  constructor(private userService:UserService) { }
+  constructor(private userService:UserService,private authService:AuthService) { }
   menu = {
     merchant:[
       {
-        route:'transactions-log',
+        route:'transaction-log',
         title:'История транзакций',
-        icon:'sync alt'
+        icon:'sync_alt'
       },
       {
         route:'settings',
@@ -83,13 +84,21 @@ export class SideMenuComponent implements OnInit {
     ROLE_MERCHANT:'Мерчант'
   };
   userRoles = [];
+  body = window.document.getElementsByTagName('body')[0].className;
+  isDuplicateSession:boolean=false;
 
   ngOnInit() {
     this.user = this.userService.getUserInfo();
     for(const role of this.user.authorities){
         this.userRoles.push(this.roleList[role])
     }
-    this.userRoles.join('/')
+    setInterval(()=>{
+      this.getSessions()
+    },60000)
   }
-
+  getSessions(){
+    this.authService.checkSessions().then(resp=>{
+      this.isDuplicateSession = resp;
+    })
+  }
 }

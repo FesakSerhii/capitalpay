@@ -3,24 +3,37 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MainPageComponent } from './main-page/main-page.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import {NgbDateParserFormatter, NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {IvyCarouselModule} from 'angular-responsive-carousel';
 import { RegisterComponent } from './register/register.component';
-import {ReactiveFormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import { MerchantPanelComponent } from './merchant-panel/merchant-panel.component';
-import {PerfectScrollbarModule} from 'ngx-perfect-scrollbar';
 import {CommonBlocksModule} from '../../common-blocks/common-blocks.module';
 import { TermsOfUseComponent } from './terms-of-use/terms-of-use.component';
-// import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {NgScrollbarModule} from 'ngx-scrollbar';
+import { BlankPageComponent } from './blank-page/blank-page.component';
+import {IConfig, NgxMaskModule} from 'ngx-mask';
+import {NgbDateCustomParserFormatter} from '../../common-blocks/ngb-date-custom-parser-formatter';
+import {CKEditorModule} from '@ckeditor/ckeditor5-angular';
+import { FeedbackComponent } from './feedback/feedback.component';
 
+
+
+const maskConfigFunction: () => Partial<IConfig> = () => {
+  return {
+    validation: true,
+  };
+};
 @NgModule({
   declarations: [
     AppComponent,
     MainPageComponent,
     RegisterComponent,
     MerchantPanelComponent,
-    TermsOfUseComponent
+    TermsOfUseComponent,
+    BlankPageComponent,
+    FeedbackComponent
   ],
     imports: [
         BrowserModule,
@@ -29,10 +42,12 @@ import { TermsOfUseComponent } from './terms-of-use/terms-of-use.component';
         HttpClientModule,
         CommonBlocksModule,
         IvyCarouselModule,
-        PerfectScrollbarModule,
-        ReactiveFormsModule
+        NgScrollbarModule,
+        ReactiveFormsModule,
+        CKEditorModule,
+        NgxMaskModule.forRoot(maskConfigFunction),
     ],
-  providers: [],
+  providers: [{provide: NgbDateParserFormatter, useClass: NgbDateCustomParserFormatter}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

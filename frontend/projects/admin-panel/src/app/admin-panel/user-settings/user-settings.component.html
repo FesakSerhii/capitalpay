@@ -1,154 +1,186 @@
 <div>
-  <a href="#" class="btn btn-success btn-round btn-back" (click)="$event.preventDefault();navigateToSettings()"><i class="material-icons">arrow_left</i>Назад<div class="ripple-container"></div></a>
-    <perfect-scrollbar style="max-height: 605px; max-width: 100%;overflow-y: scroll">
+<!--  <a href="#" class="btn btn-success btn-round btn-back" (click)="$event.preventDefault();"><i class="material-icons-outlined">arrow_left</i>Назад</a>-->
+  <ul class="nav nav-pills nav-pills-success" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active mr-5" (click)="$event.preventDefault();navigateToSettings()">
+        Назад
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab==='tab1'" (click)="$event.preventDefault();activeTab='tab1'">
+        Настройки пользователя
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab==='tab2'" (click)="$event.preventDefault();activeTab='tab2'">
+        комиссии касс
+      </a>
+    </li>
+  </ul>
+  <div class="tab-content tab-space">
+    <div class="tab-pane" [class.active]="activeTab==='tab1'">
       <div class="d-flex">
-        <div class="card w1058">
+        <div class="card w1058 mb-0">
           <div class="card-header card-header-success card-header-icon">
             <div class="card-icon">
-              <i class="material-icons">manage_accounts</i>
+              <i class="material-icons-outlined">manage_accounts</i>
             </div>
             <h4 class="card-title ">Настройки пользователя</h4>
           </div>
           <div class="card-body">
-            <ng-container *ngIf="userRoles.ROLE_MERCHANT">
-            <h4 class="title">Валюты</h4>
-              <form [formGroup]="currenciesForm">
-                <div class="togglebutton" *ngFor="let currency of currencies">
-                  <label>
-                    <input type="checkbox" [formControlName]="currency.alpha">
-                    <span class="toggle"></span>
-                    {{currency.alpha}}
-                  </label>
+            <ng-scrollbar class="calc400" [visibility]="'always'">
+
+              <ng-container *ngIf="userRoles.ROLE_MERCHANT">
+                <h4 class="title">Валюты</h4>
+                <form [formGroup]="currenciesForm">
+                  <div class="togglebutton" *ngFor="let currency of currencies">
+                    <label>
+                      <input type="checkbox" [formControlName]="currency.alpha">
+                      <span class="toggle"></span>
+                      {{currency.alpha}}
+                    </label>
+                  </div>
+                </form>
+                <button class="btn slim btn-success btn-round" (click)="$event.preventDefault();editUserCurrenciesList()">Сохранить</button>
+                <hr>
+                <h4 class="title">Платежные методы</h4>
+                <form [formGroup]="paymentMethodsForm">
+                  <div class="togglebutton" *ngFor="let paymentMethod of paymentMethods">
+                    <label>
+                      <input type="checkbox" [formControlName]="paymentMethod.name">
+                      <span class="toggle"></span>
+                      {{paymentMethod.name}}
+                    </label>
+                  </div>
+                </form>
+                <button class="btn slim btn-success btn-round" (click)="$event.preventDefault();editUsersPaymentMethodsList()">Сохранить</button>
+                <hr>
+              </ng-container>
+              <h4 class="title">Информация</h4>
+              <form [formGroup]="userInfoForm" *ngIf="!userRoles.ROLE_MERCHANT">
+                <div class="form-group has-default bmd-form-group d-flex">
+                  <label class="col-form-label w160">Email</label>
+                  <input type="email" class="form-control" placeholder="" formControlName="email" [readOnly]="!isEditMode" [class.disabled]="!isEditMode">
+                </div>
+                <div class="form-group has-default bmd-form-group d-flex">
+                  <label class="col-form-label w160">Номер телефона</label>
+                  <input type="phone" formControlName="username"
+                         [class.error]="userInfoForm.controls.username.invalid"
+                         [readOnly]="!isEditMode" [class.disabled]="!isEditMode"
+                         class="form-control" placeholder="Телефон  *" mask='+00000000000'>
+                </div>
+                <div class="form-group has-default bmd-form-group d-flex">
+                  <label class="col-form-label w160">Фио</label>
+                  <input type="text" class="form-control" placeholder="" formControlName="fio" [readOnly]="!isEditMode" [class.disabled]="!isEditMode">
                 </div>
               </form>
-            <a href="#" class="btn btn-success btn-round" (click)="$event.preventDefault();editUserCurrenciesList()">Сохранить<div class="ripple-container"></div></a>
-            <hr>
-            <h4 class="title">Платежные методы</h4>
-              <form [formGroup]="paymentMethodsForm">
-                <div class="togglebutton" *ngFor="let paymentMethod of paymentMethods">
-                  <label>
-                    <input type="checkbox" [formControlName]="paymentMethod.name">
-                    <span class="toggle"></span>
-                    {{paymentMethod.name}}
-                  </label>
+              <form [formGroup]="merchantInfoForm" *ngIf="userRoles.ROLE_MERCHANT">
+                <div class="form-group has-default bmd-form-group d-flex">
+                  <label class="col-form-label w160">Email</label>
+                  <input type="email" class="form-control" placeholder="" formControlName="email" [readOnly]="!isEditMode" [class.disabled]="!isEditMode">
+                </div>
+                <div class="form-group has-default bmd-form-group d-flex">
+                  <label class="col-form-label w160">Номер телефона</label>
+                  <input type="phone" formControlName="mainphone"
+                         [class.error]="merchantInfoForm.controls.mainphone.invalid"
+                         [readOnly]="!isEditMode" [class.disabled]="!isEditMode"
+                         class="form-control" placeholder="Телефон  *" mask='+00000000000'>              </div>
+                <div class="form-group has-default bmd-form-group d-flex">
+                  <label class="col-form-label w160">ИИН/БИН</label>
+                  <input type="text" class="form-control"
+                         [class.danger]="merchantInfoForm.controls.iinbin.invalid"
+                         placeholder="" formControlName="iinbin" [readOnly]="!isEditMode" [class.disabled]="!isEditMode">
+                </div>
+                <div class="form-group has-default bmd-form-group d-flex">
+                  <label class="col-form-label w160">Наименование</label>
+                  <input type="text" class="form-control" placeholder="" formControlName="mname" [readOnly]="!isEditMode" [class.disabled]="!isEditMode">
+                </div>
+                <div class="form-group has-default bmd-form-group d-flex">
+                  <label class="col-form-label w160">Юридический адрес</label>
+                  <input type="text" class="form-control" placeholder="" formControlName="uaddress" [readOnly]="!isEditMode" [class.disabled]="!isEditMode">
+                </div>
+                <div class="form-group has-default bmd-form-group d-flex">
+                  <label class="col-form-label w160">Фактический адрес</label>
+                  <input type="text" class="form-control" placeholder="" formControlName="faddress" [readOnly]="!isEditMode" [class.disabled]="!isEditMode">
+                </div>
+                <div class="form-group has-default bmd-form-group d-flex">
+                  <label class="col-form-label w160">ФИО Руководитель</label>
+                  <input type="text" class="form-control" placeholder="" formControlName="headname" [readOnly]="!isEditMode" [class.disabled]="!isEditMode">
+                </div>
+                <div class="form-group has-default bmd-form-group d-flex">
+                  <label class="col-form-label w160">ФИО ГЛ. бухгалтер</label>
+                  <input type="text" class="form-control" placeholder="" formControlName="accountant" [readOnly]="!isEditMode" [class.disabled]="!isEditMode">
+                </div>
+                <div class="form-group has-default bmd-form-group d-flex">
+                  <label class="col-form-label w160">Основной номер телефона</label>
+                  <input type="phone" formControlName="mainphone"
+                         [class.error]="merchantInfoForm.controls.mainphone.invalid"
+                         [readOnly]="!isEditMode" [class.disabled]="!isEditMode"
+                         class="form-control" placeholder="Основной номер телефона" mask='+00000000000'>
+                </div>
+                <div class="form-group has-default bmd-form-group d-flex">
+                  <label class="col-form-label w160">Банк Клиента</label>
+                  <input type="text" class="form-control" placeholder="" formControlName="bankname" [readOnly]="!isEditMode" [class.disabled]="!isEditMode">
+                </div>
+                <div class="form-group has-default bmd-form-group d-flex">
+                  <label class="col-form-label w160">ИИК</label>
+                  <input type="text" class="form-control"
+                         placeholder="" formControlName="iik" [readOnly]="!isEditMode" [class.disabled]="!isEditMode">
+                </div>
+                <div class="form-group has-default bmd-form-group d-flex">
+                  <label class="col-form-label w160">БИК</label>
+                  <input type="text" class="form-control"
+                         placeholder="" formControlName="bik" [readOnly]="!isEditMode" [class.disabled]="!isEditMode">
+                </div>
+                <div class="form-group has-default bmd-form-group d-flex">
+                  <label class="col-form-label w160">Комиссия</label>
+                  <input type="text" class="form-control" placeholder="" formControlName="commission" [readOnly]="!isEditMode" [class.disabled]="!isEditMode">
                 </div>
               </form>
-            <a href="#" class="btn btn-success btn-round" (click)="$event.preventDefault();editUsersPaymentMethodsList()">Сохранить<div class="ripple-container"></div></a>
-            <hr>
-            </ng-container>
-            <h4 class="title">Информация</h4>
-            <form [formGroup]="userInfoForm" *ngIf="!userRoles.ROLE_MERCHANT">
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label w160">Email</label>
-                <input type="email" class="form-control" placeholder="" formControlName="email" [readOnly]="!isEditMode">
-              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label w160">Номер телефона</label>
-                <input type="phone" formControlName="phone"
-                       [class.error]="userInfoForm.controls.phone.invalid"
-                       [readOnly]="!isEditMode"
-                       class="form-control" placeholder="Телефон  *" mask='+00000000000'>
-              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label w160">Фио</label>
-                <input type="text" class="form-control" placeholder="" formControlName="fio" [readOnly]="!isEditMode">
-              </div>
-            </form>
-            <form [formGroup]="merchantInfoForm" *ngIf="userRoles.ROLE_MERCHANT">
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label w160">Email</label>
-                <input type="email" class="form-control" placeholder="" formControlName="email" [readOnly]="!isEditMode">
-              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label w160">Номер телефона</label>
-                <input type="phone" formControlName="phone"
-                       [class.error]="merchantInfoForm.controls.phone.invalid"
-                       [readOnly]="!isEditMode"
-                       class="form-control" placeholder="Телефон  *" mask='+00000000000'>              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label w160">ИИН/БИН</label>
-                <input type="text" class="form-control" placeholder="" formControlName="iinbin" [readOnly]="!isEditMode">
-              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label w160">Наименование</label>
-                <input type="text" class="form-control" placeholder="" formControlName="mname" [readOnly]="!isEditMode">
-              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label w160">Юридический адрес</label>
-                <input type="text" class="form-control" placeholder="" formControlName="uaddress" [readOnly]="!isEditMode">
-              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label w160">Фактический адрес</label>
-                <input type="text" class="form-control" placeholder="" formControlName="faddress" [readOnly]="!isEditMode">
-              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label w160">ФИО Руководитель</label>
-                <input type="text" class="form-control" placeholder="" formControlName="headname" [readOnly]="!isEditMode">
-              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label w160">ФИО ГЛ. бухгалтер</label>
-                <input type="text" class="form-control" placeholder="" formControlName="accountant" [readOnly]="!isEditMode">
-              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label w160">Основной номер телефона</label>
-                <input type="phone" formControlName="mainphone"
-                       [class.error]="merchantInfoForm.controls.mainphone.invalid"
-                       [readOnly]="!isEditMode"
-                       class="form-control" placeholder="Основной номер телефона" mask='+00000000000'>
-              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label w160">Банк Клиента</label>
-                <input type="text" class="form-control" placeholder="" formControlName="bankname" [readOnly]="!isEditMode">
-              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label w160">ИИК</label>
-                <input type="text" class="form-control" placeholder="" formControlName="iik" [readOnly]="!isEditMode">
-              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label w160">БИК</label>
-                <input type="text" class="form-control" placeholder="" formControlName="bik" [readOnly]="!isEditMode">
-              </div>
-            </form>
-            <a href="#" *ngIf="!isEditMode" class="btn btn-success btn-round" style="margin-left: 202px" (click)="$event.preventDefault();isEditMode=true">изменить данные<div class="ripple-container"></div></a>
-            <a href="#" *ngIf="isEditMode" class="btn btn-success btn-round" style="margin-left: 202px" (click)="$event.preventDefault();editUserData()">Сохранить<div class="ripple-container"></div></a>
-          </div>
+              <button *ngIf="!isEditMode" class="btn slim btn-success btn-round" style="margin-left: 202px" (click)="$event.preventDefault();isEditMode=true">изменить данные<div class="ripple-container"></div></button>
+              <button *ngIf="isEditMode" class="btn slim btn-success btn-round" style="margin-left: 202px"
+                      [disabled]="merchantInfoForm.invalid"
+                      [class.disabled]="merchantInfoForm.invalid"
+                      (click)="$event.preventDefault();editUserData()">Сохранить<div class="ripple-container"></div></button>
+            </ng-scrollbar>
+            </div>
         </div>
         <div class="card user-options ml-3" *ngIf="userRoles.ROLE_MERCHANT">
           <div class="card-body">
             <div class="d-flex flex-column align-items-center">
               <span class="id">ID {{userId}}</span>
               <h4 class="user-info-title">{{userInfoForm.value.mname}}</h4>
-              <span class="d-flex align-items-center success" *ngIf="userInfoForm.value.active"><i class="material-icons">verified_user</i>активирован</span>
-              <span class="d-flex align-items-center danger" *ngIf="!!!userInfoForm.value.active"><i class="material-icons">gpp_bad</i>не активирован</span>
+              <span class="d-flex align-items-center success" *ngIf="userInfoForm.value.active"><i class="material-icons-outlined">verified_user</i>активирован</span>
+              <span class="d-flex align-items-center danger" *ngIf="!!!userInfoForm.value.active"><i class="material-icons-outlined">gpp_bad</i>не активирован</span>
               <div class="d-flex mt-5">
                 <label class="col-form-label label-checkbox pt-0">Роль:</label>
                 <div class="row ml-1">
                   <div>
                     <form [formGroup]="userRolesForm">
-                    <div class="form-check">
-                      <label class="form-check-label">
-                        <input class="form-check-input" formControlName="ROLE_ADMIN" type="checkbox" (change)="changeRole('ROLE_ADMIN')">Администратор
-                        <span class="form-check-sign">
+                      <div class="form-check">
+                        <label class="form-check-label">
+                          <input class="form-check-input" formControlName="ROLE_ADMIN" type="checkbox" (change)="changeRole('ROLE_ADMIN')">Администратор
+                          <span class="form-check-sign">
                               <span class="check"></span>
                             </span>
-                      </label>
-                    </div>
-                    <div class="form-check">
-                      <label class="form-check-label">
-                        <input class="form-check-input" formControlName="ROLE_OPERATOR" type="checkbox" (change)="changeRole('ROLE_OPERATOR')">Оператор
-                        <span class="form-check-sign">
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        <label class="form-check-label">
+                          <input class="form-check-input" formControlName="ROLE_OPERATOR" type="checkbox" (change)="changeRole('ROLE_OPERATOR')">Оператор
+                          <span class="form-check-sign">
                               <span class="check"></span>
                             </span>
-                      </label>
-                    </div>
-                    <div class="form-check">
-                      <label class="form-check-label">
-                        <input class="form-check-input" formControlName="ROLE_MERCHANT" type="checkbox" (change)="changeRole('ROLE_MERCHANT')">Мерчант
-                        <span class="form-check-sign">
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        <label class="form-check-label">
+                          <input class="form-check-input" formControlName="ROLE_MERCHANT" type="checkbox" (change)="changeRole('ROLE_MERCHANT')">Мерчант
+                          <span class="form-check-sign">
                               <span class="check"></span>
                             </span>
-                      </label>
-                    </div>
+                        </label>
+                      </div>
                     </form>
                   </div>
                 </div>
@@ -162,6 +194,48 @@
           </div>
         </div>
       </div>
-    </perfect-scrollbar>
+    </div>
+    <div class="tab-pane" [class.active]="activeTab==='tab2'">
+      <ng-scrollbar class="calc400" [visibility]="'always'">
+      <div class="d-flex flex-wrap">
+        <ng-container *ngIf="cashBoxList">
+          <div class="card mr-2" style="width: 380px;position:relative;" *ngFor="let cashBox of cashBoxList.controls, let i = index">
+            <div class="card-header card-header-success card-header-icon">
+              <div class="card-icon">
+                <i class="material-icons-outlined">store_mall_directory</i>
+              </div>
+              <h4 class="card-title" style="text-align: start">{{cashBox.value.cashBoxName}}</h4>
+            </div>
+            <form class="card-body mt-4 mb-4" [formGroup]="cashBox">
+              <div class="d-flex position-relative">
+                <label class="col-form-label col-4">Комиссия :</label>
+                <input type="text" class="form-control" readonly formControlName="totalFee">
+                <span class="position-absolute" style="right: 4px;top: 10px">%</span>
+              </div>
+              <div class="d-flex position-relative">
+                <label class="col-form-label col-4">Комиссия мерчанта :</label>
+                <input type="text" class="form-control" formControlName="merchantFee" [value]="replaceSymbols(cashBox.value.merchantFee)">
+                <span class="position-absolute" style="right: 4px;top: 10px">%</span>
+              </div>
+              <div class="d-flex position-relative">
+                <label class="col-form-label col-4">Комиссия покупателя :</label>
+                <input type="text" class="form-control" formControlName="clientFee" [value]="replaceSymbols(cashBox.value.clientFee)">
+                <span class="position-absolute" style="right: 4px;top: 10px">%</span>
+              </div>
+            </form>
+            <div class="card-footer">
+              <button class="btn btn-success slim btn-round btn-back ml-auto mb-1"
+                      [disabled]="+cashBox.value.totalFee !== +cashBox.value.merchantFee + +cashBox.value.clientFee"
+                      [class.disabled]="+cashBox.value.totalFee !== +cashBox.value.merchantFee + +cashBox.value.clientFee"
+                      (click)="$event.preventDefault();saveCashBoxFee(cashBox.value)">Сохранить</button>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      </ng-scrollbar>
+    </div>
+  </div>
+
+
 </div>
 <app-massage-modal #massageModal [messageType]="modalType"></app-massage-modal>

@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {StaticPageService} from '../../service/static-page.service';
 import {Router} from '@angular/router';
+import {ConfirmActionModalComponent} from '../../../../../../common-blocks/confirm-action-modal/confirm-action-modal.component';
 
 @Component({
   selector: 'app-documents-layouts',
@@ -8,10 +9,13 @@ import {Router} from '@angular/router';
   styleUrls: ['./documents-layouts.component.scss']
 })
 export class DocumentsLayoutsComponent implements OnInit {
-  isActive: boolean =false;
+  activePage: any = null;
   constructor(private router: Router,private staticPageService:StaticPageService) { }
+  @ViewChild("confirmContent", {static: false}) confirmModal: ConfirmActionModalComponent;
+
   activeTab = 'tab1';
   pagesList: [any] = null;
+
   ngOnInit(): void {
     this.getPages();
   }
@@ -20,13 +24,19 @@ export class DocumentsLayoutsComponent implements OnInit {
       this.pagesList = resp.data;
     })
   }
-  navigateToEditor(){
-    this.router.navigate(['/admin-panel/documents-layouts/editor'])
+  navigateToEditor(tag=null){
+    this.router.navigate(['/admin-panel/documents-layouts/editor'],{queryParams: {
+        tag: tag,
+      }})
   }
 
-  delete() {
-    this.staticPageService.deleteStaticPages('').then(()=>{
-      this.getPages()
+  delete(tag) {
+    this.activePage = null;
+    this.confirmModal.open().then(resp=> {
+      this.staticPageService.deleteStaticPages(tag).then(()=>{
+        this.getPages()
+      })
     })
+
   }
 }

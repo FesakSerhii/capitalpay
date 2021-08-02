@@ -13,6 +13,9 @@ export class SupportService {
   getSupportList(){
     return this.apiService.postJwt('api','/support/list',token).toPromise();
   }
+  setImportant(data){
+    return this.apiService.postJwt('api','/support/status',token, data).toPromise();
+  }
   getSupportListItem(id){
     return this.apiService.postJwt('api','/support/one',token,{id}).toPromise();
   }

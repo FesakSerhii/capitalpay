@@ -48,6 +48,11 @@ export class ApiService {
     const body = JSON.stringify(data);
     return this.http.post(this.apiBase[api] + url, body, {headers});
   }
+  public postJwtFile(api, url: string, token, data: any = {},): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json','Authorization':token});
+    const body = JSON.stringify(data);
+    return this.http.post(this.apiBase[api] + url, body, {responseType: 'blob',headers,observe: 'response'});
+  }
 
 
   public put(api, url: string, data: any = {}): Observable<any> {

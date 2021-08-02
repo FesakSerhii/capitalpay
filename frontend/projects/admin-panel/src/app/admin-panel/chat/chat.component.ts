@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {SupportService} from "../../service/support.service";
 import {FormControl} from "@angular/forms";
+import {FileService} from '../../../../../../src/app/service/file.service';
 
 @Component({
   selector: 'app-chat',
@@ -18,7 +19,9 @@ export class ChatComponent implements OnInit {
   subject: string;
   theme: string;
   text: string;
-  constructor(private router: Router, private activatedRoute: ActivatedRoute,private supportService: SupportService) { }
+  fileToUpload: File = null;
+  fileList: any[]=[];
+  constructor(private fileService: FileService,private router: Router, private activatedRoute: ActivatedRoute,private supportService: SupportService) { }
 
   ngOnInit(): void {
     this.activatedRoute.queryParamMap.subscribe((param) => {
@@ -72,10 +75,19 @@ export class ChatComponent implements OnInit {
     let answer = {
       "requestId": this.id,
       "text": this.answerForm.value,
-      "fileList": []
+      "fileList": this.fileList
     };
-    this.supportService.answer(answer).then(resp=>{
+    this.supportService.answer(answer).then(()=>{
       this.navigateToHelp()
     })
+  }
+  handleFileInput(files: FileList) {
+    this.fileToUpload = files.item(0);
+
+    if (this.fileToUpload)
+      this.fileService.sendFile(this.fileToUpload)
+        .then(resp => {
+          this.fileList.push(resp.data.id)
+        })
   }
 }

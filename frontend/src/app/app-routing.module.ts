@@ -3,15 +3,25 @@ import { RouterModule, Routes } from '@angular/router';
 import {MainPageComponent} from './main-page/main-page.component';
 import {RegisterComponent} from './register/register.component';
 import {TermsOfUseComponent} from "./terms-of-use/terms-of-use.component";
+import {BlankPageComponent} from './blank-page/blank-page.component';
+import {FeedbackComponent} from './feedback/feedback.component';
 
 export const routes: Routes = [
   {
-    path: '',
+    path: 'page',
     component: MainPageComponent
+  },
+  {
+    path: '',
+    component: BlankPageComponent
   },
   {
     path: 'register',
     component: RegisterComponent
+  },
+  {
+    path: 'feedback',
+    component: FeedbackComponent
   },
   {
     path: 'confirm',

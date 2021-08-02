@@ -17,7 +17,7 @@ export class CurrencyService {
     return this.apiService.postJwt('api','/currency/system/list',token).toPromise();
   }
   editEnableCurrecies(data){
-    return this.apiService.postJwt('api','/paysystem/system/enable',token,data).toPromise();
+    return this.apiService.postJwt('api','/currency/system/edit',token,data).toPromise();
   }
   editUsersCurrenciesList(obj){
     return this.apiService.postJwt('api','/currency/merchant/edit',token,obj).toPromise();

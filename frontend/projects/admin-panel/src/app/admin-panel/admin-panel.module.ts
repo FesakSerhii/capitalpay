@@ -8,14 +8,17 @@ import { CurrenciesComponent } from './currencies/currencies.component';
 import { PaymentMethodsComponent } from './payment-methods/payment-methods.component';
 import { UserComponent } from './user/user.component';
 import {CommonBlocksModule} from "../../../../../common-blocks/common-blocks.module";
-import {PerfectScrollbarModule} from "ngx-perfect-scrollbar";
 import { UserSettingsComponent } from './user-settings/user-settings.component';
 import {ReactiveFormsModule} from "@angular/forms";
 import {NgxMaskModule} from "ngx-mask";
 import { ChatComponent } from './chat/chat.component';
 import { DocumentsLayoutsComponent } from './documents-layouts/documents-layouts.component';
 import { DocumentLayoutsEditorComponent } from './document-layouts-editor/document-layouts-editor.component';
-
+import {NgScrollbarModule} from 'ngx-scrollbar';
+import {NgbDateParserFormatter, NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {NgbDateCustomParserFormatter} from '../../../../../common-blocks/ngb-date-custom-parser-formatter';
+import {CKEditorModule} from '@ckeditor/ckeditor5-angular';
+// import { CKEditorModule } from '@ckeditor/ckeditor5-build-classic';
 
 
 @NgModule({
@@ -24,9 +27,15 @@ import { DocumentLayoutsEditorComponent } from './document-layouts-editor/docume
     CommonModule,
     AdminPanelRoutingModule,
     CommonBlocksModule,
-    PerfectScrollbarModule,
+    NgScrollbarModule,
     ReactiveFormsModule,
-    NgxMaskModule
+    NgxMaskModule,
+    NgbModule,
+    CKEditorModule,
+    // CKEditorModule
+  ],
+  providers: [
+    {provide: NgbDateParserFormatter, useClass: NgbDateCustomParserFormatter}
   ]
 })
 export class AdminPanelModule { }

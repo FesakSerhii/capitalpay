@@ -7,6 +7,11 @@
     </li>
     <li class="nav-item">
       <a class="nav-link" [class.active]="activeTab==='tab2'" (click)="$event.preventDefault();activeTab='tab2'">
+        безопасность
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab==='tab3'" (click)="$event.preventDefault();activeTab='tab3'">
         другие настройки
       </a>
     </li>
@@ -19,7 +24,7 @@
             <div class="card" style="width: 380px">
               <div class="card-header card-header-success card-header-icon">
                 <div class="card-icon">
-                  <i class="material-icons">monetization_on</i>
+                  <i class="material-icons-outlined">monetization_on</i>
                 </div>
                 <h4 class="card-title ">Валюты</h4>
               </div>
@@ -27,7 +32,7 @@
                 <form [formGroup]="currenciesForm">
                   <div class="togglebutton" *ngFor="let currency of currencyList">
                     <label>
-                      <input type="checkbox" [formControlName]="currency.alpha">
+                      <input type="checkbox" [formControlName]="currency.alpha" (change)="currencySet(currency)">
                       <span class="toggle"></span>
                       {{currency.alpha}}
                     </label>
@@ -35,56 +40,109 @@
                 </form>
              </div>
               <div class="card-footer d-flex justify-content-end">
-                <a href="#" class="btn btn-success btn-round" (click)="$event.preventDefault();">Сохранить<div class="ripple-container"></div></a>
+                <button class="btn btn-success btn-round"
+                        [disabled]="!currencyEnabledToSave.length"
+                        [class.disabled]="!currencyEnabledToSave.length"
+                        (click)="saveEnabledCurrencies()">Сохранить<div class="ripple-container"></div></button>
               </div>
             </div>
             <div class="card ml-3" style="width: 380px">
               <div class="card-header card-header-success card-header-icon">
                 <div class="card-icon">
-                  <i class="material-icons">checklist</i>
+                  <i class="material-icons-outlined">checklist</i>
                 </div>
                 <h4 class="card-title ">Платежные методы</h4>
               </div>
               <div class="card-body mt-4 mb-4">
-                <div class="togglebutton">
-                  <label>
-                    <input type="checkbox" checked="">
-                    <span class="toggle"></span>
-                    Visa/Mastercard
-                  </label>
-                </div>
-                <div class="togglebutton">
-                  <label>
-                    <input type="checkbox" checked="">
-                    <span class="toggle"></span>
-                    American Express
-                  </label>
-                </div>
-                <div class="togglebutton">
-                  <label>
-                    <input type="checkbox">
-                    <span class="toggle"></span>
-                    Union Pay
-                  </label>
-                </div>
-                <div class="togglebutton">
-                  <label>
-                    <input type="checkbox">
-                    <span class="toggle"></span>
-                    Qiwi
-                  </label>
-                </div>
+                <form [formGroup]="paymentMethodsForm">
+                  <div class="togglebutton" *ngFor="let paymentMethod of paymentMethods">
+                    <label>
+                      <input type="checkbox" [formControlName]="paymentMethod.name" (change)="paymentMethodSet(paymentMethod)">
+                      <span class="toggle"></span>
+                      {{paymentMethod.name}}
+                    </label>
+                  </div>
+                </form>
               </div>
               <div class="card-footer d-flex justify-content-end">
-                <a href="#" class="btn btn-success btn-round" (click)="$event.preventDefault();">Сохранить<div class="ripple-container"></div></a>
+                <button class="btn btn-success btn-round"
+                        [disabled]="!paymentMethodsEnabledToSave.length"
+                        [class.disabled]="!paymentMethodsEnabledToSave.length"
+                        (click)="saveEnabledPaymentMethods();">Сохранить<div class="ripple-container"></div></button>
               </div>
             </div>
           </div>
         </div>
         <div class="tab-pane" [class.active]="activeTab==='tab2'">
+          <div class="card w720">
+            <div class="card-header card-header-success card-header-icon">
+              <div class="card-icon">
+                <i class="material-icons-outlined">gpp_good</i>
+              </div>
+              <h4 class="card-title">Безопасность</h4>
+            </div>
+            <div class="card-body">
+              <!--            <h4 class="title">Информация</h4>-->
+              <div class="form-group has-default bmd-form-group d-flex">
+                <label class="col-form-label w160 col-2">Пароль</label>
+                <button class="btn slim btn-success btn-round" (click)="open(changePasswordModal)">Изменить пароль</button>
+              </div>
+              <div class="form-group has-default bmd-form-group d-flex align-items-baseline">
+                <label class="col-form-label w160 col-2">Двухфакторная аутентификация</label>
+                <div>
+                  <span>Отправим SMS код на ваш основной телефон, который был указан при регистрации, для входа в аккаунт.</span>
+                  <div class="togglebutton">
+                    <label>
+                      <input type="checkbox" [formControl]="isTwoFactor">
+                      <span class="toggle"></span>
+                      Активировано
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane" [class.active]="activeTab==='tab3'">
 
         </div>
       </div>
     </div>
   </div>
 </div>
+<ng-template #changePassword let-modal>
+  <div class="card mt-0 mb-0 w742">
+    <div class="card-header card-header-success card-header-icon">
+      <div class="card-icon">
+        <i class="material-icons-outlined">manage_accounts</i>
+      </div>
+      <h4 class="card-title ">Изменить пароль</h4>
+      <button type="button" class="close position-absolute" style="top: 10px;right: 0" data-dismiss="modal" aria-label="Close" (click)="modal.dismiss();">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="passChangeForm">
+        <div class="d-flex">
+          <label class="col-form-label">Старый пароль</label>
+          <input type="password" class="form-control" formControlName="oldPassword">
+        </div>
+        <div class="d-flex">
+          <label class="col-form-label">Новый пароль</label>
+          <input type="password" class="form-control" formControlName="newPassword">
+        </div>
+        <div class="d-flex">
+          <label class="col-form-label">Повторите пароль</label>
+          <input type="password" class="form-control" formControlName="confirmPassword">
+        </div>
+      </form>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-success btn-round"
+                [disabled]="!comparePasswords()"
+                [class.disabled]="!comparePasswords()"
+                (click)="confirmPasswordChange()">Сохранить изменения</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<app-confirm-action-modal #confirmContent [messageType]="confirmMassage"></app-confirm-action-modal>

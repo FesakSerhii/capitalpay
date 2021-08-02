@@ -12,6 +12,7 @@ import {UserSettingsComponent} from './user-settings/user-settings.component';
 import {ChatComponent} from './chat/chat.component';
 import {DocumentsLayoutsComponent} from './documents-layouts/documents-layouts.component';
 import {DocumentLayoutsEditorComponent} from './document-layouts-editor/document-layouts-editor.component';
+import {TransactionsRegistryComponent} from '../../../../../common-blocks/transactions-log/transactions-registry/transactions-registry.component';
 
 
 const routes: Routes = [
@@ -26,6 +27,10 @@ const routes: Routes = [
       {
         path: 'transaction-log',
         component: TransactionsLogComponent
+      },
+      {
+        path: 'transaction-log/registry',
+        component: TransactionsRegistryComponent
       },
       {
         path: 'settings',

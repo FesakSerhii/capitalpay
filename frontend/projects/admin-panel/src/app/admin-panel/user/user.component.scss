@@ -13,11 +13,11 @@
   width: 514px!important;
 }
 .card.w1600{
-  width: 1600px!important;
+  width: calc(100vw - 300px)!important;
 }
-.icon-color{
-  color: #008E67;
+.form-horizontal{
+  width: calc(100vw - 500px)!important;
 }
-.w742{
+.card.w742{
   width: 742px!important;
 }

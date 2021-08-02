@@ -117,3 +117,72 @@ textarea{
     color: rgba(0, 0, 0, 0.5);
   }
 }
+.sidebar-mini{
+  .wrapper{
+    .sidebar{
+      .no-collapse{
+        display: none;
+      }
+      .collapse{
+        display: block;
+      }
+    }
+    .sidebar:hover{
+      .no-collapse{
+        display: block;
+      }
+      .collapse{
+        display: none;
+      }
+    }
+  }
+}
+.wrapper{
+  .sidebar{
+    .collapse{
+      display: none;
+    }
+  }
+}
+.cursor-pointer{
+  cursor: pointer!important;
+}
+.ng-scrollbar .ng-scrollbar-wrapper[deactivated=false][dir=ltr]>scrollbar-y.scrollbar-control{
+  position: absolute;
+  right: -20px;
+}
+.ng-scrollbar{
+  height: calc(100vh - 620px)!important;
+}
+.ng-scrollbar.calc300{
+  height: calc(100vh - 349px)!important;
+}
+.ng-scrollbar.user{
+  height: calc(100vh - 515px)!important;
+}
+.stselect ul .ng-scrollbar{
+  height: unset!important;
+}
+/* You can add global styles to this file, and also import other style files */
+.cursor-pointer{
+  cursor: pointer!important;
+}
+.ng-scrollbar .ng-scrollbar-wrapper[deactivated=false][dir=ltr]>scrollbar-y.scrollbar-control{
+  position: absolute;
+  right: -20px;
+}
+.ng-scrollbar{
+  height: calc(100vh - 620px)!important;
+}
+.ng-scrollbar.calc300{
+  height: calc(100vh - 250px)!important;
+}
+.ng-scrollbar.calc200{
+  height: calc(100vh - 200px)!important;
+}
+.ng-scrollbar.calc100{
+  height: calc(100vh - 160px)!important;
+}
+.icon-color{
+  color: #008E67;
+}

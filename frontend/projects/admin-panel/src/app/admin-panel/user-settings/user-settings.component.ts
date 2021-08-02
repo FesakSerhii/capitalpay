@@ -1,12 +1,13 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
 import {UserService} from '../../service/user.service';
 import {KycService} from '../../service/kyc.service';
 import {CurrencyService} from '../../service/currency.service';
 import {MassageModalComponent} from '../../../../../../common-blocks/massage-modal/massage-modal.component';
 import {PaymentsService} from '../../service/payments.service';
 import {Subscription} from 'rxjs';
+import {ExtValidators} from '../../../../../../src/app/validators/ext-validators';
 
 @Component({
   selector: 'app-user-settings',
@@ -35,7 +36,7 @@ export class UserSettingsComponent implements OnInit {
     id: new FormControl(),
     password: new FormControl(),
     email: new FormControl('',[Validators.email]),
-    phone:new FormControl('',[Validators.required,Validators.minLength(11),Validators.maxLength(11)]),
+    username:new FormControl('',[Validators.required,Validators.minLength(11),Validators.maxLength(11)]),
     realname: new FormControl(''),
     fio: new FormControl(''),
   });
@@ -43,7 +44,7 @@ export class UserSettingsComponent implements OnInit {
     merchantId: new FormControl(),
     password: new FormControl(),
     email: new FormControl('',[Validators.email]),
-    phone: new FormControl('',[Validators.minLength(11),Validators.maxLength(11)]),
+    username: new FormControl('',[Validators.minLength(11),Validators.maxLength(11)]),
     realname: new FormControl(''),
     active: new FormControl(),
     blocked: new FormControl(),
@@ -55,8 +56,9 @@ export class UserSettingsComponent implements OnInit {
     iik: new FormControl(''),
     mname: new FormControl(''),
     bankname: new FormControl(''),
-    iinbin: new FormControl(''),
-    uaddress: new FormControl('')
+    iinbin: new FormControl('',[ExtValidators.IIN]),
+    uaddress: new FormControl(''),
+    commission: new FormControl('')
   })
   userRolesForm = new FormGroup({
     ROLE_USER:  new FormControl(),
@@ -80,19 +82,25 @@ export class UserSettingsComponent implements OnInit {
   currenciesForm = new FormGroup({});
   paymentMethods: any;
   paymentMethodsForm = new FormGroup({});
-  userId: string;
+  userId: number;
+  activeTab: string = 'tab1';
+  cashBoxList = new FormArray([])
+  regEx = '/(^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$)||(^[+-]?([0-9]+([,][0-9]*)?|[.][0-9]+)$)/gm'
+
   ngOnInit(): void {
     this.activatedRoute.queryParamMap.subscribe((param) => {
-      this.userId = param.get('userId');
-      this.getUserInfo(this.userId);
+      this.userId = +param.get('userId');
+      this.getUserInfo();
+      this.getCommissions();
     });
+
     this.isEditMode = false;
   }
   navigateToSettings(){
     this.router.navigate(['/admin-panel/user'])
   }
-  getUserInfo(id){
-    this.userService.getUserData(id).then(resp=>{
+  getUserInfo(){
+    this.userService.getUserData(this.userId).then(resp=>{
       this.userInfoForm.patchValue(resp.data,{ emitEvent: false });
       const roles = resp.data.roles;
       for(const role in roles){
@@ -112,15 +120,15 @@ export class UserSettingsComponent implements OnInit {
         }
         this.userService.changeUserRolesList(newRoles).then(()=>{
           subscription.unsubscribe();
-          this.getUserInfo(this.userId)
+          this.getUserInfo()
         })
       })
       if(this.userRoles.ROLE_MERCHANT){
-        this.kycService.getKycInfo(id).then(resp=>{
+        this.kycService.getKycInfo(this.userId).then(resp=>{
           this.merchantInfoForm.patchValue(resp.data);
           this.merchantInfoForm.controls.merchantId.patchValue(this.userId,{ emitEvent: false });
-          this.merchantInfoForm.controls.mainphone.patchValue(resp.data.mainphone.replace("+","").replace(/\s/g, ""));
-          this.merchantInfoForm.controls.phone.patchValue(resp.data.phone.replace("+","").replace(/\s/g, ""));
+          this.merchantInfoForm.controls.mainphone.patchValue(resp.data.mainphone?resp.data.mainphone.replace("+","").replace(/\s/g, ""):'');
+          this.merchantInfoForm.controls.username.patchValue(resp.data.phone?resp.data.phone.replace("+","").replace(/\s/g, ""):'');
         })
         this.currencyService.getCurrencies().then(resp=>{
           this.currencies = resp.data;
@@ -134,31 +142,43 @@ export class UserSettingsComponent implements OnInit {
             this.paymentMethodsForm.addControl(paymentMethod.name, new FormControl())
           }
         });
-        this.currencyService.getMerchantCurrencies(id).then(resp=>{
+        this.currencyService.getMerchantCurrencies(this.userId).then(resp=>{
           for(const currency in resp.data){
             this.currenciesForm.controls[currency].setValue(resp.data[currency])
           }
         })
-        this.paymentsService.getMerchantPaymentMethods(id).then(resp=>{
+        this.paymentsService.getMerchantPaymentMethods(this.userId).then(resp=>{
           for(const paymentMethod of resp.data){
-            console.log(paymentMethod);
             this.paymentMethodsForm.controls[paymentMethod.name].setValue(true)
           }
         })
       }
     })
   }
+  async getCommissions(){
+   const data = {...await this.userService.getUsersCommissions(this.userId)}.data
+    for(const cashBox of data){
+      const form = new FormGroup({
+        cashBoxId: new FormControl(cashBox['cashBoxId']),
+        cashBoxName: new FormControl(cashBox['cashBoxName']),
+        clientFee: new FormControl(cashBox['clientFee']),
+        merchantFee: new FormControl(cashBox['merchantFee']),
+        totalFee: new FormControl(cashBox['totalFee'])
+      })
+      this.cashBoxList.controls.push(form);
+    }
+  }
   editUserData() {
     if(this.userRoles.ROLE_MERCHANT){
       this.merchantInfoForm.value.phone = this.merchantInfoForm.value.phone?'+'+this.merchantInfoForm.value.phone:null;
       this.merchantInfoForm.value.mainphone = this.merchantInfoForm.value.mainphone?'+'+this.merchantInfoForm.value.mainphone:null;
       this.kycService.setKycInfo(this.merchantInfoForm.value).then(resp=>{
-        this.getUserInfo(this.userId)
+        this.getUserInfo()
       })
     }else{
       this.userInfoForm.value.phone = '+'+this.userInfoForm.value.phone;
       this.userService.editUserData(this.userInfoForm.value).then(resp=>{
-        this.getUserInfo(this.userId)
+        this.getUserInfo()
       })
     }
     this.isEditMode = false;
@@ -185,7 +205,7 @@ export class UserSettingsComponent implements OnInit {
       }
     }
     this.currencyService.editUsersCurrenciesList(obj).then(()=>{
-      this.getUserInfo(this.userId);
+      this.getUserInfo();
     })
   }
 
@@ -200,11 +220,41 @@ export class UserSettingsComponent implements OnInit {
       }
     }
     this.paymentsService.editMerchantPaymentMethodsList(obj).then(()=>{
-      this.getUserInfo(this.userId);
+      this.getUserInfo();
     })
   }
 
   changeRole(role) {
     // console.log(role);
+  }
+
+  saveCashBoxFee(formGroup) {
+    // let data = {
+    //     "merchantId": this.userId,
+    //     "cashBoxId": formGroup.cashBoxId,
+    //     "merchantFee": formGroup.merchantFee,
+    //     "clientFee": formGroup.clientFee
+    //   };
+    // this.userService.editUsersCommissions(data).then(()=>{
+    //   this.getCommissions()
+    // })
+      let newFees = [...this.cashBoxList.controls.map(el=>el.value)]
+      newFees = newFees.map(el=>{
+        return {
+          cashBoxId: el.cashBoxId,
+          merchantFee: el.merchantFee,
+          clientFee: el.clientFee
+        }
+      })
+    let data = {
+      "merchantId": this.userId,
+      "feeList": newFees
+    }
+    this.userService.editUsersCommissions(data).then(()=>{
+        this.getCommissions()
+      })
+  }
+  replaceSymbols(string){
+    return string.includes('.')?string.trim().replace(',',''):string.trim().replace(',','.')
   }
 }
