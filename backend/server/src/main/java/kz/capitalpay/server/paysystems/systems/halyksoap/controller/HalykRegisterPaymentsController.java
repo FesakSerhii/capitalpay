@@ -39,10 +39,10 @@ public class HalykRegisterPaymentsController {
         logger.info("file exist with name " + file.getName());
         InputStream is = new FileInputStream(file);
         byte[] bytes = is.readAllBytes();
-        ByteArrayResource byteResource = new ByteArrayResource(bytes);
+//        ByteArrayResource byteResource = new ByteArrayResource(bytes);
         return ResponseEntity.ok()
                 .contentType(MediaType.TEXT_PLAIN)
                 .header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", file.getName()))
-                .body(byteResource);
+                .body(bytes);
     }
 }
