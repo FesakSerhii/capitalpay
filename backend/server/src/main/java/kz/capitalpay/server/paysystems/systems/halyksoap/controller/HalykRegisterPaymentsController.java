@@ -2,6 +2,7 @@ package kz.capitalpay.server.paysystems.systems.halyksoap.controller;
 
 import kz.capitalpay.server.paysystems.systems.halyksoap.dto.RegisterPaymentsDateDTO;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykRegisterPaymentsService;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 
 import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.OPERATOR;
@@ -37,12 +39,11 @@ public class HalykRegisterPaymentsController {
             throws IOException {
         File file = halykRegisterPaymentsService.createTextFileForDownload(dateDTO);
         logger.info("file exist with name " + file.getName());
-        InputStream is = new FileInputStream(file);
-        byte[] bytes = is.readAllBytes();
-//        ByteArrayResource byteResource = new ByteArrayResource(bytes);
+        byte[] bytes = Files.readAllBytes(file.toPath());
+        ByteArrayResource byteResource = new ByteArrayResource(bytes);
         return ResponseEntity.ok()
                 .contentType(MediaType.TEXT_PLAIN)
                 .header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", file.getName()))
-                .body(bytes);
+                .body(byteResource);
     }
 }
