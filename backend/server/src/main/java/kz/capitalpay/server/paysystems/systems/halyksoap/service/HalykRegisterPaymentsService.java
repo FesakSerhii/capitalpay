@@ -20,6 +20,7 @@ import static kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSet
 @Service
 public class HalykRegisterPaymentsService {
     private final static String CONSTANT_NAME_REGISTER = "register";
+    private static final Logger LOGGER = LoggerFactory.getLogger(HalykRegisterPaymentsService.class);
 
     private final Logger logger = LoggerFactory.getLogger(HalykRegisterPaymentsService.class);
 
@@ -37,6 +38,7 @@ public class HalykRegisterPaymentsService {
         File file = new File(nameFile);
         try (Writer writer = new BufferedWriter(new FileWriter(file))) {
             String contents = getRegisterPayments(registerPaymentsDateDTO);
+            LOGGER.info("file content: {}", contents);
             writer.write(contents);
         } catch (IOException e) {
             e.printStackTrace();

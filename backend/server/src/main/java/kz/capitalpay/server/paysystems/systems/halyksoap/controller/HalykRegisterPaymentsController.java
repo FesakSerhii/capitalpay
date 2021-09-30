@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +13,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
 import javax.annotation.security.RolesAllowed;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.OPERATOR;
@@ -36,16 +37,13 @@ public class HalykRegisterPaymentsController {
             throws IOException {
         File file = halykRegisterPaymentsService.createTextFileForDownload(dateDTO);
         logger.info("file exist with name " + file.getName());
-        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
-        byte[] fileContent = resource.getInputStream().readAllBytes();
-        ByteArrayResource byteResource = new ByteArrayResource(fileContent);
+        InputStream is = new FileInputStream(file);
+        byte[] bytes = is.readAllBytes();
+        ByteArrayResource byteResource = new ByteArrayResource(bytes);
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Disposition", String.format("attachment; filename=\"%s\"", file.getName()));
-        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-        headers.add("Pragma", "no-cache");
-        headers.add("Expires", "0");
         return ResponseEntity.ok().headers(headers)
                 .contentType(MediaType.TEXT_PLAIN)
+                .header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", file.getName()))
                 .body(byteResource);
     }
 }
