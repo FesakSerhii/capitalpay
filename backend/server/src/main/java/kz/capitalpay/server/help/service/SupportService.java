@@ -108,6 +108,22 @@ public class SupportService {
         }
     }
 
+    public ResultDTO getRequestsByMerchantId(Long merchantId) {
+        try {
+            List<SupportRequestDtoList> requestList = supportRequestRepository.findAllByAuthorId(merchantId).stream()
+                    .map(this::createSupportRequestDtoListObject)
+                    .collect(Collectors.toList());
+
+            if (requestList == null) requestList = new ArrayList<>();
+
+            return new ResultDTO(true, requestList, 0);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultDTO(false, e.getMessage(), -1);
+        }
+    }
+
     public SupportRequestDtoList createSupportRequestDtoListObject(SupportRequest supportRequest) {
         ApplicationUser applicationUser = applicationUserService.getUserById(supportRequest.getAuthorId());
         SupportRequestDtoList supportRequestDtoList = new SupportRequestDtoList();

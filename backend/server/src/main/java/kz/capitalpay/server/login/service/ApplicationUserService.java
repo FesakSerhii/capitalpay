@@ -1,5 +1,6 @@
 package kz.capitalpay.server.login.service;
 
+import com.auth0.jwt.JWT;
 import com.google.gson.Gson;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.login.dto.ApplicationUserDTO;
@@ -22,6 +23,8 @@ import java.util.Set;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.error104;
 import static kz.capitalpay.server.constants.ErrorDictionary.error105;
+import static kz.capitalpay.server.login.config.SecurityConstants.HEADER_STRING;
+import static kz.capitalpay.server.login.config.SecurityConstants.TOKEN_PREFIX;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.USER;
 
@@ -187,7 +190,7 @@ public class ApplicationUserService {
         ApplicationUser applicationUser = applicationUserRepository.findByUsername(username);
         logger.info(" archer id " + applicationUser.getId() + " userName " + username);
 
-        return trustIpService.validIpAddress(applicationUser.getId(),ip);
+        return trustIpService.validIpAddress(applicationUser.getId(), ip);
     }
 
 
@@ -204,10 +207,15 @@ public class ApplicationUserService {
     }
 
     public void setTrustIp(String ip, ApplicationUserDTO cred) {
-        if(cred.isTrustIp()){
+        if (cred.isTrustIp()) {
             ApplicationUser applicationUser = applicationUserRepository.findByUsername(cred.getUsername());
-            trustIpService.addTrustIp(applicationUser.getId(),ip);
+            trustIpService.addTrustIp(applicationUser.getId(), ip);
         }
+    }
+
+    public Long getMerchantIdFromToken(HttpServletRequest request) {
+        String token = request.getHeader(HEADER_STRING).replace(TOKEN_PREFIX, "");
+        return JWT.decode(token).getClaim("merchantId").asLong();
     }
 }
 

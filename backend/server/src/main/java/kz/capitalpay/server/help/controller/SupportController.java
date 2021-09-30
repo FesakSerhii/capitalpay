@@ -7,7 +7,7 @@ import kz.capitalpay.server.help.dto.OneRequestDTO;
 import kz.capitalpay.server.help.dto.SendSupportAnswerDTO;
 import kz.capitalpay.server.help.dto.SupportRequestDTO;
 import kz.capitalpay.server.help.service.SupportService;
-import kz.capitalpay.server.login.dto.ChangeRolesDTO;
+import kz.capitalpay.server.login.service.ApplicationUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 
 import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
@@ -33,6 +34,9 @@ public class SupportController {
     @Autowired
     SupportService supportService;
 
+    @Autowired
+    ApplicationUserService applicationUserService;
+
 
     @PostMapping("/request")
     @RolesAllowed({MERCHANT})
@@ -48,6 +52,14 @@ public class SupportController {
         return supportService.requestList();
     }
 
+    @PostMapping("/list-by-merchantid")
+    @RolesAllowed({OPERATOR, ADMIN})
+    ResultDTO getRequestsByMerchantId(HttpServletRequest request) {
+        logger.info("Support request list");
+        Long merchantId = applicationUserService.getMerchantIdFromToken(request);
+        return supportService.getRequestsByMerchantId(merchantId);
+    }
+
 
     @PostMapping("/one")
     @RolesAllowed({OPERATOR, ADMIN})
@@ -57,12 +69,11 @@ public class SupportController {
     }
 
 
-
     @PostMapping("/status")
     @RolesAllowed({OPERATOR, ADMIN})
     ResultDTO changeStatus(Principal principal, @RequestBody ChangeStatusSupportRequestDTO request) {
         logger.info(gson.toJson(request));
-        return supportService.changeStatus(principal,request);
+        return supportService.changeStatus(principal, request);
     }
 
 
@@ -70,6 +81,6 @@ public class SupportController {
     @RolesAllowed({OPERATOR, ADMIN})
     ResultDTO sendAnswer(Principal principal, @RequestBody SendSupportAnswerDTO request) {
         logger.info(gson.toJson(request));
-        return supportService.sendSupportAnswer(principal,request);
+        return supportService.sendSupportAnswer(principal, request);
     }
 }

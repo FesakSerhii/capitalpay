@@ -36,6 +36,7 @@ public class HalykRegisterPaymentsController {
         File file = halykRegisterPaymentsService.createTextFileForDownload(dateDTO);
         logger.info("file exist with name " + file.getName());
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+        byte[] fileContent = resource.getInputStream().readAllBytes();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", String.format("attachment; filename=\"%s\"", file.getName()));
         headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -43,7 +44,7 @@ public class HalykRegisterPaymentsController {
         headers.add("Expires", "0");
         return ResponseEntity.ok().headers(headers)
                 .contentLength(file.length())
-                .contentType(MediaType.TEXT_PLAIN)
-                .body(resource);
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(fileContent);
     }
 }

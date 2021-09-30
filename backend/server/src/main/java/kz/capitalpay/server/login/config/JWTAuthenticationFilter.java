@@ -159,7 +159,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         }
     }
 
-
     private Algorithm getAlgorithm() {
 
         final InputStream inputStreamPriv = getClass().getClassLoader()
