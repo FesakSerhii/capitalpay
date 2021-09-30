@@ -5,6 +5,7 @@ import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykRegisterPa
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -37,14 +38,14 @@ public class HalykRegisterPaymentsController {
         logger.info("file exist with name " + file.getName());
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
         byte[] fileContent = resource.getInputStream().readAllBytes();
+        ByteArrayResource byteResource = new ByteArrayResource(fileContent);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", String.format("attachment; filename=\"%s\"", file.getName()));
         headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
         headers.add("Pragma", "no-cache");
         headers.add("Expires", "0");
         return ResponseEntity.ok().headers(headers)
-                .contentLength(file.length())
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(fileContent);
+                .contentType(MediaType.TEXT_PLAIN)
+                .body(byteResource);
     }
 }
