@@ -41,7 +41,7 @@ public class HalykRegisterPaymentsController {
         byte[] bytes = is.readAllBytes();
         ByteArrayResource byteResource = new ByteArrayResource(bytes);
         return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_PDF)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", file.getName()))
                 .body(byteResource);
     }
