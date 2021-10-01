@@ -96,4 +96,18 @@ public class FileStorage {
     public void setExtension(String extension) {
         this.extension = extension;
     }
+
+    @Override
+    public String toString() {
+        return "FileStorage{" +
+                "id=" + id +
+                ", authorId=" + authorId +
+                ", filename='" + filename + '\'' +
+                ", type='" + type + '\'' +
+                ", hash='" + hash + '\'' +
+                ", path='" + path + '\'' +
+                ", size=" + size +
+                ", extension='" + extension + '\'' +
+                '}';
+    }
 }
