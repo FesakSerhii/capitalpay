@@ -61,7 +61,7 @@ public class FileStorageService {
                 Files.delete(copyLocation);
             } else {
                 Files.move(copyLocation, copyLocation.resolveSibling(newName));
-                fileStorageRepository.save(newFile);
+                newFile = fileStorageRepository.save(newFile);
             }
 
             return new ResultDTO(true, newFile, 0);
