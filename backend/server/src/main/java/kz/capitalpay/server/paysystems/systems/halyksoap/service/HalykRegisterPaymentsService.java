@@ -46,7 +46,7 @@ public class HalykRegisterPaymentsService {
         return file;
     }
 
-    private String getRegisterPayments(RegisterPaymentsDateDTO registerPaymentsDateDTO) {
+    public String getRegisterPayments(RegisterPaymentsDateDTO registerPaymentsDateDTO) {
         List<RegisterPaymentsStatistic> statistic = getPaymentsByDate(registerPaymentsDateDTO);
         List<RegisterPaymentsMerchantDTO> register = new ArrayList<>();
         RegisterPaymentsCommonMerchantFieldsDTO commonMerchantFields = getHalykCommonDataForMerchant();
