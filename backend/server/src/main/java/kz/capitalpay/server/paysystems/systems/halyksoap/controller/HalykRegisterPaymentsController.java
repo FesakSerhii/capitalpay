@@ -34,7 +34,6 @@ public class HalykRegisterPaymentsController {
     public ResponseEntity<Object> halykRegisterPaymentsDownload(@RequestBody RegisterPaymentsDateDTO dateDTO)
             throws IOException {
         File file = halykRegisterPaymentsService.createTextFileForDownload(dateDTO);
-//        String contents = halykRegisterPaymentsService.getRegisterPayments(dateDTO);
         logger.info("file exist with name " + file.getName());
         byte[] bytes = Files.readAllBytes(file.toPath());
         ByteArrayResource byteResource = new ByteArrayResource(bytes);
@@ -42,6 +41,5 @@ public class HalykRegisterPaymentsController {
                 .contentType(MediaType.TEXT_PLAIN)
                 .header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", file.getName()))
                 .body(byteResource);
-//        return contents;
     }
 }
