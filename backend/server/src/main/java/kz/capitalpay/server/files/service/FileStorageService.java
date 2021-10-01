@@ -62,6 +62,7 @@ public class FileStorageService {
             } else {
                 Files.move(copyLocation, copyLocation.resolveSibling(newName));
                 newFile = fileStorageRepository.save(newFile);
+                logger.info("newFile: {}", newFile);
             }
 
             return new ResultDTO(true, newFile, 0);
