@@ -5,11 +5,16 @@ import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykRegisterPa
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.OPERATOR;
@@ -26,17 +31,17 @@ public class HalykRegisterPaymentsController {
             produces = "text/plain;charset=UTF-8")
     @RolesAllowed({ADMIN, OPERATOR})
     @ResponseBody
-    public String halykRegisterPaymentsDownload(@RequestBody RegisterPaymentsDateDTO dateDTO)
+    public ResponseEntity<Object> halykRegisterPaymentsDownload(@RequestBody RegisterPaymentsDateDTO dateDTO)
             throws IOException {
         File file = halykRegisterPaymentsService.createTextFileForDownload(dateDTO);
-        String contents = halykRegisterPaymentsService.getRegisterPayments(dateDTO);
+//        String contents = halykRegisterPaymentsService.getRegisterPayments(dateDTO);
         logger.info("file exist with name " + file.getName());
-//        byte[] bytes = Files.readAllBytes(file.toPath());
-//        ByteArrayResource byteResource = new ByteArrayResource(bytes);
-//        return ResponseEntity.ok()
-//                .contentType(MediaType.TEXT_PLAIN)
-//                .header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", file.getName()))
-//                .body(contents);
-        return contents;
+        byte[] bytes = Files.readAllBytes(file.toPath());
+        ByteArrayResource byteResource = new ByteArrayResource(bytes);
+        return ResponseEntity.ok()
+                .contentType(MediaType.TEXT_PLAIN)
+                .header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", file.getName()))
+                .body(byteResource);
+//        return contents;
     }
 }
