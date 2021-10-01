@@ -30,7 +30,8 @@ public class HalykRegisterPaymentsController {
     @Autowired
     private HalykRegisterPaymentsService halykRegisterPaymentsService;
 
-    @RequestMapping(value = "/download", method = RequestMethod.POST)
+    @RequestMapping(value = "/download", method = RequestMethod.POST,
+            produces = "text/plain;charset=UTF-8")
     @RolesAllowed({ADMIN, OPERATOR})
     public ResponseEntity<Object> halykRegisterPaymentsDownload(@RequestBody RegisterPaymentsDateDTO dateDTO)
             throws IOException {
