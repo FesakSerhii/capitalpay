@@ -2,7 +2,6 @@ package kz.capitalpay.server.paysystems.systems.halyksoap.controller;
 
 import kz.capitalpay.server.paysystems.systems.halyksoap.dto.RegisterPaymentsDateDTO;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykRegisterPaymentsService;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.security.RolesAllowed;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 
 import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
@@ -42,7 +39,7 @@ public class HalykRegisterPaymentsController {
         byte[] bytes = Files.readAllBytes(file.toPath());
         ByteArrayResource byteResource = new ByteArrayResource(bytes);
         return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .contentType(MediaType.TEXT_PLAIN)
                 .header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", file.getName()))
                 .body(byteResource);
     }
