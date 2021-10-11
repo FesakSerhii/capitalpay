@@ -63,10 +63,10 @@ export class TransactionsRegistryComponent implements OnInit {
     const timestampAfter = new Date(`${value.start.year}-${value.start.month}-${value.start.day}`).getTime();
     const timestampBefore = new Date(`${value.end.year}-${value.end.month}-${value.end.day}`).getTime();
     this.paymentsService.getFile(timestampAfter,timestampBefore).then(resp=>{
-      console.log(resp.headers.get('filename'));
+      console.log(resp);
       let fileLink = window.document.createElement('a');
-      fileLink.href = URL.createObjectURL(resp);
-      fileLink.download = `${value.start.day}-${value.start.month}-${value.start.day} - ${value.end.year}-${value.end.month}-${value.end.day}.txt`;
+      fileLink.href = URL.createObjectURL(new Blob([resp.body]));
+      fileLink.download = `${value.start.year}-${value.start.month}-${value.start.day} - ${value.end.year}-${value.end.month}-${value.end.day}.txt`;
       fileLink.target = '_blank';
       fileLink.click();
     })

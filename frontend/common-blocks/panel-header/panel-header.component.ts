@@ -38,6 +38,9 @@ export class PanelHeaderComponent implements OnInit {
       this.isExpanded = true;
     }
   }
+  log(){
+    console.log('work');
+  }
 
   logOut() {
     this.confirmModal.open().then(resp=>{
@@ -49,6 +52,7 @@ export class PanelHeaderComponent implements OnInit {
     this.router.navigate([this.type==='admin'?'/admin-panel/settings':'/merchant/settings'], {});
   }
   profile(){
-    this.router.navigate([this.type==='admin'?'':''], {});
+    this.router.navigate([this.type==='admin'?'/admin-panel/settings':'/merchant/settings'], {queryParams:{info:true},
+      queryParamsHandling: "merge"});
   }
 }

@@ -15,10 +15,11 @@ export class MassageModalComponent implements OnInit {
 
   massages : any = {
     saveMassage: "Данные сохранены.",
+    messageSend: "Сообщение успешно отправлено",
     invalidDateMassage: "Дата окончания периода не может быть раньше даты начала периода.",
     deleteConfirmation: "Подтвердите удаление",
     userDeleteConfirmation:"Вы действительно хотите удалить пользователя",
-    userDeleteSuccessful:"Пользватель успешно удален"
+    userDeleteSuccessful:"Пользватель успешно удален",
   };
   private modal: NgbModalRef = null;
 

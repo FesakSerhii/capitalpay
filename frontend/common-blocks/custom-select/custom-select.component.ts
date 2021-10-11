@@ -41,7 +41,7 @@ export class CustomSelectComponent implements OnInit, ControlValueAccessor {
       return false;
     }
     const element: any = this.selectElement.nativeElement;
-    return window.innerHeight - element.getBoundingClientRect().bottom < 400;
+    return window.innerHeight - element.getBoundingClientRect().bottom < 300;
   }
 
   get value() {

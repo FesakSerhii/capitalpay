@@ -10,6 +10,9 @@ export class SupportService {
 
   constructor(public apiService: ApiService) { }
 
+  getSupportListByMerchantId(){
+    return this.apiService.postJwt('/api/v1/support/list-by-merchantid', token).toPromise();
+  }
   sendSupportRequest(data){
     return this.apiService.postJwt('/api/v1/support/request', token,data).toPromise();
   }

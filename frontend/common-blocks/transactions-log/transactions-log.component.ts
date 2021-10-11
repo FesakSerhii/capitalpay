@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {UserService} from "../../projects/admin-panel/src/app/service/user.service";
 import {Router} from "@angular/router";
 import {PaymentsService} from '../../projects/admin-panel/src/app/service/payments.service';
 import {SortHelper} from '../../src/app/helper/sort-helper';
 import {SearchInputService} from '../../src/app/service/search-input.service';
-import {FormControl, FormGroup} from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {dateCompareValidator} from '../validators/dateCompareValidator';
+import {MassageModalComponent} from '../massage-modal/massage-modal.component';
 
 @Component({
   selector: 'app-transactions-log',
@@ -12,6 +14,8 @@ import {FormControl, FormGroup} from '@angular/forms';
   styleUrls: ['./transactions-log.component.scss']
 })
 export class TransactionsLogComponent implements OnInit {
+
+  @ViewChild("invalidDatesModalContent", {static: false}) invalidDatesModal: MassageModalComponent;
 
   constructor(private userService:UserService,private router:Router, private paymentsService:PaymentsService,private searchInputService: SearchInputService) { }
   activeTab = 'tab1';
@@ -48,6 +52,13 @@ export class TransactionsLogComponent implements OnInit {
   tableSearch = new FormControl();
 
   ngOnInit(): void {
+    let dateFields = {
+      dateStart: "dateEnd",
+    };
+    for(let v in dateFields){
+      this.filter.get(v).setValidators([Validators.required, dateCompareValidator(this.filter, dateFields[v])]);
+      this.filter.get(dateFields[v]).setValidators([Validators.required, dateCompareValidator(this.filter, v, true)]);
+    }
     this.user = this.userService.getUserInfo();
     this.isAdmin = this.router.url.includes('admin-panel');
     this.getTransactions();
@@ -151,5 +162,17 @@ export class TransactionsLogComponent implements OnInit {
   clearFilter() {
     this.filter.reset()
     this.getTransactions();
+  }
+
+  dateInvalid(start,end){
+    if(this.filter.get(start).value!==null&&this.filter.get(end).value!==null){
+      setTimeout(() => {
+        if (this.filter.get(start).invalid || this.filter.get(end).invalid) {
+          this.invalidDatesModal.open()
+          this.filter.get(start).reset();
+          this.filter.get(end).reset();
+        }
+      }, 200);
+    }
   }
 }

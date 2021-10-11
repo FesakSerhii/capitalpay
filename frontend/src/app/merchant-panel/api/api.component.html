@@ -1,1 +1,39 @@
-<p>api works!</p>
+<div class="card-body">
+  <div class="table-responsive"*ngFor="let item of apiTitles">
+    <table class="table m-0">
+      <thead>
+      <tr class="cursor-pointer" (click)="openApiSection(item.id)">
+        <th colspan="5">{{item.title}}</th>
+      </tr>
+      </thead>
+    </table>
+    <ul class="nav nav-pills nav-pills-success" role="tablist" *ngIf="sections[item.id]?.active">
+      <li class="nav-item" *ngFor="let section of sections[item.id].titles">
+        <a class="nav-link active mr-2 mt-2 mb-2" style="padding: 1px 10px;font-size: 10px!important;" (click)="$event.preventDefault()">
+          {{section.title}}
+        </a>
+      </li>
+    </ul>
+    <div class="tab-content tab-space pt-0">
+      <div class="tab-pane" [class.active]="true">
+        <p>{{"POST /api/v1/currency/system/list\n" +
+        "          В ответе параметр enabled показывает активна данная валюта в системе или нет\n" +
+        "          \"result\": true,\n" +
+        "          \"data\": [\n" +
+        "          {\n" +
+        "          \"alpha\": \"USD\",\n" +
+        "          \"number\": \"840\",\n" +
+        "          \"unicode\": \"$\",\n" +
+        "          \"name\": \"US Dollar\",\n" +
+        "          \"enabled\": true\n" +
+        "          }\n" +
+        "          ],\n" +
+        "          \"error\": 0\n" +
+        "          }"}}
+
+        </p>
+      </div>
+    </div>
+  </div>
+  <!-- /.table-responsive -->
+</div>

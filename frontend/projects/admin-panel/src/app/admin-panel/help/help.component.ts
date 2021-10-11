@@ -13,9 +13,12 @@ import {FormControl} from '@angular/forms';
 export class HelpComponent implements OnInit {
   activeTab = 'tab1';
   supportList: any;
+  supportListClosed: any;
   dontTouched:any[] = null;
+  dontTouchedClosed:any[] = null;
   sortHelper = new SortHelper();
   tableSearch = new FormControl();
+  themeForm = new FormControl();
   constructor( private router: Router, private supportService: SupportService, private searchInputService: SearchInputService) { }
 
   ngOnInit(): void {
@@ -30,8 +33,10 @@ export class HelpComponent implements OnInit {
   }
   getSupportList(){
     this.supportService.getSupportList().then(resp=>{
-      this.supportList = resp.data;
-      this.dontTouched = [...resp.data];
+      this.supportList = resp.data.filter(el=>el.status!=='closed').sort((a,b)=>a.id-b.id);
+      this.supportListClosed = resp.data.filter(el=>el.status==='closed').sort((a,b)=>a.id-b.id);
+      this.dontTouched = [...resp.data.filter(el=>el.status!=='closed').sort((a,b)=>a.id-b.id)];
+      this.dontTouchedClosed = [...resp.data.filter(el=>el.status==='closed').sort((a,b)=>a.id-b.id)];
     })
   }
   navigateToSettings(id){
@@ -47,7 +52,8 @@ export class HelpComponent implements OnInit {
   get sortedActions() {
     if (this.sortHelper.sort.sortBy === null) {
       this.supportList = this.searchInputService.filterData(this.dontTouched, this.tableSearch.value);
-      return this.supportList
+      this.supportListClosed = this.searchInputService.filterData(this.dontTouchedClosed, this.tableSearch.value);
+      return this.activeTab==='tab1'?this.supportList:this.supportListClosed
     } else {
       let sorted = this.dontTouched.sort(
         (a, b) => {
@@ -57,9 +63,19 @@ export class HelpComponent implements OnInit {
           return this.sortHelper.sort.increase ? res : -res;
         }
       );
+      let sortedClosed = this.dontTouchedClosed.sort(
+        (a, b) => {
+          let aField = a[this.sortHelper.sort.sortBy];
+          let bField = b[this.sortHelper.sort.sortBy];
+          let res = aField == bField ? 0 : (aField > bField ? 1 : -1);
+          return this.sortHelper.sort.increase ? res : -res;
+        }
+      );
       sorted = this.searchInputService.filterData(sorted, '');
+      sortedClosed = this.searchInputService.filterData(sortedClosed, '');
       this.supportList = [...sorted];
-      return this.supportList
+      this.supportListClosed = [...sortedClosed];
+      return this.activeTab==='tab1'?this.supportList:this.supportListClosed
     }
   }
 

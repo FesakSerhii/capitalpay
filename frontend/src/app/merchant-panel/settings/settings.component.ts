@@ -8,6 +8,7 @@ import {RegisterService} from '../../service/register.service';
 import {UserService} from '../../../../projects/admin-panel/src/app/service/user.service';
 import {KycService} from '../../../../projects/admin-panel/src/app/service/kyc.service';
 import {ConfirmActionModalComponent} from '../../../../common-blocks/confirm-action-modal/confirm-action-modal.component';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-settings',
@@ -25,6 +26,7 @@ export class SettingsComponent implements OnInit {
               private registerService:RegisterService,
               private userService:UserService,
               private kycService:KycService,
+              private activatedRoute: ActivatedRoute,
               private paymentsService:PaymentsService) { }
 
 
@@ -79,6 +81,10 @@ export class SettingsComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.activatedRoute.queryParamMap.subscribe((param) => {
+      console.log(param.get('info') ? 'tab3' : 'tab1');
+      this.activeTab = param.get('info')?'tab3':'tab1'
+    });
     this.merchantId = this.userService.getUserInfo().merchantId;
     this.getCurrency()
     this.getCashBoxList();

@@ -20,6 +20,7 @@
                     <input type="text" class="form-control" formControlName="dateStart"
                            ngbDatepicker [autoClose]="true"
                            readonly #start="ngbDatepicker"
+                           (dateSelect)="dateInvalid('dateStart','dateEnd')"
                            style="width: 80px!important">
                     <a (click)="$event.preventDefault();filter.controls.dateStart.reset();start.open()"><i class="material-icons icon-color position-absolute" style="top: 10px;right: -22px">date_range</i></a>
                   </div>
@@ -27,6 +28,7 @@
                     <input type="text" class="form-control" formControlName="dateEnd"
                            ngbDatepicker [autoClose]="true"
                            readonly #end="ngbDatepicker"
+                           (dateSelect)="dateInvalid('dateStart','dateEnd')"
                            style="width: 80px!important">
                     <a (click)="$event.preventDefault();filter.controls.dateEnd.reset();end.open()"><i class="material-icons icon-color position-absolute" style="top: 10px;right: -22px">date_range</i></a>
                   </div>
@@ -149,10 +151,10 @@
                             <td>{{transaction.totalAmount}}</td>
                             <td>{{transaction.currency}}</td>
                             <td>
-                              <i *ngIf="transaction.status==='SUCCESS'" class="material-icons material-icons-outlined text-success">check_circle_outline</i>
-                              <i *ngIf="transaction.status==='NEW'" class="material-icons material-icons-outlined text-warning">restore</i>
-                              <i *ngIf="transaction.status==='DELETED'" class="material-icons material-icons-outlined text-danger">highlight_off</i>
-                              <i *ngIf="transaction.status==='PENDING'" class="material-icons material-icons-outlined text-info">cached</i>
+                              <i *ngIf="transaction.status==='SUCCESS'" placement="top" ngbTooltip="SUCCESS" class="material-icons material-icons-outlined text-success">check_circle_outline</i>
+                              <i *ngIf="transaction.status==='NEW'" placement="top" ngbTooltip="NEW" class="material-icons material-icons-outlined text-warning">restore</i>
+                              <i *ngIf="transaction.status==='DELETED'" placement="top" ngbTooltip="DELETED" class="material-icons material-icons-outlined text-danger">highlight_off</i>
+                              <i *ngIf="transaction.status==='PENDING'" placement="top" ngbTooltip="PENDING" class="material-icons material-icons-outlined text-info">cached</i>
                             </td>
                           </tr>
                           </tbody>
@@ -161,11 +163,7 @@
                     </div>
                   </div>
                   <div class="row mr-0 mt-4">
-                    <div class="col-sm-12 col-md-5">
-                      <div class="dataTables_info" role="status" aria-live="polite">Showing 1 to 10 of 40 entries</div>
-                    </div><div class="col-sm-12 col-md-7">
                     <pagination-controls (pageChange)="changePage($event)"></pagination-controls>
-                  </div>
                   </div>
                 </div>
               </div>
@@ -201,3 +199,4 @@
     </div>
   </div>
 </div>
+<app-massage-modal #invalidDatesModalContent [messageType]="'invalidDateMassage'"></app-massage-modal>

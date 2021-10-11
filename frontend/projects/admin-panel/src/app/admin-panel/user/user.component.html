@@ -10,7 +10,7 @@
                 <div class="d-flex">
                   <label class="col-form-label">Роль</label>
                   <div class="form-group has-default bmd-form-group" style="margin-left: 13px;">
-                    <app-custom-select classes="special mr-3" [values]="['fgrggtrrbrtgtbtbbtghgbhtgbhtgbhtgbhgtbhtg']" formControlName="roles"></app-custom-select>
+                    <app-custom-select classes="special mr-3" [values]="possibleRoles" formControlName="roles"></app-custom-select>
                   </div>
                 </div>
                 <div style="width: 550px!important;display: flex;justify-content: space-around;">
@@ -19,6 +19,7 @@
                     <input type="text" class="form-control" formControlName="dateStart"
                            ngbDatepicker [autoClose]="true"
                            readonly #start="ngbDatepicker"
+                           (dateSelect)="dateInvalid('dateStart','dateEnd')"
                            style="width: 80px!important">
                     <a (click)="$event.preventDefault();filter.controls.dateStart.reset();start.open()"><i class="material-icons icon-color position-absolute" style="top: 10px;right: -22px">date_range</i></a>
                   </div>
@@ -26,6 +27,7 @@
                     <input type="text" class="form-control" formControlName="dateEnd"
                            ngbDatepicker [autoClose]="true"
                            readonly #end="ngbDatepicker"
+                           (dateSelect)="dateInvalid('dateStart','dateEnd')"
                            style="width: 80px!important">
                     <a (click)="$event.preventDefault();filter.controls.dateEnd.reset();end.open()"><i class="material-icons icon-color position-absolute" style="top: 10px;right: -22px">date_range</i></a>
                   </div>
@@ -43,7 +45,7 @@
 <!--                  </div>-->
 <!--                </div>-->
               </div>
-              <div class="d-flex justify-content-around" style="margin-left: 37px;">
+              <div class="d-flex justify-content-between">
 <!--                <div class="d-flex">-->
 <!--                  <label class="col-form-label">Статус</label>-->
 <!--                  <div class="form-group has-default bmd-form-group">-->
@@ -51,15 +53,15 @@
 <!--                  </div>-->
 <!--                </div>-->
                 <div class="d-flex">
-                  <label class="col-form-label">ФИО</label>
+                  <label class="col-form-label" style="padding-right: 20px;">ФИО</label>
                   <div class="form-group has-default bmd-form-group">
-                    <input type="text" class="form-control" formControlName="realname">
+                    <input type="text" class="form-control" formControlName="realname" style="width: 160px!important;">
                   </div>
                 </div>
                 <div class="d-flex">
                   <label class="col-form-label">ID пользователя</label>
                   <div class="form-group has-default bmd-form-group">
-                    <input type="text" class="form-control w260" formControlName="id">
+                    <input type="text" class="form-control w260" formControlName="id" style="width: 190px!important;">
                   </div>
                 </div>
                 <div class="d-flex">
@@ -70,8 +72,11 @@
                 </div>
               </div>
             </form>
-            <div>
+            <div class="d-flex flex-column align-items-center justify-content-around">
               <button class="btn slim btn-success btn-round" (click)="filterFields()">Показать<div class="ripple-container"></div></button>
+              <button class="btn btn-transparent" (click)="clearFilter()">
+                <i class="material-icons-outlined">close</i> Очистить
+                <div class="ripple-container"></div></button>
             </div>
           </div>
         </div>
@@ -129,7 +134,7 @@
                       <tbody>
                       <tr role="row" class="cursor-pointer" (click)="navigateToSettings(user.id)" *ngFor="let user of sortedActions">
                         <td tabindex="0" class="sorting_1">{{user.id}}</td>
-                        <td>{{user.timestamp | date :'dd.mm.yyyy'}}</td>
+                        <td>{{user.timestamp | date :'dd.MM.YYYY'}}</td>
                         <td>{{user.username}}</td>
                         <td>{{user.email}}</td>
                         <td>{{user.realname}}</td>
@@ -223,3 +228,4 @@
 <!--    </div>-->
 <!--  </div>-->
 </ng-template>
+<app-massage-modal #invalidDatesModalContent [messageType]="'invalidDateMassage'"></app-massage-modal>

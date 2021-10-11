@@ -6,6 +6,9 @@ import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
 import {SortHelper} from '../../../../../../src/app/helper/sort-helper';
 import {SearchInputService} from '../../../../../../src/app/service/search-input.service';
 import {log} from 'util';
+import {Timestamp} from 'rxjs';
+import {dateCompareValidator} from '../../../../../../common-blocks/validators/dateCompareValidator';
+import {MassageModalComponent} from '../../../../../../common-blocks/massage-modal/massage-modal.component';
 
 @Component({
   selector: 'app-user',
@@ -14,6 +17,7 @@ import {log} from 'util';
 })
 export class UserComponent implements OnInit {
   @ViewChild('addNewUser', {static: false}) addNewUserModal: TemplateRef<any>;
+  @ViewChild("invalidDatesModalContent", {static: false}) invalidDatesModal: MassageModalComponent;
   constructor(private userService: UserService,private modalService: NgbModal, private router: Router,private searchInputService: SearchInputService,) { }
   userList:any[]=[];
   dontTouched:any[]=[];
@@ -53,6 +57,13 @@ export class UserComponent implements OnInit {
   sortHelper = new SortHelper();
   tableSearch = new FormControl();
   ngOnInit(): void {
+    let dateFields = {
+      dateStart: "dateEnd",
+    };
+    for(let v in dateFields){
+      this.filter.get(v).setValidators([Validators.required, dateCompareValidator(this.filter, dateFields[v])]);
+      this.filter.get(dateFields[v]).setValidators([Validators.required, dateCompareValidator(this.filter, v, true)]);
+    }
     this.getUsers();
     this.tableSearch.valueChanges.subscribe(val=>{
       if(val.length>3){
@@ -66,7 +77,7 @@ export class UserComponent implements OnInit {
   getPossibleRoles(){
     this.userService.getUserRolesList().then(resp=>{
       this.possibleRolesList = resp.data;
-      this.possibleRoles = resp.data.map(el=>{return this.roleList[el.authority]});
+      this.possibleRoles = resp.data.map(el=>{return {title:this.roleList[el.authority],value:el.id}});
     })
   }
   async getUsers(){
@@ -176,6 +187,25 @@ export class UserComponent implements OnInit {
       return dateData>=startDate
     }else{
       return dateData>=startDate&&dateData<=endDate
+    }
+  }
+  clearFilter() {
+    this.filter.reset()
+    this.getUsers();
+  }
+
+  dateFromTimestamp(timestamp) {
+    return new Date(timestamp)
+  }
+  dateInvalid(start,end){
+    if(this.filter.get(start).value!==null&&this.filter.get(end).value!==null){
+      setTimeout(() => {
+        if (this.filter.get(start).invalid || this.filter.get(end).invalid) {
+          this.invalidDatesModal.open()
+          this.filter.get(start).reset();
+          this.filter.get(end).reset();
+        }
+      }, 200);
     }
   }
 }

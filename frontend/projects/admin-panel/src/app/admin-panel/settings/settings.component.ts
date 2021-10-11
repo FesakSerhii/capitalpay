@@ -5,6 +5,7 @@ import {PaymentsService} from '../../service/payments.service';
 import {ConfirmActionModalComponent} from '../../../../../../common-blocks/confirm-action-modal/confirm-action-modal.component';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {RegisterService} from '../../../../../../src/app/service/register.service';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-settings',
@@ -17,7 +18,11 @@ export class SettingsComponent implements OnInit {
   @ViewChild('changePassword', {static: false}) changePasswordModal: TemplateRef<any>;
 
 
-  constructor(private currencyService:CurrencyService,private registerService:RegisterService,private modalService: NgbModal, private paymentsService:PaymentsService) { }
+  constructor(private currencyService:CurrencyService,
+              private registerService:RegisterService,
+              private modalService: NgbModal,
+              private activatedRoute: ActivatedRoute,
+              private paymentsService:PaymentsService) { }
   currencyList:any=null;
   paymentMethods:any=null;
   passChangeForm = new FormGroup({
