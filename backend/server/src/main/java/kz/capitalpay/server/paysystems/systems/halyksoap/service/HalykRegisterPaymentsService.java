@@ -137,30 +137,31 @@ public class HalykRegisterPaymentsService {
 
     private String createNameFile() {
         StringBuilder nameFile = new StringBuilder();
-        nameFile.append(CONSTANT_NAME_REGISTER);
+//        nameFile.append(CONSTANT_NAME_REGISTER);
         HalykSettings orderNumber = halykSettingsService.getHalykSettingByFieldName(ORDER_NUMBER_REPORT);
         int number = orderNumber == null ? 0 : Integer.parseInt(orderNumber.getFieldValue());
         LocalDateTime dateNow = LocalDateTime.now();
-        if (number == 0) {
-            number = 1;
-            nameFile.append(number)
-                    .append(formatViewDayOrMonth(dateNow.getMonthValue()))
-                    .append(formatViewDayOrMonth(dateNow.getDayOfMonth()))
-                    .append(".txt");
-            saveNumberAndDateDownloadRegister(dateNow, number);
-            return nameFile.toString();
-        }
+//        if (number == 0) {
+//            number = 1;
+//            nameFile.append(number)
+//                    .append(formatViewDayOrMonth(dateNow.getMonthValue()))
+//                    .append(formatViewDayOrMonth(dateNow.getDayOfMonth()))
+//                    .append(".txt");
+//            saveNumberAndDateDownloadRegister(dateNow, number);
+//            return nameFile.toString();
+//        }
         HalykSettings lastDownloadsRegister = halykSettingsService.getHalykSettingByFieldName(DATE_LAST_DOWNLOADS);
         LocalDateTime lastDownloads = LocalDateTime.parse(lastDownloadsRegister.getFieldValue());
-        if (dateNow.getYear() == lastDownloads.getYear() && dateNow.getMonth() == lastDownloads.getMonth()
-                && dateNow.getDayOfMonth() == lastDownloads.getDayOfMonth()) {
-            number = number + 1;
-            nameFile.append(number);
-        } else {
-            number = 1;
-            nameFile.append(number);
-        }
-        nameFile.append(formatViewDayOrMonth(dateNow.getMonthValue()))
+//        if (dateNow.getYear() == lastDownloads.getYear() && dateNow.getMonth() == lastDownloads.getMonth()
+//                && dateNow.getDayOfMonth() == lastDownloads.getDayOfMonth()) {
+//            number = number + 1;
+//            nameFile.append(number);
+//        } else {
+//            number = 1;
+//            nameFile.append(number);
+//        }
+        nameFile.append("9120")
+                .append(formatViewDayOrMonth(dateNow.getMonthValue()))
                 .append(formatViewDayOrMonth(dateNow.getDayOfMonth()))
                 .append(".txt");
         saveNumberAndDateDownloadRegister(lastDownloadsRegister.getId(), orderNumber.getId(), dateNow, number);
