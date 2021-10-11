@@ -40,6 +40,7 @@ public class HalykRegisterPaymentsController {
         return ResponseEntity.ok()
                 .contentType(MediaType.TEXT_PLAIN)
                 .header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", file.getName()))
+                .header("fileName", file.getName())
                 .body(byteResource);
     }
 }
