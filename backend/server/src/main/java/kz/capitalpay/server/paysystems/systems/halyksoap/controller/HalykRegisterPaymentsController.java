@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -31,16 +32,22 @@ public class HalykRegisterPaymentsController {
             produces = "text/plain;charset=UTF-8")
     @RolesAllowed({ADMIN, OPERATOR})
     @ResponseBody
-    public ResponseEntity<Object> halykRegisterPaymentsDownload(@RequestBody RegisterPaymentsDateDTO dateDTO)
+    public void halykRegisterPaymentsDownload(@RequestBody RegisterPaymentsDateDTO dateDTO,
+                                                                HttpServletResponse response)
             throws IOException {
         File file = halykRegisterPaymentsService.createTextFileForDownload(dateDTO);
         logger.info("file exist with name " + file.getName());
         byte[] bytes = Files.readAllBytes(file.toPath());
         ByteArrayResource byteResource = new ByteArrayResource(bytes);
-        return ResponseEntity.ok()
-                .contentType(MediaType.TEXT_PLAIN)
-                .header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", file.getName()))
-                .header("fileName", file.getName())
-                .body(byteResource);
+        response.addHeader("fileName", file.getName());
+        response.addHeader(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", file.getName()));
+        response.setStatus(200);
+        response.setContentType(MediaType.TEXT_PLAIN_VALUE);
+        response.getWriter().write(byteResource.toString());
+//        return ResponseEntity.ok()
+//                .contentType(MediaType.TEXT_PLAIN)
+//                .header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", file.getName()))
+//                .header("fileName", file.getName())
+//                .body(byteResource);
     }
 }
