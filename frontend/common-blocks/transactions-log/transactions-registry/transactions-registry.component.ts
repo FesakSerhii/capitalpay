@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {PaymentsService} from '../../../projects/admin-panel/src/app/service/payments.service';
 import {FormControl, FormGroup} from '@angular/forms';
 import {ExtValidators} from '../../../src/app/validators/ext-validators';
+import {HttpResponse} from '@angular/common/http';
 
 @Component({
   selector: 'app-transactions-registry',
@@ -62,11 +63,12 @@ export class TransactionsRegistryComponent implements OnInit {
     const value = this.periodForm.value
     const timestampAfter = new Date(`${value.start.year}-${value.start.month}-${value.start.day}`).getTime();
     const timestampBefore = new Date(`${value.end.year}-${value.end.month}-${value.end.day}`).getTime();
-    this.paymentsService.getFile(timestampAfter,timestampBefore).then(resp=>{
+    this.paymentsService.getFile(timestampAfter,timestampBefore).then((resp: HttpResponse<any>)=>{
       console.log(resp);
+      console.log(resp.headers.get('Content-Disposition'));
       let fileLink = window.document.createElement('a');
       fileLink.href = URL.createObjectURL(new Blob([resp.body]));
-      fileLink.download = `${value.start.year}-${value.start.month}-${value.start.day} - ${value.end.year}-${value.end.month}-${value.end.day}.txt`;
+      fileLink.download = `9120${new Date().getMonth()+1}${new Date().getDate()}.txt`;
       fileLink.target = '_blank';
       fileLink.click();
     })
