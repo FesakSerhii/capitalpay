@@ -8,13 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 
 import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
@@ -33,7 +33,7 @@ public class HalykRegisterPaymentsController {
     @RolesAllowed({ADMIN, OPERATOR})
     @ResponseBody
     public void halykRegisterPaymentsDownload(@RequestBody RegisterPaymentsDateDTO dateDTO,
-                                                                HttpServletResponse response)
+                                              HttpServletResponse response)
             throws IOException {
         File file = halykRegisterPaymentsService.createTextFileForDownload(dateDTO);
         logger.info("file exist with name " + file.getName());
@@ -43,7 +43,14 @@ public class HalykRegisterPaymentsController {
         response.addHeader(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", file.getName()));
         response.setStatus(200);
         response.setContentType(MediaType.TEXT_PLAIN_VALUE);
-        response.getWriter().write(byteResource.toString());
+
+        try (OutputStream os = response.getOutputStream()) {
+            os.write(bytes, 0, bytes.length);
+        } catch (Exception excp) {
+            excp.printStackTrace();
+        }
+
+
 //        return ResponseEntity.ok()
 //                .contentType(MediaType.TEXT_PLAIN)
 //                .header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", file.getName()))
