@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.session.SessionInformation;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -18,7 +17,6 @@ import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -71,6 +69,20 @@ public class CreateUserController {
     }
 
 
+    @PostMapping("/activateuser")
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_OPERATOR"})
+    ResultDTO activateUser(@RequestParam Long id) {
+        logger.info("activate user with id: {}", id);
+        return userListService.activateUser(id);
+    }
+
+    @PostMapping("/blockeuser")
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_OPERATOR"})
+    ResultDTO blockUser(@RequestParam Long id) {
+        logger.info("block user with id: {}", id);
+        return userListService.blockUser(id);
+    }
+
     @PostMapping("/deleteuser")
     @RolesAllowed({"ROLE_ADMIN", "ROLE_OPERATOR"})
     ResultDTO deleteUser(Principal principal, @Valid @RequestBody DeleteUserDTO request) {
@@ -102,6 +114,6 @@ public class CreateUserController {
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-        return new ResultDTO(false, errors,-2);
+        return new ResultDTO(false, errors, -2);
     }
 }
