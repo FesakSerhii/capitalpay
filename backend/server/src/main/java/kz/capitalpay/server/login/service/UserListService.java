@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.eventlog.service.SystemEventsLogsService;
 import kz.capitalpay.server.login.dto.*;
+import kz.capitalpay.server.login.mapper.ApplicationUserMapper;
 import kz.capitalpay.server.login.model.ApplicationRole;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.model.DeletedApplicationUser;
@@ -15,14 +16,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.validation.Valid;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import static kz.capitalpay.server.constants.ErrorDictionary.*;
+import static kz.capitalpay.server.constants.ErrorDictionary.error106;
+import static kz.capitalpay.server.constants.ErrorDictionary.error107;
 import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.*;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
 
@@ -52,12 +54,16 @@ public class UserListService {
     @Autowired
     SystemEventsLogsService systemEventsLogsService;
 
+    @Autowired
+    ApplicationUserMapper applicationUserMapper;
+
 
     public ResultDTO getAllUsers() {
         try {
             List<ApplicationUser> applicationUserList = applicationUserRepository.findAll();
             applicationUserList = removePasswords(applicationUserList);
-            return new ResultDTO(true, applicationUserList, 0);
+            List<ApplicationUserResponseDto> dtos = applicationUserList.stream().map(applicationUserMapper::convertToResponseDto).collect(Collectors.toList());
+            return new ResultDTO(true, dtos, 0);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
@@ -130,9 +136,9 @@ public class UserListService {
     public ResultDTO roleList(Principal principal) {
 
         ApplicationUser admin = applicationUserRepository.findByUsername(principal.getName());
-        if(admin==null){
+        if (admin == null) {
             logger.error(gson.toJson(principal));
-            logger.error("Admin: {}",admin);
+            logger.error("Admin: {}", admin);
             return error106;
         }
         Set<ApplicationRole> applicationRoles = new HashSet<>();
@@ -168,7 +174,7 @@ public class UserListService {
             ApplicationUser applicationUser = applicationUserRepository.findByUsername((String) result.getData());
             applicationUser.setEmail(request.getEmail());
             applicationUser.setTimestamp(System.currentTimeMillis());
-            applicationUser.setActive(true);
+            applicationUser.setActive(false);
             ApplicationUser admin = applicationUserRepository.findByUsername(principal.getName());
 
             if (!admin.getRoles().contains(applicationRoleService.getRole(ADMIN))) {
@@ -301,5 +307,28 @@ public class UserListService {
         }
 
 
+    }
+
+    public ResultDTO activateUser(Long id) {
+        ApplicationUser user = applicationUserRepository.findById(id).orElse(null);
+        if (Objects.isNull(user)) {
+            return error106;
+        }
+
+        user.setActive(true);
+        applicationUserRepository.save(user);
+        return new ResultDTO(true, "", 0);
+    }
+
+    public ResultDTO blockUser(Long id) {
+        ApplicationUser user = applicationUserRepository.findById(id).orElse(null);
+        if (Objects.isNull(user)) {
+            return error106;
+        }
+
+        user.setActive(false);
+        user.setBlocked(true);
+        applicationUserRepository.save(user);
+        return new ResultDTO(true, "", 0);
     }
 }
