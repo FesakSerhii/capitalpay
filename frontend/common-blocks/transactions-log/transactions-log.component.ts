@@ -88,6 +88,7 @@ export class TransactionsLogComponent implements OnInit {
     this.visible = false;
     this.currentPage = event;
     this.visible = true;
+    this.transactionDetails = null;
   }
 
   async getTransactionDetails(id) {
@@ -138,14 +139,17 @@ export class TransactionsLogComponent implements OnInit {
       let value = this.filter.value[control];
       this.isFilterActive[control] = true;
       if (this.filter.value[control]&&control!=='dateStart'&&control!=='dateEnd'){
-        this.dontTouched = this.dontTouched.filter(el=>el[control]!==null?`${el[control]}`.toLowerCase().includes(value.trim().toLowerCase()):false)
+        this.dontTouched = this.dontTouched.filter(el=> {
+          return el[control] !== null ? `${el[control]}`.toLowerCase().includes(value.trim().toLowerCase()) : false
+        })
       }else if((control==='dateStart'&&this.filter.value[control])||(control==='dateEnd'&&this.filter.value[control])){
         this.dontTouched = this.dontTouched.filter(el=>{
-          console.log(this.filter.value.dateStart,this.filter.value.dateEnd,el['timestamp']);
           return this.compareDates(this.filter.value.dateStart,this.filter.value.dateEnd,el['timestamp'])
         })
       }
     }
+    this.nextSort(null)
+    this.changePage(1)
   }
   compareDates(dateValueStart,dateValueEnd,dateData){
     const startDate = dateValueStart? new Date(`${dateValueStart.year}-${dateValueStart.month}-${dateValueStart.day}`).getTime():null;
@@ -162,6 +166,7 @@ export class TransactionsLogComponent implements OnInit {
   clearFilter() {
     this.filter.reset()
     this.getTransactions();
+    this.changePage(1)
   }
 
   dateInvalid(start,end){
