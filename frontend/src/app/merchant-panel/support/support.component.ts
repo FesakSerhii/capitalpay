@@ -15,30 +15,35 @@ export class SupportComponent implements OnInit {
 
   @ViewChild('massageModal', {static: false}) massageModal: MassageModalComponent;
 
-  constructor(private fileService: FileService, private supportService:SupportService,private searchInputService: SearchInputService) { }
-  activeTab:string='tab1';
+  constructor(private fileService: FileService, private supportService: SupportService, private searchInputService: SearchInputService) {
+  }
+
+  activeTab: string = 'tab1';
   sortHelper = new SortHelper();
   tableSearch = new FormControl();
-  supportList: any;
-  chosenFile: any =[];
-  dontTouched:any[] = null;
-  questionForm= new FormGroup({
-    "theme": new FormControl(),
-    "subject": new FormControl(''),
-    "text": new FormControl()
+  supportList: any = [];
+  chosenFile: any = [];
+  dontTouched: any[] = [];
+  questionForm = new FormGroup({
+    'theme': new FormControl(),
+    'subject': new FormControl(''),
+    'text': new FormControl()
   });
   fileToUpload: File = null;
-  fileList: any[]=[];
+  fileList: any[] = [];
+
   ngOnInit(): void {
-    this.supportService.getSupportListByMerchantId().then(resp=>{
+    this.supportService.getSupportListByMerchantId().then(resp => {
       this.supportList = resp.data;
       this.dontTouched = [...resp.data];
     })
   }
+
   nextSort(field) {
     let sh: SortHelper = this.sortHelper;
     this.sortHelper = sh.nextSort(field);
   }
+
   get sortedActions() {
     if (this.sortHelper.sort.sortBy === null) {
       this.supportList = this.searchInputService.filterData(this.dontTouched, this.tableSearch.value);
@@ -57,30 +62,35 @@ export class SupportComponent implements OnInit {
       return this.supportList
     }
   }
+
   send() {
-    if (this.chosenFile){
+    if (this.chosenFile) {
       let promises = []
-      for(let file of this.chosenFile){
+      for (let file of this.chosenFile) {
         promises.push(this.fileService.sendFile(file))
       }
       Promise.all(promises).then(resp => {
-        resp.map(el=>{
+        resp.map(el => {
           console.log(el);
           this.fileList.push(el.data.id)
         })
       })
     }
-  let request = {
-    "fileList": this.fileList
+    let request = {
+      'fileList': this.fileList
+    }
+    Object.assign(request, this.questionForm.value)
+    this.supportService.sendSupportRequest(request).then(resp => {
+      this.massageModal.open();
+      this.chosenFile = [];
+      this.questionForm.reset();
+    })
   }
-  Object.assign(request,this.questionForm.value)
-    this.supportService.sendSupportRequest(request).then(resp=>{
-    this.massageModal.open()
-  })
-  }
+
   sendFiles() {
 
   }
+
   fileChosen(files: FileList) {
     if (files.length > 0) {
       this.chosenFile.push(files[0]);
@@ -89,6 +99,6 @@ export class SupportComponent implements OnInit {
   }
 
   deleteFile(index) {
-    this.chosenFile.splice(index,1)
+    this.chosenFile.splice(index, 1)
   }
 }

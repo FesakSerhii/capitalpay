@@ -15,7 +15,7 @@
     <ng-scrollbar class="calc200" [visibility]="'always'" style="width: 1620px">
       <div class="tab-content tab-space">
         <div class="tab-pane" [class.active]="activeTab==='tab1'">
-          <div class="material-datatables">
+          <div class="material-datatables" *ngIf="supportList.length">
             <div id="datatables_wrapper" class="dataTables_wrapper dt-bootstrap4">
               <div class="row">
                 <div class="col-sm-12 col-md-6">
@@ -70,7 +70,7 @@
                 <td *ngIf="!item.important" (click)="$event.stopPropagation();"><i class="material-icons-outlined">bookmark_border</i></td>
                 <td class="red" *ngIf="item.important" (click)="$event.stopPropagation()"><i class="material-icons-outlined">turned_in</i></td>
                 <td>{{item.id}}</td>
-                <td>{{item.timestamp | date :'dd.mm.yyyy | hh:mm'}}</td>
+                <td>{{item.timestamp | date :'dd.MM.YYYY | hh:mm'}}</td>
                 <td>{{item.authorId}}</td>
                 <td>{{item.username}}</td>
                 <td>{{item.email}}</td>
@@ -90,6 +90,11 @@
               </div>
             </div>
           </div>
+          <ng-container *ngIf="true">
+            <div class="d-flex justify-content-around">
+              <span>список сообщений пуст</span>
+            </div>
+          </ng-container>
         </div>
         <div class="tab-pane" [class.active]="activeTab==='tab2'">
           <div class="card w1600">
@@ -144,7 +149,7 @@
           </div>
         </div>
       </div>
-    </ng-scrollbar>>
+    </ng-scrollbar>
   </div>
 </div>
-<app-massage-modal #massageModal [messageType]="'invalidDateMassage'"></app-massage-modal>
+<app-massage-modal #massageModal [messageType]="'messageSend'"></app-massage-modal>

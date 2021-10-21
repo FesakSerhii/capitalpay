@@ -29,6 +29,7 @@ export class LoginComponent implements OnInit {
   }
   loginAction(){
     this.authService.login(this.loginForm.value.email,this.loginForm.value.password).then((resp: HttpResponse<any>)=>{
+      console.log(resp);
       if(resp.body.data=== "SMS sent"){
         this.isTwoFactor = true;
       }else{

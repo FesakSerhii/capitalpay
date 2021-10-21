@@ -2,7 +2,7 @@
   <div class="row">
     <div>
       <ul class="nav nav-pills nav-pills-success" role="tablist">
-        <app-custom-select [formControl]="themeForm" classes="mr-5 green-round" [values]="['Изменение регистрационных данных','Общие проблемы с работой сервиса','Проблемы с оплатой','Прочее','Все темы обращений']" [placeholder]="'Все темы обращений '"></app-custom-select>
+        <app-custom-select [formControl]="themeForm" classes="mr-5 green-round" [values]="themes" [placeholder]="'Все темы обращений '"></app-custom-select>
         <li class="nav-item">
           <a class="nav-link" [class.active]="activeTab==='tab1'" (click)="$event.preventDefault();activeTab='tab1';nextSort(null)">
             Новые
@@ -55,8 +55,8 @@
                       <th class="sortable-th" style="width: 80px;" (click)="nextSort('email')">
                         <span [class.sorting_desc]="sortHelper.sort.sortBy === 'email'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'email'">Email</span>
                       </th>
-                      <th class="sortable-th" style="width: 80px;" (click)="nextSort('subject')">
-                        <span [class.sorting_desc]="sortHelper.sort.sortBy === 'subject'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'subject'">Тема</span>
+                      <th class="sortable-th" style="width: 80px;" (click)="nextSort('theme')">
+                        <span [class.sorting_desc]="sortHelper.sort.sortBy === 'theme'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'theme'">Тема</span>
                       </th>
                       <th class="sortable-th" style="width: 200px;" (click)="nextSort('text')">
                         <span [class.sorting_desc]="sortHelper.sort.sortBy === 'text'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'text'">Сообщение</span>
@@ -87,7 +87,7 @@
                       <td>{{item.authorId}}</td>
                       <td>{{item.username}}</td>
                       <td>{{item.email}}</td>
-                      <td>{{item.subject}}</td>
+                      <td>{{item.theme}}</td>
                       <td>{{item.text}}</td>
                       <td>{{item.status}}</td>
                     </tr>

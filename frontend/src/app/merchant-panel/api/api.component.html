@@ -1,39 +1,15 @@
 <div class="card-body">
-  <div class="table-responsive"*ngFor="let item of apiTitles">
+  <div class="table-responsive"*ngFor="let item of apiSections">
     <table class="table m-0">
       <thead>
-      <tr class="cursor-pointer" (click)="openApiSection(item.id)">
-        <th colspan="5">{{item.title}}</th>
+      <tr class="cursor-pointer" (click)="activeSectionId!==item.id?changeSectionContent(item):openSection(item)">
+        <th colspan="5">{{item.name}}</th>
       </tr>
       </thead>
     </table>
-    <ul class="nav nav-pills nav-pills-success" role="tablist" *ngIf="sections[item.id]?.active">
-      <li class="nav-item" *ngFor="let section of sections[item.id].titles">
-        <a class="nav-link active mr-2 mt-2 mb-2" style="padding: 1px 10px;font-size: 10px!important;" (click)="$event.preventDefault()">
-          {{section.title}}
-        </a>
-      </li>
-    </ul>
-    <div class="tab-content tab-space pt-0">
-      <div class="tab-pane" [class.active]="true">
-        <p>{{"POST /api/v1/currency/system/list\n" +
-        "          В ответе параметр enabled показывает активна данная валюта в системе или нет\n" +
-        "          \"result\": true,\n" +
-        "          \"data\": [\n" +
-        "          {\n" +
-        "          \"alpha\": \"USD\",\n" +
-        "          \"number\": \"840\",\n" +
-        "          \"unicode\": \"$\",\n" +
-        "          \"name\": \"US Dollar\",\n" +
-        "          \"enabled\": true\n" +
-        "          }\n" +
-        "          ],\n" +
-        "          \"error\": 0\n" +
-        "          }"}}
-
-        </p>
-      </div>
-    </div>
   </div>
+  <ng-scrollbar [visibility]="'always'" style="width: 900px;height: 380px!important;margin: 0 auto">
+    <div id="content" style=""></div>
+  </ng-scrollbar>
   <!-- /.table-responsive -->
 </div>

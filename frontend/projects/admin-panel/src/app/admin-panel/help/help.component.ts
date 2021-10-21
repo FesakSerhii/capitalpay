@@ -11,6 +11,13 @@ import {FormControl} from '@angular/forms';
   styleUrls: ['./help.component.scss']
 })
 export class HelpComponent implements OnInit {
+  themes=[
+    {title:'Изменение регистрационных данных',value:'Изменение регистрационных данных'},
+    {title:'Общие проблемы с работой сервиса',value:'Общие проблемы с работой сервиса'},
+    {title:'Проблемы с оплатой',value:'Проблемы с оплатой'},
+    {title:'Прочее',value:'Прочее'},
+    {title:'Все темы обращений',value:null}
+  ]
   activeTab = 'tab1';
   supportList: any;
   supportListClosed: any;
@@ -29,6 +36,9 @@ export class HelpComponent implements OnInit {
       }else{
         this.supportList = [...this.dontTouched];
       }
+    })
+    this.themeForm.valueChanges.subscribe(val=>{
+      this.nextSort(null)
     })
   }
   getSupportList(){
@@ -53,6 +63,10 @@ export class HelpComponent implements OnInit {
     if (this.sortHelper.sort.sortBy === null) {
       this.supportList = this.searchInputService.filterData(this.dontTouched, this.tableSearch.value);
       this.supportListClosed = this.searchInputService.filterData(this.dontTouchedClosed, this.tableSearch.value);
+      if(this.themeForm.value!==null){
+        this.supportList = this.supportList.filter(item=>item.theme===this.themeForm.value);
+        this.supportListClosed = this.supportListClosed.filter(item=>item.theme===this.themeForm.value);
+      }
       return this.activeTab==='tab1'?this.supportList:this.supportListClosed
     } else {
       let sorted = this.dontTouched.sort(
