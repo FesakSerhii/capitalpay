@@ -130,7 +130,8 @@ public class HalykRegisterPaymentsService {
     }
 
     private String generateRegisterDescription(RegisterPaymentsStatistic data) {
-        return "За " + data.getDescription() + " от " + data.getLocalDateTime().format(dateFormatter);
+        return "За " + data.getDescription() + " от " + data.getLocalDateTime().format(dateFormatter) +
+                "Сумма " + data.getTotalAmount();
     }
 
     private void setIndividualDataForMerchant(RegisterPaymentsMerchantDTO merchant,
