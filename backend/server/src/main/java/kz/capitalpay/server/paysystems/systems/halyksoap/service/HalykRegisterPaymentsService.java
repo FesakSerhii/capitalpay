@@ -131,7 +131,7 @@ public class HalykRegisterPaymentsService {
     private List<RegisterPaymentsStatistic> getPaymentsByDate(RegisterPaymentsDateDTO registerPaymentsDateDTO) {
         long after = registerPaymentsDateDTO.getTimestampAfter();
         long before = registerPaymentsDateDTO.getTimestampBefore();
-        return halykRegisterPaymentsRepository.findAllByTimestampAfterAndTimestampBeforeAndStatus(after, before,
+        return halykRegisterPaymentsRepository.findAllByTimestampAfterAndTimestampBeforeAndStatus(before, after,
                 "SUCCESS");
     }
 
