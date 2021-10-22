@@ -13,7 +13,7 @@ public class OperatorsAction {
     Long timestamp;
     String eventName;
     String author;
-    @Column(length = 65000)
+    @Column(columnDefinition = "text")
     String json;
     String target;
 
