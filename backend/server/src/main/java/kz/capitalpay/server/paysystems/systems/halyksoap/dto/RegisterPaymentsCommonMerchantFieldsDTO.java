@@ -7,6 +7,8 @@ public class RegisterPaymentsCommonMerchantFieldsDTO {
     private String knp_merch;
     private String rnna_merch;
     private String platel_merch;
+    private String orderDescription;
+    private String orderDate;
 
     public String getNaznpl_merch() {
         return naznpl_merch;
@@ -55,4 +57,6 @@ public class RegisterPaymentsCommonMerchantFieldsDTO {
     public void setPlatel_merch(String platel_merch) {
         this.platel_merch = platel_merch;
     }
+
+
 }

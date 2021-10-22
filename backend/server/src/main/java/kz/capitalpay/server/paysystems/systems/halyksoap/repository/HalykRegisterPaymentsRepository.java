@@ -10,7 +10,9 @@ import java.util.List;
 public interface HalykRegisterPaymentsRepository extends CrudRepository<Payment, Long> {
     @Query("SELECT p.totalAmount as totalAmount, " +
             " p.merchantId as merchantId, " +
-            " p.currency as currency " +
+            " p.currency as currency, " +
+            " p.description as description," +
+            " p.localDateTime as localDateTime " +
             " FROM Payment p " +
             " WHERE p.timestamp <= ?1 AND p.timestamp >= ?2 ")
     List<RegisterPaymentsStatistic> findAllByTimestampAfterAndTimestampBeforeAndStatus(long before, long after,
