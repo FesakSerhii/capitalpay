@@ -203,6 +203,8 @@ public class UserListService {
         result.setId(applicationUser.getId());
         result.setEmail(applicationUser.getEmail());
         result.setRoles(applicationUser.getRoles());
+        result.setBlocked(applicationUser.isBlocked());
+        result.setActive(applicationUser.isActive());
         return result;
     }
 
