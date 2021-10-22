@@ -1,7 +1,10 @@
 package kz.capitalpay.server.paysystems.systems.halyksoap.service;
 
 import kz.capitalpay.server.merchantsettings.service.MerchantKycService;
-import kz.capitalpay.server.paysystems.systems.halyksoap.dto.*;
+import kz.capitalpay.server.paysystems.systems.halyksoap.dto.RegisterPaymentsCommonMerchantFieldsDTO;
+import kz.capitalpay.server.paysystems.systems.halyksoap.dto.RegisterPaymentsDateDTO;
+import kz.capitalpay.server.paysystems.systems.halyksoap.dto.RegisterPaymentsHalykDTO;
+import kz.capitalpay.server.paysystems.systems.halyksoap.dto.RegisterPaymentsMerchantDTO;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykSettings;
 import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykRegisterPaymentsRepository;
 import kz.capitalpay.server.paysystems.systems.halyksoap.repository.projection.RegisterPaymentsStatistic;
@@ -9,11 +12,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.io.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
 import static kz.capitalpay.server.merchantsettings.service.MerchantKycService.*;
 import static kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSettingsService.*;
 
@@ -23,6 +29,7 @@ public class HalykRegisterPaymentsService {
     private static final Logger LOGGER = LoggerFactory.getLogger(HalykRegisterPaymentsService.class);
 
     private final Logger logger = LoggerFactory.getLogger(HalykRegisterPaymentsService.class);
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     @Autowired
     private MerchantKycService merchantKycService;
@@ -54,7 +61,7 @@ public class HalykRegisterPaymentsService {
         for (RegisterPaymentsStatistic data : statistic) {
             RegisterPaymentsMerchantDTO merchant = new RegisterPaymentsMerchantDTO();
             setIndividualDataForMerchant(merchant, Long.parseLong(data.getMerchantId()));
-            setHalykCommonDataForMerchant(merchant, commonMerchantFields);
+            setHalykCommonDataForMerchant(merchant, commonMerchantFields, data);
             divideMoneyBetweenMerchantAndHalyk(Long.parseLong(data.getMerchantId()),
                     data.getTotalAmount(), halyk, merchant);
             register.add(merchant);
@@ -111,13 +118,19 @@ public class HalykRegisterPaymentsService {
     }
 
     private void setHalykCommonDataForMerchant(RegisterPaymentsMerchantDTO merchant,
-                                               RegisterPaymentsCommonMerchantFieldsDTO commonData) {
+                                               RegisterPaymentsCommonMerchantFieldsDTO commonData,
+                                               RegisterPaymentsStatistic data) {
         merchant.setNaznpl_merch(commonData.getNaznpl_merch());
         merchant.setBclassd_merch(commonData.getBclassd_merch());
         merchant.setKod_merch(commonData.getKod_merch());
         merchant.setKnp_merch(commonData.getKnp_merch());
         merchant.setRnna_merch(commonData.getRnna_merch());
         merchant.setPlatel_merch(commonData.getPlatel_merch());
+        merchant.setDescription(generateRegisterDescription(data));
+    }
+
+    private String generateRegisterDescription(RegisterPaymentsStatistic data) {
+        return "За " + data.getDescription() + " от " + data.getLocalDateTime().format(dateFormatter);
     }
 
     private void setIndividualDataForMerchant(RegisterPaymentsMerchantDTO merchant,

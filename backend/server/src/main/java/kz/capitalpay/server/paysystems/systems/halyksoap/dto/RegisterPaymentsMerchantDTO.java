@@ -8,6 +8,7 @@ public class RegisterPaymentsMerchantDTO extends RegisterPaymentsCommonMerchantF
     private String iinbin;
     private BigDecimal amount;
     private String bankname;
+    private String description;
 
     public String getIik() {
         return iik;
@@ -49,6 +50,14 @@ public class RegisterPaymentsMerchantDTO extends RegisterPaymentsCommonMerchantF
         this.bankname = bankname;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     public String toString() {
         return iik + "¤" +
@@ -56,7 +65,8 @@ public class RegisterPaymentsMerchantDTO extends RegisterPaymentsCommonMerchantF
                 iinbin + "¤" +
                 amount + "¤" +
                 bankname + "¤" +
-                getNaznpl_merch() + "¤      ¤" +
+//                getNaznpl_merch() + "¤      ¤" +
+                description + "¤      ¤" +
                 getBclassd_merch() + "¤" +
                 getKod_merch() + "¤" +
                 getKnp_merch() + "¤" +
