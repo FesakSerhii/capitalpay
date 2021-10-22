@@ -63,7 +63,7 @@ export class TransactionsRegistryComponent implements OnInit {
     const value = this.periodForm.value
     const timestampAfter = new Date(`${value.start.year}-${value.start.month}-${value.start.day}`).getTime();
     const timestampBefore = new Date(`${value.end.year}-${value.end.month}-${value.end.day}`).getTime();
-    this.paymentsService.getFile(timestampAfter,timestampBefore).then((resp: HttpResponse<any>)=>{
+    this.paymentsService.getFile(timestampAfter,timestampBefore+86340).then((resp: HttpResponse<any>)=>{
       console.log(resp);
       console.log(resp.headers.get('Content-Disposition'));
       let fileLink = window.document.createElement('a');

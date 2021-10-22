@@ -67,7 +67,14 @@
                 <div class="d-flex">
                   <label class="col-form-label">Email</label>
                   <div class="form-group has-default bmd-form-group">
-                    <input type="email" class="form-control w260" formControlName="email">
+                    <input type="email" class="form-control w160" formControlName="email">
+                  </div>
+                </div>
+                <div class="d-flex">
+                  <label class="col-form-label">Статус</label>
+                  <div class="form-group has-default bmd-form-group">
+                    <app-custom-select classes="special mr-3" [values]="possibleStatuses" formControlName="status"></app-custom-select>
+<!--                    <input type="email" class="form-control" formControlName="status">-->
                   </div>
                 </div>
               </div>
@@ -120,6 +127,7 @@
                         <th class="sortable-th" (click)="nextSort('email')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'email'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'email'">Email</span></th>
                         <th class="sortable-th" (click)="nextSort('realname')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'realname'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'realname'">ФИО</span></th>
                         <th class="sortable-th" (click)="nextSort('roles')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'roles'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'roles'">Роль</span></th>
+                        <th class="sortable-th" (click)="nextSort('status')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'status'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'status'">Статус</span></th>
                       </thead>
                       <tfoot>
                       <tr>
@@ -129,6 +137,7 @@
                         <th rowspan="1" colspan="1">Email</th>
                         <th rowspan="1" colspan="1">ФИО</th>
                         <th rowspan="1" colspan="1">Роль</th>
+                        <th rowspan="1" colspan="1">Статус</th>
                       </tr>
                       </tfoot>
                       <tbody>
@@ -139,6 +148,7 @@
                         <td>{{user.email}}</td>
                         <td>{{user.realname}}</td>
                         <td>{{user.roles}}</td>
+                        <td>{{statuses[user.status]}}</td>
                       </tr>
                       </tbody>
                     </table>

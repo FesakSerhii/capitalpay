@@ -16,7 +16,7 @@ export class HelpComponent implements OnInit {
     {title:'Общие проблемы с работой сервиса',value:'Общие проблемы с работой сервиса'},
     {title:'Проблемы с оплатой',value:'Проблемы с оплатой'},
     {title:'Прочее',value:'Прочее'},
-    {title:'Все темы обращений',value:null}
+    {title:'Все темы обращений',value:'Все темы обращений'}
   ]
   activeTab = 'tab1';
   supportList: any;
@@ -103,4 +103,5 @@ export class HelpComponent implements OnInit {
       this.getSupportList();
     })
   }
+
 }

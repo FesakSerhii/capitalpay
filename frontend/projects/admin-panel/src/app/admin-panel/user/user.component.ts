@@ -17,20 +17,28 @@ import {MassageModalComponent} from '../../../../../../common-blocks/massage-mod
 })
 export class UserComponent implements OnInit {
   @ViewChild('addNewUser', {static: false}) addNewUserModal: TemplateRef<any>;
-  @ViewChild("invalidDatesModalContent", {static: false}) invalidDatesModal: MassageModalComponent;
-  constructor(private userService: UserService,private modalService: NgbModal, private router: Router,private searchInputService: SearchInputService,) { }
-  userList:any[]=[];
-  dontTouched:any[]=[];
-  roleList ={
-    ROLE_USER:'Пользователь',
-    ROLE_OPERATOR:'Оператор',
-    ROLE_ADMIN:'Админ',
-    ROLE_MERCHANT:'Мерчант'
+  @ViewChild('invalidDatesModalContent', {static: false}) invalidDatesModal: MassageModalComponent;
+
+  constructor(private userService: UserService, private modalService: NgbModal, private router: Router, private searchInputService: SearchInputService,) {
+  }
+
+  userList: any[] = [];
+  dontTouched: any[] = [];
+  roleList = {
+    ROLE_USER: 'Пользователь',
+    ROLE_OPERATOR: 'Оператор',
+    ROLE_ADMIN: 'Админ',
+    ROLE_MERCHANT: 'Мерчант'
   };
+  statuses = {
+    ACTIVE: 'активен',
+    BLOCKED: 'заблокирован',
+    INACTIVE: 'не активирован'
+  }
   newUserForm = new FormGroup({
-    password:new FormControl('',Validators.required),
-    email:new FormControl('',[Validators.email]),
-    username:new FormControl(''),
+    password: new FormControl('', Validators.required),
+    email: new FormControl('', [Validators.email]),
+    username: new FormControl(''),
     roleList: new FormArray([new FormControl(Validators.required)])
   });
   filter = new FormGroup({
@@ -38,11 +46,12 @@ export class UserComponent implements OnInit {
     dateStart: new FormControl(),
     dateEnd: new FormControl(),
     username: new FormControl(),
+    status: new FormControl(),
     realname: new FormControl(),
     id: new FormControl(),
     email: new FormControl(),
   })
-  isFilterActive={
+  isFilterActive = {
     roles: false,
     dateStart: false,
     dateEnd: false,
@@ -50,91 +59,107 @@ export class UserComponent implements OnInit {
     realname: false,
     id: false,
     email: false,
+    status: false,
   }
-  confirmPassword= new FormControl();
-  possibleRoles:[any]=null;
-  possibleRolesList:[any]=null;
+  confirmPassword = new FormControl();
+  possibleRoles: [any] = null;
+  possibleStatuses = [
+    {title: 'активен', value: 'ACTIVE'},
+    {title: 'заблокирован', value: 'BLOCKED'},
+    {title: 'не активирован', value: 'INACTIVE'}];
+  possibleRolesList: [any] = null;
   sortHelper = new SortHelper();
   tableSearch = new FormControl();
+
   ngOnInit(): void {
     let dateFields = {
-      dateStart: "dateEnd",
+      dateStart: 'dateEnd',
     };
-    for(let v in dateFields){
+    for (let v in dateFields) {
       this.filter.get(v).setValidators([Validators.required, dateCompareValidator(this.filter, dateFields[v])]);
       this.filter.get(dateFields[v]).setValidators([Validators.required, dateCompareValidator(this.filter, v, true)]);
     }
     this.getUsers();
-    this.tableSearch.valueChanges.subscribe(val=>{
-      if(val.length>3){
-        this.userList = this.searchInputService.filterData(this.sortedActions,val)
-      }else{
+    this.tableSearch.valueChanges.subscribe(val => {
+      if (val.length > 3) {
+        this.userList = this.searchInputService.filterData(this.sortedActions, val)
+      } else {
         this.userList = [...this.dontTouched];
       }
     })
     this.getPossibleRoles();
   }
-  getPossibleRoles(){
-    this.userService.getUserRolesList().then(resp=>{
+
+  getPossibleRoles() {
+    this.userService.getUserRolesList().then(resp => {
       this.possibleRolesList = resp.data;
-      this.possibleRoles = resp.data.map(el=>{return {title:this.roleList[el.authority],value:el.id}});
+      this.possibleRoles = resp.data.map(el => {
+        return {title: this.roleList[el.authority], value: el.id}
+      });
     })
   }
-  async getUsers(){
-    this.userService.getUserList().then(resp=>{
-      this.userList = resp.data;
-      this.userList.map((el)=> {
+
+  async getUsers(isSearchAfter=false) {
+    this.userService.getUserList().then(resp => {
+      this.dontTouched = resp.data;
+      this.dontTouched.map((el) => {
         let role = '';
-        for(const userRole of el.roles){
-          role = role===''? role+this.roleList[userRole.authority]:role+'/'+this.roleList[userRole.authority]
+        for (const userRole of el.roles) {
+          role = role === '' ? role + this.roleList[userRole.authority] : role + '/' + this.roleList[userRole.authority]
         }
         el.roles = role;
       })
-      this.dontTouched = [...this.userList]
-      // active: true
-      // blocked: false
-      // email: "arsenguzhva@gmail.com"
-      // id: 12
-      // password: null
-      // realname: null
-      // roles: [{id: 10, authority: "ROLE_ADMIN"}, {id: 11, authority: "ROLE_USER"}]
-      // username: "+38095384343"
+      this.userList = [...this.dontTouched]
+      if(isSearchAfter){
+        this.search()
+      }
     })
   }
+
   addForm(form) {
     form.push(new FormControl(''));
   }
+
   deleteLastForm(form) {
     form.removeAt(form.controls.length - 1)
   }
-  open(){
-    this.modalService.open(this.addNewUserModal,{windowClass:''});
+
+  open() {
+    this.modalService.open(this.addNewUserModal, {windowClass: ''});
   }
-  close(){
+
+  close() {
     this.modalService.dismissAll()
   }
-  navigateToSettings(id){
-    this.router.navigate(['/admin-panel/user/settings'],{queryParams: {
+
+  navigateToSettings(id) {
+    this.router.navigate(['/admin-panel/user/settings'], {
+      queryParams: {
         userId: id,
       },
-      queryParamsHandling: "merge"})
+      queryParamsHandling: 'merge'
+    })
   }
-  createUser(){
-    for(let role in this.newUserForm.value['roleList']){
-      this.newUserForm.value['roleList'][role]=this.possibleRolesList.filter(el => el.id === this.newUserForm.value['roleList'][role])[0].authority;
+
+  createUser() {
+    for (let role in this.newUserForm.value['roleList']) {
+      this.newUserForm.value['roleList'][role] = this.possibleRolesList.filter(el => el.id === this.newUserForm.value['roleList'][role])[0].authority;
     }
-    this.newUserForm.value.phone ='+7'+this.newUserForm.value.phone;
-    this.userService.createUser(this.newUserForm.value).then(resp=>{
+    this.newUserForm.value.phone = '+7' + this.newUserForm.value.phone;
+    this.userService.createUser(this.newUserForm.value).then(resp => {
       this.getUsers();
     })
   }
-  comparePasswords(){
-   return this.newUserForm.value.password === this.confirmPassword.value
+
+  comparePasswords() {
+    return this.newUserForm.value.password === this.confirmPassword.value
   }
+
   nextSort(field) {
     let sh: SortHelper = this.sortHelper;
     this.sortHelper = sh.nextSort(field);
   }
+
   get sortedActions() {
     if (this.sortHelper.sort.sortBy === null) {
       this.userList = this.searchInputService.filterData(this.dontTouched, this.tableSearch.value);
@@ -156,39 +181,56 @@ export class UserComponent implements OnInit {
 
   async filterFields() {
     let isNewSearch = false
-    for(const flag in this.isFilterActive){
-      if(this.isFilterActive[flag]){
+    for (const flag in this.isFilterActive) {
+      if (this.isFilterActive[flag]) {
         isNewSearch = true
         this.isFilterActive[flag] = false;
       }
     }
-    if(isNewSearch){
-     await this.getUsers();
+    if (isNewSearch) {
+      this.getUsers(true)
+    }else{
+      this.search()
     }
-    for(const control in this.filter.value) {
+
+  }
+  search(){
+    for (const control in this.filter.value) {
       let value = this.filter.value[control];
-      this.isFilterActive[control] = true;
-      if (this.filter.value[control]&&control!=='dateStart'&&control!=='dateEnd'){
-        this.dontTouched = this.dontTouched.filter(el=>el[control]!==null?`${el[control]}`.toLowerCase().includes(value.trim().toLowerCase()):false)
-      }else{
-        this.dontTouched = this.dontTouched.filter(el=>{
-          console.log(this.filter.value.dateStart,this.filter.value.dateEnd,el[control]);
-          return this.compareDates(this.filter.value.dateStart,this.filter.value.dateEnd,el[control])
-        })
+      this.isFilterActive[control] = this.filter.value[control] !== null;
+      if (this.isFilterActive[control]) {
+        console.log(this.filter.value[control]);
+        if (this.filter.value[control] && control !== 'dateStart' && control !== 'dateEnd') {
+          this.dontTouched = this.dontTouched.filter(el => {
+              if (control === 'status') {
+                return el[control] === value
+              } else {
+                return el[control] !== null ? `${el[control]}`.toLowerCase().includes(value.trim().toLowerCase()) : false
+              }
+            }
+          )
+        } else {
+          this.dontTouched = this.dontTouched.filter(el => {
+            return this.filter.value.dateStart && this.filter.value.dateEnd ? this.compareDates(this.filter.value.dateStart, this.filter.value.dateEnd, el[control]) : false
+          })
+        }
       }
     }
+    this.nextSort(null)
   }
-  compareDates(dateValueStart,dateValueEnd,dateData){
-    const startDate = dateValueStart? new Date(`${dateValueStart.year}-${dateValueStart.month}-${dateValueStart.day}`).getTime():null;
-    const endDate = dateValueEnd? new Date(`${dateValueEnd.year}-${dateValueEnd.month}-${dateValueEnd.day}`).getTime():null;
-    if(startDate===null){
-     return dateData<=endDate
-    }else if(endDate===null){
-      return dateData>=startDate
-    }else{
-      return dateData>=startDate&&dateData<=endDate
+
+  compareDates(dateValueStart, dateValueEnd, dateData) {
+    const startDate = dateValueStart ? new Date(`${dateValueStart.year}-${dateValueStart.month}-${dateValueStart.day}`).getTime() : null;
+    const endDate = dateValueEnd ? new Date(`${dateValueEnd.year}-${dateValueEnd.month}-${dateValueEnd.day}`).getTime() : null;
+    if (startDate === null) {
+      return dateData <= endDate
+    } else if (endDate === null) {
+      return dateData >= startDate
+    } else {
+      return dateData >= startDate && dateData <= endDate
     }
   }
+
   clearFilter() {
     this.filter.reset()
     this.getUsers();
@@ -197,8 +239,9 @@ export class UserComponent implements OnInit {
   dateFromTimestamp(timestamp) {
     return new Date(timestamp)
   }
-  dateInvalid(start,end){
-    if(this.filter.get(start).value!==null&&this.filter.get(end).value!==null){
+
+  dateInvalid(start, end) {
+    if (this.filter.get(start).value !== null && this.filter.get(end).value !== null) {
       setTimeout(() => {
         if (this.filter.get(start).invalid || this.filter.get(end).invalid) {
           this.invalidDatesModal.open()

@@ -41,6 +41,10 @@ export class UserService {
   editUsersCommissions(data){
     return this.apiService.postJwt('api','/fee/cashbox/list/save',token,data).toPromise();
   }
-
-
+  blockUser(id){
+    return this.apiService.postJwt('api',`/userlist/blockeuser?id=${id}`,token).toPromise();
+  }
+  activateUser(id){
+    return this.apiService.postJwt('api',`/userlist/activateuser?id=${id}`,token).toPromise();
+  }
 }

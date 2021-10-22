@@ -159,7 +159,7 @@
                     <form [formGroup]="userRolesForm">
                       <div class="form-check">
                         <label class="form-check-label">
-                          <input class="form-check-input" formControlName="ROLE_ADMIN" type="checkbox" (change)="changeRole('ROLE_ADMIN')">Администратор
+                          <input class="form-check-input" formControlName="ROLE_ADMIN" type="checkbox">Администратор
                           <span class="form-check-sign">
                               <span class="check"></span>
                             </span>
@@ -167,7 +167,7 @@
                       </div>
                       <div class="form-check">
                         <label class="form-check-label">
-                          <input class="form-check-input" formControlName="ROLE_OPERATOR" type="checkbox" (change)="changeRole('ROLE_OPERATOR')">Оператор
+                          <input class="form-check-input" formControlName="ROLE_OPERATOR" type="checkbox">Оператор
                           <span class="form-check-sign">
                               <span class="check"></span>
                             </span>
@@ -175,7 +175,7 @@
                       </div>
                       <div class="form-check">
                         <label class="form-check-label">
-                          <input class="form-check-input" formControlName="ROLE_MERCHANT" type="checkbox" (change)="changeRole('ROLE_MERCHANT')">Мерчант
+                          <input class="form-check-input" formControlName="ROLE_MERCHANT" type="checkbox">Мерчант
                           <span class="form-check-sign">
                               <span class="check"></span>
                             </span>
@@ -186,9 +186,10 @@
                 </div>
               </div>
               <div class="d-flex mt-5">
-                <a href="#" class="btn btn-success btn-round btn-back" (click)="$event.preventDefault();">Заблокировать<div class="ripple-container"></div></a>
-                <a href="#" class="btn btn-success btn-round btn-back" (click)="$event.preventDefault();">деактивировать<div class="ripple-container"></div></a>
-                <a href="#" class="btn btn-success btn-round btn-back" (click)="$event.preventDefault();deleteUser()">удалить<div class="ripple-container"></div></a>
+                <a href="#" class="btn btn-success btn-round btn-back" *ngIf="userInfoForm.value.active" (click)="$event.preventDefault();deleteOrBlockUser('block')">Заблокировать<div class="ripple-container"></div></a>
+                <a href="#" class="btn btn-success btn-round btn-back" *ngIf="!userInfoForm.value.active" (click)="$event.preventDefault();activateUser()">Активировать<div class="ripple-container"></div></a>
+                <a href="#" class="btn btn-success btn-round btn-back" *ngIf="userInfoForm.value.active&&!userInfoForm.value.blocked" (click)="$event.preventDefault();saveRoles()">Сохранить<div class="ripple-container"></div></a>
+                <a href="#" class="btn btn-success btn-round btn-back" (click)="$event.preventDefault();deleteOrBlockUser('delete')">Удалить<div class="ripple-container"></div></a>
               </div>
             </div>
           </div>

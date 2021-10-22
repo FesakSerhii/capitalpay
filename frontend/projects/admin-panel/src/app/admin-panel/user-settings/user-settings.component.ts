@@ -22,7 +22,9 @@ export class UserSettingsComponent implements OnInit {
               private activatedRoute: ActivatedRoute,
               private currencyService: CurrencyService,
               private paymentsService: PaymentsService,
-              private kycService: KycService) { }
+              private kycService: KycService) {
+  }
+
 // {
 //   "id":18,
 //   "password":"blablabla",
@@ -35,16 +37,18 @@ export class UserSettingsComponent implements OnInit {
   userInfoForm = new FormGroup({
     id: new FormControl(),
     password: new FormControl(),
-    email: new FormControl('',[Validators.email]),
-    username:new FormControl('',[Validators.required,Validators.minLength(11),Validators.maxLength(11)]),
+    active: new FormControl(),
+    blocked: new FormControl(),
+    email: new FormControl('', [Validators.email]),
+    username: new FormControl('', [Validators.required, Validators.minLength(11), Validators.maxLength(11)]),
     realname: new FormControl(''),
     fio: new FormControl(''),
   });
   merchantInfoForm = new FormGroup({
     merchantId: new FormControl(),
     password: new FormControl(),
-    email: new FormControl('',[Validators.email]),
-    username: new FormControl('',[Validators.minLength(11),Validators.maxLength(11)]),
+    email: new FormControl('', [Validators.email]),
+    username: new FormControl('', [Validators.minLength(11), Validators.maxLength(11)]),
     realname: new FormControl(''),
     active: new FormControl(),
     blocked: new FormControl(),
@@ -52,26 +56,29 @@ export class UserSettingsComponent implements OnInit {
     headname: new FormControl(''),
     accountant: new FormControl(''),
     bik: new FormControl(''),
-    mainphone: new FormControl('',[Validators.minLength(11),Validators.maxLength(11)]),
+    mainphone: new FormControl('', [Validators.minLength(11), Validators.maxLength(11)]),
     iik: new FormControl(''),
     mname: new FormControl(''),
     bankname: new FormControl(''),
-    iinbin: new FormControl('',[ExtValidators.IIN]),
+    iinbin: new FormControl('', [ExtValidators.IIN]),
     uaddress: new FormControl(''),
     commission: new FormControl('')
   })
   userRolesForm = new FormGroup({
-    ROLE_USER:  new FormControl(),
+    ROLE_USER: new FormControl(),
     ROLE_OPERATOR: new FormControl(),
     ROLE_ADMIN: new FormControl(),
     ROLE_MERCHANT: new FormControl(),
   })
-  modalTypes ={
-    confirm:'userDeleteConfirmation',
-    delete:'userDeleteSuccessful'
+  modalTypes = {
+    deleteConfirm: 'userDeleteConfirmation',
+    blockConfirm: 'userBlockSuccessful',
+    delete: 'userDeleteSuccessful',
+    block: 'userBlockSuccessful',
+    activate: 'userActivateSuccessful',
   }
-  modalType = this.modalTypes.confirm;
-  isEditMode:boolean;
+  modalType = '';
+  isEditMode: boolean;
   userRoles = {
     ROLE_USER: false,
     ROLE_OPERATOR: false,
@@ -96,68 +103,56 @@ export class UserSettingsComponent implements OnInit {
 
     this.isEditMode = false;
   }
-  navigateToSettings(){
+
+  navigateToSettings() {
     this.router.navigate(['/admin-panel/user'])
   }
-  getUserInfo(){
-    this.userService.getUserData(this.userId).then(resp=>{
-      this.userInfoForm.patchValue(resp.data,{ emitEvent: false });
+
+  getUserInfo() {
+    this.userService.getUserData(this.userId).then(resp => {
+      this.userInfoForm.patchValue(resp.data, {emitEvent: false});
       const roles = resp.data.roles;
-      for(const role in roles){
+      for (const role in roles) {
         this.userRoles[roles[role].authority] = true;
-        this.userRolesForm.controls[roles[role].authority].setValue(true,{ emitEvent: false })
+        this.userRolesForm.controls[roles[role].authority].setValue(true, {emitEvent: false})
       }
-      const subscription:Subscription = this.userRolesForm.valueChanges.subscribe(()=>{
-        const newRoles = {
-            "userId": this.userId,
-            "roleList": []
-          }
-        ;
-        for(const roleValue in this.userRolesForm.value){
-          if(this.userRolesForm.value[roleValue]){
-            newRoles.roleList.push(roleValue)
-          }
-        }
-        this.userService.changeUserRolesList(newRoles).then(()=>{
-          subscription.unsubscribe();
-          this.getUserInfo()
-        })
-      })
-      if(this.userRoles.ROLE_MERCHANT){
-        this.kycService.getKycInfo(this.userId).then(resp=>{
+
+      if (this.userRoles.ROLE_MERCHANT) {
+        this.kycService.getKycInfo(this.userId).then(resp => {
           this.merchantInfoForm.patchValue(resp.data);
-          this.merchantInfoForm.controls.merchantId.patchValue(this.userId,{ emitEvent: false });
-          this.merchantInfoForm.controls.mainphone.patchValue(resp.data.mainphone?resp.data.mainphone.replace("+","").replace(/\s/g, ""):'');
-          this.merchantInfoForm.controls.username.patchValue(resp.data.phone?resp.data.phone.replace("+","").replace(/\s/g, ""):'');
+          this.merchantInfoForm.controls.merchantId.patchValue(this.userId, {emitEvent: false});
+          this.merchantInfoForm.controls.mainphone.patchValue(resp.data.mainphone ? resp.data.mainphone.replace('+', '').replace(/\s/g, '') : '');
+          this.merchantInfoForm.controls.username.patchValue(resp.data.phone ? resp.data.phone.replace('+', '').replace(/\s/g, '') : '');
         })
-        this.currencyService.getCurrencies().then(resp=>{
+        this.currencyService.getCurrencies().then(resp => {
           this.currencies = resp.data;
-          for(const currency of this.currencies){
+          for (const currency of this.currencies) {
             this.currenciesForm.addControl(currency.alpha, new FormControl())
           }
         });
-        this.paymentsService.getPaymentMethods().then(resp=>{
+        this.paymentsService.getPaymentMethods().then(resp => {
           this.paymentMethods = resp.data;
-          for(const paymentMethod of this.paymentMethods){
+          for (const paymentMethod of this.paymentMethods) {
             this.paymentMethodsForm.addControl(paymentMethod.name, new FormControl())
           }
         });
-        this.currencyService.getMerchantCurrencies(this.userId).then(resp=>{
-          for(const currency in resp.data){
+        this.currencyService.getMerchantCurrencies(this.userId).then(resp => {
+          for (const currency in resp.data) {
             this.currenciesForm.controls[currency].setValue(resp.data[currency])
           }
         })
-        this.paymentsService.getMerchantPaymentMethods(this.userId).then(resp=>{
-          for(const paymentMethod of resp.data){
+        this.paymentsService.getMerchantPaymentMethods(this.userId).then(resp => {
+          for (const paymentMethod of resp.data) {
             this.paymentMethodsForm.controls[paymentMethod.name].setValue(true)
           }
         })
       }
     })
   }
-  async getCommissions(){
-   const data = {...await this.userService.getUsersCommissions(this.userId)}.data
-    for(const cashBox of data){
+
+  async getCommissions() {
+    const data = {...await this.userService.getUsersCommissions(this.userId)}.data
+    for (const cashBox of data) {
       const form = new FormGroup({
         cashBoxId: new FormControl(cashBox['cashBoxId']),
         cashBoxName: new FormControl(cashBox['cashBoxName']),
@@ -168,29 +163,40 @@ export class UserSettingsComponent implements OnInit {
       this.cashBoxList.controls.push(form);
     }
   }
+
   editUserData() {
-    if(this.userRoles.ROLE_MERCHANT){
-      this.merchantInfoForm.value.phone = this.merchantInfoForm.value.phone?'+'+this.merchantInfoForm.value.phone:null;
-      this.merchantInfoForm.value.mainphone = this.merchantInfoForm.value.mainphone?'+'+this.merchantInfoForm.value.mainphone:null;
-      this.kycService.setKycInfo(this.merchantInfoForm.value).then(resp=>{
+    if (this.userRoles.ROLE_MERCHANT) {
+      this.merchantInfoForm.value.phone = this.merchantInfoForm.value.phone ? '+' + this.merchantInfoForm.value.phone : null;
+      this.merchantInfoForm.value.mainphone = this.merchantInfoForm.value.mainphone ? '+' + this.merchantInfoForm.value.mainphone : null;
+      this.kycService.setKycInfo(this.merchantInfoForm.value).then(resp => {
         this.getUserInfo()
       })
-    }else{
-      this.userInfoForm.value.phone = '+'+this.userInfoForm.value.phone;
-      this.userService.editUserData(this.userInfoForm.value).then(resp=>{
+    } else {
+      this.userInfoForm.value.phone = '+' + this.userInfoForm.value.phone;
+      this.userService.editUserData(this.userInfoForm.value).then(resp => {
         this.getUserInfo()
       })
     }
     this.isEditMode = false;
   }
-  deleteUser(){
-      this.massageModal.open().then(()=>{
-        this.userService.deleteUser(this.userId).then(()=>{
-        this.modalType = this.modalTypes.delete
-        this.massageModal.open().then(()=>{
-        this.navigateToSettings();
+
+  deleteOrBlockUser(action) {
+    this.modalType = this.modalTypes[action + 'Confirm']
+    this.massageModal.open().then(() => {
+      this.userService[action + 'User'](this.userId).then(() => {
+        this.modalType = this.modalTypes[action]
+        this.massageModal.open().then(() => {
+          action === 'delete' ? this.navigateToSettings() : this.getUserInfo();
         })
       })
+    })
+  }
+
+  activateUser() {
+    this.userService.activateUser(this.userId).then(() => {
+      this.modalType = this.modalTypes['activate']
+      this.massageModal.open()
+      this.getUserInfo();
     })
   }
 
@@ -199,12 +205,12 @@ export class UserSettingsComponent implements OnInit {
       merchantId: this.userId,
       currencyList: []
     }
-    for(const currency in this.currenciesForm.value){
-      if(this.currenciesForm.value.hasOwnProperty(currency)&&this.currenciesForm.value[currency]){
+    for (const currency in this.currenciesForm.value) {
+      if (this.currenciesForm.value.hasOwnProperty(currency) && this.currenciesForm.value[currency]) {
         obj.currencyList.push(currency);
       }
     }
-    this.currencyService.editUsersCurrenciesList(obj).then(()=>{
+    this.currencyService.editUsersCurrenciesList(obj).then(() => {
       this.getUserInfo();
     })
   }
@@ -214,18 +220,20 @@ export class UserSettingsComponent implements OnInit {
       merchantId: this.userId,
       paysystemList: []
     }
-    for(const paymentMethod in this.paymentMethodsForm.value){
-      if(this.paymentMethodsForm.value.hasOwnProperty(paymentMethod)&&this.paymentMethodsForm.value[paymentMethod]){
+    for (const paymentMethod in this.paymentMethodsForm.value) {
+      if (this.paymentMethodsForm.value.hasOwnProperty(paymentMethod) && this.paymentMethodsForm.value[paymentMethod]) {
         obj.paysystemList.push(this.paymentMethods.filter(el => el.name === paymentMethod)[0].id);
       }
     }
-    this.paymentsService.editMerchantPaymentMethodsList(obj).then(()=>{
+    this.paymentsService.editMerchantPaymentMethodsList(obj).then(() => {
       this.getUserInfo();
     })
   }
 
   changeRole(role) {
-    // console.log(role);
+    console.log(this.userRolesForm.controls[role].value);
+    this.userRolesForm.controls[role].patchValue(!this.userRolesForm.controls[role].value)
+    console.log(this.userRolesForm.controls[role].value);
   }
 
   saveCashBoxFee(formGroup) {
@@ -238,23 +246,40 @@ export class UserSettingsComponent implements OnInit {
     // this.userService.editUsersCommissions(data).then(()=>{
     //   this.getCommissions()
     // })
-      let newFees = [...this.cashBoxList.controls.map(el=>el.value)]
-      newFees = newFees.map(el=>{
-        return {
-          cashBoxId: el.cashBoxId,
-          merchantFee: el.merchantFee,
-          clientFee: el.clientFee
-        }
-      })
+    let newFees = [...this.cashBoxList.controls.map(el => el.value)]
+    newFees = newFees.map(el => {
+      return {
+        cashBoxId: el.cashBoxId,
+        merchantFee: el.merchantFee,
+        clientFee: el.clientFee
+      }
+    })
     let data = {
-      "merchantId": this.userId,
-      "feeList": newFees
+      'merchantId': this.userId,
+      'feeList': newFees
     }
-    this.userService.editUsersCommissions(data).then(()=>{
-        this.getCommissions()
-      })
+    this.userService.editUsersCommissions(data).then(() => {
+      this.getCommissions()
+    })
   }
-  replaceSymbols(string){
-    return string.includes('.')?string.trim().replace(',',''):string.trim().replace(',','.')
+
+  replaceSymbols(string) {
+    return string.includes('.') ? string.trim().replace(',', '') : string.trim().replace(',', '.')
+  }
+
+  saveRoles() {
+    const newRoles = {
+        'userId': this.userId,
+        'roleList': []
+      }
+    ;
+    for (const roleValue in this.userRolesForm.value) {
+      if (this.userRolesForm.value[roleValue]) {
+        newRoles.roleList.push(roleValue)
+      }
+    }
+    this.userService.changeUserRolesList(newRoles).then(() => {
+      this.getUserInfo()
+    })
   }
 }

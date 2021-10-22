@@ -19,7 +19,10 @@ export class MassageModalComponent implements OnInit {
     invalidDateMassage: "Дата окончания периода не может быть раньше даты начала периода.",
     deleteConfirmation: "Подтвердите удаление",
     userDeleteConfirmation:"Вы действительно хотите удалить пользователя",
+    userBlockConfirmation:"Вы действительно хотите заблокировать пользователя",
     userDeleteSuccessful:"Пользватель успешно удален",
+    userBlockSuccessful:"Пользватель успешно заблокирован",
+    userActivateSuccessful:"Пользватель успешно активирован",
   };
   private modal: NgbModalRef = null;
 
