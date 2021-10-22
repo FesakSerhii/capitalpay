@@ -318,6 +318,7 @@ public class UserListService {
         }
 
         user.setActive(true);
+        user.setBlocked(false);
         applicationUserRepository.save(user);
         return new ResultDTO(true, "", 0);
     }
