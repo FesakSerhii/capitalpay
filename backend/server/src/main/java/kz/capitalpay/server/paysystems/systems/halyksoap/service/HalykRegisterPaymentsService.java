@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -150,15 +151,15 @@ public class HalykRegisterPaymentsService {
         long before = registerPaymentsDateDTO.getTimestampBefore();
 
         ZoneId zoneId = ZoneId.systemDefault();
-        LocalDateTime timeAfter = Instant.ofEpochMilli(after).atZone(zoneId).toLocalDateTime();
-        LocalDateTime timBefore = Instant.ofEpochMilli(before).atZone(zoneId).toLocalDateTime();
+        LocalDate timeAfter = Instant.ofEpochMilli(after).atZone(zoneId).toLocalDate();
+        LocalDate timBefore = Instant.ofEpochMilli(before).atZone(zoneId).toLocalDate();
         return findAllByTimestampAfterAndTimestampBeforeAndStatus(timBefore, timeAfter);
     }
 
-    private List<RegisterPaymentsStatistic> findAllByTimestampAfterAndTimestampBeforeAndStatus(LocalDateTime before, LocalDateTime after) {
+    private List<RegisterPaymentsStatistic> findAllByTimestampAfterAndTimestampBeforeAndStatus(LocalDate before, LocalDate after) {
         List<RegisterPaymentsStatistic> list = halykRegisterPaymentsRepository.findAllByTimestampAfterAndTimestampBeforeAndStatus();
         return list.stream().filter(x ->
-                x.getLocalDateTime().isAfter(after) && x.getLocalDateTime().isBefore(before))
+                x.getLocalDateTime().isAfter(after.atStartOfDay()) && x.getLocalDateTime().isBefore(before.atStartOfDay().plusDays(1)))
                 .collect(Collectors.toList());
     }
 
