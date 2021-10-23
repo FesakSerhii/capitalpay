@@ -15,7 +15,9 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -145,7 +147,11 @@ public class HalykRegisterPaymentsService {
     private List<RegisterPaymentsStatistic> getPaymentsByDate(RegisterPaymentsDateDTO registerPaymentsDateDTO) {
         long after = registerPaymentsDateDTO.getTimestampAfter();
         long before = registerPaymentsDateDTO.getTimestampBefore();
-        return halykRegisterPaymentsRepository.findAllByTimestampAfterAndTimestampBeforeAndStatus(before, after,
+
+        ZoneId zoneId = ZoneId.systemDefault();
+        String timeAfter = Instant.ofEpochMilli(after).atZone(zoneId).toLocalDate().toString();
+        String timBefore = Instant.ofEpochMilli(before).atZone(zoneId).toLocalDate().toString();
+        return halykRegisterPaymentsRepository.findAllByTimestampAfterAndTimestampBeforeAndStatus(timBefore, timeAfter,
                 "SUCCESS");
     }
 
