@@ -151,8 +151,7 @@ public class HalykRegisterPaymentsService {
         ZoneId zoneId = ZoneId.systemDefault();
         String timeAfter = Instant.ofEpochMilli(after).atZone(zoneId).toLocalDate().toString();
         String timBefore = Instant.ofEpochMilli(before).atZone(zoneId).toLocalDate().toString();
-        return halykRegisterPaymentsRepository.findAllByTimestampAfterAndTimestampBeforeAndStatus(timBefore, timeAfter,
-                "SUCCESS");
+        return halykRegisterPaymentsRepository.findAllByTimestampAfterAndTimestampBeforeAndStatus(timBefore, timeAfter);
     }
 
     private String createNameFile() {
