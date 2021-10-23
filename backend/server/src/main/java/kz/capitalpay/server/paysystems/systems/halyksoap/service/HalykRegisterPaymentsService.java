@@ -158,7 +158,7 @@ public class HalykRegisterPaymentsService {
     private List<RegisterPaymentsStatistic> findAllByTimestampAfterAndTimestampBeforeAndStatus(LocalDateTime before, LocalDateTime after) {
         List<RegisterPaymentsStatistic> list = halykRegisterPaymentsRepository.findAllByTimestampAfterAndTimestampBeforeAndStatus();
         return list.stream().filter(x ->
-                x.getLocalDateTime().isAfter(after) && x.getLocalDateTime().isBefore(before))
+                x.getLocalDateTime().isAfter(after) && x.getLocalDateTime().isBefore(before.plusDays(1)))
                 .collect(Collectors.toList());
     }
 
