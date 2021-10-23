@@ -8,13 +8,19 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 
 public interface HalykRegisterPaymentsRepository extends CrudRepository<Payment, Long> {
-    @Query(value = "SELECT p.total_amount as totalAmount, " +
-            " p.merchant_id as merchantId, " +
+    //    @Query(value = "SELECT p.total_amount as totalAmount, " +
+//            " p.merchant_id as merchantId, " +
+//            " p.currency as currency, " +
+//            " p.description as description," +
+//            " p.local_date_time as localDateTime " +
+//            " FROM Payment p " +
+//            " WHERE local_date_time >= :after::date " +
+//            "  AND local_date_time <= :before::date + '1 day'::interval) ", nativeQuery = true)
+    @Query(value = "SELECT p.totalAmount as totalAmount, " +
+            " p.merchantId as merchantId, " +
             " p.currency as currency, " +
             " p.description as description," +
-            " p.local_date_time as localDateTime " +
-            " FROM Payment p " +
-            " WHERE local_date_time >= :after::date " +
-            "  AND local_date_time <= :before::date + '1 day'::interval) ", nativeQuery = true)
-    List<RegisterPaymentsStatistic> findAllByTimestampAfterAndTimestampBeforeAndStatus(String before, String after);
+            " p.localDateTime as localDateTime " +
+            " FROM Payment p ")
+    List<RegisterPaymentsStatistic> findAllByTimestampAfterAndTimestampBeforeAndStatus();
 }
