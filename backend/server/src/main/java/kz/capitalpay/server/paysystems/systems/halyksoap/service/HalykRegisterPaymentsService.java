@@ -21,6 +21,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static kz.capitalpay.server.merchantsettings.service.MerchantKycService.*;
 import static kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSettingsService.*;
@@ -149,9 +150,16 @@ public class HalykRegisterPaymentsService {
         long before = registerPaymentsDateDTO.getTimestampBefore();
 
         ZoneId zoneId = ZoneId.systemDefault();
-        String timeAfter = Instant.ofEpochMilli(after).atZone(zoneId).toLocalDate().toString();
-        String timBefore = Instant.ofEpochMilli(before).atZone(zoneId).toLocalDate().toString();
-        return halykRegisterPaymentsRepository.findAllByTimestampAfterAndTimestampBeforeAndStatus(timBefore, timeAfter);
+        LocalDateTime timeAfter = Instant.ofEpochMilli(after).atZone(zoneId).toLocalDateTime();
+        LocalDateTime timBefore = Instant.ofEpochMilli(before).atZone(zoneId).toLocalDateTime();
+        return findAllByTimestampAfterAndTimestampBeforeAndStatus(timBefore, timeAfter);
+    }
+
+    private List<RegisterPaymentsStatistic> findAllByTimestampAfterAndTimestampBeforeAndStatus(LocalDateTime before, LocalDateTime after) {
+        List<RegisterPaymentsStatistic> list = halykRegisterPaymentsRepository.findAllByTimestampAfterAndTimestampBeforeAndStatus();
+        return list.stream().filter(x ->
+                x.getLocalDateTime().isAfter(after) && x.getLocalDateTime().isBefore(before))
+                .collect(Collectors.toList());
     }
 
     private String createNameFile() {
