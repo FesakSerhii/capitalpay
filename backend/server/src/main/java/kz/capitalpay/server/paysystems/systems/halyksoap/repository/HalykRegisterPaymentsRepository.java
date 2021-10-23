@@ -14,8 +14,8 @@ public interface HalykRegisterPaymentsRepository extends CrudRepository<Payment,
             " p.description as description," +
             " p.local_date_time as localDateTime " +
             " FROM Payment p " +
-            " WHERE local_date_time >= to_date(?2, 'YYYY-MM-DD') " +
-            "  AND local_date_time <= (to_date(?1, 'YYYY-MM-DD') + '1 day'::interval) ", nativeQuery = true)
+            " WHERE local_date_time >= to_date(:after, 'YYYY-MM-DD') " +
+            "  AND local_date_time <= (to_date(:before, 'YYYY-MM-DD') + '1 day'::interval) ", nativeQuery = true)
     List<RegisterPaymentsStatistic> findAllByTimestampAfterAndTimestampBeforeAndStatus(String before, String after,
                                                                                        String status);
 }
