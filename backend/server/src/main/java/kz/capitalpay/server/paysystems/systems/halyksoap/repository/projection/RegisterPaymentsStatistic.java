@@ -5,7 +5,9 @@ import java.time.LocalDateTime;
 
 public interface RegisterPaymentsStatistic {
     String getMerchantId();
+
     BigDecimal getTotalAmount();
+
     String getCurrency();
     String getDescription();
     LocalDateTime getLocalDateTime();
