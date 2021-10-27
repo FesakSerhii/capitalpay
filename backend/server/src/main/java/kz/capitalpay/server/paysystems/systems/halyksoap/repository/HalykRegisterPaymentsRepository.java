@@ -16,11 +16,11 @@ public interface HalykRegisterPaymentsRepository extends CrudRepository<Payment,
 //            " FROM Payment p " +
 //            " WHERE local_date_time >= :after::date " +
 //            "  AND local_date_time <= :before::date + '1 day'::interval) ", nativeQuery = true)
-    @Query(value = "SELECT p.totalAmount as totalAmount, " +
+    @Query(value = "SELECT SUM(p.totalAmount) as totalAmount, " +
             " p.merchantId as merchantId, " +
             " p.currency as currency, " +
-            " p.description as description," +
             " p.localDateTime as localDateTime " +
-            " FROM Payment p ")
+            " FROM Payment p " +
+            " GROUP BY p.merchantId")
     List<RegisterPaymentsStatistic> findAllByTimestampAfterAndTimestampBeforeAndStatus();
 }

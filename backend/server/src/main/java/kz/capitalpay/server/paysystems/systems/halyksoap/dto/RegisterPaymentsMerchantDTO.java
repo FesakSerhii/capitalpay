@@ -2,13 +2,12 @@ package kz.capitalpay.server.paysystems.systems.halyksoap.dto;
 
 import java.math.BigDecimal;
 
-public class RegisterPaymentsMerchantDTO extends RegisterPaymentsCommonMerchantFieldsDTO{
+public class RegisterPaymentsMerchantDTO extends RegisterPaymentsCommonMerchantFieldsDTO {
     private String iik;
     private String bik;
     private String iinbin;
     private BigDecimal amount;
     private String bankname;
-    private String description;
 
     public String getIik() {
         return iik;
@@ -50,14 +49,6 @@ public class RegisterPaymentsMerchantDTO extends RegisterPaymentsCommonMerchantF
         this.bankname = bankname;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     @Override
     public String toString() {
         return iik + "¤" +
@@ -65,8 +56,7 @@ public class RegisterPaymentsMerchantDTO extends RegisterPaymentsCommonMerchantF
                 iinbin + "¤" +
                 amount + "¤" +
                 bankname + "¤" +
-//                getNaznpl_merch() + "¤      ¤" +
-                description + "¤      ¤" +
+                getNaznpl_merch() + "¤      ¤" +
                 getBclassd_merch() + "¤" +
                 getKod_merch() + "¤" +
                 getKnp_merch() + "¤" +

@@ -65,7 +65,7 @@ public class HalykRegisterPaymentsService {
         for (RegisterPaymentsStatistic data : statistic) {
             RegisterPaymentsMerchantDTO merchant = new RegisterPaymentsMerchantDTO();
             setIndividualDataForMerchant(merchant, Long.parseLong(data.getMerchantId()));
-            setHalykCommonDataForMerchant(merchant, commonMerchantFields, data);
+            setHalykCommonDataForMerchant(merchant, commonMerchantFields);
             divideMoneyBetweenMerchantAndHalyk(Long.parseLong(data.getMerchantId()),
                     data.getTotalAmount(), halyk, merchant);
             register.add(merchant);
@@ -74,6 +74,7 @@ public class HalykRegisterPaymentsService {
         return register.toString()
                 .replace("[", "")
                 .replace("]", "")
+                .replace(",", "")
                 + halyk.toString();
     }
 
@@ -122,20 +123,13 @@ public class HalykRegisterPaymentsService {
     }
 
     private void setHalykCommonDataForMerchant(RegisterPaymentsMerchantDTO merchant,
-                                               RegisterPaymentsCommonMerchantFieldsDTO commonData,
-                                               RegisterPaymentsStatistic data) {
+                                               RegisterPaymentsCommonMerchantFieldsDTO commonData) {
         merchant.setNaznpl_merch(commonData.getNaznpl_merch());
         merchant.setBclassd_merch(commonData.getBclassd_merch());
         merchant.setKod_merch(commonData.getKod_merch());
         merchant.setKnp_merch(commonData.getKnp_merch());
         merchant.setRnna_merch(commonData.getRnna_merch());
         merchant.setPlatel_merch(commonData.getPlatel_merch());
-        merchant.setDescription(generateRegisterDescription(data));
-    }
-
-    private String generateRegisterDescription(RegisterPaymentsStatistic data) {
-        return "За " + data.getDescription() + " от " + data.getLocalDateTime().format(dateFormatter) +
-                " Сумма " + data.getTotalAmount() + " тенге";
     }
 
     private void setIndividualDataForMerchant(RegisterPaymentsMerchantDTO merchant,
