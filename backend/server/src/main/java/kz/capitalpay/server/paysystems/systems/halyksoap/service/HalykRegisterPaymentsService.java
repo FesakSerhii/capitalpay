@@ -15,14 +15,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static kz.capitalpay.server.merchantsettings.service.MerchantKycService.*;
 import static kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSettingsService.*;
@@ -34,6 +30,7 @@ public class HalykRegisterPaymentsService {
 
     private final Logger logger = LoggerFactory.getLogger(HalykRegisterPaymentsService.class);
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    private static final Long DAY_IN_MILLIS = 86400000L;
 
     @Autowired
     private MerchantKycService merchantKycService;
@@ -142,19 +139,8 @@ public class HalykRegisterPaymentsService {
 
     private List<RegisterPaymentsStatistic> getPaymentsByDate(RegisterPaymentsDateDTO registerPaymentsDateDTO) {
         long after = registerPaymentsDateDTO.getTimestampAfter();
-        long before = registerPaymentsDateDTO.getTimestampBefore();
-
-        ZoneId zoneId = ZoneId.systemDefault();
-        LocalDate timeAfter = Instant.ofEpochMilli(after).atZone(zoneId).toLocalDate();
-        LocalDate timBefore = Instant.ofEpochMilli(before).atZone(zoneId).toLocalDate();
-        return findAllByTimestampAfterAndTimestampBeforeAndStatus(timBefore, timeAfter);
-    }
-
-    private List<RegisterPaymentsStatistic> findAllByTimestampAfterAndTimestampBeforeAndStatus(LocalDate before, LocalDate after) {
-        List<RegisterPaymentsStatistic> list = halykRegisterPaymentsRepository.findAllByTimestampAfterAndTimestampBeforeAndStatus();
-        return list.stream().filter(x ->
-                x.getLocalDateTime().isAfter(after.atStartOfDay()) && x.getLocalDateTime().isBefore(before.atStartOfDay().plusDays(1)))
-                .collect(Collectors.toList());
+        long before = registerPaymentsDateDTO.getTimestampBefore() + DAY_IN_MILLIS;
+        return halykRegisterPaymentsRepository.findAllByTimestampAfterAndTimestampBeforeAndStatus(before, after);
     }
 
     private String createNameFile() {
