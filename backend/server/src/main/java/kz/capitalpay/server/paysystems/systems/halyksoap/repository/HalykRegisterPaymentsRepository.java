@@ -21,6 +21,6 @@ public interface HalykRegisterPaymentsRepository extends CrudRepository<Payment,
             " p.currency as currency, " +
             " p.localDateTime as localDateTime " +
             " FROM Payment p " +
-            " GROUP BY p.merchantId")
+            " GROUP BY p.merchantId, p.currency")
     List<RegisterPaymentsStatistic> findAllByTimestampAfterAndTimestampBeforeAndStatus();
 }
