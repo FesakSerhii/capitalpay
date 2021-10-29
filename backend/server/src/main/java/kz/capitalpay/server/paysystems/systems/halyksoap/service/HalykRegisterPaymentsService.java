@@ -77,6 +77,7 @@ public class HalykRegisterPaymentsService {
 
     private void setIndividualInfoForHalyk(RegisterPaymentsHalykDTO halyk) {
         halyk.setKobd(halykSettingsService.getFieldValue(KOBD));
+        halyk.setBik(halykSettingsService.getFieldValue(BIK));
         halyk.setLskor(halykSettingsService.getFieldValue(LSKOR));
         halyk.setRnnb(halykSettingsService.getFieldValue(RNNB));
         halyk.setPoluch(halykSettingsService.getFieldValue(POLUCH));

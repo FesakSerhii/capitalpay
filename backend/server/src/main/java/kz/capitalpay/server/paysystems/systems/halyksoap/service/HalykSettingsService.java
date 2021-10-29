@@ -16,8 +16,9 @@ import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
-import static kz.capitalpay.server.constants.ErrorDictionary.*;
-import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
+import static kz.capitalpay.server.constants.ErrorDictionary.error120;
+import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
+import static kz.capitalpay.server.login.service.ApplicationRoleService.OPERATOR;
 
 @Service
 public class HalykSettingsService {
@@ -37,6 +38,7 @@ public class HalykSettingsService {
     public static final String LSKOR = "lskor";
     public static final String RNNB = "rnnb";
     public static final String POLUCH = "poluch";
+    public static final String BIK_HALYK = "poluch";
 
     public static final String NAZNPL_MERCH = "naznpl_merch";
     public static final String BCLASSD_MERCH = "bclassd_merch";
@@ -97,6 +99,7 @@ public class HalykSettingsService {
                     || admin.getRoles().contains(applicationRoleService.getRole(OPERATOR))) {
                 Map<String, String> result = new HashMap<>();
                 result.put(KOBD, getFieldValue(KOBD));
+                result.put(BIK_HALYK, getFieldValue(BIK_HALYK));
                 result.put(LSKOR, getFieldValue(LSKOR));
                 result.put(RNNB, getFieldValue(RNNB));
                 result.put(POLUCH, getFieldValue(POLUCH));

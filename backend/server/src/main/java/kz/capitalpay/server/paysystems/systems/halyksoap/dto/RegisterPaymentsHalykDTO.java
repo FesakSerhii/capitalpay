@@ -14,6 +14,7 @@ public class RegisterPaymentsHalykDTO {
     private String knp;
     private String rnna;
     private String platel;
+    private String bik;
 
     public String getKobd() {
         return kobd;
@@ -103,9 +104,17 @@ public class RegisterPaymentsHalykDTO {
         this.platel = platel;
     }
 
+    public String getBik() {
+        return bik;
+    }
+
+    public void setBik(String bik) {
+        this.bik = bik;
+    }
+
     @Override
     public String toString() {
-        return kobd + "¤" +
+        return bik + "¤" +
                 lskor + "¤¤" +
                 rnnb + "¤" +
                 amount + "¤" +
