@@ -20,6 +20,7 @@ export class TransactionsRegistryComponent implements OnInit {
     knp: new FormControl(),//
     knp_merch: new FormControl(),//*
     kobd: new FormControl(),//*
+    bik: new FormControl(),//*
     kod: new FormControl(),//
     kod_merch: new FormControl(),//*
     lskor: new FormControl(),//*
