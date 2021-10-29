@@ -51,8 +51,8 @@ public class RegisterPaymentsMerchantDTO extends RegisterPaymentsCommonMerchantF
 
     @Override
     public String toString() {
-        return iik + "¤" +
-                bik + "¤¤" +
+        return bik + "¤" +
+                iik + "¤¤" +
                 iinbin + "¤" +
                 amount + "¤" +
                 bankname + "¤" +
