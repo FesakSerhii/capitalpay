@@ -38,7 +38,7 @@ public class HalykSettingsService {
     public static final String LSKOR = "lskor";
     public static final String RNNB = "rnnb";
     public static final String POLUCH = "poluch";
-    public static final String BIK_HALYK = "poluch";
+    public static final String BIK_HALYK = "bik";
 
     public static final String NAZNPL_MERCH = "naznpl_merch";
     public static final String BCLASSD_MERCH = "bclassd_merch";
