@@ -63,7 +63,7 @@ export class HelpComponent implements OnInit {
     if (this.sortHelper.sort.sortBy === null) {
       this.supportList = this.searchInputService.filterData(this.dontTouched, this.tableSearch.value);
       this.supportListClosed = this.searchInputService.filterData(this.dontTouchedClosed, this.tableSearch.value);
-      if(this.themeForm.value!==null){
+      if(this.themeForm.value!==null&&this.themeForm.value!=='Все темы обращений'){
         this.supportList = this.supportList.filter(item=>item.theme===this.themeForm.value);
         this.supportListClosed = this.supportListClosed.filter(item=>item.theme===this.themeForm.value);
       }
