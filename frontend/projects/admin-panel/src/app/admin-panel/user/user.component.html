@@ -25,13 +25,16 @@
                       <a (click)="$event.preventDefault();filter.controls.dateStart.reset();start.open()"><i class="material-icons icon-color position-absolute" style="top: 10px;right: -22px">date_range</i></a>
                     </div>
                   </div>
-                  <div class="form-group bmd-form-group position-relative">
-                    <input type="text" class="form-control" formControlName="dateEnd"
-                           ngbDatepicker [autoClose]="true"
-                           readonly #end="ngbDatepicker"
-                           (dateSelect)="dateInvalid('dateStart','dateEnd')"
-                           >
-                    <a (click)="$event.preventDefault();filter.controls.dateEnd.reset();end.open()"><i class="material-icons icon-color position-absolute" style="top: 10px;right: -22px">date_range</i></a>
+                  <div class="d-flex w-50">
+                    <label class="col-form-label">до</label>
+                    <div class="form-group bmd-form-group position-relative">
+                      <input type="text" class="form-control" formControlName="dateEnd"
+                             ngbDatepicker [autoClose]="true"
+                             readonly #end="ngbDatepicker"
+                             (dateSelect)="dateInvalid('dateStart','dateEnd')"
+                             >
+                      <a (click)="$event.preventDefault();filter.controls.dateEnd.reset();end.open()"><i class="material-icons icon-color position-absolute" style="top: 10px;right: -22px">date_range</i></a>
+                    </div>
                   </div>
                 </div>
                 <div class="filter-form-wrapper w25">
@@ -82,7 +85,7 @@
             </form>
             <div class="d-flex flex-column align-items-center justify-content-around">
               <button class="btn slim btn-success btn-round" (click)="filterFields()">Показать<div class="ripple-container"></div></button>
-              <button class="btn btn-transparent" (click)="clearFilter()">
+              <button class="btn btn-transparent d-flex align-items-center" (click)="clearFilter()">
                 <i class="material-icons-outlined">close</i> Очистить
                 <div class="ripple-container"></div></button>
             </div>
