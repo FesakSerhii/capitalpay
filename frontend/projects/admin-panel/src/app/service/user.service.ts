@@ -12,7 +12,11 @@ export class UserService {
 
   constructor(public apiService: ApiService) { }
   getUserInfo(){
-    return helper.decodeToken(sessionStorage.getItem('token'));
+    try {
+      return helper.decodeToken(sessionStorage.getItem('token'));
+    } catch (error) {
+      
+    }
   }
   getUserList(){
     return this.apiService.postJwt('api','/userlist/list',token).toPromise();

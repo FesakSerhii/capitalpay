@@ -14,14 +14,18 @@ import { NgxSpinnerService } from 'ngx-spinner';
 export class AuthInterceptor implements HttpInterceptor {
     counter = 0;
     // private appErrorModalsService: AppErrorModalsService
-    constructor(private router: Router, private auth: AuthService, private spinnerService: NgxSpinnerService) {
+    constructor(
+        private router: Router, 
+        private auth: AuthService, 
+        private spinnerService: NgxSpinnerService
+    ) {
     }
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        const authToken = 'Bearer '+sessionStorage.getItem('token');
+        const authToken = 'Bearer ' + sessionStorage.getItem('token');
         const headers = req.headers;
-        const authReq = req.clone(authToken ? { setHeaders: { Authorization: authToken} } : {});
-      this.spinnerService.show();
+        const authReq = req.clone(authToken ? { setHeaders: { Authorization: authToken } } : {});
+        this.spinnerService.show();
         this.counter++;
 
         return next.handle(authReq).pipe(tap(
@@ -34,7 +38,7 @@ export class AuthInterceptor implements HttpInterceptor {
                     // this.spinnerService.hide();
                 }
                 else if (err instanceof HttpErrorResponse && err.status === 403) {
-                    // this.router.navigate([this.localize.translateRoute("/auth/login")]);
+                    this.auth.tokenStateChange.next(false);
                     // this.spinnerService.hide();
                 }
                 else if ((err instanceof HttpErrorResponse && err.status === 500) || (err instanceof HttpErrorResponse && err.status === 503)) {
