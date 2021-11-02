@@ -21,3 +21,16 @@
 .card.w742{
   width: 742px!important;
 }
+
+.filter-form-wrapper {
+  display: flex;
+  min-width: 350px;
+  &.w25 {
+    width: 25%;
+  }
+
+  &.w50 {
+    width: 50%;
+    min-width: 700px;
+  }
+}
