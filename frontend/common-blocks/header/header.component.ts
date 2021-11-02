@@ -1,22 +1,47 @@
-import {Component, Input, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {FormControl, FormGroup} from '@angular/forms';
-import {AuthService} from '../../src/app/service/auth.service';
-import {Router} from '@angular/router';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from '../../src/app/service/auth.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements OnInit {
-  @ViewChild('login', {static: false}) loginModal: TemplateRef<any> | undefined;
-  @ViewChild('register', {static: false}) registerModal: TemplateRef<any> | undefined;
+export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild('login', { static: false }) loginModal: TemplateRef<any> | undefined;
+  @ViewChild('register', { static: false }) registerModal: TemplateRef<any> | undefined;
   @Input() theme: string = 'white';
-  constructor(public modalService: NgbModal,public authService:AuthService,private router: Router,) { }
+  constructor(
+    public modalService: NgbModal,
+    public authService: AuthService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) { }
+
+  ngAfterViewInit(): void {
+    this.subscription.add(
+      this.route.queryParams.subscribe(
+        (params) => {
+          if (params?.login) {
+            this.switchToLogin(this.loginModal)
+          }
+        }
+      )
+    )
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
+  subscription: Subscription = new Subscription();
+
   loginForm = new FormGroup({
-    email: new FormControl('+37096384345'),
-    password: new FormControl('blablabla'),
+    email: new FormControl('+37096384345', Validators.required),
+    password: new FormControl('blablabla', Validators.required),
     isIpTrusted: new FormControl(false)
   });
   registerForm = new FormGroup({
@@ -25,15 +50,16 @@ export class HeaderComponent implements OnInit {
     comment: new FormControl(),
   })
   toggle = {
-    showPass : false,
+    showPass: false,
     showConfirmPass: false
   };
-  isTwoFactor:boolean = false;
+  isTwoFactor: boolean = false;
   sms = new FormControl();
 
   ngOnInit(): void {
+
   }
-  open(modal: any){
+  open(modal: any) {
     this.modalService.open(modal)
   }
 
@@ -41,12 +67,12 @@ export class HeaderComponent implements OnInit {
     this.modalService.dismissAll();
     this.open(modal)
   }
-  loginAction(){
-    this.authService.login(this.loginForm.value.email,this.loginForm.value.password).then(resp=>{
-      if(resp.body['data']=== "SMS sent"){
+  loginAction() {
+    this.authService.login(this.loginForm.value.email, this.loginForm.value.password).then(resp => {
+      if (resp.body['data'] === "SMS sent") {
         this.isTwoFactor = true;
-      }else{
-        sessionStorage.setItem('token',resp.headers.get('Authorization').replace('Bearer','').trim());
+      } else {
+        sessionStorage.setItem('token', resp.headers.get('Authorization').replace('Bearer', '').trim());
         this.modalService.dismissAll();
         this.router.navigate(['/merchant/transaction-log']);
       }
@@ -54,8 +80,8 @@ export class HeaderComponent implements OnInit {
   }
 
   confirmCode() {
-    this.authService.login(this.loginForm.value.email,this.loginForm.value.password,this.sms.value).then(resp=>{
-      sessionStorage.setItem('token',resp.headers.get('Authorization').replace('Bearer','').trim());
+    this.authService.login(this.loginForm.value.email, this.loginForm.value.password, this.sms.value).then(resp => {
+      sessionStorage.setItem('token', resp.headers.get('Authorization').replace('Bearer', '').trim());
       this.modalService.dismissAll();
       this.router.navigate(['/merchant/transaction-log']);
     })

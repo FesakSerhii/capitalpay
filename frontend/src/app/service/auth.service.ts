@@ -1,19 +1,39 @@
 import { Injectable } from '@angular/core';
-import {ApiService} from './api.service';
+import { JwtHelperService } from '@auth0/angular-jwt';
+import { Subject } from 'rxjs';
+import { ApiService } from './api.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  public tokenStateChange = new Subject<any>()
 
-  constructor(public apiService: ApiService) { }
-  login(username: string,password: string,sms:string = null){
-    return this.apiService.log('/login', {username,password,sms}).toPromise();
+  constructor(
+    public apiService: ApiService,
+    public jwtHelper: JwtHelperService
+  ) { }
+
+  login(username: string, password: string, sms: string = null) {
+    return this.apiService.log('/login', { username, password, sms }).toPromise();
   }
-  logout(){
+
+  logout() {
     sessionStorage.clear()
   }
-  checkSessions(){
+  
+  checkSessions() {
     return this.apiService.post('/api/v1/userlist/numbersSession').toPromise();
+  }
+
+  checkToken() {
+    const token = sessionStorage.getItem('token');
+    if (!token) return false
+    try {
+      return !this.jwtHelper.isTokenExpired(token)
+    } catch (error) {
+      return false
+    }
+
   }
 }
