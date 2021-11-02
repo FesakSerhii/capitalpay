@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {FileService} from '../../service/file.service';
 import {SupportService} from '../../service/support.service';
@@ -15,7 +15,12 @@ export class SupportComponent implements OnInit {
 
   @ViewChild('massageModal', {static: false}) massageModal: MassageModalComponent;
 
-  constructor(private fileService: FileService, private supportService: SupportService, private searchInputService: SearchInputService) {
+  constructor(
+    private fileService: FileService, 
+    private supportService: SupportService, 
+    private searchInputService: SearchInputService,
+    private cdRef : ChangeDetectorRef
+    ) {
   }
 
   activeTab: string = 'tab1';
@@ -33,6 +38,10 @@ export class SupportComponent implements OnInit {
   fileList: any[] = [];
 
   ngOnInit(): void {
+    this.getSupportList();
+  }
+
+  getSupportList() {
     this.supportService.getSupportListByMerchantId().then(resp => {
       this.supportList = resp.data;
       this.dontTouched = [...resp.data];
@@ -100,5 +109,10 @@ export class SupportComponent implements OnInit {
 
   deleteFile(index) {
     this.chosenFile.splice(index, 1)
+  }
+
+  modalClosed(event: any) {
+    this.getSupportList();
+    this.activeTab = 'tab1';
   }
 }
