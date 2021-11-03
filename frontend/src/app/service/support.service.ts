@@ -19,4 +19,17 @@ export class SupportService {
   sendFeedback(data){
     return this.apiService.post('/help/feedback',data).toPromise();
   }
+
+  getSupportList(){
+    return this.apiService.postJwt('/support/list',token).toPromise();
+  }
+  setImportant(data){
+    return this.apiService.postJwt('/support/status',token, data).toPromise();
+  }
+  getSupportListItem(id){
+    return this.apiService.postJwt('/support/one',token,{id}).toPromise();
+  }
+  answer(data){
+    return this.apiService.postJwt('/support/answer',token,data).toPromise();
+  }
 }

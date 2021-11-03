@@ -7,6 +7,7 @@ import {SettingsComponent} from './settings/settings.component';
 import {SupportComponent} from './support/support.component';
 import {ToolsComponent} from './tools/tools.component';
 import {TransactionsRegistryComponent} from '../../../common-blocks/transactions-log/transactions-registry/transactions-registry.component';
+import { ChatComponent } from './chat/chat.component';
 
 export const routes: Routes = [
   {
@@ -32,6 +33,10 @@ export const routes: Routes = [
       {
         path: 'support',
         component: SupportComponent
+      },
+      {
+        path: 'support/chat',
+        component: ChatComponent
       },
       {
         path: 'tools',

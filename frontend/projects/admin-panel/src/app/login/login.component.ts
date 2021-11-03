@@ -38,13 +38,6 @@ export class LoginComponent implements OnInit {
   loginAction() {
     this.authService.login(this.loginForm.value.email, this.loginForm.value.password).then((resp: HttpResponse<any>) => {
       console.log(resp);
-
-      if (Array.isArray(resp.body.data) && resp.body.data.includes('ROLE_ADMIN')) {
-        this.authService.isAdmin = true
-      } else {
-        this.authService.isAdmin = false
-      }
-
       if (resp.body.data === "SMS sent") {
         this.isTwoFactor = true;
       } else {

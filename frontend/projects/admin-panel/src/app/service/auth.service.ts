@@ -9,7 +9,6 @@ import { JwtHelperService } from '@auth0/angular-jwt';
   providedIn: 'root'
 })
 export class AuthService {
-  private _isAdmin: boolean = false;
   public tokenStateChange = new Subject<any>()
 
   constructor(
@@ -20,14 +19,6 @@ export class AuthService {
 
   login(username: string, password: string, sms: string = null) {
     return this.apiService.log('login', '/login', { username, password, sms }).toPromise();
-  }
-
-  get isAdmin() {
-    return this._isAdmin
-  }
-
-  set isAdmin(r) {
-    this._isAdmin = !!r
   }
 
   checkToken() {

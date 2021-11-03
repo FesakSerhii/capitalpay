@@ -10,11 +10,12 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {NgScrollbarModule} from 'ngx-scrollbar';
 import {NgbDateParserFormatter, NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {NgbDateCustomParserFormatter} from '../../../common-blocks/ngb-date-custom-parser-formatter';
+import { ChatComponent } from './chat/chat.component';
 
 
 
 @NgModule({
-  declarations: [SettingsComponent, ToolsComponent, SupportComponent, ApiComponent],
+  declarations: [SettingsComponent, ToolsComponent, SupportComponent, ApiComponent, ChatComponent],
     imports: [
         CommonModule,
         MerchantPanelRoutingModule,

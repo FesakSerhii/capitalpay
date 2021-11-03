@@ -17,7 +17,7 @@ import {NgbDateCustomParserFormatter} from '../../../../common-blocks/ngb-date-c
 import { JwtModule } from "@auth0/angular-jwt";
 
 export function tokenGetter() {
-  return sessionStorage.getItem("access_token");
+  return sessionStorage.getItem("token");
 }
 
 // import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
