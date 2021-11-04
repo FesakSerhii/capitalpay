@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class HalykRegisterPaymentsService {
         String nameFile = createNameFile();
         File file = new File(nameFile);
         try (Writer writer = new BufferedWriter(new FileWriter(file))) {
-            String contents = getRegisterPayments(registerPaymentsDateDTO);
+            String contents = new String(getRegisterPayments(registerPaymentsDateDTO).getBytes("UTF-8"), Charset.forName("windows-1251"));
             LOGGER.info("file content: {}", contents);
             writer.write(contents);
         } catch (IOException e) {
