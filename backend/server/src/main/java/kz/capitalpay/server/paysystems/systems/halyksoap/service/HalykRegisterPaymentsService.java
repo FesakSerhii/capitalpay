@@ -46,7 +46,7 @@ public class HalykRegisterPaymentsService {
     public File createTextFileForDownload(RegisterPaymentsDateDTO registerPaymentsDateDTO) {
         String nameFile = createNameFile();
         File file = new File(nameFile);
-        try (Writer writer = new BufferedWriter(new FileWriter(file))) {
+        try (Writer writer = new BufferedWriter(new FileWriter(file, Charset.forName("windows-1251")))) {
             String contents = new String(getRegisterPayments(registerPaymentsDateDTO).getBytes(StandardCharsets.UTF_8), Charset.forName("windows-1251"));
             LOGGER.info("file content: {}", contents);
             writer.write(contents);
