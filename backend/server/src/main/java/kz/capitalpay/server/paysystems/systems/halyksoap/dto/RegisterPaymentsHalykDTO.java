@@ -124,6 +124,6 @@ public class RegisterPaymentsHalykDTO {
                 kod + "¤" +
                 knp + "¤" +
                 rnna + "¤" +
-                platel + "\n";
+                platel + "¤¤¤\r\n";
     }
 }
