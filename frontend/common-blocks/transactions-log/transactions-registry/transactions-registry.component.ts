@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {PaymentsService} from '../../../projects/admin-panel/src/app/service/payments.service';
-import {FormControl, FormGroup} from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {ExtValidators} from '../../../src/app/validators/ext-validators';
 import {HttpResponse} from '@angular/common/http';
 
@@ -14,25 +14,25 @@ export class TransactionsRegistryComponent implements OnInit {
   constructor(private paymentsService:PaymentsService) { }
 
   registryForm = new FormGroup({
-    bclassd: new FormControl(),//*
-    bclassd_merch: new FormControl(),//*
+    bclassd: new FormControl(),
+    bclassd_merch: new FormControl(),
     date_last_downloads: new FormControl(),
-    knp: new FormControl(),//
-    knp_merch: new FormControl(),//*
-    kobd: new FormControl(),//*
-    bik: new FormControl(),//*
+    knp: new FormControl(),
+    knp_merch: new FormControl(),
+    kobd: new FormControl(),
+    bik: new FormControl(),
     kod: new FormControl(),//
-    kod_merch: new FormControl(),//*
-    lskor: new FormControl(),//*
-    naznpl: new FormControl(),//*
-    naznpl_merch: new FormControl(),//*
+    kod_merch: new FormControl(),
+    lskor: new FormControl(),
+    naznpl: new FormControl(),
+    naznpl_merch: new FormControl(),
     order_number: new FormControl(),
-    platel: new FormControl(),//;
-    platel_merch: new FormControl(),//*
-    poluch: new FormControl(),//*
-    rnna: new FormControl('',[ExtValidators.IIN]),//;
-    rnna_merch: new FormControl('',[ExtValidators.IIN]),//*
-    rnnb: new FormControl('',[ExtValidators.IIN]),//*
+    platel: new FormControl(),
+    platel_merch: new FormControl(),
+    poluch: new FormControl(),
+    rnna: new FormControl('',[ExtValidators.IIN]),
+    rnna_merch: new FormControl('',[ExtValidators.IIN]),
+    rnnb: new FormControl('',[ExtValidators.IIN]),
   });
   periodForm = new FormGroup({
     start: new FormControl(),
