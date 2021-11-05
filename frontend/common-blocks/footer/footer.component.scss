@@ -1,0 +1,133 @@
+.footer{
+  width: 100vw;
+  height: 351px;
+  background: #232426;
+  top: 0;
+  padding-top: 44px;
+  color: white;
+  .wrap{
+    width: 1111px;
+    margin: 0 auto;
+    .content{
+      display: flex;
+      margin-bottom: 60px;
+      .logo-section{
+        .language-section{
+          margin-top: 22px;
+          a{
+            color: white;
+          }
+        }
+      }
+      .menu{
+        justify-content: space-around;
+        width: 780px;
+        &__link{
+          display: block;
+          color: white;
+        }
+      }
+    }
+    .info-wrap{
+      border-top: 2px solid #FFFFFF;
+      .info-section{
+        margin-top: 22px;
+        margin-bottom: 20px;
+        .social-media{
+          margin-left: 144px;
+          &__link{
+            margin-right: 20px;
+          }
+        }
+        .copyright{
+          p{
+            margin-left: 317px;
+          }
+        }
+      }
+    }
+  }
+}
+.search-input{
+  background: #adb5bd00;
+  border-radius: 20px;
+  width: 236px;
+  height: 33px;
+  border:1px solid white;
+  padding-left: 20px
+}
+@media(max-width: 769px){
+  .footer{
+    height: 434px;
+    .wrap{
+      width: 669px;
+      .content{
+        display: block;
+        font-size: 14px!important;
+        .menu{
+          .menu-type{
+            margin-top: 58px;
+          }
+          width: 669px;
+          justify-content: space-between;
+          p{
+            margin-bottom: 10px;
+          }
+        }
+      }
+      .info-wrap{
+        .info-section{
+          .social-media{
+            margin-left: 32px;
+          }
+          .copyright{
+            p{
+              font-size: 12px;
+              margin-left: 27px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+}
+@media(max-width: 321px){
+  .footer{
+    height: 593px;
+    .wrap{
+      width: 249px;
+      .content{
+        .menu{
+          width: 249px;
+          flex-wrap: wrap;
+          .menu-type{
+            margin-top: 47px;
+          }
+          p{
+            margin-bottom: 10px;
+          }
+        }
+      }
+      .info-wrap{
+        .info-section{
+          display: flex;
+          align-items: center;
+          flex-direction: column;
+          .social-media{
+            margin-top: 22px;
+            margin-left: unset;
+          }
+          .copyright{
+            margin-top: 22px;
+            p{
+              font-size: 12px;
+              margin-left: unset;
+            }
+          }
+        }
+      }
+    }
+  }
+
+}

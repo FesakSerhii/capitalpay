@@ -1,0 +1,202 @@
+<div>
+  <button class="btn btn-success btn-round btn-back" (click)="formRegistre()">Выгрузить реестр</button>
+
+  <div class="row mr-0">
+    <div>
+      <div class="card w1060">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <form class="form-horizontal" [formGroup]="filter">
+              <div class="d-flex justify-content-between">
+                <div class="d-flex">
+                  <label class="col-form-label">Валюта</label>
+                  <div class="form-group has-default bmd-form-group">
+                    <app-custom-select classes="special mr-3" formControlName="currency" [values]="currencyList"></app-custom-select>
+                  </div>
+                </div>
+                <div style="width: 350px!important;display: flex;justify-content: space-around;">
+                  <label class="col-form-label">Время создания</label>
+                  <div class="form-group bmd-form-group position-relative">
+                    <input type="text" class="form-control" formControlName="dateStart"
+                           ngbDatepicker [autoClose]="true"
+                           readonly #start="ngbDatepicker"
+                           (dateSelect)="dateInvalid('dateStart','dateEnd')"
+                           style="width: 80px!important">
+                    <a (click)="$event.preventDefault();filter.controls.dateStart.reset();start.open()"><i class="material-icons icon-color position-absolute" style="top: 10px;right: -22px">date_range</i></a>
+                  </div>
+                  <div class="form-group bmd-form-group position-relative">
+                    <input type="text" class="form-control" formControlName="dateEnd"
+                           ngbDatepicker [autoClose]="true"
+                           readonly #end="ngbDatepicker"
+                           (dateSelect)="dateInvalid('dateStart','dateEnd')"
+                           style="width: 80px!important">
+                    <a (click)="$event.preventDefault();filter.controls.dateEnd.reset();end.open()"><i class="material-icons icon-color position-absolute" style="top: 10px;right: -22px">date_range</i></a>
+                  </div>
+                </div>
+                <div class="d-flex">
+                  <label class="col-form-label">Номер счета</label>
+                  <div class="form-group has-default bmd-form-group">
+                    <input type="text" class="form-control" formControlName="paySysPayId">
+                  </div>
+                </div>
+                <!--                <div class="d-flex">-->
+                <!--                  <label class="col-form-label">ФИО</label>-->
+                <!--                  <div class="form-group has-default bmd-form-group">-->
+                <!--                    <input type="text" class="form-control">-->
+                <!--                  </div>-->
+                <!--                </div>-->
+              </div>
+              <div class="d-flex justify-content-around">
+                <div class="d-flex">
+                  <label class="col-form-label">Мерчант</label>
+                  <div class="form-group has-default bmd-form-group">
+                    <input type="text" class="form-control" formControlName="merchantName">
+                  </div>
+                </div>
+                <div class="d-flex">
+                  <label class="col-form-label">ID платежа</label>
+                  <div class="form-group has-default bmd-form-group">
+                    <input type="text" class="form-control" formControlName="billId">
+                  </div>
+                </div>
+                <div class="d-flex">
+                  <label class="col-form-label">Название кассы</label>
+                  <div class="form-group has-default bmd-form-group">
+                    <input type="text" class="form-control" formControlName="cashboxName">
+                  </div>
+                </div>
+                <div class="d-flex">
+                  <label class="col-form-label">Сумма</label>
+                  <div class="form-group has-default bmd-form-group">
+                    <input type="text" class="form-control" formControlName="totalAmount">
+                  </div>
+                </div>
+              </div>
+            </form>
+            <div class="d-flex flex-column align-items-center justify-content-around">
+<!--              style="display: flex;flex-direction: column;align-items: center;justify-content: space-around;">-->
+              <button class="btn slim btn-success btn-round" (click)="filterFields()">Показать</button>
+              <button class="btn btn-transparent" (click)="clearFilter()">
+                <i class="material-icons-outlined">close</i> Очистить
+                <div class="ripple-container"></div></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card w1060" style="margin-bottom: 0;">
+        <div class="card-header card-header-success card-header-icon">
+          <div class="card-icon">
+            <i class="material-icons-outlined">sync_alt</i>
+          </div>
+          <h4 class="card-title ">История транзакций</h4>
+        </div>
+        <div class="card-body">
+          <div class="tab-content tab-space">
+            <div class="tab-pane" [class.active]="activeTab==='tab1'">
+              <div class="material-datatables">
+                <div id="datatables_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                  <div class="row mr-0">
+                    <div class="col-sm-12 col-md-6">
+                      <div class="dataTables_length" id="datatables_length">
+                        <label class="d-flex align-items-baseline">Show <app-custom-select classes="tight" [values]="[10,20,50]" [placeholder]="10"></app-custom-select> entries</label>
+                      </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                      <div class="dataTables_filter">
+                        <label>INPUT<span class="bmd-form-group bmd-form-group-sm">
+                          <input type="search" class="form-control form-control-sm" placeholder="Search records" aria-controls="datatables"
+                          [formControl]="tableSearch">
+                        </span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mr-0">
+                    <div class="col-sm-12">
+                      <ng-scrollbar class="transactions-scroll" [visibility]="'always'">
+                        <table class="table table-striped table-no-bordered table-hover dataTable dtr-inline" cellspacing="0" width="100%" style="width: 100%;" role="grid" aria-describedby="datatables_info">
+                          <thead>
+                          <tr role="row mr-0">
+                            <th class="sortable-th" (click)="nextSort('billId')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'billId'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'billId'">ID платежа</span></th>
+                            <th class="sortable-th" (click)="nextSort('timestamp')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'timestamp'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'timestamp'">Время создания</span></th>
+                            <th *ngIf="isAdmin" class="sortable-th" (click)="nextSort('merchantName')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'merchantName'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'merchantName'">Мерчант</span></th>
+                            <th class="sortable-th" (click)="nextSort('cashboxName')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'cashboxName'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'cashboxName'">Касса</span></th>
+                            <th class="sortable-th" (click)="nextSort('paySysPayId')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'paySysPayId'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'paySysPayId'">Номер счета</span></th>
+                            <th class="sortable-th" (click)="nextSort('totalAmount')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'totalAmount'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'totalAmount'">Сумма</span></th>
+                            <th class="sortable-th" (click)="nextSort('currency')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'currency'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'currency'">Валюта</span></th>
+                            <th class="sortable-th" (click)="nextSort('status')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'status'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'status'">Статус</span></th>
+                          </tr>
+                          </thead>
+                          <tfoot>
+                          <tr><th  >ID платежа</th>
+                            <th  >Время создания</th>
+                            <th *ngIf="isAdmin"  >Мерчант</th>
+                            <th  >Касса</th>
+                            <th  >Номер счетаe</th>
+                            <th  >Сумма</th>
+                            <th  >Валюта</th>
+                            <th  >Статус</th>
+                          </tr>
+                          </tfoot>
+                          <tbody *ngIf="visible">
+                          <tr *ngFor="let transaction of sortedActions | paginate: { itemsPerPage: 10, currentPage: currentPage }" class="cursor-pointer"
+                              [class.selectedItem]="transactionDetails!==null&&transaction.guid===getGuid(transactionDetails)"
+                              (click)="getTransactionDetails(transaction.guid)">
+                            <td tabindex="0" class="sorting_1">{{transaction.billId}}</td>
+                            <td>{{transaction.timestamp|date:'dd.MM.yyyy | hh:mm:ss'}}</td>
+                            <td *ngIf="isAdmin">{{transaction.merchantName}}</td>
+                            <td>{{transaction.cashboxName}}</td>
+                            <td>{{transaction.paySysPayId}}</td>
+                            <td>{{transaction.totalAmount}}</td>
+                            <td>{{transaction.currency}}</td>
+                            <td>
+                              <i *ngIf="transaction.status==='SUCCESS'" placement="top" ngbTooltip="SUCCESS" class="material-icons material-icons-outlined text-success">check_circle_outline</i>
+                              <i *ngIf="transaction.status==='NEW'" placement="top" ngbTooltip="NEW" class="material-icons material-icons-outlined text-warning">restore</i>
+                              <i *ngIf="transaction.status==='DELETED'" placement="top" ngbTooltip="DELETED" class="material-icons material-icons-outlined text-danger">highlight_off</i>
+                              <i *ngIf="transaction.status==='PENDING'" placement="top" ngbTooltip="PENDING" class="material-icons material-icons-outlined text-info">cached</i>
+                            </td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </ng-scrollbar>
+                    </div>
+                  </div>
+                  <div class="row mr-0 mt-4 d-flex justify-content-center">
+                    <pagination-controls (pageChange)="changePage($event)"></pagination-controls>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card w514 ml-3" *ngIf="transactionDetails" style="margin-bottom: 0;">
+      <ng-scrollbar class="calc300" [visibility]="'always'">
+        <div class="card-header">
+          <h4 class="card-title">Детали транзакции
+            <!--        <small class="description">Horizontal Tabs</small>-->
+          </h4>
+        </div>
+        <div class="card-body">
+<!--          <div class="d-flex flex-column" *ngIf="isAdmin">-->
+<!--            <span>ID: 87453478</span>-->
+<!--            <span>Tx-ID: 4454th657gf</span>-->
+<!--            <span>Tx-Key: cc348y478</span>-->
+<!--            <span>Order-ID:  OID874458</span>-->
+<!--            <div class="d-flex mt-3 mb-3 justify-content-around">-->
+<!--              <button class="btn btn-success btn-round btn-back">Возврат</button>-->
+<!--              <button class="btn btn-success btn-round btn-back">Отмена</button>-->
+              <button class="btn slim btn-success btn-round btn-back" *ngIf="isAdmin">Проверить статус</button>
+          <div class="form-group has-default bmd-form-group d-flex" *ngFor="let item of transactionDetails">
+            <label class="col-form-label text-left w160">{{item.field}}</label>
+            <input type="text" class="form-control" readonly [value]="item.value">
+          </div>
+        </div>
+      </ng-scrollbar>
+    </div>
+  </div>
+</div>
+<app-massage-modal #invalidDatesModalContent [messageType]="'invalidDateMassage'"></app-massage-modal>

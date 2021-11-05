@@ -1,0 +1,22 @@
+<div class="card-body">
+  <ng-scrollbar class="calc100" [visibility]="'always'" style="width: 1620px">
+  <div class="table-responsive"*ngFor="let item of apiTitles">
+    <table class="table m-0">
+      <thead>
+      <tr class="cursor-pointer">
+        <th colspan="5" (click)="activeTitleId=activeTitleId===item.id?null:item.id">{{item.title}}</th>
+      </tr>
+      <ng-container *ngIf="item.id===activeTitleId">
+        <tr class="cursor-pointer" *ngFor="let section of item.sections" (click)="activeSectionId!==section.id?changeSectionContent(section):openSection(section)">
+          <th class="pl-5" colspan="5">{{section.name}}</th>
+        </tr>
+        <ng-scrollbar [class.d-none]="activeSectionId===null" [visibility]="'always'" style="width: 800px;height: 380px!important;margin: 0 auto">
+          <div id="content" style="background: white;padding: 15px"></div>
+        </ng-scrollbar>
+      </ng-container>
+      </thead>
+    </table>
+  </div>
+  </ng-scrollbar>
+  <!-- /.table-responsive -->
+</div>

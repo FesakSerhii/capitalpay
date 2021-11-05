@@ -1,0 +1,442 @@
+<app-header></app-header>
+<div class="parallax" (scroll)="log($event)">
+  <div class="parallax__layer parallax__layer--back">
+    <img class="header-parallax-img" src="../../assets/shapes/3434.png">
+  </div>
+<div class="content">
+  <div id="top" style="position: absolute;
+    top: -60px;"></div>
+<!--  <app-scroll-to-top></app-scroll-to-top>-->
+<!--  <div class="d-flex start-section">-->
+    <ngb-carousel [pauseOnHover]="true" [interval]="6000">
+      <ng-template ngbSlide>
+        <div class="d-flex start-section">
+        <div class="carousel">
+          <h1 style="">Accept payments  everywhere 1</h1>
+          <p style="">Capital Pay is an online payment service that is easy to integr</p>
+          <a href="#" class="section-btn">Get started</a>
+        </div>
+        <div class="position-relative">
+          <img class="start-section__img" src="../../assets/shapes/img/Image.png">
+          <img class="phone-img" src="../../assets/shapes/img/phone.png" alt="phone">
+        </div>
+        </div>
+      </ng-template>
+      <ng-template ngbSlide>
+        <div class="d-flex start-section">
+          <div class="carousel">
+            <h1 style="">Accept payments  everywhere 2</h1>
+            <p style="">Capital Pay is an online payment service that is easy to integr</p>
+            <a href="#" class="section-btn">Get started</a>
+          </div>
+          <div class="position-relative">
+            <img class="start-section__img" src="../../assets/shapes/img/Image.png">
+            <img class="phone-img" src="../../assets/shapes/img/phone.png" alt="phone">
+          </div>
+        </div>
+      </ng-template>
+      <ng-template ngbSlide>
+        <div class="d-flex start-section">
+          <div class="carousel">
+            <h1 style="">Accept payments  everywhere 3</h1>
+            <p style="">Capital Pay is an online payment service that is easy to integr</p>
+            <a href="#" class="section-btn">Get started</a>
+          </div>
+          <div class="position-relative">
+            <img class="start-section__img" src="../../assets/shapes/img/Image.png">
+            <img class="phone-img" src="../../assets/shapes/img/phone.png" alt="phone">
+          </div>
+        </div>
+      </ng-template>
+      <ng-template ngbSlide>
+        <div class="d-flex start-section">
+          <div class="carousel">
+            <h1 style="">Accept payments  everywhere 4</h1>
+            <p style="">Capital Pay is an online payment service that is easy to integr</p>
+            <a href="#" class="section-btn">Get started</a>
+          </div>
+          <div class="position-relative">
+            <img class="start-section__img" src="../../assets/shapes/img/Image.png">
+            <img class="phone-img" src="../../assets/shapes/img/phone.png" alt="phone">
+          </div>
+        </div>
+      </ng-template>
+      <ng-template ngbSlide>
+        <div class="d-flex start-section">
+          <div class="carousel">
+            <h1 style="">Accept payments  everywhere 5</h1>
+            <p style="">Capital Pay is an online payment service that is easy to integr</p>
+            <a href="#" class="section-btn">Get started</a>
+          </div>
+          <div class="position-relative">
+            <img class="start-section__img" src="../../assets/shapes/img/Image.png">
+            <img class="phone-img" src="../../assets/shapes/img/phone.png" alt="phone">
+          </div>
+        </div>
+      </ng-template>
+
+    </ngb-carousel>
+<!--    <div class="position-relative">-->
+<!--      <img class="start-section__img" src="../../assets/shapes/img/Image.png">-->
+<!--      <img class="phone-img" src="../../assets/shapes/img/phone.png" alt="phone">-->
+<!--    </div>-->
+<!--  </div>-->
+  <div class="d-flex cards justify-content-between">
+    <div class="card">
+      <div class="card__content">
+        <h2 class="card__title">Payments</h2>
+        <p class="card__text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex. </p>
+        <a href="#" class="card__link">More Details <img src="../../assets/shapes/arrow.svg" alt=""></a>
+      </div>
+    </div>
+    <div  class="card">
+      <div class="card__content">
+        <h2 class="card__title">Reporting</h2>
+        <p class="card__text">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        <a href="#" class="card__link">More Details    <img src="../../assets/shapes/arrow.svg" alt=""></a>
+      </div>
+    </div>
+  </div>
+  <div class="advantages">
+    <h2 class="advantages__title">Ideal for your customers</h2>
+    <div class="advantages__wrap">
+      <div class="advantages__container">
+        <app-hexagon-link [src]="'../../../assets/shapes/pointer.svg'"></app-hexagon-link>
+        <h4 class="advantages__item__title" >Easy to start</h4>
+        <p class="advantages__item__text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut.</p>
+      </div>
+      <div class="advantages__container">
+        <app-hexagon-link [src]="'../../../assets/shapes/pointer.svg'"></app-hexagon-link>
+        <h4 class="advantages__item__title">Safe and protected</h4>
+        <p class="advantages__item__text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut.</p>
+      </div>
+      <div class="advantages__container">
+        <app-hexagon-link [src]="'../../../assets/shapes/pointer.svg'"></app-hexagon-link>
+        <h4 class="advantages__item__title">Efficient</h4>
+        <p class="advantages__item__text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut.</p>
+      </div>
+    </div>
+  </div>
+  <div class="main-info" >
+    <div class="main-info__wrap">
+      <ngb-tabset [activeId]="currentTabId" [justify]="'center'">
+        <ngb-tab id="0" title="Payment button">
+          <ng-template ngbTabContent>
+            <div class="d-flex main-info__tab">
+              <div class="main-info__img">
+              </div>
+<!--              <img src="../../assets/shapes/hand_with_phone.png" alt="">-->
+              <div class="main-info__content">
+                  <h4 class="main-info__title">Payment button 1</h4>
+                <p class="main-info__description">Payment forms have been worked out to the smallest detail and adapted to the screens of smartphones and tablets</p>
+                <p class="m-auto main-info__step"><span>Step 1</span>-  Register in the system</p>
+                <p class="m-auto main-info__step"><span>Step 2</span>-  Generate a button</p>
+                <p class="m-auto main-info__step"><span>Step 3</span>-  Add a payment button to your resource</p>
+                <a class="main-info__btn" href="#">How it works  <img style="margin-left: 15px;" src="../../assets/shapes/arrow_white.svg" alt=""></a>
+              </div>
+            </div>
+          </ng-template>
+        </ngb-tab>
+        <ngb-tab id="1" title="Billing">
+          <ng-template ngbTabContent>
+            <div class="d-flex main-info__tab">
+              <div class="main-info__img">
+              </div>
+              <!--              <img src="../../assets/shapes/hand_with_phone.png" alt="">-->
+              <div class="main-info__content">
+                <h4 class="main-info__title">Payment button 2</h4>
+                <p class="main-info__description">Payment forms have been worked out to the smallest detail and adapted to the screens of smartphones and tablets</p>
+                <p class="m-auto"><span>Step 1</span>-  Register in the system</p>
+                <p class="m-auto"><span>Step 2</span>-  Generate a button</p>
+                <p class="m-auto"><span>Step 3</span>-  Add a payment button to your resource</p>
+                <a class="main-info__btn" href="#">How it works  <img style="margin-left: 15px;" src="../../assets/shapes/arrow_white.svg" alt=""></a>
+              </div>
+            </div>
+          </ng-template>
+        </ngb-tab>
+        <ngb-tab id="2" title="Terminal">
+          <ng-template ngbTabContent>
+            <div class="d-flex main-info__tab">
+              <div class="main-info__img">
+              </div>
+              <!--              <img src="../../assets/shapes/hand_with_phone.png" alt="">-->
+              <div class="main-info__content">
+                <h4 class="main-info__title">Payment button 3</h4>
+                <p class="main-info__description">Payment forms have been worked out to the smallest detail and adapted to the screens of smartphones and tablets</p>
+                <p class="m-auto"><span>Step 1</span>-  Register in the system</p>
+                <p class="m-auto"><span>Step 2</span>-  Generate a button</p>
+                <p class="m-auto"><span>Step 3</span>-  Add a payment button to your resource</p>
+                <a class="main-info__btn" href="#">How it works  <img style="margin-left: 15px;" src="../../assets/shapes/arrow_white.svg" alt=""></a>
+              </div>
+            </div>
+          </ng-template>
+        </ngb-tab>
+        <ngb-tab id="3" title="Feature1">
+          <ng-template ngbTabContent>
+            <div class="d-flex main-info__tab">
+              <div class="main-info__img">
+              </div>
+              <!--              <img src="../../assets/shapes/hand_with_phone.png" alt="">-->
+              <div class="main-info__content">
+                <h4 class="main-info__title">Payment button 4</h4>
+                <p class="main-info__description">Payment forms have been worked out to the smallest detail and adapted to the screens of smartphones and tablets</p>
+                <p class="m-auto"><span>Step 1</span>-  Register in the system</p>
+                <p class="m-auto"><span>Step 2</span>-  Generate a button</p>
+                <p class="m-auto"><span>Step 3</span>-  Add a payment button to your resource</p>
+                <a class="main-info__btn" href="#">How it works  <img style="margin-left: 15px;" src="../../assets/shapes/arrow_white.svg" alt=""></a>
+              </div>
+            </div>
+          </ng-template>
+        </ngb-tab>
+        <ngb-tab id="4" title="Feature2">
+          <ng-template ngbTabContent>
+            <div class="d-flex main-info__tab">
+              <div class="main-info__img">
+              </div>
+              <!--              <img src="../../assets/shapes/hand_with_phone.png" alt="">-->
+              <div class="main-info__content">
+                <h4 class="main-info__title">Payment button 5</h4>
+                <p class="main-info__description">Payment forms have been worked out to the smallest detail and adapted to the screens of smartphones and tablets</p>
+                <p class="m-auto"><span>Step 1</span>-  Register in the system</p>
+                <p class="m-auto"><span>Step 2</span>-  Generate a button</p>
+                <p class="m-auto"><span>Step 3</span>-  Add a payment button to your resource</p>
+                <a class="main-info__btn" href="#">How it works  <img style="margin-left: 15px;" src="../../assets/shapes/arrow_white.svg" alt=""></a>
+              </div>
+            </div>
+          </ng-template>
+        </ngb-tab>
+        <ngb-tab id="5" title="Feature3">
+          <ng-template ngbTabContent>
+            <div class="d-flex main-info__tab">
+              <div class="main-info__img">
+              </div>
+              <!--              <img src="../../assets/shapes/hand_with_phone.png" alt="">-->
+              <div class="main-info__content">
+                <h4 class="main-info__title">Payment button 6</h4>
+                <p class="main-info__description">Payment forms have been worked out to the smallest detail and adapted to the screens of smartphones and tablets</p>
+                <p class="m-auto"><span>Step 1</span>-  Register in the system</p>
+                <p class="m-auto"><span>Step 2</span>-  Generate a button</p>
+                <p class="m-auto"><span>Step 3</span>-  Add a payment button to your resource</p>
+                <a class="main-info__btn" href="#">How it works  <img style="margin-left: 15px;" src="../../assets/shapes/arrow_white.svg" alt=""></a>
+              </div>
+            </div>
+          </ng-template>
+        </ngb-tab>
+      </ngb-tabset>
+    </div>
+    <div>
+      <a class="main-info__prev" *ngIf="currentTabId!=='0'" href="#" (click)="$event.preventDefault();prevTab()"><img src="../../assets/shapes/Paging.svg" alt=""></a>
+      <a class="main-info__next" *ngIf="currentTabId!=='5'" href="#" (click)="$event.preventDefault();nextTab()"><img src="../../assets/shapes/Paging.svg" alt=""></a>
+    </div>
+  </div>
+  <div class="payment-methods" id="pay">
+    <div class="payment-methods__wrap">
+      <div class="payment-methods__hexas-bg">
+        <div class="position-relative">
+          <div class="payment-methods__hexas-shadow"></div>
+          <div class="payment-methods__links">
+            <a href="#" class="position-absolute hexa-payment-link am-ex">
+              <img src="../../assets/shapes/hexa_medium.svg">
+              <div style="position: relative">
+                <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
+                <img style="position: absolute;left: 22px;top: -76px;" src="../../assets/shapes/hexa_animation/am-ex.svg" alt="">
+              </div>
+            </a>
+            <a href="#" class="position-absolute hexa-payment-link alfabank">
+              <img src="../../assets/shapes/hexa_medium.svg" alt="">
+              <div style="position: relative">
+                <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
+                <img style="position: absolute;left: 14px;top: -82px;" src="../../assets/shapes/hexa_animation/alfabank.svg" alt="">
+              </div>
+            </a>
+            <a href="#" class="position-absolute hexa-payment-link ebay">
+              <img src="../../assets/shapes/hexa_medium.svg" alt="">
+              <div style="position: relative">
+                <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
+                <img style="position: absolute;left: 16px;top: -65px;" src="../../assets/shapes/hexa_animation/ebay.svg" alt="">
+              </div>
+            </a>
+            <a href="#" class="position-absolute hexa-payment-link master">
+              <img src="../../assets/shapes/hexa_medium.svg" alt="">
+              <div style="position: relative">
+                <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
+                <img style="position: absolute;left: 18px;top: -73px;" src="../../assets/shapes/hexa_animation/master.svg" alt="">
+              </div>
+            </a>
+            <a href="#" class="position-absolute hexa-payment-link sberbank">
+              <img src="../../assets/shapes/hexa_medium.svg" alt="">
+              <div style="position: relative">
+                <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
+                <img style="position: absolute;left: 12px;top: -79px;" src="../../assets/shapes/hexa_animation/sberbank.svg" alt="">
+              </div>
+            </a>
+            <a href="#" class="position-absolute hexa-payment-link upay">
+              <img src="../../assets/shapes/hexa_medium.svg" alt="">
+              <div style="position: relative">
+                <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
+                <img style="position: absolute;left: 11px;top: -73px;" src="../../assets/shapes/hexa_animation/upay.svg" alt="">
+              </div>
+            </a>
+            <a href="#" class="position-absolute hexa-payment-link visa">
+              <img src="../../assets/shapes/hexa_medium.svg" alt="">
+              <div style="position: relative">
+                <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
+                <img style="position: absolute;left: 9px;top: -60px;" src="../../assets/shapes/hexa_animation/visa.svg" alt="">
+              </div>
+            </a>
+            <a href="#" class="position-absolute hexa-payment-link yandex">
+              <img src="../../assets/shapes/hexa_medium.svg" alt="">
+              <div style="position: relative">
+                <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
+                <img style="position: absolute;left: -2px;top: -73px;" src="../../assets/shapes/hexa_animation/yandex.svg" alt="">
+              </div>
+            </a>
+            <a href="#" class="position-absolute hexa-payment-link paypal">
+              <img src="../../assets/shapes/hexa_medium.svg" alt="">
+              <div style="position: relative">
+                <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
+                <img style="position: absolute;left: 13px;top: -80px;" src="../../assets/shapes/hexa_animation/Paypal.svg" alt="">
+              </div>
+            </a>
+            <a href="#" class="position-absolute hexa-payment-link maestro">
+              <img src="../../assets/shapes/hexa_medium.svg" alt="">
+              <div style="position: relative">
+                <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
+                <img style="position: absolute;left: 14px;top: -73px;" src="../../assets/shapes/hexa_animation/Maestro.svg" alt="">
+              </div>
+            </a>
+            <a href="#" class="position-absolute hexa-payment-link qiwi">
+              <img src="../../assets/shapes/hexa_medium.svg" alt="">
+              <div style="position: relative">
+                <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
+                <img style="position: absolute;left: 11px;top: -64px;" src="../../assets/shapes/hexa_animation/qiwi.svg" alt="">
+              </div>
+            </a>
+            <a href="#" class="position-absolute hexa-payment-link amazon">
+              <img src="../../assets/shapes/hexa_medium.svg" alt="">
+              <div style="position: relative">
+                <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
+                <img style="position: absolute;left: 10px;top: -56px;" src="../../assets/shapes/hexa_animation/Amazon-logo.svg" alt="">
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="payment-methods__info">
+        <h2 class="mb-0 payment-methods__title">Payment methods</h2>
+        <p class="mb-0 payment-methods__text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+        <a href="#" class="card__link">See all payment methods <img src="../../assets/shapes/arrow.svg" alt=""></a>
+      </div>
+    </div>
+  </div>
+  <div class="position-relative" >
+    <div class="manage">
+<!--      <ng-container *ngIf="scrollValue>2270">-->
+      <h2 class="mb-0 manage__title">Payment methods</h2>
+      <p class="manage__text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+      <a class="manage__link" href="#">Sign up to explore</a>
+<!--      </ng-container>-->
+      <img class="manage__img" src="../../assets/shapes/laptop_bottom.png" alt="">
+      <div class="manage__sub-block">
+        <h2 class="manage__sub-title">Ready to get started?</h2>
+        <p class="manage__sub-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+      </div>
+      <a href="#" class="manage__link">Sign up</a>
+
+    </div>
+<!--    <div class="position-relative">-->
+
+<!--    </div>-->
+
+  </div>
+  <div class="carousel-wrap">
+    <carousel *ngIf="width>=769" [width]="1134" [height]="40" [arrowsOutside]="true" [autoplay]="true">
+      <div class="carousel-cell">
+        <img style="width: 69px;height: 33px;" src="../../assets/shapes/carousel/3ds.svg">
+      </div>
+      <div class="carousel-cell">
+        <img style="width: 69px;height: 39px;" src="../../assets/shapes/carousel/comodo.svg">
+      </div>
+      <div class="carousel-cell">
+        <img style="width: 68px;height: 26px;" src="../../assets/shapes/carousel/pcj.svg">
+      </div>
+      <div class="carousel-cell">
+        <img style="width: 69px;height: 29px;" src="../../assets/shapes/carousel/visa.svg">
+      </div>
+      <div class="carousel-cell">
+        <img style="width: 85px;height: 29px;" src="../../assets/shapes/carousel/mastercard.svg">
+      </div>
+      <div class="carousel-cell">
+        <img style="width: 100px;height: 37px;" src="../../assets/shapes/carousel/qiwi.svg">
+      </div>
+      <div class="carousel-cell">
+        <img style="width: 40px;height: 40px;" src="../../assets/shapes/carousel/am-ex.svg">
+      </div>
+      <div class="carousel-cell">
+        <img style="width: 123px;height: 25px;" src="../../assets/shapes/carousel/alfa.svg">
+      </div>
+    </carousel>
+    <carousel *ngIf="width<=769&&width>321" [width]="600" [height]="40" [arrowsOutside]="true" [autoplay]="true">
+      <div class="carousel-cell">
+        <img style="width: 69px;height: 33px;" src="../../assets/shapes/carousel/3ds.svg">
+      </div>
+      <div class="carousel-cell">
+        <img style="width: 69px;height: 39px;" src="../../assets/shapes/carousel/comodo.svg">
+      </div>
+      <div class="carousel-cell">
+        <img style="width: 68px;height: 26px;" src="../../assets/shapes/carousel/pcj.svg">
+      </div>
+      <div class="carousel-cell">
+        <img style="width: 69px;height: 29px;" src="../../assets/shapes/carousel/visa.svg">
+      </div>
+      <div class="carousel-cell">
+        <img style="width: 85px;height: 29px;" src="../../assets/shapes/carousel/mastercard.svg">
+      </div>
+      <div class="carousel-cell">
+        <img style="width: 100px;height: 37px;" src="../../assets/shapes/carousel/qiwi.svg">
+      </div>
+      <div class="carousel-cell">
+        <img style="width: 40px;height: 40px;" src="../../assets/shapes/carousel/am-ex.svg">
+      </div>
+      <div class="carousel-cell">
+        <img style="width: 123px;height: 25px;" src="../../assets/shapes/carousel/alfa.svg">
+      </div>
+    </carousel>
+    <carousel *ngIf="width<=320" [width]="215" [height]="40" [arrowsOutside]="true" [autoplay]="true">
+      <div class="carousel-cell">
+        <img style="width: 69px;height: 33px;" src="../../assets/shapes/carousel/3ds.svg">
+      </div>
+      <div class="carousel-cell">
+        <img style="width: 69px;height: 39px;" src="../../assets/shapes/carousel/comodo.svg">
+      </div>
+      <div class="carousel-cell">
+        <img style="width: 68px;height: 26px;" src="../../assets/shapes/carousel/pcj.svg">
+      </div>
+      <div class="carousel-cell">
+        <img style="width: 69px;height: 29px;" src="../../assets/shapes/carousel/visa.svg">
+      </div>
+      <div class="carousel-cell">
+        <img style="width: 85px;height: 29px;" src="../../assets/shapes/carousel/mastercard.svg">
+      </div>
+      <div class="carousel-cell">
+        <img style="width: 100px;height: 37px;" src="../../assets/shapes/carousel/qiwi.svg">
+      </div>
+      <div class="carousel-cell">
+        <img style="width: 40px;height: 40px;" src="../../assets/shapes/carousel/am-ex.svg">
+      </div>
+      <div class="carousel-cell">
+        <img style="width: 123px;height: 25px;" src="../../assets/shapes/carousel/alfa.svg">
+      </div>
+    </carousel>
+  </div>
+</div>
+  <div class="parallax__layer parallax__layer--back" style="top: unset">
+    <div class="position-relative parallax-wrap">
+      <div class="position-relative">
+        <img class="bottom-parallax-img" src="../../assets/shapes/ractangle_bottom.png">
+      </div>
+    </div>
+  </div>
+  <a href="#top" class="btn-to-top" *ngIf="scrollValue>949"><img src="../../assets/shapes/Button Go Up Hover.png" alt=""></a>
+  <app-footer></app-footer>
+</div>
