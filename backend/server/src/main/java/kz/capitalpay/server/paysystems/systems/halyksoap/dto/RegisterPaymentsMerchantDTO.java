@@ -58,10 +58,11 @@ public class RegisterPaymentsMerchantDTO extends RegisterPaymentsCommonMerchantF
                 amount.setScale(2, RoundingMode.HALF_DOWN) + "¤" +
                 bankname + "¤" +
                 getNaznpl_merch() + "¤      ¤" +
-                getBclassd_merch() + "¤" +
+//                getBclassd_merch() + "¤" +
                 getKod_merch() + "¤" +
-                getKnp_merch() + "¤" +
-                getRnna_merch() + "¤" +
-                getPlatel_merch() + "¤¤¤\r\n";
+                getKnp_merch() + "¤¤¤\\r\\n";
+//                getKnp_merch() + "¤" +
+//                getRnna_merch() + "¤" +
+//                getPlatel_merch() + "¤¤¤\r\n";
     }
 }

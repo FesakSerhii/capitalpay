@@ -121,10 +121,11 @@ public class RegisterPaymentsHalykDTO {
                 amount.setScale(2, RoundingMode.HALF_DOWN) + "¤" +
                 poluch + "¤" +
                 naznpl + "¤      ¤" +
-                bclassd + "¤" +
+//                bclassd + "¤" +
                 kod + "¤" +
-                knp + "¤" +
-                rnna + "¤" +
-                platel + "¤¤¤\r\n";
+                knp + "¤¤¤\\r\\n";
+//                knp + "¤" +
+//                rnna + "¤" +
+//                platel + "¤¤¤\r\n";
     }
 }
