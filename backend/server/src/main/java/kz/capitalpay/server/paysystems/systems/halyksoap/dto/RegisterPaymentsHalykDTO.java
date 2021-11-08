@@ -123,7 +123,7 @@ public class RegisterPaymentsHalykDTO {
                 naznpl + "¤      ¤" +
 //                bclassd + "¤" +
                 kod + "¤" +
-                knp + "¤¤¤\r\n";
+                knp.trim() + "¤¤¤\r\n";
 //                knp + "¤" +
 //                rnna + "¤" +
 //                platel + "¤¤¤\r\n";
