@@ -117,7 +117,7 @@ public class RegisterPaymentsHalykDTO {
         return bik + "¤" +
                 lskor + "¤¤" +
                 rnnb + "¤" +
-                amount + "¤" +
+                amount.setScale(2) + "¤" +
                 poluch + "¤" +
                 naznpl + "¤      ¤" +
                 bclassd + "¤" +
