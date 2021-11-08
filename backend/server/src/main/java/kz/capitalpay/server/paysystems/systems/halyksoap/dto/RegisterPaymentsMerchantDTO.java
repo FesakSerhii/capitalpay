@@ -60,7 +60,7 @@ public class RegisterPaymentsMerchantDTO extends RegisterPaymentsCommonMerchantF
                 getNaznpl_merch() + "¤      ¤" +
 //                getBclassd_merch() + "¤" +
                 getKod_merch() + "¤" +
-                getKnp_merch() + "¤¤¤\\r\\n";
+                getKnp_merch() + "¤¤¤\r\n";
 //                getKnp_merch() + "¤" +
 //                getRnna_merch() + "¤" +
 //                getPlatel_merch() + "¤¤¤\r\n";
