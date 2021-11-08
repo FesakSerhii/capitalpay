@@ -1,0 +1,19 @@
+.background{
+  background: url(../../assets/shapes/login-bg.png);
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 29vh;
+  background-repeat: no-repeat;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -50px;
+  z-index: -1;
+}
+.container{
+  width: 1100px;
+  margin: 0 auto;
+  margin-top: 160px;
+  margin-bottom: 170px;
+}

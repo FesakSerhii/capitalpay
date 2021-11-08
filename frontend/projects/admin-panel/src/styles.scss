@@ -1,0 +1,23 @@
+/* You can add global styles to this file, and also import other style files */
+.cursor-pointer{
+  cursor: pointer!important;
+}
+.ng-scrollbar .ng-scrollbar-wrapper[deactivated=false][dir=ltr]>scrollbar-y.scrollbar-control{
+    position: absolute;
+    right: -20px;
+}
+.ng-scrollbar{
+  height: calc(100vh - 620px)!important;
+}
+.ng-scrollbar.calc300{
+  height: calc(100vh - 250px)!important;
+}
+.ng-scrollbar.calc400{
+  height: calc(100vh - 350px)!important;
+}
+.ng-scrollbar.calc200{
+  height: calc(100vh - 200px)!important;
+}
+//.ng-scrollbar.calc400{
+//  height: calc(100vh - 200px)!important;
+//}

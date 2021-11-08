@@ -1,0 +1,88 @@
+*{
+  font-family: 'CircularStd-Book',sans-serif;
+}
+.popup{
+  width: 541px;
+  background: white;
+  border-radius: 37px;
+  box-shadow: 0 0 11px rgba(33,33,33,.2);
+}
+.title{
+  margin-top: 20px;
+  margin-bottom: 15px;
+  font-size: 30px;
+  text-align: center;
+  &.small{
+    margin-bottom: 5px;
+    margin-top: 5px;
+    font-size: 14px;
+  }
+}
+.sub-title{
+  font-size: 14px;
+  width: 351px;
+  margin: 0 auto;
+  text-align: center;
+}
+.registration-form{
+  width: 416px;
+  margin: 0 auto;
+  margin-top: 25px;
+  .input-title{
+    font-size: 16px;
+  }
+  input{
+    border: none;
+    border-bottom: 1px solid #d2d2d7;
+    margin-bottom: 21px;
+    &:focus{
+      outline: none;
+    }
+  }
+  .resend-link{
+    color: #008D68;
+    font-size: 14px;
+    &__active{
+      color: #008D68;
+      font-size: 14px;
+      text-decoration: underline;
+    }
+  }
+}
+.form-field{
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.background{
+  background: url(../../../../../src/assets/shapes/login-bg.png);
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  background-repeat: no-repeat;
+  align-items: center;
+  justify-content: center;
+}
+.section-btn{
+  background: #177960;
+  color: white;
+  border-radius: 45px;
+  margin-top: 39px;
+  margin-bottom: 50px;
+  display: inline-block;
+  border: none;
+  height: 48px;
+  width: 417px;
+}
+.password-toggle{
+  width: 29px;
+  position: absolute;
+  right: 0;
+  bottom: 28px;
+}
+.logo{
+  position: absolute;
+  top: 28px;
+  left: 400px;
+}

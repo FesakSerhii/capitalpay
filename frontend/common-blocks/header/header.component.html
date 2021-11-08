@@ -1,0 +1,121 @@
+<div class="header">
+  <div class="container-fluid" style="width: 1111px; height: 50px;margin:0 auto; margin-top: 16px;
+    margin-bottom: 17px; display:flex;justify-content: space-between;align-items: center;">
+    <a href="#">
+      <img src="../../../assets/shapes/Logo_header.svg" alt="logo" *ngIf="theme==='white'">
+      <img src="../../../assets/shapes/logo_footer.svg" alt="logo" *ngIf="theme!=='white'">
+    </a>
+    <div>
+      <a href="#" class="header-link ml-0" [class.white]="theme!=='white'" >Get started</a>
+      <a href="#" class="header-link" [class.white]="theme!=='white'">Modules</a>
+      <a href="#" class="header-link" [class.white]="theme!=='white'">Pricing</a>
+      <a href="#" class="header-link" [class.white]="theme!=='white'">API</a>
+      <a class="header-link" [class.white]="theme!=='white'" [routerLink]="'/feedback'">Contact</a>
+    </div>
+    <div>
+      <a href="#" class="header-link ml-0" [class.white]="theme!=='white'" (click)="$event.preventDefault();open(loginModal)">Login</a>
+      <a style="margin-left: 20px;padding: 11px 17px; background: #177960; color: white;border-radius: 20px"
+         *ngIf="theme==='white'"
+         (click)="$event.preventDefault();open(registerModal)">Sign up</a>
+      <a style="margin-left: 20px;padding: 11px 17px; background: white; color: #177960;border-radius: 20px"
+         *ngIf="theme!=='white'"
+         (click)="$event.preventDefault();open(registerModal)">Sign up</a>
+      <a href="#" class="header-link" [class.white]="theme!=='white'">EN</a>
+    </div>
+  </div>
+</div>
+<ng-template #register let-modal>
+  <div class="popup">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+              (click)="modalService.dismissAll(false)">
+        <span aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17">
+            <g>
+              <g>
+                <path fill="#008D68"
+                      d="M15.514 16.407a.966.966 0 0 1-1.373 0l-6.27-6.26-6.26 6.27a.983.983 0 0 1-1.364-.01.954.954 0 0 1 0-1.363l6.26-6.26-6.26-6.27a.954.954 0 0 1-.289-.682c0-.258.103-.506.29-.682a.96.96 0 0 1 1.363-.01l6.26 6.27 6.27-6.26a.964.964 0 1 1 1.363 1.364l-6.26 6.27 6.26 6.26a.963.963 0 0 1 .01 1.363z"/>
+              </g>
+            </g>
+          </svg>
+        </span>
+      </button>
+    </div>
+    <div>
+      <p class="title">Apply for registration</p>
+    </div>
+    <form [formGroup]="registerForm" class="registration-form">
+      <div class="form-field">
+        <span class="input-title">Your name *</span>
+        <input type="text" formControlName="username">
+      </div>
+      <div class="form-field">
+        <span class="input-title">Phone number *</span>
+        <input type="text" formControlName="phone">
+      </div>
+      <div class="form-field">
+        <span class="input-title">Email *</span>
+        <input type="email" formControlName="email">
+      </div>
+      <div class="form-field">
+        <span class="input-title">Comment</span>
+        <input type="text" formControlName="comment">
+      </div>
+      <button class="section-btn" (click)="$event.preventDefault();">Send an application</button>
+    </form>
+    <div class="modal-footer">
+      <p class="m-0 m-auto">Already have an account? <a href="#" class="switch-modal-link" (click)="$event.preventDefault();switchToLogin(loginModal)">Log In</a></p>
+    </div>
+  </div>
+</ng-template>
+<ng-template #login let-modal>
+  <div class="popup">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+              (click)="modalService.dismissAll(false)">
+        <span aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17">
+            <g>
+              <g>
+                <path fill="#008D68"
+                      d="M15.514 16.407a.966.966 0 0 1-1.373 0l-6.27-6.26-6.26 6.27a.983.983 0 0 1-1.364-.01.954.954 0 0 1 0-1.363l6.26-6.26-6.26-6.27a.954.954 0 0 1-.289-.682c0-.258.103-.506.29-.682a.96.96 0 0 1 1.363-.01l6.26 6.27 6.27-6.26a.964.964 0 1 1 1.363 1.364l-6.26 6.27 6.26 6.26a.963.963 0 0 1 .01 1.363z"/>
+              </g>
+            </g>
+          </svg>
+        </span>
+      </button>
+    </div>
+    <div>
+      <p class="title" *ngIf="!isTwoFactor">Login</p>
+      <p class="title" *ngIf="isTwoFactor">Two-factor authentication</p>
+      <p class="title small" *ngIf="isTwoFactor">Please input check code you received on mobile number</p>
+      <p class="title small" *ngIf="isTwoFactor">{{loginForm.value.email}}</p>
+    </div>
+    <form [formGroup]="loginForm" class="registration-form" *ngIf="!isTwoFactor">
+      <div class="form-field">
+        <span class="input-title">Email *</span>
+        <input type="email" formControlName="email">
+      </div>
+      <div class="form-field">
+        <span class="input-title">Password</span>
+        <input formControlName="password" [type]="toggle['showPass']?'text':'password'">
+        <img class="password-toggle" src="../../../assets/shapes/eye.svg" alt="eye" (click)="toggle['showPass']=!toggle['showPass']">
+      </div>
+      <div class="d-flex">
+        <input formControlName="isIpTrusted" type="checkbox" style="height: 21px;width: 21px">
+        <p class="ml-3">Save current IP address as trusted</p>
+      </div>
+      <button class="section-btn" (click)="$event.preventDefault();loginAction()">Login</button>
+    </form>
+    <form class="registration-form" *ngIf="isTwoFactor">
+      <div class="form-field">
+        <span class="input-title">Code from sms</span>
+        <input type="text" [formControl]="sms">
+      </div>
+      <button class="section-btn" (click)="$event.preventDefault();confirmCode()">Confirm</button>
+    </form>
+    <div class="modal-footer">
+      <p class="m-0 m-auto" *ngIf="!isTwoFactor">Don't have an account yet? <a href="#" class="switch-modal-link" (click)="$event.preventDefault();switchToLogin(registerModal)">Sign Up</a></p>
+    </div>
+  </div>
+</ng-template>

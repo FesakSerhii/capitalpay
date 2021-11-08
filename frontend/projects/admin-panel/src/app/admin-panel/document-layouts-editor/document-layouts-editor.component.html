@@ -1,0 +1,113 @@
+<a href="#" class="btn btn-success btn-round btn-back" (click)="$event.preventDefault();navigate()">Назад<div class="ripple-container"></div></a>
+<ng-scrollbar class="calc200" [visibility]="'always'">
+  <div class="card w1058">
+    <div class="card-header">
+      <h4 class="card-title ">Pедактирование страницы</h4>
+    </div>
+    <div class="card-body">
+      <div class="d-flex">
+        <ul class="nav nav-pills flex-column nav-pills-success" role="tablist">
+          <li class="nav-item d-flex">
+            <a class="nav-link" [class.active]="activeTab==='RUS'" (click)="$event.preventDefault();activeTab='RUS';getPage('RUS')">
+              русский
+            </a>
+          </li>
+          <li class="nav-item d-flex">
+            <a class="nav-link" [class.active]="activeTab==='KAZ'" (click)="$event.preventDefault();activeTab='KAZ';getPage('KAZ')">
+              казахский
+            </a>
+          </li>
+          <li class="nav-item d-flex">
+            <a class="nav-link" [class.active]="activeTab==='ENG'" (click)="$event.preventDefault();activeTab='ENG';getPage('ENG')">
+              английский
+            </a>
+          </li>
+        </ul>
+        <div class="tab-content tab-space pt-0">
+          <div class="tab-pane" [class.active]="activeTab==='RUS'">
+            <form [formGroup]="RUSForm">
+              <div class="d-flex">
+                <label class="col-form-label" style="padding-top: 10px;">Заголовок *</label>
+                <div class="form-input-md" style="width: 650px">
+                  <div class="form-group has-default bmd-form-group mt-0">
+                    <input type="text" class="form-control pt-0" formControlName="name">
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex">
+                <label class="col-form-label" style="padding-top: 10px;">Тег *</label>
+                <div class="form-input-md" style="width: 650px">
+                  <div class="form-group has-default bmd-form-group">
+                    <input type="text" class="form-control pt-0" formControlName="tag">
+                  </div>
+                </div>
+              </div>
+              <div class="editor-container">
+<!--                    <textarea style="margin-top: 100px;width: 740px;min-height: 880px" formControlName="content">-->
+<!--                    </textarea>-->
+                <ckeditor [editor]="Editor" style="width: 740px;min-height: 880px" formControlName="content"></ckeditor>
+              </div>
+              <a href="#" class="btn btn-success btn-round" (click)="$event.preventDefault();save(RUSForm)">Сохранить<div class="ripple-container"></div></a>
+            </form>
+          </div>
+        </div>
+        <div class="tab-content tab-space pt-0">
+          <div class="tab-pane" [class.active]="activeTab==='KAZ'">
+            <form [formGroup]="KAZForm">
+              <div class="d-flex">
+                <label class="col-form-label" style="padding-top: 10px;">Заголовок *</label>
+                <div class="form-input-md" style="width: 650px">
+                  <div class="form-group has-default bmd-form-group mt-0">
+                    <input type="text" class="form-control pt-0" formControlName="name">
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex">
+                <label class="col-form-label" style="padding-top: 10px;">Тег *</label>
+                <div class="form-input-md" style="width: 650px">
+                  <div class="form-group has-default bmd-form-group">
+                    <input type="text" class="form-control pt-0" formControlName="tag">
+                  </div>
+                </div>
+              </div>
+              <div class="editor-container">
+<!--                    <textarea style="margin-top: 100px;width: 740px;min-height: 880px" formControlName="content">-->
+<!--                    </textarea>-->
+                <ckeditor [editor]="Editor" style="width: 740px;min-height: 880px" formControlName="content"></ckeditor>
+              </div>
+              <a href="#" class="btn btn-success btn-round" (click)="$event.preventDefault();save(KAZForm)">Сохранить<div class="ripple-container"></div></a>
+            </form>
+          </div>
+        </div>
+        <div class="tab-content tab-space pt-0">
+          <div class="tab-pane" [class.active]="activeTab==='ENG'">
+            <form [formGroup]="ENGForm">
+              <div class="d-flex">
+                <label class="col-form-label" style="padding-top: 10px;">Заголовок *</label>
+                <div class="form-input-md" style="width: 650px">
+                  <div class="form-group has-default bmd-form-group mt-0">
+                    <input type="text" class="form-control pt-0" formControlName="name">
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex">
+                <label class="col-form-label" style="padding-top: 10px;">Тег *</label>
+                <div class="form-input-md" style="width: 650px">
+                  <div class="form-group has-default bmd-form-group">
+                    <input type="text" class="form-control pt-0" formControlName="tag">
+                  </div>
+                </div>
+              </div>
+              <div class="editor-container">
+<!--                    <textarea style="margin-top: 100px;width: 740px;min-height: 880px" formControlName="content">-->
+<!--                    </textarea>-->
+                <ckeditor [editor]="Editor" style="width: 740px;min-height: 880px" formControlName="content"></ckeditor>
+              </div>
+              <a href="#" class="btn btn-success btn-round" (click)="$event.preventDefault();save(ENGForm)">Сохранить<div class="ripple-container"></div></a>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-scrollbar>
