@@ -1,6 +1,7 @@
 package kz.capitalpay.server.paysystems.systems.halyksoap.dto;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class RegisterPaymentsMerchantDTO extends RegisterPaymentsCommonMerchantFieldsDTO {
     private String iik;
@@ -54,7 +55,7 @@ public class RegisterPaymentsMerchantDTO extends RegisterPaymentsCommonMerchantF
         return bik + "¤" +
                 iik + "¤¤" +
                 iinbin + "¤" +
-                amount.setScale(2) + "¤" +
+                amount.setScale(2, RoundingMode.HALF_DOWN) + "¤" +
                 bankname + "¤" +
                 getNaznpl_merch() + "¤      ¤" +
                 getBclassd_merch() + "¤" +

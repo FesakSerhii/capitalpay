@@ -1,6 +1,7 @@
 package kz.capitalpay.server.paysystems.systems.halyksoap.dto;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class RegisterPaymentsHalykDTO {
     private String kobd;
@@ -117,7 +118,7 @@ public class RegisterPaymentsHalykDTO {
         return bik + "¤" +
                 lskor + "¤¤" +
                 rnnb + "¤" +
-                amount.setScale(2) + "¤" +
+                amount.setScale(2, RoundingMode.HALF_DOWN) + "¤" +
                 poluch + "¤" +
                 naznpl + "¤      ¤" +
                 bclassd + "¤" +
