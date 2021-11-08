@@ -54,7 +54,7 @@ public class RegisterPaymentsMerchantDTO extends RegisterPaymentsCommonMerchantF
         return bik + "¤" +
                 iik + "¤¤" +
                 iinbin + "¤" +
-                amount + "¤" +
+                amount.setScale(2) + "¤" +
                 bankname + "¤" +
                 getNaznpl_merch() + "¤      ¤" +
                 getBclassd_merch() + "¤" +

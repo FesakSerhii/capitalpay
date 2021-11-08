@@ -1,0 +1,38 @@
+<div class="background" xmlns="http://www.w3.org/1999/html">
+  <div class="logo">
+    <img src="../../assets/img/regisster-logo.png" alt="logo">
+  </div>
+  <div class="popup">
+      <div>
+        <p class="title" *ngIf="!isTwoFactor">Authorization</p>
+        <p class="title" *ngIf="isTwoFactor">Two-factor authentication</p>
+        <p class="title small" *ngIf="isTwoFactor">Please input check code you received on mobile number</p>
+        <p class="title small" *ngIf="isTwoFactor">{{loginForm.value.email}}</p>
+      </div>
+      <form class="registration-form" [formGroup]="loginForm" *ngIf="!isTwoFactor">
+        <div class="form-field">
+          <span class="input-title">login *</span>
+          <input type="text" formControlName="email">
+        </div>
+        <div class="form-field">
+          <span class="input-title">Password</span>
+          <input [type]="toggle['showPass']?'text':'password'" formControlName="password">
+<!--          <svg class="password-toggle" width="29" (click)="toggle['showPass']=!toggle['showPass']" height="22" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" viewBox="0 0.113 29 21.775" fill="#008d68"><svg xmlns="http://www.w3.org/2000/svg" width="29" height="22" viewBox="2.01 1.999 27.969 21"><path paint-order="stroke fill markers" fill-rule="evenodd" d="M15.994 1.999c-6.25 0-11.852 4.106-13.938 10.217a.898.898 0 0 0 0 .566c2.086 6.11 7.688 10.217 13.938 10.217 6.252 0 11.852-4.107 13.939-10.217a.898.898 0 0 0 0-.566C27.846 6.105 22.246 1.999 15.994 1.999zm0 19.25c-5.405 0-10.265-3.505-12.184-8.75 1.92-5.246 6.779-8.75 12.184-8.75 5.407 0 10.266 3.504 12.186 8.75-1.92 5.245-6.78 8.75-12.186 8.75zm0-14a5.252 5.252 0 0 0-5.243 5.25 5.252 5.252 0 0 0 5.243 5.25 5.253 5.253 0 0 0 5.244-5.25 5.254 5.254 0 0 0-5.244-5.25zm0 8.75a3.5 3.5 0 0 1-3.495-3.5 3.5 3.5 0 0 1 3.495-3.5 3.501 3.501 0 0 1 0 7z"/></svg></svg>-->
+          <img class="password-toggle" src="../../assets/img/eye.svg" alt="eye" (click)="toggle['showPass']=!toggle['showPass']">
+        </div>
+        <div class="d-flex">
+          <input formControlName="isIpTrusted" type="checkbox" style="height: 21px;width: 21px">
+          <p class="ml-3">Save current IP address as trusted</p>
+        </div>
+        <button class="section-btn" (click)="$event.preventDefault();loginAction()">Login</button>
+      </form>
+    <form class="registration-form" *ngIf="isTwoFactor">
+      <div class="form-field">
+        <span class="input-title">Code from sms</span>
+        <input type="text" [formControl]="sms">
+      </div>
+      <button class="section-btn" (click)="$event.preventDefault();confirmCode()">Confirm</button>
+    </form>
+  </div>
+
+</div>

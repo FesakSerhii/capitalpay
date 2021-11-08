@@ -1,0 +1,119 @@
+<div>
+  <ng-scrollbar class="calc100" [visibility]="'always'" style="width: 1620px">
+    <div class="card w1058">
+      <div class="card-header card-header-success card-header-icon">
+        <div class="card-icon">
+          <i class="material-icons-outlined">manage_accounts</i>
+        </div>
+        <h4 class="card-title ">Создать отчет реестра</h4>
+      </div>
+      <div class="card-body">
+        <form class="d-flex justify-content-center" [formGroup]="periodForm">
+          <label class="col-form-label">Период</label>
+          <div class="form-group bmd-form-group mr-5 position-relative">
+            <input type="text" class="form-control" ngbDatepicker [autoClose]="true" readonly #start="ngbDatepicker" formControlName="start">
+            <a (click)="$event.preventDefault();start.open()"><i class="material-icons icon-color position-absolute" style="top: 10px;right: -22px">date_range</i></a>
+          </div>
+          <div class="form-group bmd-form-group position-relative">
+            <input type="text" class="form-control" ngbDatepicker [autoClose]="true" readonly #end="ngbDatepicker" formControlName="end">
+            <a (click)="$event.preventDefault();end.open()"><i class="material-icons icon-color position-absolute" style="top: 10px;right: -22px">date_range</i></a>
+          </div>
+        </form>
+        <form [formGroup]="registryForm">
+          <h4 class="title">Отправка денег мерчантам</h4>
+          <div class="form-group has-default bmd-form-group d-flex">
+            <label class="col-form-label w160">Назначение платежа</label>
+            <input type="text" class="form-control" placeholder="" formControlName="naznpl_merch" [readOnly]="!isEditModeMerch">
+          </div>
+          <div class="form-group has-default bmd-form-group d-flex">
+            <label class="col-form-label w160">Код бюджетной класификации</label>
+            <input type="text" formControlName="bclassd_merch"
+                   [readOnly]="!isEditModeMerch"
+                   class="form-control">
+          </div>
+          <div class="form-group has-default bmd-form-group d-flex">
+            <label class="col-form-label w160">Код отправителя денег</label>
+            <input type="text" class="form-control" placeholder="" formControlName="kod_merch" [readOnly]="!isEditModeMerch">
+          </div>
+          <div class="form-group has-default bmd-form-group d-flex">
+            <label class="col-form-label w160">Код назначения платежа</label>
+            <input type="text" class="form-control" placeholder="" formControlName="knp_merch" [readOnly]="!isEditModeMerch">
+          </div>
+          <div class="form-group has-default bmd-form-group d-flex">
+            <label class="col-form-label w160">ИИН платещика</label>
+            <input type="text" class="form-control"
+                   [class.danger]="registryForm.controls.rnna_merch.invalid"
+                   placeholder="" formControlName="rnna_merch" [readOnly]="!isEditModeMerch">
+          </div>
+          <div class="form-group has-default bmd-form-group d-flex">
+            <label class="col-form-label w160">Платещик</label>
+            <input type="text" class="form-control" placeholder="" formControlName="platel_merch" [readOnly]="!isEditModeMerch">
+          </div>
+          <button *ngIf="!isEditModeMerch" class="btn btn-success btn-round" style="margin-left: 202px" (click)="isEditModeMerch=!isEditModeMerch">изменить данные</button>
+          <button *ngIf="isEditModeMerch" class="btn btn-success btn-round"
+                  [disabled]="registryForm.invalid"
+                  [class.disabled]="registryForm.invalid"
+                  style="margin-left: 202px" (click)="saveEditedRegistry()">Сохранить</button>
+          <hr>
+          <h4 class="title">Комиссия Capital Pay</h4>
+          <div class="form-group has-default bmd-form-group d-flex">
+            <label class="col-form-label w160">Банк получателя</label>
+            <input type="text" class="form-control" placeholder="" formControlName="kobd" [readOnly]="!isEditMode">
+          </div>
+          <div class="form-group has-default bmd-form-group d-flex">
+            <label class="col-form-label w160">БИК</label>
+            <input type="text" class="form-control" placeholder="" formControlName="bik" [readOnly]="!isEditMode">
+          </div>
+          <div class="form-group has-default bmd-form-group d-flex">
+            <label class="col-form-label w160">Счет получателя</label>
+            <input type="text" class="form-control" placeholder="" formControlName="lskor" [readOnly]="!isEditMode">
+          </div>
+          <div class="form-group has-default bmd-form-group d-flex">
+            <label class="col-form-label w160">БИН бенефициара</label>
+            <input type="text" class="form-control"
+                   [class.danger]="registryForm.controls.rnnb.invalid"
+                   placeholder="" formControlName="rnnb" [readOnly]="!isEditMode">
+          </div>
+          <div class="form-group has-default bmd-form-group d-flex">
+            <label class="col-form-label w160">Получатель</label>
+            <input type="text" class="form-control" placeholder="" formControlName="poluch" [readOnly]="!isEditMode">
+          </div>
+          <div class="form-group has-default bmd-form-group d-flex">
+            <label class="col-form-label w160">Назначение платежа</label>
+            <input type="text" class="form-control" placeholder="" formControlName="naznpl" [readOnly]="!isEditMode" maxlength="100">
+          </div>
+          <div class="form-group has-default bmd-form-group d-flex">
+            <label class="col-form-label w160">Код бюджетной класификации</label>
+            <input type="text" class="form-control" placeholder="" formControlName="bclassd" [readOnly]="!isEditMode">
+          </div>
+          <div class="form-group has-default bmd-form-group d-flex">
+            <label class="col-form-label w160">Код отправителя денег</label>
+            <input type="text" class="form-control" placeholder="" formControlName="kod" [readOnly]="!isEditMode">
+          </div>
+          <div class="form-group has-default bmd-form-group d-flex">
+            <label class="col-form-label w160">Код назначения платежа</label>
+            <input type="text" class="form-control" placeholder="" formControlName="knp" [readOnly]="!isEditMode">
+          </div>
+          <div class="form-group has-default bmd-form-group d-flex">
+            <label class="col-form-label w160">ИИН платещика</label>
+            <input type="text" class="form-control"
+                   [class.danger]="registryForm.controls.rnna.invalid"
+                   placeholder="" formControlName="rnna" [readOnly]="!isEditMode">
+          </div>
+          <div class="form-group has-default bmd-form-group d-flex">
+            <label class="col-form-label w160">Платещик</label>
+            <input type="text" class="form-control" placeholder="" formControlName="platel" [readOnly]="!isEditMode">
+          </div>
+        </form>
+        <button *ngIf="!isEditMode" class="btn btn-success btn-round" style="margin-left: 202px" (click)="$event.preventDefault();isEditMode=!isEditMode">изменить данные</button>
+        <button *ngIf="isEditMode" class="btn btn-success btn-round" style="margin-left: 202px" (click)="saveEditedRegistry();">Сохранить</button>
+      </div>
+      <div class="card-footer">
+        <button [disabled]="isEditMode||isEditModeMerch||!this.periodForm.value.start||!this.periodForm.value.end"
+                [class.disabled]="isEditMode||isEditModeMerch||!this.periodForm.value.start||!this.periodForm.value.end"
+                class="btn btn-success btn-round"
+                (click)="getDoc();">Сохранить</button>
+      </div>
+    </div>
+  </ng-scrollbar>
+</div>
