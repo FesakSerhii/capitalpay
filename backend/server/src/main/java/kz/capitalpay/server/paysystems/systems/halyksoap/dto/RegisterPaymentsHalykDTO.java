@@ -115,14 +115,14 @@ public class RegisterPaymentsHalykDTO {
 
     @Override
     public String toString() {
-        return bik + "¤" +
-                lskor + "¤¤" +
-                rnnb + "¤" +
+        return bik.trim() + "¤" +
+                lskor.trim() + "¤¤" +
+                rnnb.trim() + "¤" +
                 amount.setScale(2, RoundingMode.HALF_DOWN) + "¤" +
-                poluch + "¤" +
-                naznpl + "¤      ¤" +
+                poluch.trim() + "¤" +
+                naznpl.trim() + "¤      ¤" +
 //                bclassd + "¤" +
-                kod + "¤" +
+                kod.trim() + "¤" +
                 knp.trim() + "¤¤¤\r\n";
 //                knp + "¤" +
 //                rnna + "¤" +

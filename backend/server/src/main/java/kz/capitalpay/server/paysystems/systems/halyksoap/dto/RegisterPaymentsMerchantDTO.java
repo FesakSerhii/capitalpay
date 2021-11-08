@@ -52,14 +52,14 @@ public class RegisterPaymentsMerchantDTO extends RegisterPaymentsCommonMerchantF
 
     @Override
     public String toString() {
-        return bik + "¤" +
-                iik + "¤¤" +
-                iinbin + "¤" +
+        return bik.trim() + "¤" +
+                iik.trim() + "¤¤" +
+                iinbin.trim() + "¤" +
                 amount.setScale(2, RoundingMode.HALF_DOWN) + "¤" +
-                bankname + "¤" +
-                getNaznpl_merch() + "¤      ¤" +
+                bankname.trim() + "¤" +
+                getNaznpl_merch().trim() + "¤      ¤" +
 //                getBclassd_merch() + "¤" +
-                getKod_merch() + "¤" +
+                getKod_merch().trim() + "¤" +
                 getKnp_merch().trim() + "¤¤¤\r\n";
 //                getKnp_merch() + "¤" +
 //                getRnna_merch() + "¤" +
