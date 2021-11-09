@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.error109;
@@ -166,7 +167,11 @@ public class SupportService {
                 List<Double> doubleList = gson.fromJson(supportRequest.getFileIdList(), List.class);
                 logger.info(gson.toJson(doubleList));
                 List<Long> filesIdList = new ArrayList<>();
-                doubleList.forEach(aDouble -> filesIdList.add(aDouble.longValue()));
+                doubleList.forEach(aDouble -> {
+                    if (Objects.nonNull(aDouble)) {
+                        filesIdList.add(aDouble.longValue());
+                    }
+                });
 
                 responceDTO.setFileList(fileStorageService.getFilListById(filesIdList));
 
