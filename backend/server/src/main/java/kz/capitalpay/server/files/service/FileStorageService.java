@@ -59,6 +59,7 @@ public class FileStorageService {
             if (newName.toFile().exists()) {
                 logger.info("{} exists", newName.toString());
                 Files.delete(copyLocation);
+                newFile = fileStorageRepository.save(newFile);
             } else {
                 Files.move(copyLocation, copyLocation.resolveSibling(newName));
                 newFile = fileStorageRepository.save(newFile);
