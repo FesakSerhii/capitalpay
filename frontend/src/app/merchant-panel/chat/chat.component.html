@@ -33,7 +33,7 @@
               <textarea class="mt-1" [formControl]="answerForm" placeholder="Текст  сообщения" name="massage" cols="30" rows="10" style="min-height: 140px;width: 100%"></textarea>
               <div>
                 <div class="d-flex">
-                  <input type="file" id="fileUpload" class="d-none" (change)="handleFileInput($event.target.files)">
+                  <input type="file" id="fileUpload" accept="image/*" class="d-none" (change)="handleFileInput($event.target.files)">
                   <label for="fileUpload">Прикрепить документ<i class="material-icons-outlined" style="transform: rotate(45deg);">attach_file</i></label>
                 </div>
   <!--                <i class="material-icons-outlined" style="transform: rotate(45deg);">attach_file</i>Прикрепить документ</p>-->
@@ -48,4 +48,3 @@
       </ng-scrollbar>
     </div>
   </div>
-  

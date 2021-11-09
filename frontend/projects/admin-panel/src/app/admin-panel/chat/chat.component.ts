@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import {SupportService} from "../../service/support.service";
-import {FormControl} from "@angular/forms";
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {SupportService} from '../../service/support.service';
+import {FormControl} from '@angular/forms';
 import {FileService} from '../../../../../../src/app/service/file.service';
 
 @Component({
@@ -11,23 +11,26 @@ import {FileService} from '../../../../../../src/app/service/file.service';
 })
 export class ChatComponent implements OnInit {
   answerForm = new FormControl();
-  id:string;
-  authorInfo:any;
-  supportAnswer:any;
+  id: string;
+  authorInfo: any;
+  supportAnswer: any;
   fileListToDownload: [any];
   status: string;
   subject: string;
   theme: string;
   text: string;
   fileToUpload: File = null;
-  fileList: any[]=[];
-  constructor(private fileService: FileService,private router: Router, private activatedRoute: ActivatedRoute,private supportService: SupportService) { }
+  fileList: any[] = [];
+  fileListPreview: any[] = [];
+
+  constructor(private fileService: FileService, private router: Router, private activatedRoute: ActivatedRoute, private supportService: SupportService) {
+  }
 
   ngOnInit(): void {
     this.activatedRoute.queryParamMap.subscribe((param) => {
-      this.id = param.get("id");
+      this.id = param.get('id');
     });
-    this.supportService.getSupportListItem(this.id).then(resp=>{
+    this.supportService.getSupportListItem(this.id).then(resp => {
       this.authorInfo = resp.data.author;
       this.fileListToDownload = resp.data.fileList;
       this.status = resp.data.status;
@@ -37,9 +40,11 @@ export class ChatComponent implements OnInit {
       this.supportAnswer = resp.data.supportAnswer;
     })
   }
-  navigateToHelp(){
+
+  navigateToHelp() {
     this.router.navigate(['/admin-panel/help'])
   }
+
   // author: {id: 12, username: "+38095384343", password: null, realname: null, email: "arsenguzhva@gmail.com",…}
   // active: true
   // blocked: false
@@ -73,21 +78,27 @@ export class ChatComponent implements OnInit {
   // theme: "Проблемы с интеграцией"
   sendAnswer() {
     let answer = {
-      "requestId": this.id,
-      "text": this.answerForm.value,
-      "fileList": this.fileList
+      'requestId': this.id,
+      'text': this.answerForm.value,
+      'fileList': this.fileList
     };
-    this.supportService.answer(answer).then(()=>{
+    this.supportService.answer(answer).then(() => {
       this.navigateToHelp()
     })
   }
+
   handleFileInput(files: FileList) {
     this.fileToUpload = files.item(0);
-
     if (this.fileToUpload)
       this.fileService.sendFile(this.fileToUpload)
         .then(resp => {
           this.fileList.push(resp.data.id)
+          this.fileListPreview.push(resp.data)
         })
+  }
+
+  deleteFileBeforeSaving(id) {
+    this.fileList = this.fileList.filter(el => el !== id)
+    this.fileListPreview = this.fileListPreview.filter(el => el.id !== id)
   }
 }
