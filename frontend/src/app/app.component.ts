@@ -1,4 +1,4 @@
-import {Component, HostListener, Inject, OnInit} from '@angular/core';
+import {Component, HostListener, Inject, OnDestroy, OnInit} from '@angular/core';
 import {DOCUMENT} from '@angular/common';
 import {NgbCarouselConfig} from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./app.component.scss'],
   providers: [NgbCarouselConfig]
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   subscription: Subscription = new Subscription();
   title = 'capitalPay';
 
@@ -26,9 +26,9 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.authService.checkToken()) {
-      this.router.navigate(['/merchant/transaction-log'])
-    } else {
+    if (!this.authService.checkToken()) {
+    //   this.router.navigate(['/merchant/transaction-log'])
+    // } else {
       this.router.navigate(['page'])
     }
 
@@ -42,5 +42,9 @@ export class AppComponent implements OnInit {
         }
       )
     )
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 }

@@ -1,14 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { AuthService } from './service/auth.service';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {AuthService} from './service/auth.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   title = 'adminPanel';
   subscription: Subscription = new Subscription();
 
@@ -19,9 +19,9 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.authService.checkToken()) {
-      this.router.navigate(['/admin-panel/dashboard'])
-    } else {
+    if (!this.authService.checkToken()) {
+      // this.router.navigate(['/admin-panel/dashboard'])
+      // } else {
       this.router.navigate([''])
     }
 
@@ -35,5 +35,9 @@ export class AppComponent implements OnInit {
         }
       )
     )
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 }

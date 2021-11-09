@@ -2,14 +2,17 @@
   <div class="row">
     <div>
       <ul class="nav nav-pills nav-pills-success" role="tablist">
-        <app-custom-select [formControl]="themeForm" classes="mr-5 green-round" [values]="themes" [placeholder]="'Все темы обращений '"></app-custom-select>
+        <app-custom-select [formControl]="themeForm" classes="mr-5 green-round" [values]="themes"
+                           [placeholder]="'Все темы обращений '"></app-custom-select>
         <li class="nav-item">
-          <a class="nav-link" [class.active]="activeTab==='tab1'" (click)="$event.preventDefault();activeTab='tab1';nextSort(null)">
+          <a class="nav-link" [class.active]="activeTab==='tab1'"
+             (click)="$event.preventDefault();activeTab='tab1';nextSort(null)">
             Новые
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" [class.active]="activeTab==='tab2'" (click)="$event.preventDefault();activeTab='tab2';nextSort(null)">
+          <a class="nav-link" [class.active]="activeTab==='tab2'"
+             (click)="$event.preventDefault();activeTab='tab2';nextSort(null)">
             Закрытые
           </a>
         </li>
@@ -33,73 +36,107 @@
                     <div class="row">
                       <div class="col-sm-12 col-md-6">
                         <div class="dataTables_length" id="datatables_length">
-                          <label class="d-flex align-items-baseline">Show <app-custom-select classes="tight" [values]="[10,20,50]" [placeholder]="10"></app-custom-select> entries</label>
+                          <label class="d-flex align-items-baseline">Show
+                            <app-custom-select classes="tight" [values]="[10,20,50]"
+                                               [placeholder]="10"></app-custom-select>
+                            entries</label>
                         </div>
                       </div>
-                      <div class="col-sm-12 col-md-6"><div class="dataTables_filter"><label>INPUT<span class="bmd-form-group bmd-form-group-sm"><input type="search" class="form-control form-control-sm" placeholder="Search records" aria-controls="datatables" [formControl]="tableSearch"></span></label></div></div></div><div class="row"><div class="col-sm-12"><table class="table table-striped table-no-bordered table-hover dataTable dtr-inline" width="100%" style="width: 100%;" role="grid" aria-describedby="datatables_info">
-                    <thead>
-                    <tr role="row">
-                      <th class="sortable-th" style="width: 80px;" aria-sort="ascending" aria-label="Name: activate to sort column descending">Важное</th>
-                      <th class="sortable-th" style="width: 80px;" (click)="nextSort('id')">
-                        <span [class.sorting_desc]="sortHelper.sort.sortBy === 'id'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'id'">№ обращения</span>
-                      </th>
-                      <th class="sortable-th" style="width: 100px;" (click)="nextSort('timestamp')">
-                        <span [class.sorting_desc]="sortHelper.sort.sortBy === 'timestamp'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'timestamp'">Дата, время</span>
-                      </th>
-                      <th class="sortable-th" style="width: 50px;" (click)="nextSort('authorId')">
-                        <span [class.sorting_desc]="sortHelper.sort.sortBy === 'authorId'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'authorId'">ID Мерчанта</span>
-                      </th>
-                      <th class="sortable-th" style="width: 80px;" (click)="nextSort('username')">
-                        <span [class.sorting_desc]="sortHelper.sort.sortBy === 'username'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'username'">Телефон</span>
-                      </th>
-                      <th class="sortable-th" style="width: 80px;" (click)="nextSort('email')">
-                        <span [class.sorting_desc]="sortHelper.sort.sortBy === 'email'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'email'">Email</span>
-                      </th>
-                      <th class="sortable-th" style="width: 80px;" (click)="nextSort('theme')">
-                        <span [class.sorting_desc]="sortHelper.sort.sortBy === 'theme'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'theme'">Тема</span>
-                      </th>
-                      <th class="sortable-th" style="width: 200px;" (click)="nextSort('text')">
-                        <span [class.sorting_desc]="sortHelper.sort.sortBy === 'text'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'text'">Сообщение</span>
-                      </th>
-                      <th class="sortable-th" style="width: 80px;" (click)="nextSort('status')">
-                        <span [class.sorting_desc]="sortHelper.sort.sortBy === 'status'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'status'">Статус</span>
-                      </th>
-                    </thead>
-                    <tfoot>
-                    <tr>
-                      <th rowspan="1" colspan="1">Важное</th>
-                      <th rowspan="1" colspan="1">№ обращения</th>
-                      <th rowspan="1" colspan="1">Дата, время</th>
-                      <th rowspan="1" colspan="1">ID Мерчанта</th>
-                      <th rowspan="1" colspan="1">Телефон</th>
-                      <th rowspan="1" colspan="1">Email</th>
-                      <th rowspan="1" colspan="1">Тема</th>
-                      <th rowspan="1" colspan="1">Сообщение</th>
-                      <th rowspan="1" colspan="1">Статус</th>
-                    </tr>
-                    </tfoot>
-                    <tbody>
-                    <tr role="row" class="cursor-pointer" (click)="navigateToSettings(item.id)" *ngFor="let item of sortedActions">
-                      <td *ngIf="!item.important" (click)="$event.stopPropagation();setImportant(true,item)"><i class="material-icons-outlined">bookmark_border</i></td>
-                      <td class="red" *ngIf="item.important" (click)="$event.stopPropagation();setImportant(false,item)"><i class="material-icons-outlined">turned_in</i></td>
-                      <td>{{item.id}}</td>
-                      <td>{{item.timestamp|date:'dd.MM.yyyy | hh:mm:ss'}}</td>
-                      <td>{{item.authorId}}</td>
-                      <td>{{item.username}}</td>
-                      <td>{{item.email}}</td>
-                      <td>{{item.theme}}</td>
-                      <td>{{item.text}}</td>
-                      <td>{{item.status}}</td>
-                    </tr>
-                    </tbody>
-                  </table>
-                  </div>
-                  </div>
-                    <div class="row"><div class="col-sm-12 col-md-5">
-                    </div><div class="col-sm-12 col-md-7">
-                      <div class="dataTables_paginate paging_full_numbers">
+                      <div class="col-sm-12 col-md-6">
+                        <div class="dataTables_filter">
+                          <label>INPUT<span class="bmd-form-group bmd-form-group-sm">
+                            <input type="search"
+                                   class="form-control form-control-sm"
+                                   placeholder="Search records"
+                                   aria-controls="datatables"
+                                   [formControl]="tableSearch"></span></label>
+                        </div>
                       </div>
                     </div>
+                    <div class="row">
+                      <button class="btn btn-success btn-round" (click)="getSupportList()">{{'Обновить'}}</button>
+                      <div class="col-sm-12">
+                        <table class="table table-striped table-no-bordered table-hover dataTable dtr-inline"
+                               width="100%" style="width: 100%;" role="grid" aria-describedby="datatables_info">
+                          <thead>
+                          <tr role="row">
+                            <th class="sortable-th" style="width: 80px;" aria-sort="ascending"
+                                aria-label="Name: activate to sort column descending">Важное
+                            </th>
+                            <th class="sortable-th" style="width: 80px;" (click)="nextSort('id')">
+                              <span [class.sorting_desc]="sortHelper.sort.sortBy === 'id'"
+                                    [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'id'">№ обращения</span>
+                            </th>
+                            <th class="sortable-th" style="width: 100px;" (click)="nextSort('timestamp')">
+                              <span [class.sorting_desc]="sortHelper.sort.sortBy === 'timestamp'"
+                                    [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'timestamp'">Дата, время</span>
+                            </th>
+                            <th class="sortable-th" style="width: 50px;" (click)="nextSort('authorId')">
+                              <span [class.sorting_desc]="sortHelper.sort.sortBy === 'authorId'"
+                                    [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'authorId'">ID Мерчанта</span>
+                            </th>
+                            <th class="sortable-th" style="width: 80px;" (click)="nextSort('username')">
+                              <span [class.sorting_desc]="sortHelper.sort.sortBy === 'username'"
+                                    [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'username'">Телефон</span>
+                            </th>
+                            <th class="sortable-th" style="width: 80px;" (click)="nextSort('email')">
+                              <span [class.sorting_desc]="sortHelper.sort.sortBy === 'email'"
+                                    [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'email'">Email</span>
+                            </th>
+                            <th class="sortable-th" style="width: 80px;" (click)="nextSort('theme')">
+                              <span [class.sorting_desc]="sortHelper.sort.sortBy === 'theme'"
+                                    [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'theme'">Тема</span>
+                            </th>
+                            <th class="sortable-th" style="width: 200px;" (click)="nextSort('text')">
+                              <span [class.sorting_desc]="sortHelper.sort.sortBy === 'text'"
+                                    [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'text'">Сообщение</span>
+                            </th>
+                            <th class="sortable-th" style="width: 80px;" (click)="nextSort('status')">
+                              <span [class.sorting_desc]="sortHelper.sort.sortBy === 'status'"
+                                    [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'status'">Статус</span>
+                            </th>
+                          </thead>
+                          <tfoot>
+                          <tr>
+                            <th rowspan="1" colspan="1">Важное</th>
+                            <th rowspan="1" colspan="1">№ обращения</th>
+                            <th rowspan="1" colspan="1">Дата, время</th>
+                            <th rowspan="1" colspan="1">ID Мерчанта</th>
+                            <th rowspan="1" colspan="1">Телефон</th>
+                            <th rowspan="1" colspan="1">Email</th>
+                            <th rowspan="1" colspan="1">Тема</th>
+                            <th rowspan="1" colspan="1">Сообщение</th>
+                            <th rowspan="1" colspan="1">Статус</th>
+                          </tr>
+                          </tfoot>
+                          <tbody>
+                          <tr role="row" class="cursor-pointer" (click)="navigateToSettings(item.id)"
+                              *ngFor="let item of sortedActions">
+                            <td *ngIf="!item.important" (click)="$event.stopPropagation();setImportant(true,item)"><i
+                              class="material-icons-outlined">bookmark_border</i></td>
+                            <td class="red" *ngIf="item.important"
+                                (click)="$event.stopPropagation();setImportant(false,item)"><i
+                              class="material-icons-outlined">turned_in</i></td>
+                            <td>{{item.id}}</td>
+                            <td>{{item.timestamp|date:'dd.MM.yyyy | hh:mm:ss'}}</td>
+                            <td>{{item.authorId}}</td>
+                            <td>{{item.username}}</td>
+                            <td>{{item.email}}</td>
+                            <td>{{item.theme}}</td>
+                            <td>{{item.text}}</td>
+                            <td>{{item.status}}</td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-sm-12 col-md-5">
+                      </div>
+                      <div class="col-sm-12 col-md-7">
+                        <div class="dataTables_paginate paging_full_numbers">
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -108,18 +145,18 @@
               </div>
             </div>
           </div>
-<!--          <div class="tab-pane" [class.active]="activeTab==='tab2'">-->
-<!--            <div class="card w1600">-->
-<!--              <div class="card-header card-header-success card-header-icon">-->
-<!--                <div class="card-icon">-->
-<!--                  <i class="material-icons-outlined">forum</i>-->
-<!--                </div>-->
-<!--                <h4 class="card-title ">Закрытые</h4>-->
-<!--              </div>-->
-<!--              <div class="card-body">-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
+          <!--          <div class="tab-pane" [class.active]="activeTab==='tab2'">-->
+          <!--            <div class="card w1600">-->
+          <!--              <div class="card-header card-header-success card-header-icon">-->
+          <!--                <div class="card-icon">-->
+          <!--                  <i class="material-icons-outlined">forum</i>-->
+          <!--                </div>-->
+          <!--                <h4 class="card-title ">Закрытые</h4>-->
+          <!--              </div>-->
+          <!--              <div class="card-body">-->
+          <!--              </div>-->
+          <!--            </div>-->
+          <!--          </div>-->
         </div>
       </ng-scrollbar>
     </div>
