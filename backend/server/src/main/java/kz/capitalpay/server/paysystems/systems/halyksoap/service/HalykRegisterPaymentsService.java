@@ -137,7 +137,7 @@ public class HalykRegisterPaymentsService {
         merchant.setIik(merchantKycService.getField(merchantId, IIK));
         merchant.setBik(merchantKycService.getField(merchantId, BIK));
         merchant.setIinbin(merchantKycService.getField(merchantId, IINBIN));
-        merchant.setBankname(merchantKycService.getField(merchantId, BANKNAME));
+        merchant.setBankname(merchantKycService.getField(merchantId, MNAME));
     }
 
     private List<RegisterPaymentsStatistic> getPaymentsByDate(RegisterPaymentsDateDTO registerPaymentsDateDTO) {
