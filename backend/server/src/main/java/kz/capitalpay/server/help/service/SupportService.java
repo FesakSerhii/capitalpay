@@ -189,7 +189,11 @@ public class SupportService {
                     if (sa.getFileIdList() != null && sa.getFileIdList().length() > 0) {
                         List<Double> doubleList = gson.fromJson(sa.getFileIdList(), List.class);
                         List<Long> fileIdList = new ArrayList<>();
-                        doubleList.forEach(aDouble -> fileIdList.add(aDouble.longValue()));
+                        doubleList.forEach(aDouble -> {
+                            if (Objects.nonNull(aDouble)) {
+                                fileIdList.add(aDouble.longValue());
+                            }
+                        });
                         supportAnswer.setFileList(fileStorageService.getFilListById(fileIdList));
                     }
                     supportAnswerDTOS.add(supportAnswer);
