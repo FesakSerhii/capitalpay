@@ -6,7 +6,7 @@
           <div class="card w1600">
             <div class="card-header card-header-success card-header-icon d-flex justify-content-end pt-3">
               <span class="chat-header-info">21.05.2021 | 11:34:09</span>
-              <span class="chat-header-info ml-3">Merchant ID {{authorInfo.id|async}}</span>
+              <span class="chat-header-info ml-3" *ngIf="authorInfo">Merchant ID {{authorInfo?.id}}</span>
             </div>
             <div class="card-body">
               <h4 class="message-title">{{theme}}</h4>

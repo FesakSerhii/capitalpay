@@ -53,7 +53,7 @@ export class HelpComponent implements OnInit {
       this.dontTouchedClosed = [...resp.data.filter(el=>el.status==='closed').sort((a,b)=>b.timestamp-a.timestamp)];
     })
   }
-  navigateToSettings(id){
+  navigateToChat(id){
     this.router.navigate(['/admin-panel/help/chat'],{queryParams: {
       id: id,
     },

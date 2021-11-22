@@ -110,7 +110,7 @@
                           </tr>
                           </tfoot>
                           <tbody>
-                          <tr role="row" class="cursor-pointer" (click)="navigateToSettings(item.id)"
+                          <tr role="row" class="cursor-pointer" (click)="navigateToChat(item.id)"
                               *ngFor="let item of sortedActions">
                             <td *ngIf="!item.important" (click)="$event.stopPropagation();setImportant(true,item)"><i
                               class="material-icons-outlined">bookmark_border</i></td>

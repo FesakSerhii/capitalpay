@@ -27,7 +27,7 @@ export class SupportService {
     return this.apiService.postJwt('/support/status',token, data).toPromise();
   }
   getSupportListItem(id){
-    return this.apiService.postJwt('/support/one',token,{id}).toPromise();
+    return this.apiService.postJwt('/api/v1/support/one',token,{id}).toPromise();
   }
   answer(data){
     return this.apiService.postJwt('/support/answer',token,data).toPromise();

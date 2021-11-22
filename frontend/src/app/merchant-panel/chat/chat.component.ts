@@ -38,7 +38,7 @@ export class ChatComponent implements OnInit {
     })
   }
   navigateToHelp(){
-    this.router.navigate(['/admin-panel/help'])
+    this.router.navigate(['/merchant/support'])
   }
   // author: {id: 12, username: "+38095384343", password: null, realname: null, email: "arsenguzhva@gmail.com",…}
   // active: true
