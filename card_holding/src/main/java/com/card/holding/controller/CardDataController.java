@@ -22,7 +22,7 @@ public class CardDataController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerCard(@Valid RegisterCardDto dto) {
+    public ResponseEntity<?> registerCard(@Valid @RequestBody RegisterCardDto dto) {
         return cardDataService.registerCard(dto);
     }
 
