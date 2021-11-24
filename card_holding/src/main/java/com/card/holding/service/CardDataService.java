@@ -57,10 +57,10 @@ public class CardDataService {
 
         CardData cardData = optionalCardData.get();
         CardDataResponseDto responseDto = new CardDataResponseDto();
-        responseDto.setCardNumber(encryptionService.decrypt(cardData.getCardNumber()));
-        responseDto.setExpireMonth(encryptionService.decrypt(cardData.getExpireMonth()));
-        responseDto.setExpireYear(encryptionService.decrypt(cardData.getExpireYear()));
-        responseDto.setCvv2Code(encryptionService.decrypt(cardData.getCvv2Code()));
+        responseDto.setCardNumber(encryptionService.removeSalt(encryptionService.decrypt(cardData.getCardNumber())));
+        responseDto.setExpireMonth(encryptionService.removeSalt(encryptionService.decrypt(cardData.getExpireMonth())));
+        responseDto.setExpireYear(encryptionService.removeSalt(encryptionService.decrypt(cardData.getExpireYear())));
+        responseDto.setCvv2Code(encryptionService.removeSalt(encryptionService.decrypt(cardData.getCvv2Code())));
         responseDto.setToken(encryptionService.decrypt(cardData.getToken()));
         return ResponseEntity.ok(responseDto);
     }

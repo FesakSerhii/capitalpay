@@ -67,6 +67,14 @@ public class EncryptionService {
         return value + ":" + getRandomHexString(16);
     }
 
+    public String removeSalt(String value) {
+        if (value.contains(":")) {
+            int semicolonIndex = value.indexOf(":");
+            return value.substring(0, semicolonIndex);
+        }
+        return value;
+    }
+
     public String generateToken() {
         return getRandomHexString(64);
     }
