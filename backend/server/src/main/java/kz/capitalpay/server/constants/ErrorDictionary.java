@@ -32,6 +32,7 @@ public class ErrorDictionary {
     public static final ResultDTO error126 = new ResultDTO(false, "BIN or IIN isn't valid! Check input and try again.", 126);
     public static final ResultDTO error127 = new ResultDTO(false, "Client fee cannot be grater than total fee.", 127);
     public static final ResultDTO error128 = new ResultDTO(false, "BIN or IIN isn't valid! Check input and try again.", 128);
+    public static final ResultDTO error129 = new ResultDTO(false, "Card registration error!", 129);
 
 }
 
