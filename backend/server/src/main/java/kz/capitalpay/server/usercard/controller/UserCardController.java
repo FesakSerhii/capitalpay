@@ -6,12 +6,8 @@ import kz.capitalpay.server.usercard.dto.RegisterUserCardDto;
 import kz.capitalpay.server.usercard.service.UserCardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
@@ -29,9 +25,22 @@ public class UserCardController {
     }
 
     @PostMapping("/register")
-    public ResultDTO saveUserCard(@Valid @RequestBody RegisterUserCardDto dto,
-                                  HttpServletRequest request) {
-        Long merchantId = applicationUserService.getMerchantIdFromToken(request);
-        return userCardService.registerUserCard(dto, merchantId);
+    public ResultDTO saveUserCard(@Valid @RequestBody RegisterUserCardDto dto) {
+        return userCardService.registerClientCard(dto);
+    }
+
+//    @PostMapping("check-validity/{cardId}")
+//    public ResultDTO checkCardValidity(@PathVariable Long cardId) {
+//        return userCardService.checkClientCardValidity(cardId);
+//    }
+
+    @GetMapping
+    public ResultDTO getCardData(@RequestParam String token) {
+        return userCardService.getCardData(token);
+    }
+
+    @GetMapping("/client-cards")
+    public ResultDTO getClientCards() {
+        return userCardService.getClientCards();
     }
 }

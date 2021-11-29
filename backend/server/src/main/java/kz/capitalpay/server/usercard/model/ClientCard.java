@@ -3,14 +3,13 @@ package kz.capitalpay.server.usercard.model;
 import javax.persistence.*;
 
 @Entity
-public class UserCard {
+public class ClientCard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String token;
     private String cardNumber;
-    private Long userId;
     @Column(columnDefinition = "boolean default false")
     private boolean valid;
 
@@ -36,14 +35,6 @@ public class UserCard {
 
     public void setCardNumber(String cardNumber) {
         this.cardNumber = cardNumber;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 
     public boolean isValid() {

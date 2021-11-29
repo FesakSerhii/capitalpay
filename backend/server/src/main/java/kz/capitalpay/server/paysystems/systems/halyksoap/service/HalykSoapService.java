@@ -211,7 +211,7 @@ public class HalykSoapService {
             parsePaymentOrderResponse(paymentOrder, response);
             logger.info(gson.toJson(paymentOrder));
 
-            if("111".equals(cvc)) {
+            if ("111".equals(cvc)) {
                 return "FAIL";
             }
             if (paymentOrder.getReturnCode() != null && paymentOrder.getReturnCode().equals("00")) {
@@ -235,6 +235,15 @@ public class HalykSoapService {
         }
         return "FAIL";
     }
+
+//    public boolean checkCardValidity() {
+//
+//    }
+
+//    private Payment generateCardCheckPayment() {
+//        Payment payment = new Payment();
+//
+//    }
 
     public String checkOrder(String orderid) {
         try {
