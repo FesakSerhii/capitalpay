@@ -299,3 +299,12 @@
 .normal{
   min-height: 220px;
 }
+.noArrow{
+  width:140px;
+  .head {
+    width:140px;
+    i {
+      display: none;
+    }
+  }
+}

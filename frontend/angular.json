@@ -255,6 +255,129 @@
           }
         }
       }
+    },
+    "paymentPage": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        },
+        "@schematics/angular:application": {
+          "strict": true
+        }
+      },
+      "root": "projects/payment-page",
+      "sourceRoot": "projects/payment-page/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/paymentPage",
+            "index": "projects/payment-page/src/index.html",
+            "main": "projects/payment-page/src/main.ts",
+            "polyfills": "projects/payment-page/src/polyfills.ts",
+            "tsConfig": "projects/payment-page/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "projects/payment-page/src/favicon.ico",
+              "projects/payment-page/src/assets"
+            ],
+            "styles": [
+              "projects/payment-page/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/payment-page/src/environments/environment.ts",
+                  "with": "projects/payment-page/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "paymentPage:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "paymentPage:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "paymentPage:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/payment-page/src/test.ts",
+            "polyfills": "projects/payment-page/src/polyfills.ts",
+            "tsConfig": "projects/payment-page/tsconfig.spec.json",
+            "karmaConfig": "projects/payment-page/karma.conf.js",
+            "assets": [
+              "projects/payment-page/src/favicon.ico",
+              "projects/payment-page/src/assets"
+            ],
+            "styles": [
+              "projects/payment-page/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/payment-page/tsconfig.app.json",
+              "projects/payment-page/tsconfig.spec.json",
+              "projects/payment-page/e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/payment-page/e2e/protractor.conf.js",
+            "devServerTarget": "paymentPage:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "paymentPage:serve:production"
+            }
+          }
+        }
+      }
     }
   },
   "defaultProject": "capitalPay"
