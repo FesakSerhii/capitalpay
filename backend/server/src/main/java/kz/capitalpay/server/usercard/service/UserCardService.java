@@ -55,18 +55,24 @@ public class UserCardService {
     }
 
     public ResultDTO getCardData(String token) {
-        ResponseEntity<String> response = restTemplate.getForEntity(cardHoldingUrl + "", String.class);
+        CardDataResponseDto dto = getCardDataFromTokenServer(token);
+        if (Objects.isNull(dto)) {
+            return ErrorDictionary.error130;
+        }
+
+        return new ResultDTO(true, dto, 0);
+    }
+
+    private CardDataResponseDto getCardDataFromTokenServer(String token) {
+        String url = cardHoldingUrl + "/card-data?token=" + token;
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
         CardDataResponseDto dto = null;
         try {
             dto = objectMapper.readValue(response.getBody(), CardDataResponseDto.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        if (Objects.isNull(dto)) {
-            return ErrorDictionary.error130;
-        }
-
-        return new ResultDTO(true, dto, 0);
+        return dto;
     }
 
     public ResultDTO getClientCards() {
@@ -88,14 +94,21 @@ public class UserCardService {
         return new ResultDTO(true, clientCard, 0);
     }
 
-//    public ResultDTO checkClientCardValidity(Long cardId) {
-//        ClientCard clientCard = clientCardRepository.findById(cardId).orElse(null);
-//        if (Objects.isNull(clientCard)) {
-//            return ErrorDictionary.error130;
-//        }
-//
-//        return new ResultDTO(true, halykSoapService.checkCardValidity(), 0);
-//    }
+    public ResultDTO checkClientCardValidity(Long cardId, String ipAddress, String userAgent) {
+        ClientCard clientCard = clientCardRepository.findById(cardId).orElse(null);
+        if (Objects.isNull(clientCard)) {
+            return ErrorDictionary.error130;
+        }
+        CardDataResponseDto dto = getCardDataFromTokenServer(clientCard.getToken());
+        if (Objects.isNull(dto)) {
+            return ErrorDictionary.error130;
+        }
+
+        boolean valid = halykSoapService.checkCardValidity(ipAddress, userAgent, dto);
+        clientCard.setValid(valid);
+        clientCardRepository.save(clientCard);
+        return new ResultDTO(true, valid, 0);
+    }
 
     private String maskCardNumber(String cardNumber) {
         return cardNumber.replaceAll("\\b(\\d{4})(\\d{8})(\\d{4})", "$1XXXXXXXX$3");

@@ -2,7 +2,9 @@ package kz.capitalpay.server.paysystems.systems.halyksoap.service;
 
 import com.google.gson.Gson;
 import kz.capitalpay.server.cashbox.model.Cashbox;
+import kz.capitalpay.server.payments.model.CheckCardValidityPayment;
 import kz.capitalpay.server.payments.model.Payment;
+import kz.capitalpay.server.payments.repository.CheckCardValidityPaymentRepository;
 import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.paysystems.systems.halyksoap.dto.HalykTransferOrderDTO;
 import kz.capitalpay.server.paysystems.systems.halyksoap.kkbsign.KKBSign;
@@ -12,6 +14,9 @@ import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykPaymentOrder
 import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykCheckOrderRepository;
 import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykPaymentOrderAcsRepository;
 import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykPaymentOrderRepository;
+import kz.capitalpay.server.usercard.dto.CardDataResponseDto;
+import kz.capitalpay.server.wsdl.*;
+import org.apache.axis2.AxisFault;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -24,9 +29,11 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
+import java.rmi.RemoteException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static kz.capitalpay.server.simple.service.SimpleService.PENDING;
 import static kz.capitalpay.server.simple.service.SimpleService.SUCCESS;
@@ -80,6 +87,9 @@ public class HalykSoapService {
 
     @Autowired
     PaymentService paymentService;
+
+    @Autowired
+    CheckCardValidityPaymentRepository checkCardValidityPaymentRepository;
 
     private String createTransferOrder(HalykTransferOrderDTO paymentOrder, String cvc, String month, String year, String pan) {
         String concatString = paymentOrder.getOrderid() + paymentOrder.getAmount() + paymentOrder.getCurrency() +
@@ -236,14 +246,167 @@ public class HalykSoapService {
         return "FAIL";
     }
 
-//    public boolean checkCardValidity() {
-//
-//    }
+    public boolean checkCardValidity(String ipAddress, String userAgent, CardDataResponseDto cardData) {
+        CheckCardValidityPayment payment = generateCardCheckPayment(ipAddress, userAgent, Long.parseLong(merchantid),
+                new BigDecimal(10));
+        String orderId = payment.getOrderId();
+        String pan = cardData.getCardNumber();
+        String trType = "0";
+        String year = cardData.getExpireYear().substring(2);
+        String month = cardData.getExpireMonth();
+        String cvv2 = cardData.getCvv2Code();
+        String amount = "10";
+        String currency = "KZT";
 
-//    private Payment generateCardCheckPayment() {
-//        Payment payment = new Payment();
-//
-//    }
+        EpayServiceStub.PaymentOrderResponse paymentOrderResponse = sendPaymentOrderRequest(amount, currency,
+                cvv2, merchantid, month, year, orderId, pan, trType);
+
+        logger.info("paymentOrderResponse");
+        logger.info("Message: " + paymentOrderResponse.get_return().getMessage());
+        logger.info("Approval code: " + paymentOrderResponse.get_return().getApprovalcode());
+        logger.info("OrderId: " + paymentOrderResponse.get_return().getOrderid());
+        logger.info("getReference: " + paymentOrderResponse.get_return().getReference());
+        logger.info("getReference: " + paymentOrderResponse.get_return().getReturnCode());
+
+        if (paymentOrderResponse.get_return().getReturnCode().equals("00")) {
+            String reference = paymentOrderResponse.get_return().getReference();
+            EpayServiceStub.ControlOrderForCommerceResponse controlOrderForCommerceResponse = sendControlOrderForCommerceRequest(amount,
+                    currency, merchantid, orderId, reference, "22");
+            logger.info("controlOrderForCommerceResponse");
+            logger.info("Message: " + controlOrderForCommerceResponse.get_return().getMessage());
+            logger.info("Approval code: " + controlOrderForCommerceResponse.get_return().getApprovalcode());
+            logger.info("OrderId: " + controlOrderForCommerceResponse.get_return().getOrderid());
+            logger.info("getReference: " + controlOrderForCommerceResponse.get_return().getReference());
+            logger.info("getReference: " + controlOrderForCommerceResponse.get_return().getReturnCode());
+            if (controlOrderForCommerceResponse.get_return().getReturnCode().equals("00")) {
+                payment.setStatus("COMPLETED");
+                checkCardValidityPaymentRepository.save(payment);
+            }
+
+            return true;
+        }
+        return false;
+    }
+
+    private EpayServiceStub.PaymentOrderResponse sendPaymentOrderRequest(String amount, String currency, String cvv2,
+                                                                         String requestMerchantId, String month, String year,
+                                                                         String orderId, String pan, String trType) {
+        EpayServiceStub stub = null;
+        try {
+            stub = new EpayServiceStub();
+        } catch (AxisFault axisFault) {
+            axisFault.printStackTrace();
+        }
+        EpayServiceStub.PaymentOrder paymentOrder = new EpayServiceStub.PaymentOrder();
+        EpayServiceStub.Order order = new EpayServiceStub.Order();
+        order.setAmount(amount);
+        order.setCardholderName("test");
+        order.setCurrency(currency);
+        order.setCvc(cvv2);
+        order.setDesc("Check card validity payment");
+        order.setMerchantid(requestMerchantId);
+        order.setMonth(month);
+        order.setOrderid(orderId);
+        order.setPan(pan);
+        order.setTrtype(trType);
+        order.setYear(year);
+
+        String concatString = orderId + amount + currency +
+                trType + pan + requestMerchantId;
+        KKBSign kkbSign = new KKBSign();
+        String signatureValue = kkbSign.sign64(concatString, keystore, clientAlias, keypass, storepass);
+
+        paymentOrder.setOrder(order);
+        EpayServiceStub.RequestSignature signature = new EpayServiceStub.RequestSignature();
+        signature.setMerchantCertificate(merchantCertificate);
+        signature.setMerchantId(requestMerchantId);
+        signature.setSignatureValue(signatureValue);
+        paymentOrder.setRequestSignature(signature);
+        EpayServiceStub.PaymentOrderResponse response = null;
+        try {
+            response = stub.paymentOrder(paymentOrder);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+        return response;
+    }
+
+    private EpayServiceStub.ControlOrderForCommerceResponse sendControlOrderForCommerceRequest(String amount,
+                                                                                               String currency,
+                                                                                               String requestMerchantId,
+                                                                                               String orderId,
+                                                                                               String reference,
+                                                                                               String trType) {
+        EpayServiceStub stub = null;
+        try {
+            stub = new EpayServiceStub();
+        } catch (AxisFault axisFault) {
+            axisFault.printStackTrace();
+        }
+        EpayServiceStub.ControlOrderForCommerce controlOrderForCommerce = new EpayServiceStub.ControlOrderForCommerce();
+        EpayServiceStub.ControlOrder controlOrder = new EpayServiceStub.ControlOrder();
+        controlOrder.setAmount(amount);
+        controlOrder.setCurrency(currency);
+        controlOrder.setIntreference("test");
+        controlOrder.setMerchantid(requestMerchantId);
+        controlOrder.setOrderid(orderId);
+        controlOrder.setReference(reference);
+        controlOrder.setTrtype(trType);
+
+
+        String concatString = orderId + amount + currency +
+                trType + requestMerchantId;
+        KKBSign kkbSign = new KKBSign();
+        String signatureValue = kkbSign.sign64(concatString, keystore, clientAlias, keypass, storepass);
+
+        controlOrderForCommerce.setControlOrder(controlOrder);
+        EpayServiceStub.RequestSignature signature = new EpayServiceStub.RequestSignature();
+        signature.setMerchantCertificate(merchantCertificate);
+        signature.setMerchantId(requestMerchantId);
+        signature.setSignatureValue(signatureValue);
+        controlOrderForCommerce.setRequestSignature(signature);
+        EpayServiceStub.ControlOrderForCommerceResponse response = null;
+        try {
+            response = stub.controlOrderForCommerce(controlOrderForCommerce);
+        } catch (RemoteException | EpayServiceSAXExceptionException | EpayServiceParserConfigurationExceptionException | EpayServiceSignatureExceptionException | EpayServiceCertificateExceptionException | EpayServiceUnrecoverableKeyExceptionException | EpayServiceKeyStoreExceptionException | EpayServiceIOExceptionException | EpayServiceNoSuchAlgorithmExceptionException | EpayServiceInvalidKeyExceptionException e) {
+            e.printStackTrace();
+        }
+
+        return response;
+    }
+
+    private CheckCardValidityPayment generateCardCheckPayment(String ipAddress, String userAgent, Long merchantId,
+                                                              BigDecimal totalAmount) {
+        CheckCardValidityPayment payment = new CheckCardValidityPayment();
+        CheckCardValidityPayment lastPayment = checkCardValidityPaymentRepository.findLast().orElse(null);
+        if (Objects.nonNull(lastPayment)) {
+            payment.setOrderId(generateOrderId(lastPayment.getOrderId()));
+        } else {
+            payment.setOrderId("00000163601600");
+        }
+        payment.setCurrency("KZT");
+        payment.setDescription("Check card validity payment");
+        payment.setLocalDateTime(LocalDateTime.now());
+        payment.setIpAddress(ipAddress);
+        payment.setMerchantId(merchantId);
+
+        payment.setTotalAmount(totalAmount);
+        payment.setUserAgent(userAgent);
+        payment.setStatus("NEW");
+        payment = checkCardValidityPaymentRepository.save(payment);
+        return payment;
+    }
+
+    private String generateOrderId(String lastOrderId) {
+        Long lastOrderIdLong = Long.parseLong(lastOrderId);
+        Long newOrderId = lastOrderIdLong + 1;
+        StringBuilder zerosStr = new StringBuilder();
+        if (String.valueOf(newOrderId).length() < 14) {
+            zerosStr.append("0".repeat(Math.max(0, 14 - String.valueOf(newOrderId).length())));
+        }
+        return zerosStr.toString() + newOrderId;
+    }
 
     public String checkOrder(String orderid) {
         try {

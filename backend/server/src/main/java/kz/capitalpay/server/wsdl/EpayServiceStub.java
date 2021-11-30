@@ -60,7 +60,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         org.apache.axis2.context.ConfigurationContext configurationContext)
         throws org.apache.axis2.AxisFault {
         this(configurationContext,
-            "http://testpay.kkb.kz/axis2/services/EpayService.EpayServiceHttpSoap12Endpoint/");
+            "https://testpay.kkb.kz/axis2/services/EpayService.EpayServiceHttpSoap12Endpoint/");
     }
 
     /**
@@ -68,7 +68,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
      */
     public EpayServiceStub() throws org.apache.axis2.AxisFault {
         this(
-            "http://testpay.kkb.kz/axis2/services/EpayService.EpayServiceHttpSoap12Endpoint/");
+            "https://testpay.kkb.kz/axis2/services/EpayService.EpayServiceHttpSoap12Endpoint/");
     }
 
     /**
