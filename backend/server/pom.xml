@@ -73,36 +73,46 @@
 
         <dependency>
             <groupId>org.apache.axis2</groupId>
+            <artifactId>axis2</artifactId>
+            <version>1.7.9</version>
+            <type>pom</type>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.axis2</groupId>
             <artifactId>axis2-adb</artifactId>
             <version>1.7.9</version>
         </dependency>
 
 
-        <dependency>
-            <groupId>com.appache.axis</groupId>
-            <artifactId>appache_axis_apache-mime4j-core</artifactId>
-            <version>0.8.4</version>
-        </dependency>
-        <dependency>
-            <groupId>com.appache.axis</groupId>
-            <artifactId>appache_axis_axiom-api</artifactId>
-            <version>1.3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.appache.axis</groupId>
-            <artifactId>appache_axis_axiom-dom</artifactId>
-            <version>1.3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.appache.axis</groupId>
-            <artifactId>appache_axis_axiom-impl</artifactId>
-            <version>1.3.0</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.appache.axis</groupId>-->
+<!--            <artifactId>appache_axis_apache-mime4j-core</artifactId>-->
+<!--            <version>0.8.4</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.appache.axis</groupId>-->
+<!--            <artifactId>appache_axis_axiom-api</artifactId>-->
+<!--            <version>1.3.0</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.appache.axis</groupId>-->
+<!--            <artifactId>appache_axis_axiom-dom</artifactId>-->
+<!--            <version>1.3.0</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.appache.axis</groupId>-->
+<!--            <artifactId>appache_axis_axiom-impl</artifactId>-->
+<!--            <version>1.3.0</version>-->
+<!--        </dependency>-->
+
 <!--        <dependency>-->
 <!--            <groupId>com.appache.axis</groupId>-->
 <!--            <artifactId>appache_axis_axis2-adb</artifactId>-->
 <!--            <version>1.8.0</version>-->
 <!--        </dependency>-->
+
         <dependency>
             <groupId>com.appache.axis</groupId>
             <artifactId>axis2-appache_axis_kernel</artifactId>
