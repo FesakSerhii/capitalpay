@@ -7,12 +7,34 @@
 package kz.capitalpay.server.wsdl;
 
 
+import org.apache.axis2.AxisFault;
+import org.apache.axis2.addressing.EndpointReference;
+import org.apache.axis2.client.FaultMapKey;
+import org.apache.axis2.client.OperationClient;
+import org.apache.axis2.client.ServiceClient;
+import org.apache.axis2.client.Stub;
+import org.apache.axis2.client.async.AxisCallback;
+import org.apache.axis2.context.ConfigurationContext;
+import org.apache.axis2.context.MessageContext;
+import org.apache.axis2.databinding.ADBBean;
+import org.apache.axis2.databinding.ADBDataSource;
+import org.apache.axis2.databinding.ADBException;
+import org.apache.axis2.databinding.utils.BeanUtil;
+import org.apache.axis2.databinding.utils.ConverterUtil;
+import org.apache.axis2.description.AxisOperation;
+import org.apache.axis2.description.AxisService;
+import org.apache.axis2.description.OutInAxisOperation;
+import org.apache.axis2.description.WSDL2Constants;
+import org.apache.axis2.util.CallbackReceiver;
+import org.apache.axis2.util.Utils;
+import org.apache.axis2.wsdl.WSDLConstants;
+
 /*
  *  EpayServiceStub java implementation
  */
-public class EpayServiceStub extends org.apache.axis2.client.Stub {
+public class EpayServiceStub extends Stub {
     private static int counter = 0;
-    protected org.apache.axis2.description.AxisOperation[] _operations;
+    protected AxisOperation[] _operations;
 
     //hashmaps to keep the fault mapping
     private java.util.HashMap faultExceptionNameMap = new java.util.HashMap();
@@ -24,8 +46,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
      *Constructor that takes in a configContext
      */
     public EpayServiceStub(
-        org.apache.axis2.context.ConfigurationContext configurationContext,
-        java.lang.String targetEndpoint) throws org.apache.axis2.AxisFault {
+        ConfigurationContext configurationContext,
+        java.lang.String targetEndpoint) throws AxisFault {
         this(configurationContext, targetEndpoint, false);
     }
 
@@ -33,18 +55,18 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
      * Constructor that takes in a configContext  and useseperate listner
      */
     public EpayServiceStub(
-        org.apache.axis2.context.ConfigurationContext configurationContext,
+        ConfigurationContext configurationContext,
         java.lang.String targetEndpoint, boolean useSeparateListener)
-        throws org.apache.axis2.AxisFault {
+        throws AxisFault {
         //To populate AxisService
         populateAxisService();
         populateFaults();
 
-        _serviceClient = new org.apache.axis2.client.ServiceClient(configurationContext,
+        _serviceClient = new ServiceClient(configurationContext,
                 _service);
 
         _serviceClient.getOptions()
-                      .setTo(new org.apache.axis2.addressing.EndpointReference(
+                      .setTo(new EndpointReference(
                 targetEndpoint));
         _serviceClient.getOptions().setUseSeparateListener(useSeparateListener);
 
@@ -57,8 +79,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
      * Default Constructor
      */
     public EpayServiceStub(
-        org.apache.axis2.context.ConfigurationContext configurationContext)
-        throws org.apache.axis2.AxisFault {
+        ConfigurationContext configurationContext)
+        throws AxisFault {
         this(configurationContext,
             "https://testpay.kkb.kz/axis2/services/EpayService.EpayServiceHttpSoap12Endpoint/");
     }
@@ -66,7 +88,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
     /**
      * Default Constructor
      */
-    public EpayServiceStub() throws org.apache.axis2.AxisFault {
+    public EpayServiceStub() throws AxisFault {
         this(
             "https://testpay.kkb.kz/axis2/services/EpayService.EpayServiceHttpSoap12Endpoint/");
     }
@@ -75,7 +97,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
      * Constructor taking the target endpoint
      */
     public EpayServiceStub(java.lang.String targetEndpoint)
-        throws org.apache.axis2.AxisFault {
+        throws AxisFault {
         this(null, targetEndpoint);
     }
 
@@ -91,18 +113,18 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         "_" + counter;
     }
 
-    private void populateAxisService() throws org.apache.axis2.AxisFault {
+    private void populateAxisService() throws AxisFault {
         //creating the Service with a unique name
-        _service = new org.apache.axis2.description.AxisService("EpayService" +
+        _service = new AxisService("EpayService" +
                 getUniqueSuffix());
         addAnonymousOperations();
 
         //creating the operations
-        org.apache.axis2.description.AxisOperation __operation;
+        AxisOperation __operation;
 
-        _operations = new org.apache.axis2.description.AxisOperation[16];
+        _operations = new AxisOperation[16];
 
-        __operation = new org.apache.axis2.description.OutInAxisOperation();
+        __operation = new OutInAxisOperation();
 
         __operation.setName(new javax.xml.namespace.QName(
                 "http://ws.epay.kkb.kz/xsd", "is3DOrder"));
@@ -110,7 +132,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
         _operations[0] = __operation;
 
-        __operation = new org.apache.axis2.description.OutInAxisOperation();
+        __operation = new OutInAxisOperation();
 
         __operation.setName(new javax.xml.namespace.QName(
                 "http://ws.epay.kkb.kz/xsd", "paymentOrderAcs"));
@@ -118,7 +140,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
         _operations[1] = __operation;
 
-        __operation = new org.apache.axis2.description.OutInAxisOperation();
+        __operation = new OutInAxisOperation();
 
         __operation.setName(new javax.xml.namespace.QName(
                 "http://ws.epay.kkb.kz/xsd", "deleteCard"));
@@ -126,7 +148,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
         _operations[2] = __operation;
 
-        __operation = new org.apache.axis2.description.OutInAxisOperation();
+        __operation = new OutInAxisOperation();
 
         __operation.setName(new javax.xml.namespace.QName(
                 "http://ws.epay.kkb.kz/xsd", "checkOrder"));
@@ -134,7 +156,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
         _operations[3] = __operation;
 
-        __operation = new org.apache.axis2.description.OutInAxisOperation();
+        __operation = new OutInAxisOperation();
 
         __operation.setName(new javax.xml.namespace.QName(
                 "http://ws.epay.kkb.kz/xsd", "airastanaPaymentAcsOrder"));
@@ -142,7 +164,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
         _operations[4] = __operation;
 
-        __operation = new org.apache.axis2.description.OutInAxisOperation();
+        __operation = new OutInAxisOperation();
 
         __operation.setName(new javax.xml.namespace.QName(
                 "http://ws.epay.kkb.kz/xsd", "getCardList"));
@@ -150,7 +172,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
         _operations[5] = __operation;
 
-        __operation = new org.apache.axis2.description.OutInAxisOperation();
+        __operation = new OutInAxisOperation();
 
         __operation.setName(new javax.xml.namespace.QName(
                 "http://ws.epay.kkb.kz/xsd", "refundOrderForCommerce"));
@@ -158,7 +180,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
         _operations[6] = __operation;
 
-        __operation = new org.apache.axis2.description.OutInAxisOperation();
+        __operation = new OutInAxisOperation();
 
         __operation.setName(new javax.xml.namespace.QName(
                 "http://ws.epay.kkb.kz/xsd", "cardidPaymentOrder"));
@@ -166,7 +188,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
         _operations[7] = __operation;
 
-        __operation = new org.apache.axis2.description.OutInAxisOperation();
+        __operation = new OutInAxisOperation();
 
         __operation.setName(new javax.xml.namespace.QName(
                 "http://ws.epay.kkb.kz/xsd", "transferOrder"));
@@ -174,7 +196,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
         _operations[8] = __operation;
 
-        __operation = new org.apache.axis2.description.OutInAxisOperation();
+        __operation = new OutInAxisOperation();
 
         __operation.setName(new javax.xml.namespace.QName(
                 "http://ws.epay.kkb.kz/xsd", "paymentOrder"));
@@ -182,7 +204,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
         _operations[9] = __operation;
 
-        __operation = new org.apache.axis2.description.OutInAxisOperation();
+        __operation = new OutInAxisOperation();
 
         __operation.setName(new javax.xml.namespace.QName(
                 "http://ws.epay.kkb.kz/xsd", "checkForeignCard"));
@@ -190,7 +212,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
         _operations[10] = __operation;
 
-        __operation = new org.apache.axis2.description.OutInAxisOperation();
+        __operation = new OutInAxisOperation();
 
         __operation.setName(new javax.xml.namespace.QName(
                 "http://ws.epay.kkb.kz/xsd", "controlOrderForCommerce"));
@@ -198,7 +220,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
         _operations[11] = __operation;
 
-        __operation = new org.apache.axis2.description.OutInAxisOperation();
+        __operation = new OutInAxisOperation();
 
         __operation.setName(new javax.xml.namespace.QName(
                 "http://ws.epay.kkb.kz/xsd", "recurrentOrder"));
@@ -206,7 +228,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
         _operations[12] = __operation;
 
-        __operation = new org.apache.axis2.description.OutInAxisOperation();
+        __operation = new OutInAxisOperation();
 
         __operation.setName(new javax.xml.namespace.QName(
                 "http://ws.epay.kkb.kz/xsd", "formZip"));
@@ -214,7 +236,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
         _operations[13] = __operation;
 
-        __operation = new org.apache.axis2.description.OutInAxisOperation();
+        __operation = new OutInAxisOperation();
 
         __operation.setName(new javax.xml.namespace.QName(
                 "http://ws.epay.kkb.kz/xsd", "checkZip"));
@@ -222,7 +244,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
         _operations[14] = __operation;
 
-        __operation = new org.apache.axis2.description.OutInAxisOperation();
+        __operation = new OutInAxisOperation();
 
         __operation.setName(new javax.xml.namespace.QName(
                 "http://ws.epay.kkb.kz/xsd", "airastanaPaymentOrder"));
@@ -233,1004 +255,1004 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
     //populates the faults
     private void populateFaults() {
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceIOException"), "is3dOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceIOExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceIOException"), "is3dOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceIOExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceIOException"), "is3dOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceIOException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceUnrecoverableKeyException"), "is3dOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceUnrecoverableKeyExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceUnrecoverableKeyException"), "is3dOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceUnrecoverableKeyExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceUnrecoverableKeyException"), "is3dOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceUnrecoverableKeyException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSAXException"), "is3dOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceSAXExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSAXException"), "is3dOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceSAXExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSAXException"), "is3dOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceSAXException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceNoSuchAlgorithmException"), "is3dOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceNoSuchAlgorithmExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceNoSuchAlgorithmException"), "is3dOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceNoSuchAlgorithmExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceNoSuchAlgorithmException"), "is3dOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceNoSuchAlgorithmException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSignatureException"), "is3dOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceSignatureExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSignatureException"), "is3dOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceSignatureExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSignatureException"), "is3dOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceSignatureException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceParserConfigurationException"), "is3dOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceParserConfigurationExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceParserConfigurationException"), "is3dOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceParserConfigurationExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceParserConfigurationException"), "is3dOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceParserConfigurationException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceCertificateException"), "is3dOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceCertificateExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceCertificateException"), "is3dOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceCertificateExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceCertificateException"), "is3dOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceCertificateException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceKeyStoreException"), "is3dOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceKeyStoreExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceKeyStoreException"), "is3dOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceKeyStoreExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceKeyStoreException"), "is3dOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceKeyStoreException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceInvalidKeyException"), "is3dOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceInvalidKeyExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceInvalidKeyException"), "is3dOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceInvalidKeyExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceInvalidKeyException"), "is3dOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceInvalidKeyException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceIOException"), "paymentOrderAcs"),
             "kz.capitalpay.server.wsdl.EpayServiceIOExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceIOException"), "paymentOrderAcs"),
             "kz.capitalpay.server.wsdl.EpayServiceIOExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceIOException"), "paymentOrderAcs"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceIOException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceUnrecoverableKeyException"), "paymentOrderAcs"),
             "kz.capitalpay.server.wsdl.EpayServiceUnrecoverableKeyExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceUnrecoverableKeyException"), "paymentOrderAcs"),
             "kz.capitalpay.server.wsdl.EpayServiceUnrecoverableKeyExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceUnrecoverableKeyException"), "paymentOrderAcs"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceUnrecoverableKeyException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSAXException"), "paymentOrderAcs"),
             "kz.capitalpay.server.wsdl.EpayServiceSAXExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSAXException"), "paymentOrderAcs"),
             "kz.capitalpay.server.wsdl.EpayServiceSAXExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSAXException"), "paymentOrderAcs"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceSAXException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceNoSuchAlgorithmException"), "paymentOrderAcs"),
             "kz.capitalpay.server.wsdl.EpayServiceNoSuchAlgorithmExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceNoSuchAlgorithmException"), "paymentOrderAcs"),
             "kz.capitalpay.server.wsdl.EpayServiceNoSuchAlgorithmExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceNoSuchAlgorithmException"), "paymentOrderAcs"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceNoSuchAlgorithmException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSignatureException"), "paymentOrderAcs"),
             "kz.capitalpay.server.wsdl.EpayServiceSignatureExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSignatureException"), "paymentOrderAcs"),
             "kz.capitalpay.server.wsdl.EpayServiceSignatureExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSignatureException"), "paymentOrderAcs"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceSignatureException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceCertificateException"), "paymentOrderAcs"),
             "kz.capitalpay.server.wsdl.EpayServiceCertificateExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceCertificateException"), "paymentOrderAcs"),
             "kz.capitalpay.server.wsdl.EpayServiceCertificateExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceCertificateException"), "paymentOrderAcs"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceCertificateException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceParserConfigurationException"),
                 "paymentOrderAcs"),
             "kz.capitalpay.server.wsdl.EpayServiceParserConfigurationExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceParserConfigurationException"),
                 "paymentOrderAcs"),
             "kz.capitalpay.server.wsdl.EpayServiceParserConfigurationExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceParserConfigurationException"),
                 "paymentOrderAcs"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceParserConfigurationException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceKeyStoreException"), "paymentOrderAcs"),
             "kz.capitalpay.server.wsdl.EpayServiceKeyStoreExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceKeyStoreException"), "paymentOrderAcs"),
             "kz.capitalpay.server.wsdl.EpayServiceKeyStoreExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceKeyStoreException"), "paymentOrderAcs"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceKeyStoreException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceInvalidKeyException"), "paymentOrderAcs"),
             "kz.capitalpay.server.wsdl.EpayServiceInvalidKeyExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceInvalidKeyException"), "paymentOrderAcs"),
             "kz.capitalpay.server.wsdl.EpayServiceInvalidKeyExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceInvalidKeyException"), "paymentOrderAcs"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceInvalidKeyException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceIOException"), "checkOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceIOExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceIOException"), "checkOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceIOExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceIOException"), "checkOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceIOException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceUnrecoverableKeyException"), "checkOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceUnrecoverableKeyExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceUnrecoverableKeyException"), "checkOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceUnrecoverableKeyExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceUnrecoverableKeyException"), "checkOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceUnrecoverableKeyException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSAXException"), "checkOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceSAXExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSAXException"), "checkOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceSAXExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSAXException"), "checkOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceSAXException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceNoSuchAlgorithmException"), "checkOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceNoSuchAlgorithmExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceNoSuchAlgorithmException"), "checkOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceNoSuchAlgorithmExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceNoSuchAlgorithmException"), "checkOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceNoSuchAlgorithmException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSignatureException"), "checkOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceSignatureExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSignatureException"), "checkOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceSignatureExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSignatureException"), "checkOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceSignatureException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceCertificateException"), "checkOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceCertificateExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceCertificateException"), "checkOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceCertificateExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceCertificateException"), "checkOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceCertificateException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceParserConfigurationException"), "checkOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceParserConfigurationExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceParserConfigurationException"), "checkOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceParserConfigurationExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceParserConfigurationException"), "checkOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceParserConfigurationException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceKeyStoreException"), "checkOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceKeyStoreExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceKeyStoreException"), "checkOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceKeyStoreExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceKeyStoreException"), "checkOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceKeyStoreException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceInvalidKeyException"), "checkOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceInvalidKeyExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceInvalidKeyException"), "checkOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceInvalidKeyExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceInvalidKeyException"), "checkOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceInvalidKeyException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceIOException"), "getCardList"),
             "kz.capitalpay.server.wsdl.EpayServiceIOExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceIOException"), "getCardList"),
             "kz.capitalpay.server.wsdl.EpayServiceIOExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceIOException"), "getCardList"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceIOException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceUnrecoverableKeyException"), "getCardList"),
             "kz.capitalpay.server.wsdl.EpayServiceUnrecoverableKeyExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceUnrecoverableKeyException"), "getCardList"),
             "kz.capitalpay.server.wsdl.EpayServiceUnrecoverableKeyExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceUnrecoverableKeyException"), "getCardList"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceUnrecoverableKeyException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSAXException"), "getCardList"),
             "kz.capitalpay.server.wsdl.EpayServiceSAXExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSAXException"), "getCardList"),
             "kz.capitalpay.server.wsdl.EpayServiceSAXExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSAXException"), "getCardList"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceSAXException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceNoSuchAlgorithmException"), "getCardList"),
             "kz.capitalpay.server.wsdl.EpayServiceNoSuchAlgorithmExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceNoSuchAlgorithmException"), "getCardList"),
             "kz.capitalpay.server.wsdl.EpayServiceNoSuchAlgorithmExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceNoSuchAlgorithmException"), "getCardList"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceNoSuchAlgorithmException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSignatureException"), "getCardList"),
             "kz.capitalpay.server.wsdl.EpayServiceSignatureExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSignatureException"), "getCardList"),
             "kz.capitalpay.server.wsdl.EpayServiceSignatureExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSignatureException"), "getCardList"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceSignatureException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceCertificateException"), "getCardList"),
             "kz.capitalpay.server.wsdl.EpayServiceCertificateExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceCertificateException"), "getCardList"),
             "kz.capitalpay.server.wsdl.EpayServiceCertificateExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceCertificateException"), "getCardList"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceCertificateException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceParserConfigurationException"), "getCardList"),
             "kz.capitalpay.server.wsdl.EpayServiceParserConfigurationExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceParserConfigurationException"), "getCardList"),
             "kz.capitalpay.server.wsdl.EpayServiceParserConfigurationExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceParserConfigurationException"), "getCardList"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceParserConfigurationException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceKeyStoreException"), "getCardList"),
             "kz.capitalpay.server.wsdl.EpayServiceKeyStoreExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceKeyStoreException"), "getCardList"),
             "kz.capitalpay.server.wsdl.EpayServiceKeyStoreExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceKeyStoreException"), "getCardList"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceKeyStoreException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceInvalidKeyException"), "getCardList"),
             "kz.capitalpay.server.wsdl.EpayServiceInvalidKeyExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceInvalidKeyException"), "getCardList"),
             "kz.capitalpay.server.wsdl.EpayServiceInvalidKeyExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceInvalidKeyException"), "getCardList"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceInvalidKeyException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceIOException"), "refundOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceIOExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceIOException"), "refundOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceIOExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceIOException"), "refundOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceIOException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceUnrecoverableKeyException"),
                 "refundOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceUnrecoverableKeyExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceUnrecoverableKeyException"),
                 "refundOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceUnrecoverableKeyExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceUnrecoverableKeyException"),
                 "refundOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceUnrecoverableKeyException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSAXException"), "refundOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceSAXExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSAXException"), "refundOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceSAXExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSAXException"), "refundOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceSAXException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceNoSuchAlgorithmException"),
                 "refundOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceNoSuchAlgorithmExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceNoSuchAlgorithmException"),
                 "refundOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceNoSuchAlgorithmExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceNoSuchAlgorithmException"),
                 "refundOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceNoSuchAlgorithmException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSignatureException"), "refundOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceSignatureExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSignatureException"), "refundOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceSignatureExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSignatureException"), "refundOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceSignatureException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceCertificateException"), "refundOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceCertificateExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceCertificateException"), "refundOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceCertificateExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceCertificateException"), "refundOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceCertificateException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceParserConfigurationException"),
                 "refundOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceParserConfigurationExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceParserConfigurationException"),
                 "refundOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceParserConfigurationExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceParserConfigurationException"),
                 "refundOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceParserConfigurationException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceKeyStoreException"), "refundOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceKeyStoreExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceKeyStoreException"), "refundOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceKeyStoreExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceKeyStoreException"), "refundOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceKeyStoreException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceInvalidKeyException"), "refundOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceInvalidKeyExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceInvalidKeyException"), "refundOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceInvalidKeyExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceInvalidKeyException"), "refundOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceInvalidKeyException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceIOException"), "cardidPaymentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceIOExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceIOException"), "cardidPaymentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceIOExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceIOException"), "cardidPaymentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceIOException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSAXException"), "cardidPaymentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceSAXExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSAXException"), "cardidPaymentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceSAXExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSAXException"), "cardidPaymentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceSAXException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceParserConfigurationException"),
                 "cardidPaymentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceParserConfigurationExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceParserConfigurationException"),
                 "cardidPaymentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceParserConfigurationExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceParserConfigurationException"),
                 "cardidPaymentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceParserConfigurationException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceIOException"), "transferOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceIOExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceIOException"), "transferOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceIOExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceIOException"), "transferOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceIOException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceUnrecoverableKeyException"), "transferOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceUnrecoverableKeyExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceUnrecoverableKeyException"), "transferOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceUnrecoverableKeyExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceUnrecoverableKeyException"), "transferOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceUnrecoverableKeyException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSAXException"), "transferOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceSAXExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSAXException"), "transferOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceSAXExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSAXException"), "transferOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceSAXException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceNoSuchAlgorithmException"), "transferOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceNoSuchAlgorithmExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceNoSuchAlgorithmException"), "transferOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceNoSuchAlgorithmExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceNoSuchAlgorithmException"), "transferOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceNoSuchAlgorithmException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSignatureException"), "transferOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceSignatureExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSignatureException"), "transferOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceSignatureExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSignatureException"), "transferOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceSignatureException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceCertificateException"), "transferOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceCertificateExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceCertificateException"), "transferOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceCertificateExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceCertificateException"), "transferOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceCertificateException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceParserConfigurationException"), "transferOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceParserConfigurationExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceParserConfigurationException"), "transferOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceParserConfigurationExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceParserConfigurationException"), "transferOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceParserConfigurationException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceKeyStoreException"), "transferOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceKeyStoreExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceKeyStoreException"), "transferOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceKeyStoreExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceKeyStoreException"), "transferOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceKeyStoreException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceInvalidKeyException"), "transferOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceInvalidKeyExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceInvalidKeyException"), "transferOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceInvalidKeyExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceInvalidKeyException"), "transferOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceInvalidKeyException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceIOException"), "controlOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceIOExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceIOException"), "controlOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceIOExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceIOException"), "controlOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceIOException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceUnrecoverableKeyException"),
                 "controlOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceUnrecoverableKeyExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceUnrecoverableKeyException"),
                 "controlOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceUnrecoverableKeyExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceUnrecoverableKeyException"),
                 "controlOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceUnrecoverableKeyException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSAXException"), "controlOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceSAXExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSAXException"), "controlOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceSAXExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSAXException"), "controlOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceSAXException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceNoSuchAlgorithmException"),
                 "controlOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceNoSuchAlgorithmExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceNoSuchAlgorithmException"),
                 "controlOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceNoSuchAlgorithmExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceNoSuchAlgorithmException"),
                 "controlOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceNoSuchAlgorithmException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSignatureException"), "controlOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceSignatureExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSignatureException"), "controlOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceSignatureExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSignatureException"), "controlOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceSignatureException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceCertificateException"),
                 "controlOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceCertificateExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceCertificateException"),
                 "controlOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceCertificateExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceCertificateException"),
                 "controlOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceCertificateException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceParserConfigurationException"),
                 "controlOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceParserConfigurationExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceParserConfigurationException"),
                 "controlOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceParserConfigurationExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceParserConfigurationException"),
                 "controlOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceParserConfigurationException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceKeyStoreException"), "controlOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceKeyStoreExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceKeyStoreException"), "controlOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceKeyStoreExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceKeyStoreException"), "controlOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceKeyStoreException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceInvalidKeyException"), "controlOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceInvalidKeyExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceInvalidKeyException"), "controlOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceInvalidKeyExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceInvalidKeyException"), "controlOrderForCommerce"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceInvalidKeyException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceIOException"), "recurrentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceIOExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceIOException"), "recurrentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceIOExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceIOException"), "recurrentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceIOException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceUnrecoverableKeyException"), "recurrentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceUnrecoverableKeyExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceUnrecoverableKeyException"), "recurrentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceUnrecoverableKeyExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceUnrecoverableKeyException"), "recurrentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceUnrecoverableKeyException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSAXException"), "recurrentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceSAXExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSAXException"), "recurrentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceSAXExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSAXException"), "recurrentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceSAXException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceNoSuchAlgorithmException"), "recurrentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceNoSuchAlgorithmExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceNoSuchAlgorithmException"), "recurrentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceNoSuchAlgorithmExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceNoSuchAlgorithmException"), "recurrentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceNoSuchAlgorithmException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSignatureException"), "recurrentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceSignatureExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSignatureException"), "recurrentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceSignatureExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceSignatureException"), "recurrentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceSignatureException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceCertificateException"), "recurrentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceCertificateExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceCertificateException"), "recurrentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceCertificateExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceCertificateException"), "recurrentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceCertificateException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceParserConfigurationException"), "recurrentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceParserConfigurationExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceParserConfigurationException"), "recurrentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceParserConfigurationExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceParserConfigurationException"), "recurrentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceParserConfigurationException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceKeyStoreException"), "recurrentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceKeyStoreExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceKeyStoreException"), "recurrentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceKeyStoreExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceKeyStoreException"), "recurrentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceKeyStoreException");
 
-        faultExceptionNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceInvalidKeyException"), "recurrentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceInvalidKeyExceptionException");
-        faultExceptionClassNameMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultExceptionClassNameMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceInvalidKeyException"), "recurrentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceInvalidKeyExceptionException");
-        faultMessageMap.put(new org.apache.axis2.client.FaultMapKey(
+        faultMessageMap.put(new FaultMapKey(
                 new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                     "EpayServiceInvalidKeyException"), "recurrentOrder"),
             "kz.capitalpay.server.wsdl.EpayServiceStub$EpayServiceInvalidKeyException");
@@ -1263,15 +1285,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
             kz.capitalpay.server.wsdl.EpayServiceCertificateExceptionException,
             kz.capitalpay.server.wsdl.EpayServiceKeyStoreExceptionException,
             kz.capitalpay.server.wsdl.EpayServiceInvalidKeyExceptionException {
-        org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        MessageContext _messageContext = new MessageContext();
 
         try {
-            org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[0].getName());
+            OperationClient _operationClient = _serviceClient.createClient(_operations[0].getName());
             _operationClient.getOptions().setAction("urn:is3dOrder");
             _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
             addPropertyToOperationClient(_operationClient,
-                org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+                WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
                 "&");
 
             // create SOAP envelope with that payload
@@ -1297,7 +1319,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
             //execute the operation client
             _operationClient.execute(true);
 
-            org.apache.axis2.context.MessageContext _returnMessageContext = _operationClient.getMessageContext(org.apache.axis2.wsdl.WSDLConstants.MESSAGE_LABEL_IN_VALUE);
+            MessageContext _returnMessageContext = _operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
             org.apache.axiom.soap.SOAPEnvelope _returnEnv = _returnMessageContext.getEnvelope();
 
             java.lang.Object object = fromOM(_returnEnv.getBody()
@@ -1305,23 +1327,23 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     kz.capitalpay.server.wsdl.EpayServiceStub.Is3DOrderResponse.class);
 
             return (kz.capitalpay.server.wsdl.EpayServiceStub.Is3DOrderResponse) object;
-        } catch (org.apache.axis2.AxisFault f) {
+        } catch (AxisFault f) {
             org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
             if (faultElt != null) {
                 if (faultExceptionNameMap.containsKey(
-                            new org.apache.axis2.client.FaultMapKey(
+                            new FaultMapKey(
                                 faultElt.getQName(), "is3dOrder"))) {
                     //make the fault by reflection
                     try {
-                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                     faultElt.getQName(), "is3dOrder"));
                         java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
                         java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(java.lang.String.class);
                         java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                         //message class
-                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                     faultElt.getQName(), "is3dOrder"));
                         java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
                         java.lang.Object messageObject = fromOM(faultElt,
@@ -1410,17 +1432,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         kz.capitalpay.server.wsdl.EpayServiceStub.Is3DOrderE is3DOrder0,
         final kz.capitalpay.server.wsdl.EpayServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
-        org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[0].getName());
+        OperationClient _operationClient = _serviceClient.createClient(_operations[0].getName());
         _operationClient.getOptions().setAction("urn:is3dOrder");
         _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
         addPropertyToOperationClient(_operationClient,
-            org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+            WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
             "&");
 
         // create SOAP envelope with that payload
         org.apache.axiom.soap.SOAPEnvelope env = null;
-        final org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        final MessageContext _messageContext = new MessageContext();
 
         //Style is Doc.
         env = toEnvelope(getFactory(_operationClient.getOptions()
@@ -1440,9 +1462,9 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         // add the message context to the operation client
         _operationClient.addMessageContext(_messageContext);
 
-        _operationClient.setCallback(new org.apache.axis2.client.async.AxisCallback() {
+        _operationClient.setCallback(new AxisCallback() {
                 public void onMessage(
-                    org.apache.axis2.context.MessageContext resultContext) {
+                    MessageContext resultContext) {
                     try {
                         org.apache.axiom.soap.SOAPEnvelope resultEnv = resultContext.getEnvelope();
 
@@ -1450,30 +1472,30 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                                                   .getFirstElement(),
                                 kz.capitalpay.server.wsdl.EpayServiceStub.Is3DOrderResponse.class);
                         callback.receiveResultis3DOrder((kz.capitalpay.server.wsdl.EpayServiceStub.Is3DOrderResponse) object);
-                    } catch (org.apache.axis2.AxisFault e) {
+                    } catch (AxisFault e) {
                         callback.receiveErroris3DOrder(e);
                     }
                 }
 
                 public void onError(java.lang.Exception error) {
-                    if (error instanceof org.apache.axis2.AxisFault) {
-                        org.apache.axis2.AxisFault f = (org.apache.axis2.AxisFault) error;
+                    if (error instanceof AxisFault) {
+                        AxisFault f = (AxisFault) error;
                         org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
                         if (faultElt != null) {
                             if (faultExceptionNameMap.containsKey(
-                                        new org.apache.axis2.client.FaultMapKey(
+                                        new FaultMapKey(
                                             faultElt.getQName(), "is3dOrder"))) {
                                 //make the fault by reflection
                                 try {
-                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                                 faultElt.getQName(), "is3dOrder"));
                                     java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
                                     java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(java.lang.String.class);
                                     java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                                     //message class
-                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                                 faultElt.getQName(), "is3dOrder"));
                                     java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
                                     java.lang.Object messageObject = fromOM(faultElt,
@@ -1557,7 +1579,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 } catch (java.lang.InstantiationException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErroris3DOrder(f);
-                                } catch (org.apache.axis2.AxisFault e) {
+                                } catch (AxisFault e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErroris3DOrder(f);
                                 }
@@ -1573,8 +1595,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 }
 
                 public void onFault(
-                    org.apache.axis2.context.MessageContext faultContext) {
-                    org.apache.axis2.AxisFault fault = org.apache.axis2.util.Utils.getInboundFaultFromMessageContext(faultContext);
+                    MessageContext faultContext) {
+                    AxisFault fault = Utils.getInboundFaultFromMessageContext(faultContext);
                     onError(fault);
                 }
 
@@ -1582,17 +1604,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     try {
                         _messageContext.getTransportOut().getSender()
                                        .cleanup(_messageContext);
-                    } catch (org.apache.axis2.AxisFault axisFault) {
+                    } catch (AxisFault axisFault) {
                         callback.receiveErroris3DOrder(axisFault);
                     }
                 }
             });
 
-        org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
+        CallbackReceiver _callbackReceiver = null;
 
         if ((_operations[0].getMessageReceiver() == null) &&
                 _operationClient.getOptions().isUseSeparateListener()) {
-            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
+            _callbackReceiver = new CallbackReceiver();
             _operations[0].setMessageReceiver(_callbackReceiver);
         }
 
@@ -1627,15 +1649,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
             kz.capitalpay.server.wsdl.EpayServiceParserConfigurationExceptionException,
             kz.capitalpay.server.wsdl.EpayServiceKeyStoreExceptionException,
             kz.capitalpay.server.wsdl.EpayServiceInvalidKeyExceptionException {
-        org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        MessageContext _messageContext = new MessageContext();
 
         try {
-            org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[1].getName());
+            OperationClient _operationClient = _serviceClient.createClient(_operations[1].getName());
             _operationClient.getOptions().setAction("urn:paymentOrderAcs");
             _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
             addPropertyToOperationClient(_operationClient,
-                org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+                WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
                 "&");
 
             // create SOAP envelope with that payload
@@ -1661,7 +1683,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
             //execute the operation client
             _operationClient.execute(true);
 
-            org.apache.axis2.context.MessageContext _returnMessageContext = _operationClient.getMessageContext(org.apache.axis2.wsdl.WSDLConstants.MESSAGE_LABEL_IN_VALUE);
+            MessageContext _returnMessageContext = _operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
             org.apache.axiom.soap.SOAPEnvelope _returnEnv = _returnMessageContext.getEnvelope();
 
             java.lang.Object object = fromOM(_returnEnv.getBody()
@@ -1669,23 +1691,23 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     kz.capitalpay.server.wsdl.EpayServiceStub.PaymentOrderAcsResponse.class);
 
             return (kz.capitalpay.server.wsdl.EpayServiceStub.PaymentOrderAcsResponse) object;
-        } catch (org.apache.axis2.AxisFault f) {
+        } catch (AxisFault f) {
             org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
             if (faultElt != null) {
                 if (faultExceptionNameMap.containsKey(
-                            new org.apache.axis2.client.FaultMapKey(
+                            new FaultMapKey(
                                 faultElt.getQName(), "paymentOrderAcs"))) {
                     //make the fault by reflection
                     try {
-                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                     faultElt.getQName(), "paymentOrderAcs"));
                         java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
                         java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(java.lang.String.class);
                         java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                         //message class
-                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                     faultElt.getQName(), "paymentOrderAcs"));
                         java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
                         java.lang.Object messageObject = fromOM(faultElt,
@@ -1774,17 +1796,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         kz.capitalpay.server.wsdl.EpayServiceStub.PaymentOrderAcs paymentOrderAcs2,
         final kz.capitalpay.server.wsdl.EpayServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
-        org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[1].getName());
+        OperationClient _operationClient = _serviceClient.createClient(_operations[1].getName());
         _operationClient.getOptions().setAction("urn:paymentOrderAcs");
         _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
         addPropertyToOperationClient(_operationClient,
-            org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+            WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
             "&");
 
         // create SOAP envelope with that payload
         org.apache.axiom.soap.SOAPEnvelope env = null;
-        final org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        final MessageContext _messageContext = new MessageContext();
 
         //Style is Doc.
         env = toEnvelope(getFactory(_operationClient.getOptions()
@@ -1804,9 +1826,9 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         // add the message context to the operation client
         _operationClient.addMessageContext(_messageContext);
 
-        _operationClient.setCallback(new org.apache.axis2.client.async.AxisCallback() {
+        _operationClient.setCallback(new AxisCallback() {
                 public void onMessage(
-                    org.apache.axis2.context.MessageContext resultContext) {
+                    MessageContext resultContext) {
                     try {
                         org.apache.axiom.soap.SOAPEnvelope resultEnv = resultContext.getEnvelope();
 
@@ -1814,24 +1836,24 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                                                   .getFirstElement(),
                                 kz.capitalpay.server.wsdl.EpayServiceStub.PaymentOrderAcsResponse.class);
                         callback.receiveResultpaymentOrderAcs((kz.capitalpay.server.wsdl.EpayServiceStub.PaymentOrderAcsResponse) object);
-                    } catch (org.apache.axis2.AxisFault e) {
+                    } catch (AxisFault e) {
                         callback.receiveErrorpaymentOrderAcs(e);
                     }
                 }
 
                 public void onError(java.lang.Exception error) {
-                    if (error instanceof org.apache.axis2.AxisFault) {
-                        org.apache.axis2.AxisFault f = (org.apache.axis2.AxisFault) error;
+                    if (error instanceof AxisFault) {
+                        AxisFault f = (AxisFault) error;
                         org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
                         if (faultElt != null) {
                             if (faultExceptionNameMap.containsKey(
-                                        new org.apache.axis2.client.FaultMapKey(
+                                        new FaultMapKey(
                                             faultElt.getQName(),
                                             "paymentOrderAcs"))) {
                                 //make the fault by reflection
                                 try {
-                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                                 faultElt.getQName(),
                                                 "paymentOrderAcs"));
                                     java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
@@ -1839,7 +1861,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                     java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                                     //message class
-                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                                 faultElt.getQName(),
                                                 "paymentOrderAcs"));
                                     java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
@@ -1924,7 +1946,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 } catch (java.lang.InstantiationException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorpaymentOrderAcs(f);
-                                } catch (org.apache.axis2.AxisFault e) {
+                                } catch (AxisFault e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorpaymentOrderAcs(f);
                                 }
@@ -1940,8 +1962,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 }
 
                 public void onFault(
-                    org.apache.axis2.context.MessageContext faultContext) {
-                    org.apache.axis2.AxisFault fault = org.apache.axis2.util.Utils.getInboundFaultFromMessageContext(faultContext);
+                    MessageContext faultContext) {
+                    AxisFault fault = Utils.getInboundFaultFromMessageContext(faultContext);
                     onError(fault);
                 }
 
@@ -1949,17 +1971,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     try {
                         _messageContext.getTransportOut().getSender()
                                        .cleanup(_messageContext);
-                    } catch (org.apache.axis2.AxisFault axisFault) {
+                    } catch (AxisFault axisFault) {
                         callback.receiveErrorpaymentOrderAcs(axisFault);
                     }
                 }
             });
 
-        org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
+        CallbackReceiver _callbackReceiver = null;
 
         if ((_operations[1].getMessageReceiver() == null) &&
                 _operationClient.getOptions().isUseSeparateListener()) {
-            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
+            _callbackReceiver = new CallbackReceiver();
             _operations[1].setMessageReceiver(_callbackReceiver);
         }
 
@@ -1976,15 +1998,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
     public kz.capitalpay.server.wsdl.EpayServiceStub.DeleteCardResponse deleteCard(
         kz.capitalpay.server.wsdl.EpayServiceStub.DeleteCard deleteCard4)
         throws java.rmi.RemoteException {
-        org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        MessageContext _messageContext = new MessageContext();
 
         try {
-            org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[2].getName());
+            OperationClient _operationClient = _serviceClient.createClient(_operations[2].getName());
             _operationClient.getOptions().setAction("urn:deleteCard");
             _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
             addPropertyToOperationClient(_operationClient,
-                org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+                WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
                 "&");
 
             // create SOAP envelope with that payload
@@ -2010,7 +2032,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
             //execute the operation client
             _operationClient.execute(true);
 
-            org.apache.axis2.context.MessageContext _returnMessageContext = _operationClient.getMessageContext(org.apache.axis2.wsdl.WSDLConstants.MESSAGE_LABEL_IN_VALUE);
+            MessageContext _returnMessageContext = _operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
             org.apache.axiom.soap.SOAPEnvelope _returnEnv = _returnMessageContext.getEnvelope();
 
             java.lang.Object object = fromOM(_returnEnv.getBody()
@@ -2018,23 +2040,23 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     kz.capitalpay.server.wsdl.EpayServiceStub.DeleteCardResponse.class);
 
             return (kz.capitalpay.server.wsdl.EpayServiceStub.DeleteCardResponse) object;
-        } catch (org.apache.axis2.AxisFault f) {
+        } catch (AxisFault f) {
             org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
             if (faultElt != null) {
                 if (faultExceptionNameMap.containsKey(
-                            new org.apache.axis2.client.FaultMapKey(
+                            new FaultMapKey(
                                 faultElt.getQName(), "deleteCard"))) {
                     //make the fault by reflection
                     try {
-                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                     faultElt.getQName(), "deleteCard"));
                         java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
                         java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(java.lang.String.class);
                         java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                         //message class
-                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                     faultElt.getQName(), "deleteCard"));
                         java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
                         java.lang.Object messageObject = fromOM(faultElt,
@@ -2087,17 +2109,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         kz.capitalpay.server.wsdl.EpayServiceStub.DeleteCard deleteCard4,
         final kz.capitalpay.server.wsdl.EpayServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
-        org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[2].getName());
+        OperationClient _operationClient = _serviceClient.createClient(_operations[2].getName());
         _operationClient.getOptions().setAction("urn:deleteCard");
         _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
         addPropertyToOperationClient(_operationClient,
-            org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+            WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
             "&");
 
         // create SOAP envelope with that payload
         org.apache.axiom.soap.SOAPEnvelope env = null;
-        final org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        final MessageContext _messageContext = new MessageContext();
 
         //Style is Doc.
         env = toEnvelope(getFactory(_operationClient.getOptions()
@@ -2117,9 +2139,9 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         // add the message context to the operation client
         _operationClient.addMessageContext(_messageContext);
 
-        _operationClient.setCallback(new org.apache.axis2.client.async.AxisCallback() {
+        _operationClient.setCallback(new AxisCallback() {
                 public void onMessage(
-                    org.apache.axis2.context.MessageContext resultContext) {
+                    MessageContext resultContext) {
                     try {
                         org.apache.axiom.soap.SOAPEnvelope resultEnv = resultContext.getEnvelope();
 
@@ -2127,23 +2149,23 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                                                   .getFirstElement(),
                                 kz.capitalpay.server.wsdl.EpayServiceStub.DeleteCardResponse.class);
                         callback.receiveResultdeleteCard((kz.capitalpay.server.wsdl.EpayServiceStub.DeleteCardResponse) object);
-                    } catch (org.apache.axis2.AxisFault e) {
+                    } catch (AxisFault e) {
                         callback.receiveErrordeleteCard(e);
                     }
                 }
 
                 public void onError(java.lang.Exception error) {
-                    if (error instanceof org.apache.axis2.AxisFault) {
-                        org.apache.axis2.AxisFault f = (org.apache.axis2.AxisFault) error;
+                    if (error instanceof AxisFault) {
+                        AxisFault f = (AxisFault) error;
                         org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
                         if (faultElt != null) {
                             if (faultExceptionNameMap.containsKey(
-                                        new org.apache.axis2.client.FaultMapKey(
+                                        new FaultMapKey(
                                             faultElt.getQName(), "deleteCard"))) {
                                 //make the fault by reflection
                                 try {
-                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                                 faultElt.getQName(),
                                                 "deleteCard"));
                                     java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
@@ -2151,7 +2173,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                     java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                                     //message class
-                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                                 faultElt.getQName(),
                                                 "deleteCard"));
                                     java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
@@ -2182,7 +2204,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 } catch (java.lang.InstantiationException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrordeleteCard(f);
-                                } catch (org.apache.axis2.AxisFault e) {
+                                } catch (AxisFault e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrordeleteCard(f);
                                 }
@@ -2198,8 +2220,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 }
 
                 public void onFault(
-                    org.apache.axis2.context.MessageContext faultContext) {
-                    org.apache.axis2.AxisFault fault = org.apache.axis2.util.Utils.getInboundFaultFromMessageContext(faultContext);
+                    MessageContext faultContext) {
+                    AxisFault fault = Utils.getInboundFaultFromMessageContext(faultContext);
                     onError(fault);
                 }
 
@@ -2207,17 +2229,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     try {
                         _messageContext.getTransportOut().getSender()
                                        .cleanup(_messageContext);
-                    } catch (org.apache.axis2.AxisFault axisFault) {
+                    } catch (AxisFault axisFault) {
                         callback.receiveErrordeleteCard(axisFault);
                     }
                 }
             });
 
-        org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
+        CallbackReceiver _callbackReceiver = null;
 
         if ((_operations[2].getMessageReceiver() == null) &&
                 _operationClient.getOptions().isUseSeparateListener()) {
-            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
+            _callbackReceiver = new CallbackReceiver();
             _operations[2].setMessageReceiver(_callbackReceiver);
         }
 
@@ -2252,15 +2274,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
             kz.capitalpay.server.wsdl.EpayServiceParserConfigurationExceptionException,
             kz.capitalpay.server.wsdl.EpayServiceKeyStoreExceptionException,
             kz.capitalpay.server.wsdl.EpayServiceInvalidKeyExceptionException {
-        org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        MessageContext _messageContext = new MessageContext();
 
         try {
-            org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[3].getName());
+            OperationClient _operationClient = _serviceClient.createClient(_operations[3].getName());
             _operationClient.getOptions().setAction("urn:checkOrder");
             _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
             addPropertyToOperationClient(_operationClient,
-                org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+                WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
                 "&");
 
             // create SOAP envelope with that payload
@@ -2286,7 +2308,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
             //execute the operation client
             _operationClient.execute(true);
 
-            org.apache.axis2.context.MessageContext _returnMessageContext = _operationClient.getMessageContext(org.apache.axis2.wsdl.WSDLConstants.MESSAGE_LABEL_IN_VALUE);
+            MessageContext _returnMessageContext = _operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
             org.apache.axiom.soap.SOAPEnvelope _returnEnv = _returnMessageContext.getEnvelope();
 
             java.lang.Object object = fromOM(_returnEnv.getBody()
@@ -2294,23 +2316,23 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     kz.capitalpay.server.wsdl.EpayServiceStub.CheckOrderResponse.class);
 
             return (kz.capitalpay.server.wsdl.EpayServiceStub.CheckOrderResponse) object;
-        } catch (org.apache.axis2.AxisFault f) {
+        } catch (AxisFault f) {
             org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
             if (faultElt != null) {
                 if (faultExceptionNameMap.containsKey(
-                            new org.apache.axis2.client.FaultMapKey(
+                            new FaultMapKey(
                                 faultElt.getQName(), "checkOrder"))) {
                     //make the fault by reflection
                     try {
-                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                     faultElt.getQName(), "checkOrder"));
                         java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
                         java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(java.lang.String.class);
                         java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                         //message class
-                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                     faultElt.getQName(), "checkOrder"));
                         java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
                         java.lang.Object messageObject = fromOM(faultElt,
@@ -2399,17 +2421,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         kz.capitalpay.server.wsdl.EpayServiceStub.CheckOrderE checkOrder6,
         final kz.capitalpay.server.wsdl.EpayServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
-        org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[3].getName());
+        OperationClient _operationClient = _serviceClient.createClient(_operations[3].getName());
         _operationClient.getOptions().setAction("urn:checkOrder");
         _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
         addPropertyToOperationClient(_operationClient,
-            org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+            WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
             "&");
 
         // create SOAP envelope with that payload
         org.apache.axiom.soap.SOAPEnvelope env = null;
-        final org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        final MessageContext _messageContext = new MessageContext();
 
         //Style is Doc.
         env = toEnvelope(getFactory(_operationClient.getOptions()
@@ -2429,9 +2451,9 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         // add the message context to the operation client
         _operationClient.addMessageContext(_messageContext);
 
-        _operationClient.setCallback(new org.apache.axis2.client.async.AxisCallback() {
+        _operationClient.setCallback(new AxisCallback() {
                 public void onMessage(
-                    org.apache.axis2.context.MessageContext resultContext) {
+                    MessageContext resultContext) {
                     try {
                         org.apache.axiom.soap.SOAPEnvelope resultEnv = resultContext.getEnvelope();
 
@@ -2439,23 +2461,23 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                                                   .getFirstElement(),
                                 kz.capitalpay.server.wsdl.EpayServiceStub.CheckOrderResponse.class);
                         callback.receiveResultcheckOrder((kz.capitalpay.server.wsdl.EpayServiceStub.CheckOrderResponse) object);
-                    } catch (org.apache.axis2.AxisFault e) {
+                    } catch (AxisFault e) {
                         callback.receiveErrorcheckOrder(e);
                     }
                 }
 
                 public void onError(java.lang.Exception error) {
-                    if (error instanceof org.apache.axis2.AxisFault) {
-                        org.apache.axis2.AxisFault f = (org.apache.axis2.AxisFault) error;
+                    if (error instanceof AxisFault) {
+                        AxisFault f = (AxisFault) error;
                         org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
                         if (faultElt != null) {
                             if (faultExceptionNameMap.containsKey(
-                                        new org.apache.axis2.client.FaultMapKey(
+                                        new FaultMapKey(
                                             faultElt.getQName(), "checkOrder"))) {
                                 //make the fault by reflection
                                 try {
-                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                                 faultElt.getQName(),
                                                 "checkOrder"));
                                     java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
@@ -2463,7 +2485,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                     java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                                     //message class
-                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                                 faultElt.getQName(),
                                                 "checkOrder"));
                                     java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
@@ -2548,7 +2570,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 } catch (java.lang.InstantiationException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorcheckOrder(f);
-                                } catch (org.apache.axis2.AxisFault e) {
+                                } catch (AxisFault e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorcheckOrder(f);
                                 }
@@ -2564,8 +2586,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 }
 
                 public void onFault(
-                    org.apache.axis2.context.MessageContext faultContext) {
-                    org.apache.axis2.AxisFault fault = org.apache.axis2.util.Utils.getInboundFaultFromMessageContext(faultContext);
+                    MessageContext faultContext) {
+                    AxisFault fault = Utils.getInboundFaultFromMessageContext(faultContext);
                     onError(fault);
                 }
 
@@ -2573,17 +2595,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     try {
                         _messageContext.getTransportOut().getSender()
                                        .cleanup(_messageContext);
-                    } catch (org.apache.axis2.AxisFault axisFault) {
+                    } catch (AxisFault axisFault) {
                         callback.receiveErrorcheckOrder(axisFault);
                     }
                 }
             });
 
-        org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
+        CallbackReceiver _callbackReceiver = null;
 
         if ((_operations[3].getMessageReceiver() == null) &&
                 _operationClient.getOptions().isUseSeparateListener()) {
-            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
+            _callbackReceiver = new CallbackReceiver();
             _operations[3].setMessageReceiver(_callbackReceiver);
         }
 
@@ -2600,16 +2622,16 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
     public kz.capitalpay.server.wsdl.EpayServiceStub.AirastanaPaymentAcsOrderResponse airastanaPaymentAcsOrder(
         kz.capitalpay.server.wsdl.EpayServiceStub.AirastanaPaymentAcsOrder airastanaPaymentAcsOrder8)
         throws java.rmi.RemoteException {
-        org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        MessageContext _messageContext = new MessageContext();
 
         try {
-            org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[4].getName());
+            OperationClient _operationClient = _serviceClient.createClient(_operations[4].getName());
             _operationClient.getOptions()
                             .setAction("urn:airastanaPaymentAcsOrder");
             _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
             addPropertyToOperationClient(_operationClient,
-                org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+                WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
                 "&");
 
             // create SOAP envelope with that payload
@@ -2636,7 +2658,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
             //execute the operation client
             _operationClient.execute(true);
 
-            org.apache.axis2.context.MessageContext _returnMessageContext = _operationClient.getMessageContext(org.apache.axis2.wsdl.WSDLConstants.MESSAGE_LABEL_IN_VALUE);
+            MessageContext _returnMessageContext = _operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
             org.apache.axiom.soap.SOAPEnvelope _returnEnv = _returnMessageContext.getEnvelope();
 
             java.lang.Object object = fromOM(_returnEnv.getBody()
@@ -2644,16 +2666,16 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     kz.capitalpay.server.wsdl.EpayServiceStub.AirastanaPaymentAcsOrderResponse.class);
 
             return (kz.capitalpay.server.wsdl.EpayServiceStub.AirastanaPaymentAcsOrderResponse) object;
-        } catch (org.apache.axis2.AxisFault f) {
+        } catch (AxisFault f) {
             org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
             if (faultElt != null) {
                 if (faultExceptionNameMap.containsKey(
-                            new org.apache.axis2.client.FaultMapKey(
+                            new FaultMapKey(
                                 faultElt.getQName(), "airastanaPaymentAcsOrder"))) {
                     //make the fault by reflection
                     try {
-                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                     faultElt.getQName(),
                                     "airastanaPaymentAcsOrder"));
                         java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
@@ -2661,7 +2683,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                         //message class
-                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                     faultElt.getQName(),
                                     "airastanaPaymentAcsOrder"));
                         java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
@@ -2715,17 +2737,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         kz.capitalpay.server.wsdl.EpayServiceStub.AirastanaPaymentAcsOrder airastanaPaymentAcsOrder8,
         final kz.capitalpay.server.wsdl.EpayServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
-        org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[4].getName());
+        OperationClient _operationClient = _serviceClient.createClient(_operations[4].getName());
         _operationClient.getOptions().setAction("urn:airastanaPaymentAcsOrder");
         _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
         addPropertyToOperationClient(_operationClient,
-            org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+            WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
             "&");
 
         // create SOAP envelope with that payload
         org.apache.axiom.soap.SOAPEnvelope env = null;
-        final org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        final MessageContext _messageContext = new MessageContext();
 
         //Style is Doc.
         env = toEnvelope(getFactory(_operationClient.getOptions()
@@ -2745,9 +2767,9 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         // add the message context to the operation client
         _operationClient.addMessageContext(_messageContext);
 
-        _operationClient.setCallback(new org.apache.axis2.client.async.AxisCallback() {
+        _operationClient.setCallback(new AxisCallback() {
                 public void onMessage(
-                    org.apache.axis2.context.MessageContext resultContext) {
+                    MessageContext resultContext) {
                     try {
                         org.apache.axiom.soap.SOAPEnvelope resultEnv = resultContext.getEnvelope();
 
@@ -2755,24 +2777,24 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                                                   .getFirstElement(),
                                 kz.capitalpay.server.wsdl.EpayServiceStub.AirastanaPaymentAcsOrderResponse.class);
                         callback.receiveResultairastanaPaymentAcsOrder((kz.capitalpay.server.wsdl.EpayServiceStub.AirastanaPaymentAcsOrderResponse) object);
-                    } catch (org.apache.axis2.AxisFault e) {
+                    } catch (AxisFault e) {
                         callback.receiveErrorairastanaPaymentAcsOrder(e);
                     }
                 }
 
                 public void onError(java.lang.Exception error) {
-                    if (error instanceof org.apache.axis2.AxisFault) {
-                        org.apache.axis2.AxisFault f = (org.apache.axis2.AxisFault) error;
+                    if (error instanceof AxisFault) {
+                        AxisFault f = (AxisFault) error;
                         org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
                         if (faultElt != null) {
                             if (faultExceptionNameMap.containsKey(
-                                        new org.apache.axis2.client.FaultMapKey(
+                                        new FaultMapKey(
                                             faultElt.getQName(),
                                             "airastanaPaymentAcsOrder"))) {
                                 //make the fault by reflection
                                 try {
-                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                                 faultElt.getQName(),
                                                 "airastanaPaymentAcsOrder"));
                                     java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
@@ -2780,7 +2802,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                     java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                                     //message class
-                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                                 faultElt.getQName(),
                                                 "airastanaPaymentAcsOrder"));
                                     java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
@@ -2811,7 +2833,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 } catch (java.lang.InstantiationException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorairastanaPaymentAcsOrder(f);
-                                } catch (org.apache.axis2.AxisFault e) {
+                                } catch (AxisFault e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorairastanaPaymentAcsOrder(f);
                                 }
@@ -2827,8 +2849,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 }
 
                 public void onFault(
-                    org.apache.axis2.context.MessageContext faultContext) {
-                    org.apache.axis2.AxisFault fault = org.apache.axis2.util.Utils.getInboundFaultFromMessageContext(faultContext);
+                    MessageContext faultContext) {
+                    AxisFault fault = Utils.getInboundFaultFromMessageContext(faultContext);
                     onError(fault);
                 }
 
@@ -2836,17 +2858,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     try {
                         _messageContext.getTransportOut().getSender()
                                        .cleanup(_messageContext);
-                    } catch (org.apache.axis2.AxisFault axisFault) {
+                    } catch (AxisFault axisFault) {
                         callback.receiveErrorairastanaPaymentAcsOrder(axisFault);
                     }
                 }
             });
 
-        org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
+        CallbackReceiver _callbackReceiver = null;
 
         if ((_operations[4].getMessageReceiver() == null) &&
                 _operationClient.getOptions().isUseSeparateListener()) {
-            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
+            _callbackReceiver = new CallbackReceiver();
             _operations[4].setMessageReceiver(_callbackReceiver);
         }
 
@@ -2881,15 +2903,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
             kz.capitalpay.server.wsdl.EpayServiceParserConfigurationExceptionException,
             kz.capitalpay.server.wsdl.EpayServiceKeyStoreExceptionException,
             kz.capitalpay.server.wsdl.EpayServiceInvalidKeyExceptionException {
-        org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        MessageContext _messageContext = new MessageContext();
 
         try {
-            org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[5].getName());
+            OperationClient _operationClient = _serviceClient.createClient(_operations[5].getName());
             _operationClient.getOptions().setAction("urn:getCardList");
             _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
             addPropertyToOperationClient(_operationClient,
-                org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+                WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
                 "&");
 
             // create SOAP envelope with that payload
@@ -2915,7 +2937,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
             //execute the operation client
             _operationClient.execute(true);
 
-            org.apache.axis2.context.MessageContext _returnMessageContext = _operationClient.getMessageContext(org.apache.axis2.wsdl.WSDLConstants.MESSAGE_LABEL_IN_VALUE);
+            MessageContext _returnMessageContext = _operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
             org.apache.axiom.soap.SOAPEnvelope _returnEnv = _returnMessageContext.getEnvelope();
 
             java.lang.Object object = fromOM(_returnEnv.getBody()
@@ -2923,23 +2945,23 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     kz.capitalpay.server.wsdl.EpayServiceStub.GetCardListResponse.class);
 
             return (kz.capitalpay.server.wsdl.EpayServiceStub.GetCardListResponse) object;
-        } catch (org.apache.axis2.AxisFault f) {
+        } catch (AxisFault f) {
             org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
             if (faultElt != null) {
                 if (faultExceptionNameMap.containsKey(
-                            new org.apache.axis2.client.FaultMapKey(
+                            new FaultMapKey(
                                 faultElt.getQName(), "getCardList"))) {
                     //make the fault by reflection
                     try {
-                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                     faultElt.getQName(), "getCardList"));
                         java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
                         java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(java.lang.String.class);
                         java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                         //message class
-                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                     faultElt.getQName(), "getCardList"));
                         java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
                         java.lang.Object messageObject = fromOM(faultElt,
@@ -3028,17 +3050,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         kz.capitalpay.server.wsdl.EpayServiceStub.GetCardList getCardList10,
         final kz.capitalpay.server.wsdl.EpayServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
-        org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[5].getName());
+        OperationClient _operationClient = _serviceClient.createClient(_operations[5].getName());
         _operationClient.getOptions().setAction("urn:getCardList");
         _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
         addPropertyToOperationClient(_operationClient,
-            org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+            WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
             "&");
 
         // create SOAP envelope with that payload
         org.apache.axiom.soap.SOAPEnvelope env = null;
-        final org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        final MessageContext _messageContext = new MessageContext();
 
         //Style is Doc.
         env = toEnvelope(getFactory(_operationClient.getOptions()
@@ -3058,9 +3080,9 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         // add the message context to the operation client
         _operationClient.addMessageContext(_messageContext);
 
-        _operationClient.setCallback(new org.apache.axis2.client.async.AxisCallback() {
+        _operationClient.setCallback(new AxisCallback() {
                 public void onMessage(
-                    org.apache.axis2.context.MessageContext resultContext) {
+                    MessageContext resultContext) {
                     try {
                         org.apache.axiom.soap.SOAPEnvelope resultEnv = resultContext.getEnvelope();
 
@@ -3068,23 +3090,23 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                                                   .getFirstElement(),
                                 kz.capitalpay.server.wsdl.EpayServiceStub.GetCardListResponse.class);
                         callback.receiveResultgetCardList((kz.capitalpay.server.wsdl.EpayServiceStub.GetCardListResponse) object);
-                    } catch (org.apache.axis2.AxisFault e) {
+                    } catch (AxisFault e) {
                         callback.receiveErrorgetCardList(e);
                     }
                 }
 
                 public void onError(java.lang.Exception error) {
-                    if (error instanceof org.apache.axis2.AxisFault) {
-                        org.apache.axis2.AxisFault f = (org.apache.axis2.AxisFault) error;
+                    if (error instanceof AxisFault) {
+                        AxisFault f = (AxisFault) error;
                         org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
                         if (faultElt != null) {
                             if (faultExceptionNameMap.containsKey(
-                                        new org.apache.axis2.client.FaultMapKey(
+                                        new FaultMapKey(
                                             faultElt.getQName(), "getCardList"))) {
                                 //make the fault by reflection
                                 try {
-                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                                 faultElt.getQName(),
                                                 "getCardList"));
                                     java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
@@ -3092,7 +3114,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                     java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                                     //message class
-                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                                 faultElt.getQName(),
                                                 "getCardList"));
                                     java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
@@ -3177,7 +3199,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 } catch (java.lang.InstantiationException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorgetCardList(f);
-                                } catch (org.apache.axis2.AxisFault e) {
+                                } catch (AxisFault e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorgetCardList(f);
                                 }
@@ -3193,8 +3215,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 }
 
                 public void onFault(
-                    org.apache.axis2.context.MessageContext faultContext) {
-                    org.apache.axis2.AxisFault fault = org.apache.axis2.util.Utils.getInboundFaultFromMessageContext(faultContext);
+                    MessageContext faultContext) {
+                    AxisFault fault = Utils.getInboundFaultFromMessageContext(faultContext);
                     onError(fault);
                 }
 
@@ -3202,17 +3224,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     try {
                         _messageContext.getTransportOut().getSender()
                                        .cleanup(_messageContext);
-                    } catch (org.apache.axis2.AxisFault axisFault) {
+                    } catch (AxisFault axisFault) {
                         callback.receiveErrorgetCardList(axisFault);
                     }
                 }
             });
 
-        org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
+        CallbackReceiver _callbackReceiver = null;
 
         if ((_operations[5].getMessageReceiver() == null) &&
                 _operationClient.getOptions().isUseSeparateListener()) {
-            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
+            _callbackReceiver = new CallbackReceiver();
             _operations[5].setMessageReceiver(_callbackReceiver);
         }
 
@@ -3247,15 +3269,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
             kz.capitalpay.server.wsdl.EpayServiceParserConfigurationExceptionException,
             kz.capitalpay.server.wsdl.EpayServiceKeyStoreExceptionException,
             kz.capitalpay.server.wsdl.EpayServiceInvalidKeyExceptionException {
-        org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        MessageContext _messageContext = new MessageContext();
 
         try {
-            org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[6].getName());
+            OperationClient _operationClient = _serviceClient.createClient(_operations[6].getName());
             _operationClient.getOptions().setAction("urn:refundOrderForCommerce");
             _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
             addPropertyToOperationClient(_operationClient,
-                org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+                WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
                 "&");
 
             // create SOAP envelope with that payload
@@ -3282,7 +3304,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
             //execute the operation client
             _operationClient.execute(true);
 
-            org.apache.axis2.context.MessageContext _returnMessageContext = _operationClient.getMessageContext(org.apache.axis2.wsdl.WSDLConstants.MESSAGE_LABEL_IN_VALUE);
+            MessageContext _returnMessageContext = _operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
             org.apache.axiom.soap.SOAPEnvelope _returnEnv = _returnMessageContext.getEnvelope();
 
             java.lang.Object object = fromOM(_returnEnv.getBody()
@@ -3290,16 +3312,16 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     kz.capitalpay.server.wsdl.EpayServiceStub.RefundOrderForCommerceResponse.class);
 
             return (kz.capitalpay.server.wsdl.EpayServiceStub.RefundOrderForCommerceResponse) object;
-        } catch (org.apache.axis2.AxisFault f) {
+        } catch (AxisFault f) {
             org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
             if (faultElt != null) {
                 if (faultExceptionNameMap.containsKey(
-                            new org.apache.axis2.client.FaultMapKey(
+                            new FaultMapKey(
                                 faultElt.getQName(), "refundOrderForCommerce"))) {
                     //make the fault by reflection
                     try {
-                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                     faultElt.getQName(),
                                     "refundOrderForCommerce"));
                         java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
@@ -3307,7 +3329,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                         //message class
-                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                     faultElt.getQName(),
                                     "refundOrderForCommerce"));
                         java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
@@ -3397,17 +3419,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         kz.capitalpay.server.wsdl.EpayServiceStub.RefundOrderForCommerce refundOrderForCommerce12,
         final kz.capitalpay.server.wsdl.EpayServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
-        org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[6].getName());
+        OperationClient _operationClient = _serviceClient.createClient(_operations[6].getName());
         _operationClient.getOptions().setAction("urn:refundOrderForCommerce");
         _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
         addPropertyToOperationClient(_operationClient,
-            org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+            WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
             "&");
 
         // create SOAP envelope with that payload
         org.apache.axiom.soap.SOAPEnvelope env = null;
-        final org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        final MessageContext _messageContext = new MessageContext();
 
         //Style is Doc.
         env = toEnvelope(getFactory(_operationClient.getOptions()
@@ -3427,9 +3449,9 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         // add the message context to the operation client
         _operationClient.addMessageContext(_messageContext);
 
-        _operationClient.setCallback(new org.apache.axis2.client.async.AxisCallback() {
+        _operationClient.setCallback(new AxisCallback() {
                 public void onMessage(
-                    org.apache.axis2.context.MessageContext resultContext) {
+                    MessageContext resultContext) {
                     try {
                         org.apache.axiom.soap.SOAPEnvelope resultEnv = resultContext.getEnvelope();
 
@@ -3437,24 +3459,24 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                                                   .getFirstElement(),
                                 kz.capitalpay.server.wsdl.EpayServiceStub.RefundOrderForCommerceResponse.class);
                         callback.receiveResultrefundOrderForCommerce((kz.capitalpay.server.wsdl.EpayServiceStub.RefundOrderForCommerceResponse) object);
-                    } catch (org.apache.axis2.AxisFault e) {
+                    } catch (AxisFault e) {
                         callback.receiveErrorrefundOrderForCommerce(e);
                     }
                 }
 
                 public void onError(java.lang.Exception error) {
-                    if (error instanceof org.apache.axis2.AxisFault) {
-                        org.apache.axis2.AxisFault f = (org.apache.axis2.AxisFault) error;
+                    if (error instanceof AxisFault) {
+                        AxisFault f = (AxisFault) error;
                         org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
                         if (faultElt != null) {
                             if (faultExceptionNameMap.containsKey(
-                                        new org.apache.axis2.client.FaultMapKey(
+                                        new FaultMapKey(
                                             faultElt.getQName(),
                                             "refundOrderForCommerce"))) {
                                 //make the fault by reflection
                                 try {
-                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                                 faultElt.getQName(),
                                                 "refundOrderForCommerce"));
                                     java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
@@ -3462,7 +3484,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                     java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                                     //message class
-                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                                 faultElt.getQName(),
                                                 "refundOrderForCommerce"));
                                     java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
@@ -3547,7 +3569,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 } catch (java.lang.InstantiationException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorrefundOrderForCommerce(f);
-                                } catch (org.apache.axis2.AxisFault e) {
+                                } catch (AxisFault e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorrefundOrderForCommerce(f);
                                 }
@@ -3563,8 +3585,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 }
 
                 public void onFault(
-                    org.apache.axis2.context.MessageContext faultContext) {
-                    org.apache.axis2.AxisFault fault = org.apache.axis2.util.Utils.getInboundFaultFromMessageContext(faultContext);
+                    MessageContext faultContext) {
+                    AxisFault fault = Utils.getInboundFaultFromMessageContext(faultContext);
                     onError(fault);
                 }
 
@@ -3572,17 +3594,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     try {
                         _messageContext.getTransportOut().getSender()
                                        .cleanup(_messageContext);
-                    } catch (org.apache.axis2.AxisFault axisFault) {
+                    } catch (AxisFault axisFault) {
                         callback.receiveErrorrefundOrderForCommerce(axisFault);
                     }
                 }
             });
 
-        org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
+        CallbackReceiver _callbackReceiver = null;
 
         if ((_operations[6].getMessageReceiver() == null) &&
                 _operationClient.getOptions().isUseSeparateListener()) {
-            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
+            _callbackReceiver = new CallbackReceiver();
             _operations[6].setMessageReceiver(_callbackReceiver);
         }
 
@@ -3605,15 +3627,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
             kz.capitalpay.server.wsdl.EpayServiceIOExceptionException,
             kz.capitalpay.server.wsdl.EpayServiceSAXExceptionException,
             kz.capitalpay.server.wsdl.EpayServiceParserConfigurationExceptionException {
-        org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        MessageContext _messageContext = new MessageContext();
 
         try {
-            org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[7].getName());
+            OperationClient _operationClient = _serviceClient.createClient(_operations[7].getName());
             _operationClient.getOptions().setAction("urn:cardidPaymentOrder");
             _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
             addPropertyToOperationClient(_operationClient,
-                org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+                WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
                 "&");
 
             // create SOAP envelope with that payload
@@ -3639,7 +3661,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
             //execute the operation client
             _operationClient.execute(true);
 
-            org.apache.axis2.context.MessageContext _returnMessageContext = _operationClient.getMessageContext(org.apache.axis2.wsdl.WSDLConstants.MESSAGE_LABEL_IN_VALUE);
+            MessageContext _returnMessageContext = _operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
             org.apache.axiom.soap.SOAPEnvelope _returnEnv = _returnMessageContext.getEnvelope();
 
             java.lang.Object object = fromOM(_returnEnv.getBody()
@@ -3647,23 +3669,23 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     kz.capitalpay.server.wsdl.EpayServiceStub.CardidPaymentOrderResponse.class);
 
             return (kz.capitalpay.server.wsdl.EpayServiceStub.CardidPaymentOrderResponse) object;
-        } catch (org.apache.axis2.AxisFault f) {
+        } catch (AxisFault f) {
             org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
             if (faultElt != null) {
                 if (faultExceptionNameMap.containsKey(
-                            new org.apache.axis2.client.FaultMapKey(
+                            new FaultMapKey(
                                 faultElt.getQName(), "cardidPaymentOrder"))) {
                     //make the fault by reflection
                     try {
-                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                     faultElt.getQName(), "cardidPaymentOrder"));
                         java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
                         java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(java.lang.String.class);
                         java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                         //message class
-                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                     faultElt.getQName(), "cardidPaymentOrder"));
                         java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
                         java.lang.Object messageObject = fromOM(faultElt,
@@ -3728,17 +3750,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         kz.capitalpay.server.wsdl.EpayServiceStub.CardidPaymentOrder cardidPaymentOrder14,
         final kz.capitalpay.server.wsdl.EpayServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
-        org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[7].getName());
+        OperationClient _operationClient = _serviceClient.createClient(_operations[7].getName());
         _operationClient.getOptions().setAction("urn:cardidPaymentOrder");
         _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
         addPropertyToOperationClient(_operationClient,
-            org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+            WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
             "&");
 
         // create SOAP envelope with that payload
         org.apache.axiom.soap.SOAPEnvelope env = null;
-        final org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        final MessageContext _messageContext = new MessageContext();
 
         //Style is Doc.
         env = toEnvelope(getFactory(_operationClient.getOptions()
@@ -3758,9 +3780,9 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         // add the message context to the operation client
         _operationClient.addMessageContext(_messageContext);
 
-        _operationClient.setCallback(new org.apache.axis2.client.async.AxisCallback() {
+        _operationClient.setCallback(new AxisCallback() {
                 public void onMessage(
-                    org.apache.axis2.context.MessageContext resultContext) {
+                    MessageContext resultContext) {
                     try {
                         org.apache.axiom.soap.SOAPEnvelope resultEnv = resultContext.getEnvelope();
 
@@ -3768,24 +3790,24 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                                                   .getFirstElement(),
                                 kz.capitalpay.server.wsdl.EpayServiceStub.CardidPaymentOrderResponse.class);
                         callback.receiveResultcardidPaymentOrder((kz.capitalpay.server.wsdl.EpayServiceStub.CardidPaymentOrderResponse) object);
-                    } catch (org.apache.axis2.AxisFault e) {
+                    } catch (AxisFault e) {
                         callback.receiveErrorcardidPaymentOrder(e);
                     }
                 }
 
                 public void onError(java.lang.Exception error) {
-                    if (error instanceof org.apache.axis2.AxisFault) {
-                        org.apache.axis2.AxisFault f = (org.apache.axis2.AxisFault) error;
+                    if (error instanceof AxisFault) {
+                        AxisFault f = (AxisFault) error;
                         org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
                         if (faultElt != null) {
                             if (faultExceptionNameMap.containsKey(
-                                        new org.apache.axis2.client.FaultMapKey(
+                                        new FaultMapKey(
                                             faultElt.getQName(),
                                             "cardidPaymentOrder"))) {
                                 //make the fault by reflection
                                 try {
-                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                                 faultElt.getQName(),
                                                 "cardidPaymentOrder"));
                                     java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
@@ -3793,7 +3815,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                     java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                                     //message class
-                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                                 faultElt.getQName(),
                                                 "cardidPaymentOrder"));
                                     java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
@@ -3842,7 +3864,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 } catch (java.lang.InstantiationException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorcardidPaymentOrder(f);
-                                } catch (org.apache.axis2.AxisFault e) {
+                                } catch (AxisFault e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorcardidPaymentOrder(f);
                                 }
@@ -3858,8 +3880,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 }
 
                 public void onFault(
-                    org.apache.axis2.context.MessageContext faultContext) {
-                    org.apache.axis2.AxisFault fault = org.apache.axis2.util.Utils.getInboundFaultFromMessageContext(faultContext);
+                    MessageContext faultContext) {
+                    AxisFault fault = Utils.getInboundFaultFromMessageContext(faultContext);
                     onError(fault);
                 }
 
@@ -3867,17 +3889,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     try {
                         _messageContext.getTransportOut().getSender()
                                        .cleanup(_messageContext);
-                    } catch (org.apache.axis2.AxisFault axisFault) {
+                    } catch (AxisFault axisFault) {
                         callback.receiveErrorcardidPaymentOrder(axisFault);
                     }
                 }
             });
 
-        org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
+        CallbackReceiver _callbackReceiver = null;
 
         if ((_operations[7].getMessageReceiver() == null) &&
                 _operationClient.getOptions().isUseSeparateListener()) {
-            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
+            _callbackReceiver = new CallbackReceiver();
             _operations[7].setMessageReceiver(_callbackReceiver);
         }
 
@@ -3912,15 +3934,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
             kz.capitalpay.server.wsdl.EpayServiceParserConfigurationExceptionException,
             kz.capitalpay.server.wsdl.EpayServiceKeyStoreExceptionException,
             kz.capitalpay.server.wsdl.EpayServiceInvalidKeyExceptionException {
-        org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        MessageContext _messageContext = new MessageContext();
 
         try {
-            org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[8].getName());
+            OperationClient _operationClient = _serviceClient.createClient(_operations[8].getName());
             _operationClient.getOptions().setAction("urn:transferOrder");
             _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
             addPropertyToOperationClient(_operationClient,
-                org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+                WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
                 "&");
 
             // create SOAP envelope with that payload
@@ -3946,7 +3968,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
             //execute the operation client
             _operationClient.execute(true);
 
-            org.apache.axis2.context.MessageContext _returnMessageContext = _operationClient.getMessageContext(org.apache.axis2.wsdl.WSDLConstants.MESSAGE_LABEL_IN_VALUE);
+            MessageContext _returnMessageContext = _operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
             org.apache.axiom.soap.SOAPEnvelope _returnEnv = _returnMessageContext.getEnvelope();
 
             java.lang.Object object = fromOM(_returnEnv.getBody()
@@ -3954,23 +3976,23 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     kz.capitalpay.server.wsdl.EpayServiceStub.TransferOrderResponse.class);
 
             return (kz.capitalpay.server.wsdl.EpayServiceStub.TransferOrderResponse) object;
-        } catch (org.apache.axis2.AxisFault f) {
+        } catch (AxisFault f) {
             org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
             if (faultElt != null) {
                 if (faultExceptionNameMap.containsKey(
-                            new org.apache.axis2.client.FaultMapKey(
+                            new FaultMapKey(
                                 faultElt.getQName(), "transferOrder"))) {
                     //make the fault by reflection
                     try {
-                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                     faultElt.getQName(), "transferOrder"));
                         java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
                         java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(java.lang.String.class);
                         java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                         //message class
-                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                     faultElt.getQName(), "transferOrder"));
                         java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
                         java.lang.Object messageObject = fromOM(faultElt,
@@ -4059,17 +4081,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         kz.capitalpay.server.wsdl.EpayServiceStub.TransferOrderE transferOrder16,
         final kz.capitalpay.server.wsdl.EpayServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
-        org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[8].getName());
+        OperationClient _operationClient = _serviceClient.createClient(_operations[8].getName());
         _operationClient.getOptions().setAction("urn:transferOrder");
         _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
         addPropertyToOperationClient(_operationClient,
-            org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+            WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
             "&");
 
         // create SOAP envelope with that payload
         org.apache.axiom.soap.SOAPEnvelope env = null;
-        final org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        final MessageContext _messageContext = new MessageContext();
 
         //Style is Doc.
         env = toEnvelope(getFactory(_operationClient.getOptions()
@@ -4089,9 +4111,9 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         // add the message context to the operation client
         _operationClient.addMessageContext(_messageContext);
 
-        _operationClient.setCallback(new org.apache.axis2.client.async.AxisCallback() {
+        _operationClient.setCallback(new AxisCallback() {
                 public void onMessage(
-                    org.apache.axis2.context.MessageContext resultContext) {
+                    MessageContext resultContext) {
                     try {
                         org.apache.axiom.soap.SOAPEnvelope resultEnv = resultContext.getEnvelope();
 
@@ -4099,23 +4121,23 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                                                   .getFirstElement(),
                                 kz.capitalpay.server.wsdl.EpayServiceStub.TransferOrderResponse.class);
                         callback.receiveResulttransferOrder((kz.capitalpay.server.wsdl.EpayServiceStub.TransferOrderResponse) object);
-                    } catch (org.apache.axis2.AxisFault e) {
+                    } catch (AxisFault e) {
                         callback.receiveErrortransferOrder(e);
                     }
                 }
 
                 public void onError(java.lang.Exception error) {
-                    if (error instanceof org.apache.axis2.AxisFault) {
-                        org.apache.axis2.AxisFault f = (org.apache.axis2.AxisFault) error;
+                    if (error instanceof AxisFault) {
+                        AxisFault f = (AxisFault) error;
                         org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
                         if (faultElt != null) {
                             if (faultExceptionNameMap.containsKey(
-                                        new org.apache.axis2.client.FaultMapKey(
+                                        new FaultMapKey(
                                             faultElt.getQName(), "transferOrder"))) {
                                 //make the fault by reflection
                                 try {
-                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                                 faultElt.getQName(),
                                                 "transferOrder"));
                                     java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
@@ -4123,7 +4145,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                     java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                                     //message class
-                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                                 faultElt.getQName(),
                                                 "transferOrder"));
                                     java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
@@ -4208,7 +4230,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 } catch (java.lang.InstantiationException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrortransferOrder(f);
-                                } catch (org.apache.axis2.AxisFault e) {
+                                } catch (AxisFault e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrortransferOrder(f);
                                 }
@@ -4224,8 +4246,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 }
 
                 public void onFault(
-                    org.apache.axis2.context.MessageContext faultContext) {
-                    org.apache.axis2.AxisFault fault = org.apache.axis2.util.Utils.getInboundFaultFromMessageContext(faultContext);
+                    MessageContext faultContext) {
+                    AxisFault fault = Utils.getInboundFaultFromMessageContext(faultContext);
                     onError(fault);
                 }
 
@@ -4233,17 +4255,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     try {
                         _messageContext.getTransportOut().getSender()
                                        .cleanup(_messageContext);
-                    } catch (org.apache.axis2.AxisFault axisFault) {
+                    } catch (AxisFault axisFault) {
                         callback.receiveErrortransferOrder(axisFault);
                     }
                 }
             });
 
-        org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
+        CallbackReceiver _callbackReceiver = null;
 
         if ((_operations[8].getMessageReceiver() == null) &&
                 _operationClient.getOptions().isUseSeparateListener()) {
-            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
+            _callbackReceiver = new CallbackReceiver();
             _operations[8].setMessageReceiver(_callbackReceiver);
         }
 
@@ -4260,15 +4282,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
     public kz.capitalpay.server.wsdl.EpayServiceStub.PaymentOrderResponse paymentOrder(
         kz.capitalpay.server.wsdl.EpayServiceStub.PaymentOrder paymentOrder18)
         throws java.rmi.RemoteException {
-        org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        MessageContext _messageContext = new MessageContext();
 
         try {
-            org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[9].getName());
+            OperationClient _operationClient = _serviceClient.createClient(_operations[9].getName());
             _operationClient.getOptions().setAction("urn:paymentOrder");
             _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
             addPropertyToOperationClient(_operationClient,
-                org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+                WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
                 "&");
 
             // create SOAP envelope with that payload
@@ -4294,7 +4316,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
             //execute the operation client
             _operationClient.execute(true);
 
-            org.apache.axis2.context.MessageContext _returnMessageContext = _operationClient.getMessageContext(org.apache.axis2.wsdl.WSDLConstants.MESSAGE_LABEL_IN_VALUE);
+            MessageContext _returnMessageContext = _operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
             org.apache.axiom.soap.SOAPEnvelope _returnEnv = _returnMessageContext.getEnvelope();
 
             java.lang.Object object = fromOM(_returnEnv.getBody()
@@ -4302,23 +4324,23 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     kz.capitalpay.server.wsdl.EpayServiceStub.PaymentOrderResponse.class);
 
             return (kz.capitalpay.server.wsdl.EpayServiceStub.PaymentOrderResponse) object;
-        } catch (org.apache.axis2.AxisFault f) {
+        } catch (AxisFault f) {
             org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
             if (faultElt != null) {
                 if (faultExceptionNameMap.containsKey(
-                            new org.apache.axis2.client.FaultMapKey(
+                            new FaultMapKey(
                                 faultElt.getQName(), "paymentOrder"))) {
                     //make the fault by reflection
                     try {
-                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                     faultElt.getQName(), "paymentOrder"));
                         java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
                         java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(java.lang.String.class);
                         java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                         //message class
-                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                     faultElt.getQName(), "paymentOrder"));
                         java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
                         java.lang.Object messageObject = fromOM(faultElt,
@@ -4371,17 +4393,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         kz.capitalpay.server.wsdl.EpayServiceStub.PaymentOrder paymentOrder18,
         final kz.capitalpay.server.wsdl.EpayServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
-        org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[9].getName());
+        OperationClient _operationClient = _serviceClient.createClient(_operations[9].getName());
         _operationClient.getOptions().setAction("urn:paymentOrder");
         _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
         addPropertyToOperationClient(_operationClient,
-            org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+            WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
             "&");
 
         // create SOAP envelope with that payload
         org.apache.axiom.soap.SOAPEnvelope env = null;
-        final org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        final MessageContext _messageContext = new MessageContext();
 
         //Style is Doc.
         env = toEnvelope(getFactory(_operationClient.getOptions()
@@ -4401,9 +4423,9 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         // add the message context to the operation client
         _operationClient.addMessageContext(_messageContext);
 
-        _operationClient.setCallback(new org.apache.axis2.client.async.AxisCallback() {
+        _operationClient.setCallback(new AxisCallback() {
                 public void onMessage(
-                    org.apache.axis2.context.MessageContext resultContext) {
+                    MessageContext resultContext) {
                     try {
                         org.apache.axiom.soap.SOAPEnvelope resultEnv = resultContext.getEnvelope();
 
@@ -4411,23 +4433,23 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                                                   .getFirstElement(),
                                 kz.capitalpay.server.wsdl.EpayServiceStub.PaymentOrderResponse.class);
                         callback.receiveResultpaymentOrder((kz.capitalpay.server.wsdl.EpayServiceStub.PaymentOrderResponse) object);
-                    } catch (org.apache.axis2.AxisFault e) {
+                    } catch (AxisFault e) {
                         callback.receiveErrorpaymentOrder(e);
                     }
                 }
 
                 public void onError(java.lang.Exception error) {
-                    if (error instanceof org.apache.axis2.AxisFault) {
-                        org.apache.axis2.AxisFault f = (org.apache.axis2.AxisFault) error;
+                    if (error instanceof AxisFault) {
+                        AxisFault f = (AxisFault) error;
                         org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
                         if (faultElt != null) {
                             if (faultExceptionNameMap.containsKey(
-                                        new org.apache.axis2.client.FaultMapKey(
+                                        new FaultMapKey(
                                             faultElt.getQName(), "paymentOrder"))) {
                                 //make the fault by reflection
                                 try {
-                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                                 faultElt.getQName(),
                                                 "paymentOrder"));
                                     java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
@@ -4435,7 +4457,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                     java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                                     //message class
-                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                                 faultElt.getQName(),
                                                 "paymentOrder"));
                                     java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
@@ -4466,7 +4488,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 } catch (java.lang.InstantiationException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorpaymentOrder(f);
-                                } catch (org.apache.axis2.AxisFault e) {
+                                } catch (AxisFault e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorpaymentOrder(f);
                                 }
@@ -4482,8 +4504,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 }
 
                 public void onFault(
-                    org.apache.axis2.context.MessageContext faultContext) {
-                    org.apache.axis2.AxisFault fault = org.apache.axis2.util.Utils.getInboundFaultFromMessageContext(faultContext);
+                    MessageContext faultContext) {
+                    AxisFault fault = Utils.getInboundFaultFromMessageContext(faultContext);
                     onError(fault);
                 }
 
@@ -4491,17 +4513,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     try {
                         _messageContext.getTransportOut().getSender()
                                        .cleanup(_messageContext);
-                    } catch (org.apache.axis2.AxisFault axisFault) {
+                    } catch (AxisFault axisFault) {
                         callback.receiveErrorpaymentOrder(axisFault);
                     }
                 }
             });
 
-        org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
+        CallbackReceiver _callbackReceiver = null;
 
         if ((_operations[9].getMessageReceiver() == null) &&
                 _operationClient.getOptions().isUseSeparateListener()) {
-            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
+            _callbackReceiver = new CallbackReceiver();
             _operations[9].setMessageReceiver(_callbackReceiver);
         }
 
@@ -4518,15 +4540,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
     public kz.capitalpay.server.wsdl.EpayServiceStub.CheckForeignCardResponse checkForeignCard(
         kz.capitalpay.server.wsdl.EpayServiceStub.CheckForeignCard checkForeignCard20)
         throws java.rmi.RemoteException {
-        org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        MessageContext _messageContext = new MessageContext();
 
         try {
-            org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[10].getName());
+            OperationClient _operationClient = _serviceClient.createClient(_operations[10].getName());
             _operationClient.getOptions().setAction("urn:checkForeignCard");
             _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
             addPropertyToOperationClient(_operationClient,
-                org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+                WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
                 "&");
 
             // create SOAP envelope with that payload
@@ -4552,7 +4574,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
             //execute the operation client
             _operationClient.execute(true);
 
-            org.apache.axis2.context.MessageContext _returnMessageContext = _operationClient.getMessageContext(org.apache.axis2.wsdl.WSDLConstants.MESSAGE_LABEL_IN_VALUE);
+            MessageContext _returnMessageContext = _operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
             org.apache.axiom.soap.SOAPEnvelope _returnEnv = _returnMessageContext.getEnvelope();
 
             java.lang.Object object = fromOM(_returnEnv.getBody()
@@ -4560,23 +4582,23 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     kz.capitalpay.server.wsdl.EpayServiceStub.CheckForeignCardResponse.class);
 
             return (kz.capitalpay.server.wsdl.EpayServiceStub.CheckForeignCardResponse) object;
-        } catch (org.apache.axis2.AxisFault f) {
+        } catch (AxisFault f) {
             org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
             if (faultElt != null) {
                 if (faultExceptionNameMap.containsKey(
-                            new org.apache.axis2.client.FaultMapKey(
+                            new FaultMapKey(
                                 faultElt.getQName(), "checkForeignCard"))) {
                     //make the fault by reflection
                     try {
-                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                     faultElt.getQName(), "checkForeignCard"));
                         java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
                         java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(java.lang.String.class);
                         java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                         //message class
-                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                     faultElt.getQName(), "checkForeignCard"));
                         java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
                         java.lang.Object messageObject = fromOM(faultElt,
@@ -4629,17 +4651,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         kz.capitalpay.server.wsdl.EpayServiceStub.CheckForeignCard checkForeignCard20,
         final kz.capitalpay.server.wsdl.EpayServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
-        org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[10].getName());
+        OperationClient _operationClient = _serviceClient.createClient(_operations[10].getName());
         _operationClient.getOptions().setAction("urn:checkForeignCard");
         _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
         addPropertyToOperationClient(_operationClient,
-            org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+            WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
             "&");
 
         // create SOAP envelope with that payload
         org.apache.axiom.soap.SOAPEnvelope env = null;
-        final org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        final MessageContext _messageContext = new MessageContext();
 
         //Style is Doc.
         env = toEnvelope(getFactory(_operationClient.getOptions()
@@ -4659,9 +4681,9 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         // add the message context to the operation client
         _operationClient.addMessageContext(_messageContext);
 
-        _operationClient.setCallback(new org.apache.axis2.client.async.AxisCallback() {
+        _operationClient.setCallback(new AxisCallback() {
                 public void onMessage(
-                    org.apache.axis2.context.MessageContext resultContext) {
+                    MessageContext resultContext) {
                     try {
                         org.apache.axiom.soap.SOAPEnvelope resultEnv = resultContext.getEnvelope();
 
@@ -4669,24 +4691,24 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                                                   .getFirstElement(),
                                 kz.capitalpay.server.wsdl.EpayServiceStub.CheckForeignCardResponse.class);
                         callback.receiveResultcheckForeignCard((kz.capitalpay.server.wsdl.EpayServiceStub.CheckForeignCardResponse) object);
-                    } catch (org.apache.axis2.AxisFault e) {
+                    } catch (AxisFault e) {
                         callback.receiveErrorcheckForeignCard(e);
                     }
                 }
 
                 public void onError(java.lang.Exception error) {
-                    if (error instanceof org.apache.axis2.AxisFault) {
-                        org.apache.axis2.AxisFault f = (org.apache.axis2.AxisFault) error;
+                    if (error instanceof AxisFault) {
+                        AxisFault f = (AxisFault) error;
                         org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
                         if (faultElt != null) {
                             if (faultExceptionNameMap.containsKey(
-                                        new org.apache.axis2.client.FaultMapKey(
+                                        new FaultMapKey(
                                             faultElt.getQName(),
                                             "checkForeignCard"))) {
                                 //make the fault by reflection
                                 try {
-                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                                 faultElt.getQName(),
                                                 "checkForeignCard"));
                                     java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
@@ -4694,7 +4716,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                     java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                                     //message class
-                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                                 faultElt.getQName(),
                                                 "checkForeignCard"));
                                     java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
@@ -4725,7 +4747,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 } catch (java.lang.InstantiationException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorcheckForeignCard(f);
-                                } catch (org.apache.axis2.AxisFault e) {
+                                } catch (AxisFault e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorcheckForeignCard(f);
                                 }
@@ -4741,8 +4763,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 }
 
                 public void onFault(
-                    org.apache.axis2.context.MessageContext faultContext) {
-                    org.apache.axis2.AxisFault fault = org.apache.axis2.util.Utils.getInboundFaultFromMessageContext(faultContext);
+                    MessageContext faultContext) {
+                    AxisFault fault = Utils.getInboundFaultFromMessageContext(faultContext);
                     onError(fault);
                 }
 
@@ -4750,17 +4772,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     try {
                         _messageContext.getTransportOut().getSender()
                                        .cleanup(_messageContext);
-                    } catch (org.apache.axis2.AxisFault axisFault) {
+                    } catch (AxisFault axisFault) {
                         callback.receiveErrorcheckForeignCard(axisFault);
                     }
                 }
             });
 
-        org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
+        CallbackReceiver _callbackReceiver = null;
 
         if ((_operations[10].getMessageReceiver() == null) &&
                 _operationClient.getOptions().isUseSeparateListener()) {
-            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
+            _callbackReceiver = new CallbackReceiver();
             _operations[10].setMessageReceiver(_callbackReceiver);
         }
 
@@ -4795,16 +4817,16 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
             kz.capitalpay.server.wsdl.EpayServiceParserConfigurationExceptionException,
             kz.capitalpay.server.wsdl.EpayServiceKeyStoreExceptionException,
             kz.capitalpay.server.wsdl.EpayServiceInvalidKeyExceptionException {
-        org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        MessageContext _messageContext = new MessageContext();
 
         try {
-            org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[11].getName());
+            OperationClient _operationClient = _serviceClient.createClient(_operations[11].getName());
             _operationClient.getOptions()
                             .setAction("urn:controlOrderForCommerce");
             _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
             addPropertyToOperationClient(_operationClient,
-                org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+                WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
                 "&");
 
             // create SOAP envelope with that payload
@@ -4831,7 +4853,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
             //execute the operation client
             _operationClient.execute(true);
 
-            org.apache.axis2.context.MessageContext _returnMessageContext = _operationClient.getMessageContext(org.apache.axis2.wsdl.WSDLConstants.MESSAGE_LABEL_IN_VALUE);
+            MessageContext _returnMessageContext = _operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
             org.apache.axiom.soap.SOAPEnvelope _returnEnv = _returnMessageContext.getEnvelope();
 
             java.lang.Object object = fromOM(_returnEnv.getBody()
@@ -4839,16 +4861,16 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     kz.capitalpay.server.wsdl.EpayServiceStub.ControlOrderForCommerceResponse.class);
 
             return (kz.capitalpay.server.wsdl.EpayServiceStub.ControlOrderForCommerceResponse) object;
-        } catch (org.apache.axis2.AxisFault f) {
+        } catch (AxisFault f) {
             org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
             if (faultElt != null) {
                 if (faultExceptionNameMap.containsKey(
-                            new org.apache.axis2.client.FaultMapKey(
+                            new FaultMapKey(
                                 faultElt.getQName(), "controlOrderForCommerce"))) {
                     //make the fault by reflection
                     try {
-                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                     faultElt.getQName(),
                                     "controlOrderForCommerce"));
                         java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
@@ -4856,7 +4878,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                         //message class
-                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                     faultElt.getQName(),
                                     "controlOrderForCommerce"));
                         java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
@@ -4946,17 +4968,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         kz.capitalpay.server.wsdl.EpayServiceStub.ControlOrderForCommerce controlOrderForCommerce22,
         final kz.capitalpay.server.wsdl.EpayServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
-        org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[11].getName());
+        OperationClient _operationClient = _serviceClient.createClient(_operations[11].getName());
         _operationClient.getOptions().setAction("urn:controlOrderForCommerce");
         _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
         addPropertyToOperationClient(_operationClient,
-            org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+            WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
             "&");
 
         // create SOAP envelope with that payload
         org.apache.axiom.soap.SOAPEnvelope env = null;
-        final org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        final MessageContext _messageContext = new MessageContext();
 
         //Style is Doc.
         env = toEnvelope(getFactory(_operationClient.getOptions()
@@ -4976,9 +4998,9 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         // add the message context to the operation client
         _operationClient.addMessageContext(_messageContext);
 
-        _operationClient.setCallback(new org.apache.axis2.client.async.AxisCallback() {
+        _operationClient.setCallback(new AxisCallback() {
                 public void onMessage(
-                    org.apache.axis2.context.MessageContext resultContext) {
+                    MessageContext resultContext) {
                     try {
                         org.apache.axiom.soap.SOAPEnvelope resultEnv = resultContext.getEnvelope();
 
@@ -4986,24 +5008,24 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                                                   .getFirstElement(),
                                 kz.capitalpay.server.wsdl.EpayServiceStub.ControlOrderForCommerceResponse.class);
                         callback.receiveResultcontrolOrderForCommerce((kz.capitalpay.server.wsdl.EpayServiceStub.ControlOrderForCommerceResponse) object);
-                    } catch (org.apache.axis2.AxisFault e) {
+                    } catch (AxisFault e) {
                         callback.receiveErrorcontrolOrderForCommerce(e);
                     }
                 }
 
                 public void onError(java.lang.Exception error) {
-                    if (error instanceof org.apache.axis2.AxisFault) {
-                        org.apache.axis2.AxisFault f = (org.apache.axis2.AxisFault) error;
+                    if (error instanceof AxisFault) {
+                        AxisFault f = (AxisFault) error;
                         org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
                         if (faultElt != null) {
                             if (faultExceptionNameMap.containsKey(
-                                        new org.apache.axis2.client.FaultMapKey(
+                                        new FaultMapKey(
                                             faultElt.getQName(),
                                             "controlOrderForCommerce"))) {
                                 //make the fault by reflection
                                 try {
-                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                                 faultElt.getQName(),
                                                 "controlOrderForCommerce"));
                                     java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
@@ -5011,7 +5033,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                     java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                                     //message class
-                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                                 faultElt.getQName(),
                                                 "controlOrderForCommerce"));
                                     java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
@@ -5096,7 +5118,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 } catch (java.lang.InstantiationException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorcontrolOrderForCommerce(f);
-                                } catch (org.apache.axis2.AxisFault e) {
+                                } catch (AxisFault e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorcontrolOrderForCommerce(f);
                                 }
@@ -5112,8 +5134,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 }
 
                 public void onFault(
-                    org.apache.axis2.context.MessageContext faultContext) {
-                    org.apache.axis2.AxisFault fault = org.apache.axis2.util.Utils.getInboundFaultFromMessageContext(faultContext);
+                    MessageContext faultContext) {
+                    AxisFault fault = Utils.getInboundFaultFromMessageContext(faultContext);
                     onError(fault);
                 }
 
@@ -5121,17 +5143,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     try {
                         _messageContext.getTransportOut().getSender()
                                        .cleanup(_messageContext);
-                    } catch (org.apache.axis2.AxisFault axisFault) {
+                    } catch (AxisFault axisFault) {
                         callback.receiveErrorcontrolOrderForCommerce(axisFault);
                     }
                 }
             });
 
-        org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
+        CallbackReceiver _callbackReceiver = null;
 
         if ((_operations[11].getMessageReceiver() == null) &&
                 _operationClient.getOptions().isUseSeparateListener()) {
-            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
+            _callbackReceiver = new CallbackReceiver();
             _operations[11].setMessageReceiver(_callbackReceiver);
         }
 
@@ -5166,15 +5188,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
             kz.capitalpay.server.wsdl.EpayServiceParserConfigurationExceptionException,
             kz.capitalpay.server.wsdl.EpayServiceKeyStoreExceptionException,
             kz.capitalpay.server.wsdl.EpayServiceInvalidKeyExceptionException {
-        org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        MessageContext _messageContext = new MessageContext();
 
         try {
-            org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[12].getName());
+            OperationClient _operationClient = _serviceClient.createClient(_operations[12].getName());
             _operationClient.getOptions().setAction("urn:recurrentOrder");
             _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
             addPropertyToOperationClient(_operationClient,
-                org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+                WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
                 "&");
 
             // create SOAP envelope with that payload
@@ -5200,7 +5222,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
             //execute the operation client
             _operationClient.execute(true);
 
-            org.apache.axis2.context.MessageContext _returnMessageContext = _operationClient.getMessageContext(org.apache.axis2.wsdl.WSDLConstants.MESSAGE_LABEL_IN_VALUE);
+            MessageContext _returnMessageContext = _operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
             org.apache.axiom.soap.SOAPEnvelope _returnEnv = _returnMessageContext.getEnvelope();
 
             java.lang.Object object = fromOM(_returnEnv.getBody()
@@ -5208,23 +5230,23 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     kz.capitalpay.server.wsdl.EpayServiceStub.RecurrentOrderResponse.class);
 
             return (kz.capitalpay.server.wsdl.EpayServiceStub.RecurrentOrderResponse) object;
-        } catch (org.apache.axis2.AxisFault f) {
+        } catch (AxisFault f) {
             org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
             if (faultElt != null) {
                 if (faultExceptionNameMap.containsKey(
-                            new org.apache.axis2.client.FaultMapKey(
+                            new FaultMapKey(
                                 faultElt.getQName(), "recurrentOrder"))) {
                     //make the fault by reflection
                     try {
-                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                     faultElt.getQName(), "recurrentOrder"));
                         java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
                         java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(java.lang.String.class);
                         java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                         //message class
-                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                     faultElt.getQName(), "recurrentOrder"));
                         java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
                         java.lang.Object messageObject = fromOM(faultElt,
@@ -5313,17 +5335,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         kz.capitalpay.server.wsdl.EpayServiceStub.RecurrentOrderE recurrentOrder24,
         final kz.capitalpay.server.wsdl.EpayServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
-        org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[12].getName());
+        OperationClient _operationClient = _serviceClient.createClient(_operations[12].getName());
         _operationClient.getOptions().setAction("urn:recurrentOrder");
         _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
         addPropertyToOperationClient(_operationClient,
-            org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+            WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
             "&");
 
         // create SOAP envelope with that payload
         org.apache.axiom.soap.SOAPEnvelope env = null;
-        final org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        final MessageContext _messageContext = new MessageContext();
 
         //Style is Doc.
         env = toEnvelope(getFactory(_operationClient.getOptions()
@@ -5343,9 +5365,9 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         // add the message context to the operation client
         _operationClient.addMessageContext(_messageContext);
 
-        _operationClient.setCallback(new org.apache.axis2.client.async.AxisCallback() {
+        _operationClient.setCallback(new AxisCallback() {
                 public void onMessage(
-                    org.apache.axis2.context.MessageContext resultContext) {
+                    MessageContext resultContext) {
                     try {
                         org.apache.axiom.soap.SOAPEnvelope resultEnv = resultContext.getEnvelope();
 
@@ -5353,24 +5375,24 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                                                   .getFirstElement(),
                                 kz.capitalpay.server.wsdl.EpayServiceStub.RecurrentOrderResponse.class);
                         callback.receiveResultrecurrentOrder((kz.capitalpay.server.wsdl.EpayServiceStub.RecurrentOrderResponse) object);
-                    } catch (org.apache.axis2.AxisFault e) {
+                    } catch (AxisFault e) {
                         callback.receiveErrorrecurrentOrder(e);
                     }
                 }
 
                 public void onError(java.lang.Exception error) {
-                    if (error instanceof org.apache.axis2.AxisFault) {
-                        org.apache.axis2.AxisFault f = (org.apache.axis2.AxisFault) error;
+                    if (error instanceof AxisFault) {
+                        AxisFault f = (AxisFault) error;
                         org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
                         if (faultElt != null) {
                             if (faultExceptionNameMap.containsKey(
-                                        new org.apache.axis2.client.FaultMapKey(
+                                        new FaultMapKey(
                                             faultElt.getQName(),
                                             "recurrentOrder"))) {
                                 //make the fault by reflection
                                 try {
-                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                                 faultElt.getQName(),
                                                 "recurrentOrder"));
                                     java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
@@ -5378,7 +5400,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                     java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                                     //message class
-                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                                 faultElt.getQName(),
                                                 "recurrentOrder"));
                                     java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
@@ -5463,7 +5485,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 } catch (java.lang.InstantiationException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorrecurrentOrder(f);
-                                } catch (org.apache.axis2.AxisFault e) {
+                                } catch (AxisFault e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorrecurrentOrder(f);
                                 }
@@ -5479,8 +5501,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 }
 
                 public void onFault(
-                    org.apache.axis2.context.MessageContext faultContext) {
-                    org.apache.axis2.AxisFault fault = org.apache.axis2.util.Utils.getInboundFaultFromMessageContext(faultContext);
+                    MessageContext faultContext) {
+                    AxisFault fault = Utils.getInboundFaultFromMessageContext(faultContext);
                     onError(fault);
                 }
 
@@ -5488,17 +5510,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     try {
                         _messageContext.getTransportOut().getSender()
                                        .cleanup(_messageContext);
-                    } catch (org.apache.axis2.AxisFault axisFault) {
+                    } catch (AxisFault axisFault) {
                         callback.receiveErrorrecurrentOrder(axisFault);
                     }
                 }
             });
 
-        org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
+        CallbackReceiver _callbackReceiver = null;
 
         if ((_operations[12].getMessageReceiver() == null) &&
                 _operationClient.getOptions().isUseSeparateListener()) {
-            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
+            _callbackReceiver = new CallbackReceiver();
             _operations[12].setMessageReceiver(_callbackReceiver);
         }
 
@@ -5515,15 +5537,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
     public kz.capitalpay.server.wsdl.EpayServiceStub.FormZipResponse formZip(
         kz.capitalpay.server.wsdl.EpayServiceStub.FormZip formZip26)
         throws java.rmi.RemoteException {
-        org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        MessageContext _messageContext = new MessageContext();
 
         try {
-            org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[13].getName());
+            OperationClient _operationClient = _serviceClient.createClient(_operations[13].getName());
             _operationClient.getOptions().setAction("urn:formZip");
             _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
             addPropertyToOperationClient(_operationClient,
-                org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+                WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
                 "&");
 
             // create SOAP envelope with that payload
@@ -5549,7 +5571,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
             //execute the operation client
             _operationClient.execute(true);
 
-            org.apache.axis2.context.MessageContext _returnMessageContext = _operationClient.getMessageContext(org.apache.axis2.wsdl.WSDLConstants.MESSAGE_LABEL_IN_VALUE);
+            MessageContext _returnMessageContext = _operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
             org.apache.axiom.soap.SOAPEnvelope _returnEnv = _returnMessageContext.getEnvelope();
 
             java.lang.Object object = fromOM(_returnEnv.getBody()
@@ -5557,23 +5579,23 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     kz.capitalpay.server.wsdl.EpayServiceStub.FormZipResponse.class);
 
             return (kz.capitalpay.server.wsdl.EpayServiceStub.FormZipResponse) object;
-        } catch (org.apache.axis2.AxisFault f) {
+        } catch (AxisFault f) {
             org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
             if (faultElt != null) {
                 if (faultExceptionNameMap.containsKey(
-                            new org.apache.axis2.client.FaultMapKey(
+                            new FaultMapKey(
                                 faultElt.getQName(), "formZip"))) {
                     //make the fault by reflection
                     try {
-                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                     faultElt.getQName(), "formZip"));
                         java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
                         java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(java.lang.String.class);
                         java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                         //message class
-                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                     faultElt.getQName(), "formZip"));
                         java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
                         java.lang.Object messageObject = fromOM(faultElt,
@@ -5626,17 +5648,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         kz.capitalpay.server.wsdl.EpayServiceStub.FormZip formZip26,
         final kz.capitalpay.server.wsdl.EpayServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
-        org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[13].getName());
+        OperationClient _operationClient = _serviceClient.createClient(_operations[13].getName());
         _operationClient.getOptions().setAction("urn:formZip");
         _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
         addPropertyToOperationClient(_operationClient,
-            org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+            WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
             "&");
 
         // create SOAP envelope with that payload
         org.apache.axiom.soap.SOAPEnvelope env = null;
-        final org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        final MessageContext _messageContext = new MessageContext();
 
         //Style is Doc.
         env = toEnvelope(getFactory(_operationClient.getOptions()
@@ -5656,9 +5678,9 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         // add the message context to the operation client
         _operationClient.addMessageContext(_messageContext);
 
-        _operationClient.setCallback(new org.apache.axis2.client.async.AxisCallback() {
+        _operationClient.setCallback(new AxisCallback() {
                 public void onMessage(
-                    org.apache.axis2.context.MessageContext resultContext) {
+                    MessageContext resultContext) {
                     try {
                         org.apache.axiom.soap.SOAPEnvelope resultEnv = resultContext.getEnvelope();
 
@@ -5666,30 +5688,30 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                                                   .getFirstElement(),
                                 kz.capitalpay.server.wsdl.EpayServiceStub.FormZipResponse.class);
                         callback.receiveResultformZip((kz.capitalpay.server.wsdl.EpayServiceStub.FormZipResponse) object);
-                    } catch (org.apache.axis2.AxisFault e) {
+                    } catch (AxisFault e) {
                         callback.receiveErrorformZip(e);
                     }
                 }
 
                 public void onError(java.lang.Exception error) {
-                    if (error instanceof org.apache.axis2.AxisFault) {
-                        org.apache.axis2.AxisFault f = (org.apache.axis2.AxisFault) error;
+                    if (error instanceof AxisFault) {
+                        AxisFault f = (AxisFault) error;
                         org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
                         if (faultElt != null) {
                             if (faultExceptionNameMap.containsKey(
-                                        new org.apache.axis2.client.FaultMapKey(
+                                        new FaultMapKey(
                                             faultElt.getQName(), "formZip"))) {
                                 //make the fault by reflection
                                 try {
-                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                                 faultElt.getQName(), "formZip"));
                                     java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
                                     java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(java.lang.String.class);
                                     java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                                     //message class
-                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                                 faultElt.getQName(), "formZip"));
                                     java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
                                     java.lang.Object messageObject = fromOM(faultElt,
@@ -5719,7 +5741,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 } catch (java.lang.InstantiationException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorformZip(f);
-                                } catch (org.apache.axis2.AxisFault e) {
+                                } catch (AxisFault e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorformZip(f);
                                 }
@@ -5735,8 +5757,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 }
 
                 public void onFault(
-                    org.apache.axis2.context.MessageContext faultContext) {
-                    org.apache.axis2.AxisFault fault = org.apache.axis2.util.Utils.getInboundFaultFromMessageContext(faultContext);
+                    MessageContext faultContext) {
+                    AxisFault fault = Utils.getInboundFaultFromMessageContext(faultContext);
                     onError(fault);
                 }
 
@@ -5744,17 +5766,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     try {
                         _messageContext.getTransportOut().getSender()
                                        .cleanup(_messageContext);
-                    } catch (org.apache.axis2.AxisFault axisFault) {
+                    } catch (AxisFault axisFault) {
                         callback.receiveErrorformZip(axisFault);
                     }
                 }
             });
 
-        org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
+        CallbackReceiver _callbackReceiver = null;
 
         if ((_operations[13].getMessageReceiver() == null) &&
                 _operationClient.getOptions().isUseSeparateListener()) {
-            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
+            _callbackReceiver = new CallbackReceiver();
             _operations[13].setMessageReceiver(_callbackReceiver);
         }
 
@@ -5771,15 +5793,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
     public kz.capitalpay.server.wsdl.EpayServiceStub.CheckZipResponse checkZip(
         kz.capitalpay.server.wsdl.EpayServiceStub.CheckZip checkZip28)
         throws java.rmi.RemoteException {
-        org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        MessageContext _messageContext = new MessageContext();
 
         try {
-            org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[14].getName());
+            OperationClient _operationClient = _serviceClient.createClient(_operations[14].getName());
             _operationClient.getOptions().setAction("urn:checkZip");
             _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
             addPropertyToOperationClient(_operationClient,
-                org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+                WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
                 "&");
 
             // create SOAP envelope with that payload
@@ -5805,7 +5827,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
             //execute the operation client
             _operationClient.execute(true);
 
-            org.apache.axis2.context.MessageContext _returnMessageContext = _operationClient.getMessageContext(org.apache.axis2.wsdl.WSDLConstants.MESSAGE_LABEL_IN_VALUE);
+            MessageContext _returnMessageContext = _operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
             org.apache.axiom.soap.SOAPEnvelope _returnEnv = _returnMessageContext.getEnvelope();
 
             java.lang.Object object = fromOM(_returnEnv.getBody()
@@ -5813,23 +5835,23 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     kz.capitalpay.server.wsdl.EpayServiceStub.CheckZipResponse.class);
 
             return (kz.capitalpay.server.wsdl.EpayServiceStub.CheckZipResponse) object;
-        } catch (org.apache.axis2.AxisFault f) {
+        } catch (AxisFault f) {
             org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
             if (faultElt != null) {
                 if (faultExceptionNameMap.containsKey(
-                            new org.apache.axis2.client.FaultMapKey(
+                            new FaultMapKey(
                                 faultElt.getQName(), "checkZip"))) {
                     //make the fault by reflection
                     try {
-                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                     faultElt.getQName(), "checkZip"));
                         java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
                         java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(java.lang.String.class);
                         java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                         //message class
-                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                     faultElt.getQName(), "checkZip"));
                         java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
                         java.lang.Object messageObject = fromOM(faultElt,
@@ -5882,17 +5904,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         kz.capitalpay.server.wsdl.EpayServiceStub.CheckZip checkZip28,
         final kz.capitalpay.server.wsdl.EpayServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
-        org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[14].getName());
+        OperationClient _operationClient = _serviceClient.createClient(_operations[14].getName());
         _operationClient.getOptions().setAction("urn:checkZip");
         _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
         addPropertyToOperationClient(_operationClient,
-            org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+            WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
             "&");
 
         // create SOAP envelope with that payload
         org.apache.axiom.soap.SOAPEnvelope env = null;
-        final org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        final MessageContext _messageContext = new MessageContext();
 
         //Style is Doc.
         env = toEnvelope(getFactory(_operationClient.getOptions()
@@ -5912,9 +5934,9 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         // add the message context to the operation client
         _operationClient.addMessageContext(_messageContext);
 
-        _operationClient.setCallback(new org.apache.axis2.client.async.AxisCallback() {
+        _operationClient.setCallback(new AxisCallback() {
                 public void onMessage(
-                    org.apache.axis2.context.MessageContext resultContext) {
+                    MessageContext resultContext) {
                     try {
                         org.apache.axiom.soap.SOAPEnvelope resultEnv = resultContext.getEnvelope();
 
@@ -5922,30 +5944,30 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                                                   .getFirstElement(),
                                 kz.capitalpay.server.wsdl.EpayServiceStub.CheckZipResponse.class);
                         callback.receiveResultcheckZip((kz.capitalpay.server.wsdl.EpayServiceStub.CheckZipResponse) object);
-                    } catch (org.apache.axis2.AxisFault e) {
+                    } catch (AxisFault e) {
                         callback.receiveErrorcheckZip(e);
                     }
                 }
 
                 public void onError(java.lang.Exception error) {
-                    if (error instanceof org.apache.axis2.AxisFault) {
-                        org.apache.axis2.AxisFault f = (org.apache.axis2.AxisFault) error;
+                    if (error instanceof AxisFault) {
+                        AxisFault f = (AxisFault) error;
                         org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
                         if (faultElt != null) {
                             if (faultExceptionNameMap.containsKey(
-                                        new org.apache.axis2.client.FaultMapKey(
+                                        new FaultMapKey(
                                             faultElt.getQName(), "checkZip"))) {
                                 //make the fault by reflection
                                 try {
-                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                                 faultElt.getQName(), "checkZip"));
                                     java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
                                     java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(java.lang.String.class);
                                     java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                                     //message class
-                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                                 faultElt.getQName(), "checkZip"));
                                     java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
                                     java.lang.Object messageObject = fromOM(faultElt,
@@ -5975,7 +5997,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 } catch (java.lang.InstantiationException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorcheckZip(f);
-                                } catch (org.apache.axis2.AxisFault e) {
+                                } catch (AxisFault e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorcheckZip(f);
                                 }
@@ -5991,8 +6013,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 }
 
                 public void onFault(
-                    org.apache.axis2.context.MessageContext faultContext) {
-                    org.apache.axis2.AxisFault fault = org.apache.axis2.util.Utils.getInboundFaultFromMessageContext(faultContext);
+                    MessageContext faultContext) {
+                    AxisFault fault = Utils.getInboundFaultFromMessageContext(faultContext);
                     onError(fault);
                 }
 
@@ -6000,17 +6022,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     try {
                         _messageContext.getTransportOut().getSender()
                                        .cleanup(_messageContext);
-                    } catch (org.apache.axis2.AxisFault axisFault) {
+                    } catch (AxisFault axisFault) {
                         callback.receiveErrorcheckZip(axisFault);
                     }
                 }
             });
 
-        org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
+        CallbackReceiver _callbackReceiver = null;
 
         if ((_operations[14].getMessageReceiver() == null) &&
                 _operationClient.getOptions().isUseSeparateListener()) {
-            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
+            _callbackReceiver = new CallbackReceiver();
             _operations[14].setMessageReceiver(_callbackReceiver);
         }
 
@@ -6027,15 +6049,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
     public kz.capitalpay.server.wsdl.EpayServiceStub.AirastanaPaymentOrderResponse airastanaPaymentOrder(
         kz.capitalpay.server.wsdl.EpayServiceStub.AirastanaPaymentOrderE airastanaPaymentOrder30)
         throws java.rmi.RemoteException {
-        org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        MessageContext _messageContext = new MessageContext();
 
         try {
-            org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[15].getName());
+            OperationClient _operationClient = _serviceClient.createClient(_operations[15].getName());
             _operationClient.getOptions().setAction("urn:airastanaPaymentOrder");
             _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
             addPropertyToOperationClient(_operationClient,
-                org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+                WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
                 "&");
 
             // create SOAP envelope with that payload
@@ -6061,7 +6083,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
             //execute the operation client
             _operationClient.execute(true);
 
-            org.apache.axis2.context.MessageContext _returnMessageContext = _operationClient.getMessageContext(org.apache.axis2.wsdl.WSDLConstants.MESSAGE_LABEL_IN_VALUE);
+            MessageContext _returnMessageContext = _operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
             org.apache.axiom.soap.SOAPEnvelope _returnEnv = _returnMessageContext.getEnvelope();
 
             java.lang.Object object = fromOM(_returnEnv.getBody()
@@ -6069,23 +6091,23 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     kz.capitalpay.server.wsdl.EpayServiceStub.AirastanaPaymentOrderResponse.class);
 
             return (kz.capitalpay.server.wsdl.EpayServiceStub.AirastanaPaymentOrderResponse) object;
-        } catch (org.apache.axis2.AxisFault f) {
+        } catch (AxisFault f) {
             org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
             if (faultElt != null) {
                 if (faultExceptionNameMap.containsKey(
-                            new org.apache.axis2.client.FaultMapKey(
+                            new FaultMapKey(
                                 faultElt.getQName(), "airastanaPaymentOrder"))) {
                     //make the fault by reflection
                     try {
-                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                     faultElt.getQName(), "airastanaPaymentOrder"));
                         java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
                         java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(java.lang.String.class);
                         java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                         //message class
-                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                     faultElt.getQName(), "airastanaPaymentOrder"));
                         java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
                         java.lang.Object messageObject = fromOM(faultElt,
@@ -6138,17 +6160,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         kz.capitalpay.server.wsdl.EpayServiceStub.AirastanaPaymentOrderE airastanaPaymentOrder30,
         final kz.capitalpay.server.wsdl.EpayServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
-        org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[15].getName());
+        OperationClient _operationClient = _serviceClient.createClient(_operations[15].getName());
         _operationClient.getOptions().setAction("urn:airastanaPaymentOrder");
         _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
         addPropertyToOperationClient(_operationClient,
-            org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
+            WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,
             "&");
 
         // create SOAP envelope with that payload
         org.apache.axiom.soap.SOAPEnvelope env = null;
-        final org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+        final MessageContext _messageContext = new MessageContext();
 
         //Style is Doc.
         env = toEnvelope(getFactory(_operationClient.getOptions()
@@ -6168,9 +6190,9 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         // add the message context to the operation client
         _operationClient.addMessageContext(_messageContext);
 
-        _operationClient.setCallback(new org.apache.axis2.client.async.AxisCallback() {
+        _operationClient.setCallback(new AxisCallback() {
                 public void onMessage(
-                    org.apache.axis2.context.MessageContext resultContext) {
+                    MessageContext resultContext) {
                     try {
                         org.apache.axiom.soap.SOAPEnvelope resultEnv = resultContext.getEnvelope();
 
@@ -6178,24 +6200,24 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                                                   .getFirstElement(),
                                 kz.capitalpay.server.wsdl.EpayServiceStub.AirastanaPaymentOrderResponse.class);
                         callback.receiveResultairastanaPaymentOrder((kz.capitalpay.server.wsdl.EpayServiceStub.AirastanaPaymentOrderResponse) object);
-                    } catch (org.apache.axis2.AxisFault e) {
+                    } catch (AxisFault e) {
                         callback.receiveErrorairastanaPaymentOrder(e);
                     }
                 }
 
                 public void onError(java.lang.Exception error) {
-                    if (error instanceof org.apache.axis2.AxisFault) {
-                        org.apache.axis2.AxisFault f = (org.apache.axis2.AxisFault) error;
+                    if (error instanceof AxisFault) {
+                        AxisFault f = (AxisFault) error;
                         org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
                         if (faultElt != null) {
                             if (faultExceptionNameMap.containsKey(
-                                        new org.apache.axis2.client.FaultMapKey(
+                                        new FaultMapKey(
                                             faultElt.getQName(),
                                             "airastanaPaymentOrder"))) {
                                 //make the fault by reflection
                                 try {
-                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new FaultMapKey(
                                                 faultElt.getQName(),
                                                 "airastanaPaymentOrder"));
                                     java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
@@ -6203,7 +6225,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                     java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
 
                                     //message class
-                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new FaultMapKey(
                                                 faultElt.getQName(),
                                                 "airastanaPaymentOrder"));
                                     java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
@@ -6234,7 +6256,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 } catch (java.lang.InstantiationException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorairastanaPaymentOrder(f);
-                                } catch (org.apache.axis2.AxisFault e) {
+                                } catch (AxisFault e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorairastanaPaymentOrder(f);
                                 }
@@ -6250,8 +6272,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 }
 
                 public void onFault(
-                    org.apache.axis2.context.MessageContext faultContext) {
-                    org.apache.axis2.AxisFault fault = org.apache.axis2.util.Utils.getInboundFaultFromMessageContext(faultContext);
+                    MessageContext faultContext) {
+                    AxisFault fault = Utils.getInboundFaultFromMessageContext(faultContext);
                     onError(fault);
                 }
 
@@ -6259,17 +6281,17 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     try {
                         _messageContext.getTransportOut().getSender()
                                        .cleanup(_messageContext);
-                    } catch (org.apache.axis2.AxisFault axisFault) {
+                    } catch (AxisFault axisFault) {
                         callback.receiveErrorairastanaPaymentOrder(axisFault);
                     }
                 }
             });
 
-        org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
+        CallbackReceiver _callbackReceiver = null;
 
         if ((_operations[15].getMessageReceiver() == null) &&
                 _operationClient.getOptions().isUseSeparateListener()) {
-            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
+            _callbackReceiver = new CallbackReceiver();
             _operations[15].setMessageReceiver(_callbackReceiver);
         }
 
@@ -6293,452 +6315,452 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.Is3DOrderE param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.Is3DOrderE.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.Is3DOrderResponse param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.Is3DOrderResponse.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.EpayServiceIOException param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.EpayServiceIOException.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.EpayServiceUnrecoverableKeyException param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.EpayServiceUnrecoverableKeyException.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.EpayServiceSAXException param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.EpayServiceSAXException.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.EpayServiceNoSuchAlgorithmException param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.EpayServiceNoSuchAlgorithmException.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.EpayServiceSignatureException param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.EpayServiceSignatureException.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.EpayServiceParserConfigurationException param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.EpayServiceParserConfigurationException.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.EpayServiceCertificateException param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.EpayServiceCertificateException.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.EpayServiceKeyStoreException param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.EpayServiceKeyStoreException.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.EpayServiceInvalidKeyException param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.EpayServiceInvalidKeyException.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.PaymentOrderAcs param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.PaymentOrderAcs.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.PaymentOrderAcsResponse param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.PaymentOrderAcsResponse.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.DeleteCard param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.DeleteCard.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.DeleteCardResponse param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.DeleteCardResponse.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.CheckOrderE param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.CheckOrderE.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.CheckOrderResponse param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.CheckOrderResponse.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.AirastanaPaymentAcsOrder param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.AirastanaPaymentAcsOrder.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.AirastanaPaymentAcsOrderResponse param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.AirastanaPaymentAcsOrderResponse.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.GetCardList param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.GetCardList.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.GetCardListResponse param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.GetCardListResponse.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.RefundOrderForCommerce param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.RefundOrderForCommerce.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.RefundOrderForCommerceResponse param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.RefundOrderForCommerceResponse.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.CardidPaymentOrder param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.CardidPaymentOrder.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.CardidPaymentOrderResponse param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.CardidPaymentOrderResponse.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.TransferOrderE param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.TransferOrderE.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.TransferOrderResponse param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.TransferOrderResponse.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.PaymentOrder param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.PaymentOrder.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.PaymentOrderResponse param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.PaymentOrderResponse.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.CheckForeignCard param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.CheckForeignCard.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.CheckForeignCardResponse param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.CheckForeignCardResponse.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.ControlOrderForCommerce param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.ControlOrderForCommerce.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.ControlOrderForCommerceResponse param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.ControlOrderForCommerceResponse.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.RecurrentOrderE param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.RecurrentOrderE.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.RecurrentOrderResponse param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.RecurrentOrderResponse.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.FormZip param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.FormZip.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.FormZipResponse param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.FormZipResponse.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.CheckZip param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.CheckZip.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.CheckZipResponse param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.CheckZipResponse.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.AirastanaPaymentOrderE param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.AirastanaPaymentOrderE.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
     private org.apache.axiom.om.OMElement toOM(
         kz.capitalpay.server.wsdl.EpayServiceStub.AirastanaPaymentOrderResponse param,
-        boolean optimizeContent) throws org.apache.axis2.AxisFault {
+        boolean optimizeContent) throws AxisFault {
         try {
             return param.getOMElement(kz.capitalpay.server.wsdl.EpayServiceStub.AirastanaPaymentOrderResponse.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
@@ -6746,7 +6768,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         org.apache.axiom.soap.SOAPFactory factory,
         kz.capitalpay.server.wsdl.EpayServiceStub.Is3DOrderE param,
         boolean optimizeContent, javax.xml.namespace.QName elementQName)
-        throws org.apache.axis2.AxisFault {
+        throws AxisFault {
         try {
             org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory.getDefaultEnvelope();
             emptyEnvelope.getBody()
@@ -6755,8 +6777,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     factory));
 
             return emptyEnvelope;
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
@@ -6765,7 +6787,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         org.apache.axiom.soap.SOAPFactory factory,
         kz.capitalpay.server.wsdl.EpayServiceStub.PaymentOrderAcs param,
         boolean optimizeContent, javax.xml.namespace.QName elementQName)
-        throws org.apache.axis2.AxisFault {
+        throws AxisFault {
         try {
             org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory.getDefaultEnvelope();
             emptyEnvelope.getBody()
@@ -6774,8 +6796,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     factory));
 
             return emptyEnvelope;
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
@@ -6784,7 +6806,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         org.apache.axiom.soap.SOAPFactory factory,
         kz.capitalpay.server.wsdl.EpayServiceStub.DeleteCard param,
         boolean optimizeContent, javax.xml.namespace.QName elementQName)
-        throws org.apache.axis2.AxisFault {
+        throws AxisFault {
         try {
             org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory.getDefaultEnvelope();
             emptyEnvelope.getBody()
@@ -6793,8 +6815,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     factory));
 
             return emptyEnvelope;
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
@@ -6803,7 +6825,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         org.apache.axiom.soap.SOAPFactory factory,
         kz.capitalpay.server.wsdl.EpayServiceStub.CheckOrderE param,
         boolean optimizeContent, javax.xml.namespace.QName elementQName)
-        throws org.apache.axis2.AxisFault {
+        throws AxisFault {
         try {
             org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory.getDefaultEnvelope();
             emptyEnvelope.getBody()
@@ -6812,8 +6834,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     factory));
 
             return emptyEnvelope;
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
@@ -6822,7 +6844,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         org.apache.axiom.soap.SOAPFactory factory,
         kz.capitalpay.server.wsdl.EpayServiceStub.AirastanaPaymentAcsOrder param,
         boolean optimizeContent, javax.xml.namespace.QName elementQName)
-        throws org.apache.axis2.AxisFault {
+        throws AxisFault {
         try {
             org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory.getDefaultEnvelope();
             emptyEnvelope.getBody()
@@ -6831,8 +6853,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     factory));
 
             return emptyEnvelope;
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
@@ -6841,7 +6863,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         org.apache.axiom.soap.SOAPFactory factory,
         kz.capitalpay.server.wsdl.EpayServiceStub.GetCardList param,
         boolean optimizeContent, javax.xml.namespace.QName elementQName)
-        throws org.apache.axis2.AxisFault {
+        throws AxisFault {
         try {
             org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory.getDefaultEnvelope();
             emptyEnvelope.getBody()
@@ -6850,8 +6872,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     factory));
 
             return emptyEnvelope;
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
@@ -6860,7 +6882,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         org.apache.axiom.soap.SOAPFactory factory,
         kz.capitalpay.server.wsdl.EpayServiceStub.RefundOrderForCommerce param,
         boolean optimizeContent, javax.xml.namespace.QName elementQName)
-        throws org.apache.axis2.AxisFault {
+        throws AxisFault {
         try {
             org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory.getDefaultEnvelope();
             emptyEnvelope.getBody()
@@ -6869,8 +6891,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     factory));
 
             return emptyEnvelope;
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
@@ -6879,7 +6901,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         org.apache.axiom.soap.SOAPFactory factory,
         kz.capitalpay.server.wsdl.EpayServiceStub.CardidPaymentOrder param,
         boolean optimizeContent, javax.xml.namespace.QName elementQName)
-        throws org.apache.axis2.AxisFault {
+        throws AxisFault {
         try {
             org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory.getDefaultEnvelope();
             emptyEnvelope.getBody()
@@ -6888,8 +6910,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     factory));
 
             return emptyEnvelope;
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
@@ -6898,7 +6920,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         org.apache.axiom.soap.SOAPFactory factory,
         kz.capitalpay.server.wsdl.EpayServiceStub.TransferOrderE param,
         boolean optimizeContent, javax.xml.namespace.QName elementQName)
-        throws org.apache.axis2.AxisFault {
+        throws AxisFault {
         try {
             org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory.getDefaultEnvelope();
             emptyEnvelope.getBody()
@@ -6907,8 +6929,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     factory));
 
             return emptyEnvelope;
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
@@ -6917,7 +6939,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         org.apache.axiom.soap.SOAPFactory factory,
         kz.capitalpay.server.wsdl.EpayServiceStub.PaymentOrder param,
         boolean optimizeContent, javax.xml.namespace.QName elementQName)
-        throws org.apache.axis2.AxisFault {
+        throws AxisFault {
         try {
             org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory.getDefaultEnvelope();
             emptyEnvelope.getBody()
@@ -6926,8 +6948,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     factory));
 
             return emptyEnvelope;
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
@@ -6936,7 +6958,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         org.apache.axiom.soap.SOAPFactory factory,
         kz.capitalpay.server.wsdl.EpayServiceStub.CheckForeignCard param,
         boolean optimizeContent, javax.xml.namespace.QName elementQName)
-        throws org.apache.axis2.AxisFault {
+        throws AxisFault {
         try {
             org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory.getDefaultEnvelope();
             emptyEnvelope.getBody()
@@ -6945,8 +6967,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     factory));
 
             return emptyEnvelope;
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
@@ -6955,7 +6977,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         org.apache.axiom.soap.SOAPFactory factory,
         kz.capitalpay.server.wsdl.EpayServiceStub.ControlOrderForCommerce param,
         boolean optimizeContent, javax.xml.namespace.QName elementQName)
-        throws org.apache.axis2.AxisFault {
+        throws AxisFault {
         try {
             org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory.getDefaultEnvelope();
             emptyEnvelope.getBody()
@@ -6964,8 +6986,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     factory));
 
             return emptyEnvelope;
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
@@ -6974,7 +6996,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         org.apache.axiom.soap.SOAPFactory factory,
         kz.capitalpay.server.wsdl.EpayServiceStub.RecurrentOrderE param,
         boolean optimizeContent, javax.xml.namespace.QName elementQName)
-        throws org.apache.axis2.AxisFault {
+        throws AxisFault {
         try {
             org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory.getDefaultEnvelope();
             emptyEnvelope.getBody()
@@ -6983,8 +7005,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     factory));
 
             return emptyEnvelope;
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
@@ -6993,7 +7015,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         org.apache.axiom.soap.SOAPFactory factory,
         kz.capitalpay.server.wsdl.EpayServiceStub.FormZip param,
         boolean optimizeContent, javax.xml.namespace.QName elementQName)
-        throws org.apache.axis2.AxisFault {
+        throws AxisFault {
         try {
             org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory.getDefaultEnvelope();
             emptyEnvelope.getBody()
@@ -7002,8 +7024,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     factory));
 
             return emptyEnvelope;
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
@@ -7012,7 +7034,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         org.apache.axiom.soap.SOAPFactory factory,
         kz.capitalpay.server.wsdl.EpayServiceStub.CheckZip param,
         boolean optimizeContent, javax.xml.namespace.QName elementQName)
-        throws org.apache.axis2.AxisFault {
+        throws AxisFault {
         try {
             org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory.getDefaultEnvelope();
             emptyEnvelope.getBody()
@@ -7021,8 +7043,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     factory));
 
             return emptyEnvelope;
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
@@ -7031,7 +7053,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         org.apache.axiom.soap.SOAPFactory factory,
         kz.capitalpay.server.wsdl.EpayServiceStub.AirastanaPaymentOrderE param,
         boolean optimizeContent, javax.xml.namespace.QName elementQName)
-        throws org.apache.axis2.AxisFault {
+        throws AxisFault {
         try {
             org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory.getDefaultEnvelope();
             emptyEnvelope.getBody()
@@ -7040,8 +7062,8 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     factory));
 
             return emptyEnvelope;
-        } catch (org.apache.axis2.databinding.ADBException e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+        } catch (ADBException e) {
+            throw AxisFault.makeFault(e);
         }
     }
 
@@ -7056,7 +7078,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
     }
 
     private java.lang.Object fromOM(org.apache.axiom.om.OMElement param,
-        java.lang.Class type) throws org.apache.axis2.AxisFault {
+        java.lang.Class type) throws AxisFault {
         try {
             if (kz.capitalpay.server.wsdl.EpayServiceStub.AirastanaPaymentAcsOrder.class.equals(
                         type)) {
@@ -7263,14 +7285,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return kz.capitalpay.server.wsdl.EpayServiceStub.TransferOrderResponse.Factory.parse(param.getXMLStreamReaderWithoutCaching());
             }
         } catch (java.lang.Exception e) {
-            throw org.apache.axis2.AxisFault.makeFault(e);
+            throw AxisFault.makeFault(e);
         }
 
         return null;
     }
 
     //http://testpay.kkb.kz/axis2/services/EpayService.EpayServiceHttpSoap12Endpoint/
-    public static class RefundItem implements org.apache.axis2.databinding.ADBBean {
+    public static class RefundItem implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = RefundItem
            Namespace URI = http://ws.epay.kkb.kz/xsd
@@ -7385,22 +7407,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -7482,7 +7504,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -7594,15 +7616,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -7635,14 +7657,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -7672,7 +7694,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -7761,7 +7783,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAmount(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAmount(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -7786,7 +7808,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setDate(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setDate(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -7811,7 +7833,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setReason(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setReason(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -7828,7 +7850,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -7840,7 +7862,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class FormZipOrder implements org.apache.axis2.databinding.ADBBean {
+    public static class FormZipOrder implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = FormZipOrder
            Namespace URI = http://models.ws.epay.kkb.kz/xsd
@@ -7955,22 +7977,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -8052,7 +8074,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns2";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -8164,15 +8186,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -8205,14 +8227,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -8242,7 +8264,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -8331,7 +8353,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setDatefrom(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setDatefrom(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -8356,7 +8378,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setDateto(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setDateto(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -8381,7 +8403,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMessageHash(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMessageHash(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -8398,7 +8420,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -8410,7 +8432,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class EpayServiceSignatureException implements org.apache.axis2.databinding.ADBBean {
+    public static class EpayServiceSignatureException implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "EpayServiceSignatureException", "ns3");
 
@@ -8456,22 +8478,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -8521,7 +8543,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -8633,15 +8655,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -8674,14 +8696,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -8711,7 +8733,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -8818,7 +8840,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -8830,7 +8852,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class CardidPaymentOrderRequest implements org.apache.axis2.databinding.ADBBean {
+    public static class CardidPaymentOrderRequest implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = CardidPaymentOrderRequest
            Namespace URI = http://models.ws.epay.kkb.kz/xsd
@@ -9374,22 +9396,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -9681,7 +9703,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns2";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -9793,15 +9815,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -9834,14 +9856,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -9871,7 +9893,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -9960,7 +9982,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAbonentid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAbonentid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -9985,7 +10007,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAmount(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAmount(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -10010,7 +10032,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCardCvc(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCardCvc(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -10035,7 +10057,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCardMonth(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCardMonth(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -10060,7 +10082,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCardName(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCardName(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -10085,7 +10107,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCardNumber(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCardNumber(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -10110,7 +10132,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCardYear(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCardYear(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -10135,7 +10157,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCardid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCardid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -10160,7 +10182,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCurrency(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCurrency(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -10185,7 +10207,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setDescription(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setDescription(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -10211,7 +10233,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMerchantIdForSavingCards(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMerchantIdForSavingCards(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -10236,7 +10258,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMessageHash(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMessageHash(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -10261,7 +10283,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setOrderid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setOrderid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -10286,7 +10308,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setSaveCard(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setSaveCard(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -10311,7 +10333,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setSenderIP(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setSenderIP(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -10336,7 +10358,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setTrtype(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setTrtype(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -10353,7 +10375,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -10365,7 +10387,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class EpayServiceCertificateException implements org.apache.axis2.databinding.ADBBean {
+    public static class EpayServiceCertificateException implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "EpayServiceCertificateException", "ns3");
 
@@ -10411,22 +10433,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -10477,7 +10499,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -10589,15 +10611,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -10630,14 +10652,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -10667,7 +10689,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -10774,7 +10796,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -10786,7 +10808,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class AirastanaPaymentOrderResponse implements org.apache.axis2.databinding.ADBBean {
+    public static class AirastanaPaymentOrderResponse implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "airastanaPaymentOrderResponse", "ns3");
 
@@ -10832,22 +10854,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -10897,7 +10919,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -11009,15 +11031,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -11050,14 +11072,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -11087,7 +11109,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -11194,7 +11216,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -11206,7 +11228,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class AirastanaPaymentOrder extends Order implements org.apache.axis2.databinding.ADBBean {
+    public static class AirastanaPaymentOrder extends Order implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = AirastanaPaymentOrder
            Namespace URI = http://models.ws.epay.kkb.kz/xsd
@@ -11289,7 +11311,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
             //update the setting tracker
             localAmadeusItemsTracker = true;
 
-            java.util.List list = org.apache.axis2.databinding.utils.ConverterUtil.toList(localAmadeusItems);
+            java.util.List list = ConverterUtil.toList(localAmadeusItems);
             list.add(param);
             this.localAmadeusItems = (AmadeusItem[]) list.toArray(new AmadeusItem[list.size()]);
         }
@@ -11347,22 +11369,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -11852,7 +11874,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns2";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -11964,15 +11986,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -12005,14 +12027,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -12042,7 +12064,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -12133,7 +12155,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAirticketAgencycode(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAirticketAgencycode(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -12158,7 +12180,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAirticketName(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAirticketName(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -12183,7 +12205,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAirticketNumber(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAirticketNumber(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -12208,7 +12230,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAirticketRestricted(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAirticketRestricted(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -12233,7 +12255,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAirticketSystem(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAirticketSystem(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -12258,7 +12280,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAllParam(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAllParam(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -12283,7 +12305,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAmount(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAmount(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -12308,7 +12330,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCardholderName(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCardholderName(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -12333,7 +12355,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCurrency(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCurrency(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -12358,7 +12380,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCvc(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCvc(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -12383,7 +12405,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setDesc(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setDesc(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -12408,7 +12430,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMerchantid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMerchantid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -12433,7 +12455,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMessageHash(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMessageHash(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -12458,7 +12480,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMonth(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMonth(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -12483,7 +12505,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setOrderal(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setOrderal(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -12508,7 +12530,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setOrderid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setOrderid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -12533,7 +12555,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setPan(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setPan(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -12558,7 +12580,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setRecurexp(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setRecurexp(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -12583,7 +12605,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setRecurfreq(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setRecurfreq(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -12708,7 +12730,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setTrtype(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setTrtype(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -12733,7 +12755,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setYear(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setYear(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -12804,7 +12826,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         }
 
                         // call the converter utility  to convert and set the array
-                        object.setAmadeusItems((AmadeusItem[]) org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
+                        object.setAmadeusItems((AmadeusItem[]) ConverterUtil.convertToArray(
                                 AmadeusItem.class, list26));
                     } // End of if for expected property start element
 
@@ -12824,7 +12846,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setFingerprintId(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setFingerprintId(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -12849,7 +12871,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setSenderIP(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setSenderIP(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -12866,7 +12888,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -12878,7 +12900,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class RecurrentOrderE implements org.apache.axis2.databinding.ADBBean {
+    public static class RecurrentOrderE implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "recurrentOrder", "ns3");
 
@@ -12957,22 +12979,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -13036,7 +13058,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -13148,15 +13170,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -13189,14 +13211,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -13226,7 +13248,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -13359,7 +13381,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -13371,7 +13393,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class PaymentOrderAcs implements org.apache.axis2.databinding.ADBBean {
+    public static class PaymentOrderAcs implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "paymentOrderAcs", "ns3");
 
@@ -13450,22 +13472,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -13529,7 +13551,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -13641,15 +13663,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -13682,14 +13704,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -13719,7 +13741,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -13851,7 +13873,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -13863,7 +13885,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class CheckForeignCardResponse implements org.apache.axis2.databinding.ADBBean {
+    public static class CheckForeignCardResponse implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "checkForeignCardResponse", "ns3");
 
@@ -13909,22 +13931,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -13973,7 +13995,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -14085,15 +14107,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -14126,14 +14148,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -14163,7 +14185,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -14270,7 +14292,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -14282,7 +14304,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class AirastanaPaymentAcsOrderResponse implements org.apache.axis2.databinding.ADBBean {
+    public static class AirastanaPaymentAcsOrderResponse implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "airastanaPaymentAcsOrderResponse", "ns3");
 
@@ -14328,22 +14350,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -14393,7 +14415,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -14505,15 +14527,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -14546,14 +14568,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -14583,7 +14605,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -14690,7 +14712,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -14702,7 +14724,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class CheckOrderResponse implements org.apache.axis2.databinding.ADBBean {
+    public static class CheckOrderResponse implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "checkOrderResponse", "ns3");
 
@@ -14748,22 +14770,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -14812,7 +14834,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -14924,15 +14946,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -14965,14 +14987,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -15002,7 +15024,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -15109,7 +15131,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -15122,7 +15144,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
     }
 
     public static class CertificateException extends GeneralSecurityException
-        implements org.apache.axis2.databinding.ADBBean {
+        implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = CertificateException
            Namespace URI = http://cert.security.java/xsd
@@ -15138,22 +15160,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -15185,7 +15207,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns4";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -15297,15 +15319,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -15338,14 +15360,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -15375,7 +15397,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -15456,7 +15478,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -15468,7 +15490,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class ResponseSignature implements org.apache.axis2.databinding.ADBBean {
+    public static class ResponseSignature implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = ResponseSignature
            Namespace URI = http://ws.epay.kkb.kz/xsd
@@ -15550,22 +15572,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -15631,7 +15653,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -15743,15 +15765,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -15784,14 +15806,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -15821,7 +15843,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -15910,7 +15932,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setSignatureValue(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setSignatureValue(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -15935,7 +15957,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setSignedString(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setSignedString(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -15952,7 +15974,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -15964,7 +15986,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class CardsResult implements org.apache.axis2.databinding.ADBBean {
+    public static class CardsResult implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = CardsResult
            Namespace URI = http://models.ws.epay.kkb.kz/xsd
@@ -16091,7 +16113,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
             //update the setting tracker
             localCardsResultItemsTracker = true;
 
-            java.util.List list = org.apache.axis2.databinding.utils.ConverterUtil.toList(localCardsResultItems);
+            java.util.List list = ConverterUtil.toList(localCardsResultItems);
             list.add(param);
             this.localCardsResultItems = (CardsResultItem[]) list.toArray(new CardsResultItem[list.size()]);
         }
@@ -16171,22 +16193,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -16311,7 +16333,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns2";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -16423,15 +16445,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -16464,14 +16486,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -16501,7 +16523,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -16592,7 +16614,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAbonentid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAbonentid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -16663,7 +16685,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         }
 
                         // call the converter utility  to convert and set the array
-                        object.setCardsResultItems((CardsResultItem[]) org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
+                        object.setCardsResultItems((CardsResultItem[]) ConverterUtil.convertToArray(
                                 CardsResultItem.class, list2));
                     } // End of if for expected property start element
 
@@ -16709,7 +16731,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setResult(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setResult(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -16734,7 +16756,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setType(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setType(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -16751,7 +16773,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -16763,7 +16785,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class EpayServiceKeyStoreException implements org.apache.axis2.databinding.ADBBean {
+    public static class EpayServiceKeyStoreException implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "EpayServiceKeyStoreException", "ns3");
 
@@ -16809,22 +16831,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -16874,7 +16896,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -16986,15 +17008,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -17027,14 +17049,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -17064,7 +17086,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -17171,7 +17193,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -17183,7 +17205,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class EpayServiceParserConfigurationException implements org.apache.axis2.databinding.ADBBean {
+    public static class EpayServiceParserConfigurationException implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "EpayServiceParserConfigurationException", "ns3");
 
@@ -17229,22 +17251,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -17272,14 +17294,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
             if (localParserConfigurationExceptionTracker) {
                 if (localParserConfigurationException != null) {
-                    if (localParserConfigurationException instanceof org.apache.axis2.databinding.ADBBean) {
-                        ((org.apache.axis2.databinding.ADBBean) localParserConfigurationException).serialize(new javax.xml.namespace.QName(
+                    if (localParserConfigurationException instanceof ADBBean) {
+                        ((ADBBean) localParserConfigurationException).serialize(new javax.xml.namespace.QName(
                                 "", "ParserConfigurationException"), xmlWriter,
                             true);
                     } else {
                         writeStartElement(null, "",
                             "ParserConfigurationException", xmlWriter);
-                        org.apache.axis2.databinding.utils.ConverterUtil.serializeAnyType(localParserConfigurationException,
+                        ConverterUtil.serializeAnyType(localParserConfigurationException,
                             xmlWriter);
                         xmlWriter.writeEndElement();
                     }
@@ -17305,7 +17327,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -17417,15 +17439,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -17458,14 +17480,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -17495,7 +17517,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -17579,7 +17601,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                             new javax.xml.namespace.QName("",
                                 "ParserConfigurationException").equals(
                                 reader.getName())) {
-                        object.setParserConfigurationException(org.apache.axis2.databinding.utils.ConverterUtil.getAnyTypeObject(
+                        object.setParserConfigurationException(ConverterUtil.getAnyTypeObject(
                                 reader, ExtensionMapper.class));
 
                         reader.next();
@@ -17593,7 +17615,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -17605,7 +17627,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class DeleteCard implements org.apache.axis2.databinding.ADBBean {
+    public static class DeleteCard implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "deleteCard", "ns3");
 
@@ -17684,22 +17706,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -17763,7 +17785,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -17875,15 +17897,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -17916,14 +17938,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -17953,7 +17975,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -18086,7 +18108,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -18098,7 +18120,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class CardidPaymentOrderResult extends Result implements org.apache.axis2.databinding.ADBBean {
+    public static class CardidPaymentOrderResult extends Result implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = CardidPaymentOrderResult
            Namespace URI = http://models.ws.epay.kkb.kz/xsd
@@ -18180,22 +18202,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -18287,10 +18309,10 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 writeStartElement(null, namespace, "is3ds", xmlWriter);
 
                 if (false) {
-                    throw new org.apache.axis2.databinding.ADBException(
+                    throw new ADBException(
                         "is3ds cannot be null!!");
                 } else {
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             localIs3Ds));
                 }
 
@@ -18481,7 +18503,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns2";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -18593,15 +18615,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -18634,14 +18656,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -18671,7 +18693,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -18760,7 +18782,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAcsUrl(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAcsUrl(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -18785,7 +18807,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setApprovalcode(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setApprovalcode(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -18810,7 +18832,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setDate(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setDate(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -18835,7 +18857,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setIntreference(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setIntreference(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -18858,13 +18880,13 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if ("true".equals(nillableValue) ||
                                 "1".equals(nillableValue)) {
-                            throw new org.apache.axis2.databinding.ADBException(
+                            throw new ADBException(
                                 "The element: " + "is3ds" + "  cannot be null");
                         }
 
                         java.lang.String content = reader.getElementText();
 
-                        object.setIs3Ds(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(
+                        object.setIs3Ds(ConverterUtil.convertToBoolean(
                                 content));
 
                         reader.next();
@@ -18886,7 +18908,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMd(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMd(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -18911,7 +18933,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMessage(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMessage(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -18936,7 +18958,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setOrderid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setOrderid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -18961,7 +18983,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setPareq(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setPareq(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -18986,7 +19008,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setReference(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setReference(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -19037,7 +19059,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setReturnCode(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setReturnCode(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -19062,7 +19084,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setSessionid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setSessionid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -19087,7 +19109,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setTermUrl(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setTermUrl(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -19112,7 +19134,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCardid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCardid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -19137,7 +19159,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCardmask(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCardmask(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -19154,7 +19176,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -19166,7 +19188,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class Is3DOrder implements org.apache.axis2.databinding.ADBBean {
+    public static class Is3DOrder implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = Is3dOrder
            Namespace URI = http://models.ws.epay.kkb.kz/xsd
@@ -19347,22 +19369,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -19476,7 +19498,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns2";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -19588,15 +19610,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -19629,14 +19651,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -19666,7 +19688,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -19755,7 +19777,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCvc(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCvc(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -19780,7 +19802,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMessageHash(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMessageHash(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -19805,7 +19827,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMonth(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMonth(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -19830,7 +19852,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setPan(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setPan(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -19855,7 +19877,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setYear(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setYear(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -19872,7 +19894,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -19885,7 +19907,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
     }
 
     public static class KeyStoreException extends GeneralSecurityException
-        implements org.apache.axis2.databinding.ADBBean {
+        implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = KeyStoreException
            Namespace URI = http://security.java/xsd
@@ -19901,22 +19923,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -19948,7 +19970,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns1";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -20060,15 +20082,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -20101,14 +20123,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -20138,7 +20160,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -20219,7 +20241,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -20231,7 +20253,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class EpayServiceIOException implements org.apache.axis2.databinding.ADBBean {
+    public static class EpayServiceIOException implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "EpayServiceIOException", "ns3");
 
@@ -20277,22 +20299,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -20341,7 +20363,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -20453,15 +20475,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -20494,14 +20516,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -20531,7 +20553,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -20638,7 +20660,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -20650,7 +20672,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class SAXException implements org.apache.axis2.databinding.ADBBean {
+    public static class SAXException implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = SAXException
            Namespace URI = http://sax.xml.org/xsd
@@ -20765,22 +20787,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -20807,12 +20829,12 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
             if (localCauseTracker) {
                 if (localCause != null) {
-                    if (localCause instanceof org.apache.axis2.databinding.ADBBean) {
-                        ((org.apache.axis2.databinding.ADBBean) localCause).serialize(new javax.xml.namespace.QName(
+                    if (localCause instanceof ADBBean) {
+                        ((ADBBean) localCause).serialize(new javax.xml.namespace.QName(
                                 "", "cause"), xmlWriter, true);
                     } else {
                         writeStartElement(null, "", "cause", xmlWriter);
-                        org.apache.axis2.databinding.utils.ConverterUtil.serializeAnyType(localCause,
+                        ConverterUtil.serializeAnyType(localCause,
                             xmlWriter);
                         xmlWriter.writeEndElement();
                     }
@@ -20869,7 +20891,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns6";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -20981,15 +21003,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -21022,14 +21044,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -21059,7 +21081,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -21141,7 +21163,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                     if (reader.isStartElement() &&
                             new javax.xml.namespace.QName("", "cause").equals(
                                 reader.getName())) {
-                        object.setCause(org.apache.axis2.databinding.utils.ConverterUtil.getAnyTypeObject(
+                        object.setCause(ConverterUtil.getAnyTypeObject(
                                 reader, ExtensionMapper.class));
 
                         reader.next();
@@ -21192,7 +21214,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMessage(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMessage(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -21209,7 +21231,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -21221,7 +21243,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class CheckForeignCardResult implements org.apache.axis2.databinding.ADBBean {
+    public static class CheckForeignCardResult implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = CheckForeignCardResult
            Namespace URI = http://models.ws.epay.kkb.kz/xsd
@@ -21567,22 +21589,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -21775,7 +21797,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns2";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -21887,15 +21909,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -21928,14 +21950,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -21965,7 +21987,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -22054,7 +22076,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAddress(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAddress(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -22079,7 +22101,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCity(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCity(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -22104,7 +22126,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCountry(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCountry(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -22129,7 +22151,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setDocnumber(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setDocnumber(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -22154,7 +22176,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setFirstname(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setFirstname(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -22179,7 +22201,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setLastname(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setLastname(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -22204,7 +22226,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMerchantid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMerchantid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -22229,7 +22251,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMessage(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMessage(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -22280,7 +22302,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setResult(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setResult(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -22297,7 +22319,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -22309,7 +22331,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class InvalidKeyException extends KeyException implements org.apache.axis2.databinding.ADBBean {
+    public static class InvalidKeyException extends KeyException implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = InvalidKeyException
            Namespace URI = http://security.java/xsd
@@ -22325,22 +22347,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -22372,7 +22394,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns1";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -22484,15 +22506,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -22525,14 +22547,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -22562,7 +22584,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -22643,7 +22665,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -22656,7 +22678,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
     }
 
     public static class KeyException extends GeneralSecurityException
-        implements org.apache.axis2.databinding.ADBBean {
+        implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = KeyException
            Namespace URI = http://security.java/xsd
@@ -22672,22 +22694,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -22719,7 +22741,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns1";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -22831,15 +22853,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -22872,14 +22894,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -22909,7 +22931,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -22990,7 +23012,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -23002,7 +23024,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class EpayServiceNoSuchAlgorithmException implements org.apache.axis2.databinding.ADBBean {
+    public static class EpayServiceNoSuchAlgorithmException implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "EpayServiceNoSuchAlgorithmException", "ns3");
 
@@ -23048,22 +23070,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -23114,7 +23136,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -23226,15 +23248,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -23267,14 +23289,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -23304,7 +23326,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -23413,7 +23435,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -23649,12 +23671,12 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return FormZipResult.Factory.parse(reader);
             }
 
-            throw new org.apache.axis2.databinding.ADBException(
+            throw new ADBException(
                 "Unsupported type " + namespaceURI + " " + typeName);
         }
     }
 
-    public static class CheckOrder implements org.apache.axis2.databinding.ADBBean {
+    public static class CheckOrder implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = CheckOrder
            Namespace URI = http://models.ws.epay.kkb.kz/xsd
@@ -23769,22 +23791,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -23866,7 +23888,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns2";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -23978,15 +24000,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -24019,14 +24041,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -24056,7 +24078,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -24145,7 +24167,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMerchantid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMerchantid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -24170,7 +24192,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMessageHash(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMessageHash(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -24195,7 +24217,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setOrderid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setOrderid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -24212,7 +24234,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -24225,7 +24247,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
     }
 
     public static class UnrecoverableKeyException
-        extends UnrecoverableEntryException implements org.apache.axis2.databinding.ADBBean {
+        extends UnrecoverableEntryException implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = UnrecoverableKeyException
            Namespace URI = http://security.java/xsd
@@ -24241,22 +24263,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -24288,7 +24310,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns1";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -24400,15 +24422,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -24441,14 +24463,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -24478,7 +24500,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -24559,7 +24581,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -24571,7 +24593,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class CheckOrderResult implements org.apache.axis2.databinding.ADBBean {
+    public static class CheckOrderResult implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = CheckOrderResult
            Namespace URI = http://models.ws.epay.kkb.kz/xsd
@@ -25379,22 +25401,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -25812,7 +25834,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns2";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -25924,15 +25946,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -25965,14 +25987,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -26002,7 +26024,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -26091,7 +26113,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAcceptReversalDate(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAcceptReversalDate(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -26116,7 +26138,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setApprovalcode(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setApprovalcode(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -26141,7 +26163,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCardhash(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCardhash(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -26166,7 +26188,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setIntreference(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setIntreference(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -26191,7 +26213,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMerchantid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMerchantid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -26216,7 +26238,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMessage(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMessage(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -26241,7 +26263,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setOrderal(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setOrderal(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -26266,7 +26288,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setOrderid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setOrderid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -26291,7 +26313,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setPaidAmount(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setPaidAmount(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -26316,7 +26338,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setPaidCurrency(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setPaidCurrency(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -26341,7 +26363,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setPayerip(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setPayerip(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -26366,7 +26388,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setPayermail(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setPayermail(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -26391,7 +26413,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setPayername(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setPayername(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -26416,7 +26438,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setPayerphone(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setPayerphone(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -26441,7 +26463,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setReference(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setReference(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -26466,7 +26488,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setRefundTotalAmount(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setRefundTotalAmount(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -26542,7 +26564,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setResultcode(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setResultcode(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -26567,7 +26589,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setSecure(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setSecure(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -26592,7 +26614,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setSessionDate(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setSessionDate(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -26617,7 +26639,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setSessionId(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setSessionId(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -26642,7 +26664,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setStatus(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setStatus(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -26667,7 +26689,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setTransactionDate(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setTransactionDate(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -26684,7 +26706,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -26696,7 +26718,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class CheckZipResponse implements org.apache.axis2.databinding.ADBBean {
+    public static class CheckZipResponse implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "checkZipResponse", "ns3");
 
@@ -26742,22 +26764,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -26806,7 +26828,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -26918,15 +26940,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -26959,14 +26981,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -26996,7 +27018,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -27103,7 +27125,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -27115,7 +27137,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class RecurrentOrder implements org.apache.axis2.databinding.ADBBean {
+    public static class RecurrentOrder implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = RecurrentOrder
            Namespace URI = http://models.ws.epay.kkb.kz/xsd
@@ -27395,22 +27417,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -27572,7 +27594,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns2";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -27684,15 +27706,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -27725,14 +27747,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -27762,7 +27784,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -27851,7 +27873,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAmount(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAmount(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -27876,7 +27898,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCurrency(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCurrency(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -27901,7 +27923,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setDesc(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setDesc(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -27926,7 +27948,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setIntreference(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setIntreference(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -27951,7 +27973,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMerchantid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMerchantid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -27976,7 +27998,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMessageHash(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMessageHash(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -28001,7 +28023,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setOrderid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setOrderid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -28026,7 +28048,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setReference(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setReference(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -28043,7 +28065,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -28055,7 +28077,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class CheckZipResult implements org.apache.axis2.databinding.ADBBean {
+    public static class CheckZipResult implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = CheckZipResult
            Namespace URI = http://models.ws.epay.kkb.kz/xsd
@@ -28302,22 +28324,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -28462,7 +28484,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns2";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -28574,15 +28596,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -28615,14 +28637,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -28652,7 +28674,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -28741,7 +28763,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setDatefrom(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setDatefrom(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -28766,7 +28788,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setDateto(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setDateto(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -28791,7 +28813,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setLink(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setLink(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -28816,7 +28838,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMerchantid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMerchantid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -28841,7 +28863,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMessage(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMessage(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -28892,7 +28914,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setType(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setType(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -28909,7 +28931,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -28922,7 +28944,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
     }
 
     public static class UnrecoverableEntryException
-        extends GeneralSecurityException implements org.apache.axis2.databinding.ADBBean {
+        extends GeneralSecurityException implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = UnrecoverableEntryException
            Namespace URI = http://security.java/xsd
@@ -28938,22 +28960,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -28985,7 +29007,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns1";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -29097,15 +29119,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -29138,14 +29160,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -29175,7 +29197,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -29256,7 +29278,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -29268,7 +29290,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class DeleteCardRequest implements org.apache.axis2.databinding.ADBBean {
+    public static class DeleteCardRequest implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = DeleteCardRequest
            Namespace URI = http://models.ws.epay.kkb.kz/xsd
@@ -29416,22 +29438,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -29529,7 +29551,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns2";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -29641,15 +29663,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -29682,14 +29704,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -29719,7 +29741,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -29808,7 +29830,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAbonentid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAbonentid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -29833,7 +29855,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCardid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCardid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -29858,7 +29880,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMessageHash(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMessageHash(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -29883,7 +29905,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setType(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setType(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -29900,7 +29922,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -29912,7 +29934,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class CheckZipOrder implements org.apache.axis2.databinding.ADBBean {
+    public static class CheckZipOrder implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = CheckZipOrder
            Namespace URI = http://models.ws.epay.kkb.kz/xsd
@@ -29994,22 +30016,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -30075,7 +30097,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns2";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -30187,15 +30209,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -30228,14 +30250,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -30265,7 +30287,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -30354,7 +30376,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMessageHash(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMessageHash(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -30379,7 +30401,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setRequestSessionid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setRequestSessionid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -30396,7 +30418,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -30408,7 +30430,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class CheckForeignCard implements org.apache.axis2.databinding.ADBBean {
+    public static class CheckForeignCard implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "checkForeignCard", "ns3");
 
@@ -30487,22 +30509,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -30566,7 +30588,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -30678,15 +30700,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -30719,14 +30741,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -30756,7 +30778,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -30889,7 +30911,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -30901,7 +30923,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class Refunds implements org.apache.axis2.databinding.ADBBean {
+    public static class Refunds implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = Refunds
            Namespace URI = http://ws.epay.kkb.kz/xsd
@@ -30962,7 +30984,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
             //update the setting tracker
             localRefundItemTracker = true;
 
-            java.util.List list = org.apache.axis2.databinding.utils.ConverterUtil.toList(localRefundItem);
+            java.util.List list = ConverterUtil.toList(localRefundItem);
             list.add(param);
             this.localRefundItem = (RefundItem[]) list.toArray(new RefundItem[list.size()]);
         }
@@ -30976,22 +30998,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -31052,7 +31074,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -31164,15 +31186,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -31205,14 +31227,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -31242,7 +31264,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -31378,7 +31400,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         }
 
                         // call the converter utility  to convert and set the array
-                        object.setRefundItem((RefundItem[]) org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
+                        object.setRefundItem((RefundItem[]) ConverterUtil.convertToArray(
                                 RefundItem.class, list1));
                     } // End of if for expected property start element
 
@@ -31390,7 +31412,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -31402,7 +31424,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class EpayServiceSAXException implements org.apache.axis2.databinding.ADBBean {
+    public static class EpayServiceSAXException implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "EpayServiceSAXException", "ns3");
 
@@ -31448,22 +31470,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -31512,7 +31534,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -31624,15 +31646,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -31665,14 +31687,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -31702,7 +31724,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -31809,7 +31831,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -31821,7 +31843,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class ControlOrderForCommerce implements org.apache.axis2.databinding.ADBBean {
+    public static class ControlOrderForCommerce implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "controlOrderForCommerce", "ns3");
 
@@ -31900,22 +31922,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -31979,7 +32001,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -32091,15 +32113,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -32132,14 +32154,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -32169,7 +32191,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -32302,7 +32324,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -32314,7 +32336,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class TransferOrderE implements org.apache.axis2.databinding.ADBBean {
+    public static class TransferOrderE implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "transferOrder", "ns3");
 
@@ -32393,22 +32415,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -32472,7 +32494,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -32584,15 +32606,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -32625,14 +32647,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -32662,7 +32684,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -32795,7 +32817,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -32807,7 +32829,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class CheckForeignCardRequest implements org.apache.axis2.databinding.ADBBean {
+    public static class CheckForeignCardRequest implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = CheckForeignCardRequest
            Namespace URI = http://models.ws.epay.kkb.kz/xsd
@@ -32889,22 +32911,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -32970,7 +32992,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns2";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -33082,15 +33104,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -33123,14 +33145,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -33160,7 +33182,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -33249,7 +33271,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCardnumber(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCardnumber(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -33274,7 +33296,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMessageHash(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMessageHash(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -33291,7 +33313,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -33303,7 +33325,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class AirastanaPaymentAcsOrder implements org.apache.axis2.databinding.ADBBean {
+    public static class AirastanaPaymentAcsOrder implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "airastanaPaymentAcsOrder", "ns3");
 
@@ -33382,22 +33404,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -33461,7 +33483,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -33573,15 +33595,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -33614,14 +33636,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -33651,7 +33673,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -33784,7 +33806,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -33796,7 +33818,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class AcsOrder implements org.apache.axis2.databinding.ADBBean {
+    public static class AcsOrder implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = AcsOrder
            Namespace URI = http://models.ws.epay.kkb.kz/xsd
@@ -33977,22 +33999,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -34106,7 +34128,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns2";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -34218,15 +34240,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -34259,14 +34281,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -34296,7 +34318,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -34385,7 +34407,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMd(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMd(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -34410,7 +34432,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMerchantid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMerchantid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -34435,7 +34457,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMessageHash(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMessageHash(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -34460,7 +34482,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setPares(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setPares(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -34485,7 +34507,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setSessionid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setSessionid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -34502,7 +34524,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -34514,7 +34536,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class Is3DOrderResult implements org.apache.axis2.databinding.ADBBean {
+    public static class Is3DOrderResult implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = Is3dOrderResult
            Namespace URI = http://models.ws.epay.kkb.kz/xsd
@@ -34629,22 +34651,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -34725,7 +34747,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns2";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -34837,15 +34859,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -34878,14 +34900,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -34915,7 +34937,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -35004,7 +35026,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setIs3D(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setIs3D(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -35029,7 +35051,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMessage(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMessage(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -35072,7 +35094,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -35084,7 +35106,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class GetCardListResponse implements org.apache.axis2.databinding.ADBBean {
+    public static class GetCardListResponse implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "getCardListResponse", "ns3");
 
@@ -35130,22 +35152,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -35194,7 +35216,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -35306,15 +35328,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -35347,14 +35369,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -35384,7 +35406,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -35490,7 +35512,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -35502,7 +35524,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class RefundOrderForCommerceResponse implements org.apache.axis2.databinding.ADBBean {
+    public static class RefundOrderForCommerceResponse implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "refundOrderForCommerceResponse", "ns3");
 
@@ -35548,22 +35570,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -35613,7 +35635,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -35725,15 +35747,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -35766,14 +35788,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -35803,7 +35825,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -35909,7 +35931,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -35921,7 +35943,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class GetCardListRequest implements org.apache.axis2.databinding.ADBBean {
+    public static class GetCardListRequest implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = GetCardListRequest
            Namespace URI = http://models.ws.epay.kkb.kz/xsd
@@ -36036,22 +36058,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -36133,7 +36155,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns2";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -36245,15 +36267,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -36286,14 +36308,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -36323,7 +36345,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -36412,7 +36434,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAbonentid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAbonentid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -36437,7 +36459,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMessageHash(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMessageHash(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -36462,7 +36484,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setType(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setType(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -36479,7 +36501,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -36491,7 +36513,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class CardsResultItem implements org.apache.axis2.databinding.ADBBean {
+    public static class CardsResultItem implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = CardsResultItem
            Namespace URI = http://models.ws.epay.kkb.kz/xsd
@@ -36705,22 +36727,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -36850,7 +36872,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns2";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -36962,15 +36984,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -37003,14 +37025,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -37040,7 +37062,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -37129,7 +37151,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAbonentid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAbonentid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -37154,7 +37176,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCardexp(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCardexp(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -37179,7 +37201,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCardid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCardid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -37204,7 +37226,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCardmask(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCardmask(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -37229,7 +37251,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMerchantid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMerchantid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -37254,7 +37276,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setType(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setType(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -37271,7 +37293,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -37283,7 +37305,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class FormZipResult implements org.apache.axis2.databinding.ADBBean {
+    public static class FormZipResult implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = FormZipResult
            Namespace URI = http://models.ws.epay.kkb.kz/xsd
@@ -37497,22 +37519,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -37641,7 +37663,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns2";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -37753,15 +37775,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -37794,14 +37816,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -37831,7 +37853,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -37920,7 +37942,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setDatefrom(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setDatefrom(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -37945,7 +37967,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setDateto(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setDateto(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -37970,7 +37992,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMerchantid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMerchantid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -37995,7 +38017,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMessage(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMessage(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -38020,7 +38042,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setRequestSessionid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setRequestSessionid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -38063,7 +38085,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -38075,7 +38097,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class Is3DOrderE implements org.apache.axis2.databinding.ADBBean {
+    public static class Is3DOrderE implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "is3dOrder", "ns3");
 
@@ -38154,22 +38176,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -38233,7 +38255,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -38345,15 +38367,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -38386,14 +38408,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -38423,7 +38445,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -38555,7 +38577,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -38567,7 +38589,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class AirastanaAcsOrder extends AcsOrder implements org.apache.axis2.databinding.ADBBean {
+    public static class AirastanaAcsOrder extends AcsOrder implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = AirastanaAcsOrder
            Namespace URI = http://models.ws.epay.kkb.kz/xsd
@@ -38583,22 +38605,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -38710,7 +38732,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns2";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -38822,15 +38844,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -38863,14 +38885,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -38900,7 +38922,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -38989,7 +39011,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMd(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMd(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -39014,7 +39036,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMerchantid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMerchantid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -39039,7 +39061,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMessageHash(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMessageHash(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -39064,7 +39086,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setPares(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setPares(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -39089,7 +39111,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setSessionid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setSessionid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -39106,7 +39128,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -39118,7 +39140,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class Order implements org.apache.axis2.databinding.ADBBean {
+    public static class Order implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = Order
            Namespace URI = http://models.ws.epay.kkb.kz/xsd
@@ -39959,22 +39981,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -40406,7 +40428,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns2";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -40518,15 +40540,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -40559,14 +40581,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -40596,7 +40618,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -40684,7 +40706,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAirticketAgencycode(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAirticketAgencycode(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -40709,7 +40731,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAirticketName(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAirticketName(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -40734,7 +40756,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAirticketNumber(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAirticketNumber(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -40759,7 +40781,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAirticketRestricted(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAirticketRestricted(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -40784,7 +40806,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAirticketSystem(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAirticketSystem(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -40809,7 +40831,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAllParam(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAllParam(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -40834,7 +40856,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAmount(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAmount(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -40859,7 +40881,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCardholderName(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCardholderName(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -40884,7 +40906,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCurrency(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCurrency(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -40909,7 +40931,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCvc(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCvc(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -40934,7 +40956,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setDesc(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setDesc(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -40959,7 +40981,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMerchantid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMerchantid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -40984,7 +41006,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMessageHash(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMessageHash(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -41009,7 +41031,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMonth(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMonth(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -41034,7 +41056,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setOrderal(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setOrderal(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -41059,7 +41081,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setOrderid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setOrderid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -41084,7 +41106,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setPan(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setPan(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -41109,7 +41131,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setRecurexp(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setRecurexp(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -41134,7 +41156,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setRecurfreq(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setRecurfreq(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -41259,7 +41281,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setTrtype(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setTrtype(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -41284,7 +41306,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setYear(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setYear(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -41301,7 +41323,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -41313,7 +41335,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class DeleteCardResult implements org.apache.axis2.databinding.ADBBean {
+    public static class DeleteCardResult implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = DeleteCardResult
            Namespace URI = http://models.ws.epay.kkb.kz/xsd
@@ -41461,22 +41483,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -41573,7 +41595,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns2";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -41685,15 +41707,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -41726,14 +41748,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -41763,7 +41785,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -41852,7 +41874,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAbonentid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAbonentid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -41903,7 +41925,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setResult(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setResult(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -41928,7 +41950,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setType(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setType(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -41945,7 +41967,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -41957,7 +41979,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class IOException implements org.apache.axis2.databinding.ADBBean {
+    public static class IOException implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = IOException
            Namespace URI = http://io.java/xsd
@@ -41973,22 +41995,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -42022,7 +42044,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns5";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -42134,15 +42156,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -42175,14 +42197,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -42212,7 +42234,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -42293,7 +42315,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -42305,7 +42327,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class FormZipResponse implements org.apache.axis2.databinding.ADBBean {
+    public static class FormZipResponse implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "formZipResponse", "ns3");
 
@@ -42351,22 +42373,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -42415,7 +42437,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -42527,15 +42549,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -42568,14 +42590,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -42605,7 +42627,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -42712,7 +42734,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -42724,7 +42746,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class Tripleg implements org.apache.axis2.databinding.ADBBean {
+    public static class Tripleg implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = Tripleg
            Namespace URI = http://models.ws.epay.kkb.kz/xsd
@@ -43004,22 +43026,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -43181,7 +43203,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns2";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -43293,15 +43315,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -43334,14 +43356,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -43371,7 +43393,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -43459,7 +43481,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCarrier(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCarrier(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -43484,7 +43506,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setDate(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setDate(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -43509,7 +43531,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setFare(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setFare(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -43534,7 +43556,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setFlight(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setFlight(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -43559,7 +43581,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setFrom(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setFrom(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -43584,7 +43606,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setSeatclass(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setSeatclass(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -43609,7 +43631,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setStop(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setStop(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -43634,7 +43656,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setTo(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setTo(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -43651,7 +43673,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -43663,7 +43685,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class FormZip implements org.apache.axis2.databinding.ADBBean {
+    public static class FormZip implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "formZip", "ns3");
 
@@ -43742,22 +43764,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -43821,7 +43843,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -43933,15 +43955,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -43974,14 +43996,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -44011,7 +44033,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -44142,7 +44164,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -44154,7 +44176,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class PaymentOrderResponse implements org.apache.axis2.databinding.ADBBean {
+    public static class PaymentOrderResponse implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "paymentOrderResponse", "ns3");
 
@@ -44200,22 +44222,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -44264,7 +44286,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -44376,15 +44398,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -44417,14 +44439,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -44454,7 +44476,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -44560,7 +44582,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -44572,7 +44594,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class ControlOrder implements org.apache.axis2.databinding.ADBBean {
+    public static class ControlOrder implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = ControlOrder
            Namespace URI = http://models.ws.epay.kkb.kz/xsd
@@ -44852,22 +44874,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -45029,7 +45051,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns2";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -45141,15 +45163,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -45182,14 +45204,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -45219,7 +45241,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -45308,7 +45330,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAmount(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAmount(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -45333,7 +45355,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCurrency(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCurrency(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -45358,7 +45380,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setIntreference(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setIntreference(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -45383,7 +45405,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMerchantid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMerchantid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -45408,7 +45430,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMessageHash(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMessageHash(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -45433,7 +45455,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setOrderid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setOrderid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -45458,7 +45480,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setReference(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setReference(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -45483,7 +45505,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setTrtype(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setTrtype(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -45500,7 +45522,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -45512,7 +45534,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class Is3DOrderResponse implements org.apache.axis2.databinding.ADBBean {
+    public static class Is3DOrderResponse implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "is3dOrderResponse", "ns3");
 
@@ -45558,22 +45580,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -45622,7 +45644,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -45734,15 +45756,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -45775,14 +45797,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -45812,7 +45834,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -45919,7 +45941,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -45931,7 +45953,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class EpayServiceInvalidKeyException implements org.apache.axis2.databinding.ADBBean {
+    public static class EpayServiceInvalidKeyException implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "EpayServiceInvalidKeyException", "ns3");
 
@@ -45977,22 +45999,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -46042,7 +46064,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -46154,15 +46176,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -46195,14 +46217,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -46232,7 +46254,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -46339,7 +46361,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -46351,7 +46373,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class CardidPaymentOrderResponse implements org.apache.axis2.databinding.ADBBean {
+    public static class CardidPaymentOrderResponse implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "cardidPaymentOrderResponse", "ns3");
 
@@ -46397,22 +46419,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -46462,7 +46484,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -46574,15 +46596,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -46615,14 +46637,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -46652,7 +46674,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -46759,7 +46781,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -46771,7 +46793,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class GeneralSecurityException implements org.apache.axis2.databinding.ADBBean {
+    public static class GeneralSecurityException implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = GeneralSecurityException
            Namespace URI = http://security.java/xsd
@@ -46787,22 +46809,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -46836,7 +46858,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns1";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -46948,15 +46970,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -46989,14 +47011,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -47026,7 +47048,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -47107,7 +47129,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -47119,7 +47141,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class TransferOrder extends Order implements org.apache.axis2.databinding.ADBBean {
+    public static class TransferOrder extends Order implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = TransferOrder
            Namespace URI = http://models.ws.epay.kkb.kz/xsd
@@ -47300,22 +47322,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -47825,7 +47847,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns2";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -47937,15 +47959,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -47978,14 +48000,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -48015,7 +48037,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -48104,7 +48126,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAirticketAgencycode(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAirticketAgencycode(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -48129,7 +48151,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAirticketName(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAirticketName(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -48154,7 +48176,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAirticketNumber(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAirticketNumber(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -48179,7 +48201,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAirticketRestricted(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAirticketRestricted(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -48204,7 +48226,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAirticketSystem(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAirticketSystem(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -48229,7 +48251,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAllParam(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAllParam(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -48254,7 +48276,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAmount(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAmount(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -48279,7 +48301,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCardholderName(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCardholderName(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -48304,7 +48326,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCurrency(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCurrency(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -48329,7 +48351,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCvc(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCvc(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -48354,7 +48376,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setDesc(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setDesc(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -48379,7 +48401,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMerchantid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMerchantid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -48404,7 +48426,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMessageHash(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMessageHash(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -48429,7 +48451,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMonth(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMonth(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -48454,7 +48476,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setOrderal(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setOrderal(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -48479,7 +48501,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setOrderid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setOrderid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -48504,7 +48526,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setPan(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setPan(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -48529,7 +48551,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setRecurexp(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setRecurexp(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -48554,7 +48576,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setRecurfreq(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setRecurfreq(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -48679,7 +48701,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setTrtype(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setTrtype(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -48704,7 +48726,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setYear(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setYear(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -48729,7 +48751,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setFromAddress(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setFromAddress(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -48754,7 +48776,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setFromName(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setFromName(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -48779,7 +48801,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setPaymentto(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setPaymentto(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -48804,7 +48826,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setToAddress(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setToAddress(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -48829,7 +48851,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setToName(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setToName(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -48846,7 +48868,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -48858,7 +48880,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class TransferOrderResponse implements org.apache.axis2.databinding.ADBBean {
+    public static class TransferOrderResponse implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "transferOrderResponse", "ns3");
 
@@ -48904,22 +48926,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -48968,7 +48990,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -49080,15 +49102,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -49121,14 +49143,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -49158,7 +49180,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -49264,7 +49286,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -49276,7 +49298,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class PaymentOrder implements org.apache.axis2.databinding.ADBBean {
+    public static class PaymentOrder implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "paymentOrder", "ns3");
 
@@ -49355,22 +49377,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -49434,7 +49456,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -49546,15 +49568,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -49587,14 +49609,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -49624,7 +49646,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -49756,7 +49778,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -49768,7 +49790,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class RefundOrderForCommerce implements org.apache.axis2.databinding.ADBBean {
+    public static class RefundOrderForCommerce implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "refundOrderForCommerce", "ns3");
 
@@ -49847,22 +49869,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -49926,7 +49948,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -50038,15 +50060,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -50079,14 +50101,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -50116,7 +50138,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -50249,7 +50271,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -50261,7 +50283,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class EpayServiceUnrecoverableKeyException implements org.apache.axis2.databinding.ADBBean {
+    public static class EpayServiceUnrecoverableKeyException implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "EpayServiceUnrecoverableKeyException", "ns3");
 
@@ -50308,22 +50330,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -50374,7 +50396,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -50486,15 +50508,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -50527,14 +50549,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -50564,7 +50586,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -50673,7 +50695,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -50685,7 +50707,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class AmadeusItem implements org.apache.axis2.databinding.ADBBean {
+    public static class AmadeusItem implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = AmadeusItem
            Namespace URI = http://models.ws.epay.kkb.kz/xsd
@@ -50767,22 +50789,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -50848,7 +50870,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns2";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -50960,15 +50982,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -51001,14 +51023,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -51038,7 +51060,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -51127,7 +51149,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAirparameter(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAirparameter(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -51152,7 +51174,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAirvalue(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAirvalue(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -51169,7 +51191,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -51181,7 +51203,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class ControlOrderForCommerceResponse implements org.apache.axis2.databinding.ADBBean {
+    public static class ControlOrderForCommerceResponse implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "controlOrderForCommerceResponse", "ns3");
 
@@ -51227,22 +51249,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -51292,7 +51314,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -51404,15 +51426,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -51445,14 +51467,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -51482,7 +51504,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -51588,7 +51610,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -51600,7 +51622,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class PaymentOrderAcsResponse implements org.apache.axis2.databinding.ADBBean {
+    public static class PaymentOrderAcsResponse implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "paymentOrderAcsResponse", "ns3");
 
@@ -51646,22 +51668,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -51710,7 +51732,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -51822,15 +51844,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -51863,14 +51885,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -51900,7 +51922,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -52006,7 +52028,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -52018,7 +52040,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class RecurrentOrderResponse implements org.apache.axis2.databinding.ADBBean {
+    public static class RecurrentOrderResponse implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "recurrentOrderResponse", "ns3");
 
@@ -52064,22 +52086,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -52128,7 +52150,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -52240,15 +52262,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -52281,14 +52303,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -52318,7 +52340,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -52424,7 +52446,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -52436,7 +52458,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class Result implements org.apache.axis2.databinding.ADBBean {
+    public static class Result implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = Result
            Namespace URI = http://models.ws.epay.kkb.kz/xsd
@@ -52915,22 +52937,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -53024,10 +53046,10 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 writeStartElement(null, namespace, "is3ds", xmlWriter);
 
                 if (false) {
-                    throw new org.apache.axis2.databinding.ADBException(
+                    throw new ADBException(
                         "is3ds cannot be null!!");
                 } else {
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             localIs3Ds));
                 }
 
@@ -53186,7 +53208,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns2";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -53298,15 +53320,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -53339,14 +53361,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -53376,7 +53398,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -53464,7 +53486,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAcsUrl(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAcsUrl(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -53489,7 +53511,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setApprovalcode(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setApprovalcode(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -53514,7 +53536,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setDate(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setDate(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -53539,7 +53561,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setIntreference(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setIntreference(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -53562,13 +53584,13 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if ("true".equals(nillableValue) ||
                                 "1".equals(nillableValue)) {
-                            throw new org.apache.axis2.databinding.ADBException(
+                            throw new ADBException(
                                 "The element: " + "is3ds" + "  cannot be null");
                         }
 
                         java.lang.String content = reader.getElementText();
 
-                        object.setIs3Ds(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(
+                        object.setIs3Ds(ConverterUtil.convertToBoolean(
                                 content));
 
                         reader.next();
@@ -53590,7 +53612,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMd(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMd(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -53615,7 +53637,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMessage(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMessage(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -53640,7 +53662,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setOrderid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setOrderid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -53665,7 +53687,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setPareq(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setPareq(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -53690,7 +53712,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setReference(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setReference(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -53741,7 +53763,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setReturnCode(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setReturnCode(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -53766,7 +53788,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setSessionid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setSessionid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -53791,7 +53813,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setTermUrl(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setTermUrl(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -53808,7 +53830,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -53820,7 +53842,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class CheckOrderE implements org.apache.axis2.databinding.ADBBean {
+    public static class CheckOrderE implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "checkOrder", "ns3");
 
@@ -53899,22 +53921,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -53978,7 +54000,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -54090,15 +54112,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -54131,14 +54153,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -54168,7 +54190,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -54300,7 +54322,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -54312,7 +54334,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class AirastanaResult extends Result implements org.apache.axis2.databinding.ADBBean {
+    public static class AirastanaResult extends Result implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = AirastanaResult
            Namespace URI = http://models.ws.epay.kkb.kz/xsd
@@ -54526,22 +54548,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -54633,10 +54655,10 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 writeStartElement(null, namespace, "is3ds", xmlWriter);
 
                 if (false) {
-                    throw new org.apache.axis2.databinding.ADBException(
+                    throw new ADBException(
                         "is3ds cannot be null!!");
                 } else {
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             localIs3Ds));
                 }
 
@@ -54813,7 +54835,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         "http://www.w3.org/2001/XMLSchema-instance", "nil",
                         "1", xmlWriter);
                 } else {
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             localCheckFraudResultCode));
                 }
 
@@ -54895,7 +54917,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns2";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -55007,15 +55029,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -55048,14 +55070,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -55085,7 +55107,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -55174,7 +55196,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAcsUrl(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAcsUrl(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -55199,7 +55221,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setApprovalcode(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setApprovalcode(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -55224,7 +55246,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setDate(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setDate(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -55249,7 +55271,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setIntreference(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setIntreference(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -55272,13 +55294,13 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if ("true".equals(nillableValue) ||
                                 "1".equals(nillableValue)) {
-                            throw new org.apache.axis2.databinding.ADBException(
+                            throw new ADBException(
                                 "The element: " + "is3ds" + "  cannot be null");
                         }
 
                         java.lang.String content = reader.getElementText();
 
-                        object.setIs3Ds(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(
+                        object.setIs3Ds(ConverterUtil.convertToBoolean(
                                 content));
 
                         reader.next();
@@ -55300,7 +55322,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMd(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMd(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -55325,7 +55347,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMessage(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMessage(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -55350,7 +55372,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setOrderid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setOrderid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -55375,7 +55397,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setPareq(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setPareq(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -55400,7 +55422,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setReference(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setReference(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -55451,7 +55473,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setReturnCode(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setReturnCode(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -55476,7 +55498,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setSessionid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setSessionid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -55501,7 +55523,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setTermUrl(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setTermUrl(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -55526,7 +55548,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCardCountry(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCardCountry(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -55551,7 +55573,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCheckFraudResultCode(org.apache.axis2.databinding.utils.ConverterUtil.convertToInteger(
+                            object.setCheckFraudResultCode(ConverterUtil.convertToInteger(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -55577,7 +55599,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCheckFraudResultString(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCheckFraudResultString(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -55602,7 +55624,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setIsCorpCard(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setIsCorpCard(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -55627,7 +55649,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setIsKKBCard(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setIsKKBCard(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -55653,7 +55675,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setNumberOfTransactionsMoreThan90(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setNumberOfTransactionsMoreThan90(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -55670,7 +55692,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -55682,7 +55704,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class CardidPaymentOrder implements org.apache.axis2.databinding.ADBBean {
+    public static class CardidPaymentOrder implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "cardidPaymentOrder", "ns3");
 
@@ -55761,22 +55783,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -55840,7 +55862,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -55952,15 +55974,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -55993,14 +56015,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -56030,7 +56052,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -56163,7 +56185,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -56175,7 +56197,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class DeleteCardResponse implements org.apache.axis2.databinding.ADBBean {
+    public static class DeleteCardResponse implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "deleteCardResponse", "ns3");
 
@@ -56221,22 +56243,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -56285,7 +56307,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -56397,15 +56419,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -56438,14 +56460,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -56475,7 +56497,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -56582,7 +56604,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -56594,7 +56616,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class RefundOrder extends ControlOrder implements org.apache.axis2.databinding.ADBBean {
+    public static class RefundOrder extends ControlOrder implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = RefundOrder
            Namespace URI = http://models.ws.epay.kkb.kz/xsd
@@ -56676,22 +56698,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -56883,7 +56905,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns2";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -56995,15 +57017,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -57036,14 +57058,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -57073,7 +57095,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -57162,7 +57184,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setAmount(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setAmount(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -57187,7 +57209,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setCurrency(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setCurrency(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -57212,7 +57234,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setIntreference(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setIntreference(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -57237,7 +57259,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMerchantid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMerchantid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -57262,7 +57284,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMessageHash(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMessageHash(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -57287,7 +57309,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setOrderid(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setOrderid(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -57312,7 +57334,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setReference(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setReference(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -57337,7 +57359,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setTrtype(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setTrtype(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -57362,7 +57384,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setOrgamount(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setOrgamount(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -57387,7 +57409,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setReason(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setReason(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -57404,7 +57426,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -57416,7 +57438,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class CheckZip implements org.apache.axis2.databinding.ADBBean {
+    public static class CheckZip implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "checkZip", "ns3");
 
@@ -57495,22 +57517,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -57574,7 +57596,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -57686,15 +57708,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -57727,14 +57749,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -57764,7 +57786,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -57896,7 +57918,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -57909,7 +57931,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
     }
 
     public static class SignatureException extends GeneralSecurityException
-        implements org.apache.axis2.databinding.ADBBean {
+        implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = SignatureException
            Namespace URI = http://security.java/xsd
@@ -57925,22 +57947,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -57972,7 +57994,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns1";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -58084,15 +58106,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -58125,14 +58147,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -58162,7 +58184,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -58243,7 +58265,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -58256,7 +58278,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
     }
 
     public static class NoSuchAlgorithmException
-        extends GeneralSecurityException implements org.apache.axis2.databinding.ADBBean {
+        extends GeneralSecurityException implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = NoSuchAlgorithmException
            Namespace URI = http://security.java/xsd
@@ -58272,22 +58294,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -58319,7 +58341,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns1";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -58431,15 +58453,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -58472,14 +58494,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -58509,7 +58531,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -58590,7 +58612,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -58602,7 +58624,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class AirastanaPaymentOrderE implements org.apache.axis2.databinding.ADBBean {
+    public static class AirastanaPaymentOrderE implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "airastanaPaymentOrder", "ns3");
 
@@ -58681,22 +58703,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -58760,7 +58782,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -58872,15 +58894,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -58913,14 +58935,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -58950,7 +58972,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -59083,7 +59105,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -59095,7 +59117,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class RequestSignature implements org.apache.axis2.databinding.ADBBean {
+    public static class RequestSignature implements ADBBean {
         /* This type was generated from the piece of schema that had
            name = RequestSignature
            Namespace URI = http://models.ws.epay.kkb.kz/xsd
@@ -59210,22 +59232,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, parentQName));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -59308,7 +59330,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns2";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -59420,15 +59442,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -59461,14 +59483,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -59498,7 +59520,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -59587,7 +59609,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMerchantCertificate(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMerchantCertificate(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -59612,7 +59634,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setMerchantId(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setMerchantId(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -59637,7 +59659,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                                 !"1".equals(nillableValue)) {
                             java.lang.String content = reader.getElementText();
 
-                            object.setSignatureValue(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setSignatureValue(ConverterUtil.convertToString(
                                     content));
                         } else {
                             reader.getElementText(); // throw away text nodes if any.
@@ -59654,7 +59676,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
@@ -59666,7 +59688,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         } //end of factory class
     }
 
-    public static class GetCardList implements org.apache.axis2.databinding.ADBBean {
+    public static class GetCardList implements ADBBean {
         public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.epay.kkb.kz/xsd",
                 "getCardList", "ns3");
 
@@ -59745,22 +59767,22 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
         public org.apache.axiom.om.OMElement getOMElement(
             final javax.xml.namespace.QName parentQName,
             final org.apache.axiom.om.OMFactory factory)
-            throws org.apache.axis2.databinding.ADBException {
-            return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
+            throws ADBException {
+            return factory.createOMElement(new ADBDataSource(
                     this, MY_QNAME));
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             serialize(parentQName, xmlWriter, false);
         }
 
         public void serialize(final javax.xml.namespace.QName parentQName,
             javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
             throws javax.xml.stream.XMLStreamException,
-                org.apache.axis2.databinding.ADBException {
+                ADBException {
             java.lang.String prefix = null;
             java.lang.String namespace = null;
 
@@ -59824,7 +59846,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                 return "ns3";
             }
 
-            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+            return BeanUtil.getUniquePrefix();
         }
 
         /**
@@ -59936,15 +59958,15 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                 if (prefix.trim().length() > 0) {
                     xmlWriter.writeCharacters(prefix + ":" +
-                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        ConverterUtil.convertToString(
                             qname));
                 } else {
                     // i.e this is the default namespace
-                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    xmlWriter.writeCharacters(ConverterUtil.convertToString(
                             qname));
                 }
             } else {
-                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                xmlWriter.writeCharacters(ConverterUtil.convertToString(
                         qname));
             }
         }
@@ -59977,14 +59999,14 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                         if (prefix.trim().length() > 0) {
                             stringToWrite.append(prefix).append(":")
-                                         .append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                         .append(ConverterUtil.convertToString(
                                     qnames[i]));
                         } else {
-                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            stringToWrite.append(ConverterUtil.convertToString(
                                     qnames[i]));
                         }
                     } else {
-                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        stringToWrite.append(ConverterUtil.convertToString(
                                 qnames[i]));
                     }
                 }
@@ -60014,7 +60036,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
                         break;
                     }
 
-                    prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    prefix = BeanUtil.getUniquePrefix();
                 }
 
                 xmlWriter.writeNamespace(prefix, namespace);
@@ -60147,7 +60169,7 @@ public class EpayServiceStub extends org.apache.axis2.client.Stub {
 
                     if (reader.isStartElement()) {
                         // 2 - A start element we are not expecting indicates a trailing invalid property
-                        throw new org.apache.axis2.databinding.ADBException(
+                        throw new ADBException(
                             "Unexpected subelement " + reader.getName());
                     }
                 } catch (javax.xml.stream.XMLStreamException e) {
