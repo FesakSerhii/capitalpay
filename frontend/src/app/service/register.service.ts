@@ -23,15 +23,15 @@ export class RegisterService {
   }
   // tslint:disable-next-line:typedef
   changePassword(oldPassword,newPassword){
-    return this.apiService.postJwt('/api/v1/password/new', token,{oldPassword,newPassword}).toPromise();
+    return this.apiService.postJwt('/api/v1/auth/password/new', token,{oldPassword,newPassword}).toPromise();
   }
   // tslint:disable-next-line:typedef
   twoFactorAuthAvailable(){
-    return this.apiService.postJwt('/api/v1/twofactorauth/available', token).toPromise();
+    return this.apiService.postJwt('/api/v1/auth/twofactorauth/available', token).toPromise();
   }
   // tslint:disable-next-line:typedef
   twoFactorAuthSet(enable){
-    return this.apiService.postJwt('/api/v1/twofactorauth/set', token,{enable}).toPromise();
+    return this.apiService.postJwt('/api/v1/auth/twofactorauth/set', token,{enable}).toPromise();
   }
   // tslint:disable-next-line:typedef
   confirmPhone(code: string){

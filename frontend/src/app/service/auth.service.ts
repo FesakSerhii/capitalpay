@@ -21,9 +21,9 @@ export class AuthService {
   logout() {
     sessionStorage.clear()
   }
-  
+
   checkSessions() {
-    return this.apiService.post('/api/v1/userlist/numbersSession').toPromise();
+    return this.apiService.post('/api/v1/auth/userlist/numbersSession').toPromise();
   }
 
   checkToken() {

@@ -299,12 +299,15 @@
 .normal{
   min-height: 220px;
 }
-.noArrow{
+.stselect.noArrow{
   width:140px;
   .head {
     width:140px;
     i {
       display: none;
     }
+  }
+  ul{
+    width:140px;
   }
 }

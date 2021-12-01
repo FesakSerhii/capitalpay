@@ -7,6 +7,7 @@
     "start-admin": "ng serve --project adminPanel --port=5200",
     "start-paymentPage": "ng serve --project paymentPage --port=6600",
     "build": "ng build",
+    "build-paymentPage": "ng build --project paymentPage",
     "build-admin": "ng build --project adminPanel",
     "test": "ng test",
     "lint": "ng lint",

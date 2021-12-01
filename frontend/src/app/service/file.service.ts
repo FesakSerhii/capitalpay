@@ -13,6 +13,6 @@ export class FileService {
   sendFile(fileToUpload){
     const multipartFile = new FormData();
     multipartFile.append('multipartFile', fileToUpload, fileToUpload.name);
-    return this.apiService.postFormData('/api/v1/file/upload', token, multipartFile).toPromise();
+    return this.apiService.postFormData('/api/v1/auth/file/upload', token, multipartFile).toPromise();
   }
 }

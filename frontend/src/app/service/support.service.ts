@@ -11,10 +11,10 @@ export class SupportService {
   constructor(public apiService: ApiService) { }
 
   getSupportListByMerchantId(){
-    return this.apiService.postJwt('/api/v1/support/list-by-merchantid', token).toPromise();
+    return this.apiService.postJwt('/api/v1/auth/support/list-by-merchantid', token).toPromise();
   }
   sendSupportRequest(data){
-    return this.apiService.postJwt('/api/v1/support/request', token,data).toPromise();
+    return this.apiService.postJwt('/api/v1/auth/support/request', token,data).toPromise();
   }
   sendFeedback(data){
     return this.apiService.post('/help/feedback',data).toPromise();
@@ -27,7 +27,7 @@ export class SupportService {
     return this.apiService.postJwt('/support/status',token, data).toPromise();
   }
   getSupportListItem(id){
-    return this.apiService.postJwt('/api/v1/support/one',token,{id}).toPromise();
+    return this.apiService.postJwt('/api/v1/auth/support/one',token,{id}).toPromise();
   }
   answer(data){
     return this.apiService.postJwt('/support/answer',token,data).toPromise();
