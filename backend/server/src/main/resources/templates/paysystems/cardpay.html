@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Payment Form2</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/testsystem/css/style.css">
+</head>
+<body>
+<main class="content-whf form2-theme">
+    <form action="/public/paysystem/pay" method="post" class="tpsform form2-theme">
+        <input name="paymentid" type="hidden" th:value="${paymentid}">
+        <input name="description" type="hidden" th:value="${description}">
+        <div class="infoline">
+            <p class="infoline_name">Order ID</p>
+            <p class="infoline_value" th:text="${billid}">sdgfg674546665</p>
+        </div>
+        <div class="infoline">
+            <p class="infoline_name">Amount Total</p>
+            <p class="infoline_value"><span th:text="${totalamount}"></span> <span th:text="${currency}"></span></p>
+        </div>
+        <div>
+            <p class="infoline_value" th:text="${description}"></p>
+        </div>
+        <hr class="delimiter"/>
+        <div class="cardico">
+            <img src="/testsystem/img/Visa_Inc._logo.png" alt="">
+            <img src="/testsystem/img/Mastercard-logo.png" alt="">
+        </div>
+        <label class="tpsform_input" for="cardloldername">
+            <span>Cardlolder name *</span>
+            <!--добавьте к span класс .focused при фокусе на инпуте-->
+            <input name="cardHolderName" type="text" placeholder="John Doe" id="cardloldername">
+        </label>
+        <label class="tpsform_input" for="phone">
+            <span>Phone *</span>
+            <!--добавьте к span класс .focused при фокусе на инпуте-->
+            <input name="phone" type="text" placeholder="+7700000000" id="phone">
+        </label>
+        <label class="tpsform_input" for="email">
+            <span>Email *</span>
+            <!--добавьте к span класс .focused при фокусе на инпуте-->
+            <input name="email" type="text" placeholder="email" id="email">
+        </label>
+        <label class="tpsform_input" for="cardnumber">
+            <span class="focused">Card number  *</span>
+            <!--добавьте к span класс .focused при фокусе на инпуте-->
+            <input autocomplete="cc-number" name="pan" type="text" placeholder="" id="cardnumber" value="4003035000005378">
+        </label>
+        <div class="formline">
+            <div class="select form2-theme">
+                <input type="hidden" name="month"  autocomplete="cc-exp-month" >
+                <div class="select_label">Expiration Date *</div>
+                <div class="head"><span class="select-placeholder">MM</span></div>
+                <ul class="select_box">
+                    <li>01</li>
+                    <li>02</li>
+                    <li>03</li>
+                    <li>04</li>
+                    <li>05</li>
+                    <li>06</li>
+                    <li>07</li>
+                    <li>08</li>
+                    <li>09</li>
+                    <li>10</li>
+                    <li>11</li>
+                    <li>12</li>
+                </ul>
+            </div>
+            <div class="select form2-theme">
+                <input type="hidden" name="year"  autocomplete="cc-exp-year" >
+                <div class="select_label">&nbsp;</div>
+                <div class="head"><span class="select-placeholder">YY</span></div>
+                <ul class="select_box">
+                    <li>21</li>
+                    <li>22</li>
+                    <li>23</li>
+                    <li>24</li>
+                    <li>25</li>
+                    <li>26</li>
+                    <li>27</li>
+                    <li>28</li>
+                    <li>29</li>
+                </ul>
+            </div>
+            <label class="tpsform_input ico pass" for="cardseccode">
+                <span>Card Security Code *</span>
+                <!--добавьте к span класс .focused при фокусе на инпуте-->
+                <input  autocomplete="off" name="cvv" type="password" placeholder="" id="cardseccode">
+            </label>
+        </div>
+        <div class="checkbox">
+            <input type="checkbox" name="" id="termsandprivacy">
+            <label for="termsandprivacy">I accept the <a href="#!">terms of service</a> and have read the
+                <a href="#!">privacy policy</a>.</label>
+        </div>
+        <button  class="form-btn form2-theme green-theme" type="submit">Pay</button>
+
+    </form>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="/testsystem/js/script.js"></script>
+</body>
+</html>

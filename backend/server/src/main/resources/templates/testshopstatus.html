@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Shop Status Page</title>
+    <style>
+        .red {
+            background: darkred;
+        }
+
+        .green {
+            background: forestgreen;
+        }
+
+        .yellow {
+            background: yellow;
+        }
+    </style>
+</head>
+<body th:class="${color}">
+
+<p>Bill ID: <span th:text="${billid}"></span></p>
+<h1 th:text="${status}">SUCCESS</h1>
+
+<p><a href="/testshop/temporary/page"><< BACK </a></p>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Paysystem List</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/paysystems/css/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+</head>
+<body>
+<main class="content-whf">
+    <div class="tpsform form1-theme">
+        <h1 class="tpsform_hdr">Payment methods</h1>
+        <div id="systemlist" class="tpsform_radiobox">
+
+        </div>
+    </div>
+</main>
+</body>
+<script th:inline="javascript">
+
+    var payment = {'paymentId': [[${paymentId}]]};
+
+
+    $.ajax({
+        type: 'POST',
+        url: '/public/api/paysystem/system/buttonlist',
+        data: JSON.stringify(payment),
+        success: function (data) {
+            plist = '';
+            for (let i = 0; i < data.data.length; i++) {
+                plist = plist + data.data[i].paymentForm;
+            }
+
+            $('#systemlist').html(plist);
+            console.log(data.data)
+
+
+            // plist = [];
+            // for (let i = 0; i < data.data.length; i++) {
+            //     plist.push(data.data[i].paymentForm);
+            // }
+            // plist.join();
+            // $('#systemlist').html(plist);
+            // console.log(data.data)
+            //
+            //
+            //
+        },
+        dataType: 'json',
+        contentType: "application/json;",
+    })
+</script>
+</html>
