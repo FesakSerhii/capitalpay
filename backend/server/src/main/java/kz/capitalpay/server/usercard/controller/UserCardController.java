@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping(value = "/user-card", produces = "application/json;charset=UTF-8")
+@RequestMapping(value = "/api/v1/user-card", produces = "application/json;charset=UTF-8")
 public class UserCardController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserCardController.class);
