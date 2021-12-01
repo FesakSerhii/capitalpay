@@ -25,7 +25,7 @@ import java.security.Principal;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
 
 @RestController
-@RequestMapping(value = "/api/v1/cashbox", produces = "application/json;charset=UTF-8")
+@RequestMapping(value = "/api/v1/auth/cashbox", produces = "application/json;charset=UTF-8")
 public class CashboxController {
 
 

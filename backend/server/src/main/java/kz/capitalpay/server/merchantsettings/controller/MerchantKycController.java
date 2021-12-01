@@ -21,7 +21,7 @@ import java.util.Map;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
 
 @RestController
-@RequestMapping(value = "/api/v1/merchantsettings", produces = "application/json;charset=UTF-8")
+@RequestMapping(value = "/api/v1/auth/merchantsettings", produces = "application/json;charset=UTF-8")
 public class MerchantKycController {
 
     Logger logger = LoggerFactory.getLogger(MerchantKycController.class);

@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/api/v1/currency", produces = "application/json;charset=UTF-8")
+@RequestMapping(value = "/api/v1/auth/currency", produces = "application/json;charset=UTF-8")
 public class CurrencyController {
 
     Logger logger = LoggerFactory.getLogger(CurrencyController.class);

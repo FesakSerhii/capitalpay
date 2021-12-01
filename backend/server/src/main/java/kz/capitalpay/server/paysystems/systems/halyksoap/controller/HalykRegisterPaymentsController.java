@@ -20,7 +20,7 @@ import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.OPERATOR;
 
 @RestController
-@RequestMapping("/api/v1/paysystems/register")
+@RequestMapping("/api/v1/auth/paysystems/register")
 public class HalykRegisterPaymentsController {
     private final Logger logger = LoggerFactory.getLogger(HalykRegisterPaymentsController.class);
 

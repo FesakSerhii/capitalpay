@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/api/v1/paysystem", produces = "application/json;charset=UTF-8")
+@RequestMapping(value = "/api/v1/auth/paysystem", produces = "application/json;charset=UTF-8")
 public class MerchantPaysystemController {
 
     Logger logger = LoggerFactory.getLogger(MerchantPaysystemController.class);

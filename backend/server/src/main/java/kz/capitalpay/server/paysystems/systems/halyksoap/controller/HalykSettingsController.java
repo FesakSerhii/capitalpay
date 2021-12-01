@@ -16,7 +16,7 @@ import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.OPERATOR;
 
 @RestController
-@RequestMapping("/api/v1/paysystems/halyk")
+@RequestMapping("/api/v1/auth/paysystems/halyk")
 public class HalykSettingsController {
     private final Logger logger = LoggerFactory.getLogger(HalykSettingsController.class);
 

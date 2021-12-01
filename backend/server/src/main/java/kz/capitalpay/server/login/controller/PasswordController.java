@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/password")
+@RequestMapping("/api/v1/auth/password")
 public class PasswordController {
 
     Logger logger = LoggerFactory.getLogger(PasswordController.class);

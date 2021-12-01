@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.security.Principal;
 
 @RestController
-@RequestMapping("/api/v1/twofactorauth")
+@RequestMapping("/api/v1/auth/twofactorauth")
 public class TwoFactorAuthController {
 
     Logger logger = LoggerFactory.getLogger(TwoFactorAuthController.class);

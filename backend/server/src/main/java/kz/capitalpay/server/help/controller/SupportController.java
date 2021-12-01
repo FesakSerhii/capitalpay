@@ -23,7 +23,7 @@ import java.security.Principal;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
 
 @RestController
-@RequestMapping(value = "/api/v1/support", produces = "application/json;charset=UTF-8")
+@RequestMapping(value = "/api/v1/auth/support", produces = "application/json;charset=UTF-8")
 public class SupportController {
 
     Logger logger = LoggerFactory.getLogger(SupportController.class);

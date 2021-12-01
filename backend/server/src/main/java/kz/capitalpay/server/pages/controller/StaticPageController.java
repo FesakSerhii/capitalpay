@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/api/v1/staticpage", produces = "application/json;charset=UTF-8")
+@RequestMapping(value = "/api/v1/auth/staticpage", produces = "application/json;charset=UTF-8")
 public class StaticPageController {
 
     Logger logger = LoggerFactory.getLogger(StaticPageController.class);

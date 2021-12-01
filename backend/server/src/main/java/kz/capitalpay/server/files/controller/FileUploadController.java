@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.security.Principal;
 
 @RestController
-@RequestMapping("/api/v1/file")
+@RequestMapping("/api/v1/auth/file")
 public class FileUploadController {
 
     Logger logger = LoggerFactory.getLogger(FileUploadController.class);

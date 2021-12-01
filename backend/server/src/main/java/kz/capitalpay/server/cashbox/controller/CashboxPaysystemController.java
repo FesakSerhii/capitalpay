@@ -23,7 +23,7 @@ import java.util.Map;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
 
 @RestController
-@RequestMapping(value = "/api/v1/paysystem", produces = "application/json;charset=UTF-8")
+@RequestMapping(value = "/api/v1/auth/paysystem", produces = "application/json;charset=UTF-8")
 public class CashboxPaysystemController {
 
     Logger logger = LoggerFactory.getLogger(CashboxPaysystemController.class);
