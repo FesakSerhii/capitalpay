@@ -27,7 +27,7 @@ public class CardDataController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getCardData(@RequestBody String token) {
+    public ResponseEntity<?> getCardData(@RequestParam String token) {
         return cardDataService.getCardData(token);
     }
 

@@ -1,9 +1,15 @@
 package kz.capitalpay.server.usercard.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import kz.capitalpay.server.constants.ErrorDictionary;
 import kz.capitalpay.server.dto.ResultDTO;
+import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
+import kz.capitalpay.server.usercard.dto.CardDataResponseDto;
 import kz.capitalpay.server.usercard.dto.RegisterUserCardDto;
+import kz.capitalpay.server.usercard.model.ClientCard;
 import kz.capitalpay.server.usercard.model.UserCard;
+import kz.capitalpay.server.usercard.repository.ClientCardRepository;
 import kz.capitalpay.server.usercard.repository.UserCardRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,14 +27,20 @@ public class UserCardService {
 
     private final UserCardRepository userCardRepository;
     private final RestTemplate restTemplate;
+    private final HalykSoapService halykSoapService;
+    private final ClientCardRepository clientCardRepository;
+    private final ObjectMapper objectMapper;
 
-    public UserCardService(UserCardRepository userCardRepository, RestTemplate restTemplate) {
+    public UserCardService(UserCardRepository userCardRepository, RestTemplate restTemplate, HalykSoapService halykSoapService, ClientCardRepository clientCardRepository, ObjectMapper objectMapper) {
         this.userCardRepository = userCardRepository;
         this.restTemplate = restTemplate;
+        this.halykSoapService = halykSoapService;
+        this.clientCardRepository = clientCardRepository;
+        this.objectMapper = objectMapper;
     }
 
-    public ResultDTO registerUserCard(RegisterUserCardDto dto, Long userId) {
-        ResponseEntity<String> response = restTemplate.postForEntity(cardHoldingUrl + "", dto, String.class);
+    public ResultDTO registerMerchantCard(RegisterUserCardDto dto, Long userId) {
+        ResponseEntity<String> response = restTemplate.postForEntity(cardHoldingUrl + "/card-data/register", dto, String.class);
         String token = response.getBody();
         if (Objects.isNull(token) || token.trim().isEmpty()) {
             return ErrorDictionary.error129;
@@ -40,6 +52,62 @@ public class UserCardService {
         userCard.setToken(token);
         userCard = userCardRepository.save(userCard);
         return new ResultDTO(true, userCard, 0);
+    }
+
+    public ResultDTO getCardData(String token) {
+        CardDataResponseDto dto = getCardDataFromTokenServer(token);
+        if (Objects.isNull(dto)) {
+            return ErrorDictionary.error130;
+        }
+
+        return new ResultDTO(true, dto, 0);
+    }
+
+    private CardDataResponseDto getCardDataFromTokenServer(String token) {
+        String url = cardHoldingUrl + "/card-data?token=" + token;
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+        CardDataResponseDto dto = null;
+        try {
+            dto = objectMapper.readValue(response.getBody(), CardDataResponseDto.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return dto;
+    }
+
+    public ResultDTO getClientCards() {
+        return new ResultDTO(true, clientCardRepository.findAllByValidTrue(), 0);
+    }
+
+    public ResultDTO registerClientCard(RegisterUserCardDto dto) {
+        ResponseEntity<String> response = restTemplate.postForEntity(cardHoldingUrl + "/card-data/register",
+                dto, String.class);
+        String token = response.getBody();
+        if (Objects.isNull(token) || token.trim().isEmpty()) {
+            return ErrorDictionary.error129;
+        }
+
+        ClientCard clientCard = new ClientCard();
+        clientCard.setCardNumber(maskCardNumber(dto.getCardNumber()));
+        clientCard.setToken(token);
+        clientCard = clientCardRepository.save(clientCard);
+        return new ResultDTO(true, clientCard, 0);
+    }
+
+    public ResultDTO checkClientCardValidity(Long cardId, String ipAddress, String userAgent) {
+        ClientCard clientCard = clientCardRepository.findById(cardId).orElse(null);
+        if (Objects.isNull(clientCard)) {
+            return ErrorDictionary.error130;
+        }
+        CardDataResponseDto dto = getCardDataFromTokenServer(clientCard.getToken());
+        if (Objects.isNull(dto)) {
+            return ErrorDictionary.error130;
+        }
+
+        boolean valid = halykSoapService.checkCardValidity(ipAddress, userAgent, dto);
+        clientCard.setValid(valid);
+        clientCardRepository.save(clientCard);
+        return new ResultDTO(true, valid, 0);
     }
 
     private String maskCardNumber(String cardNumber) {
