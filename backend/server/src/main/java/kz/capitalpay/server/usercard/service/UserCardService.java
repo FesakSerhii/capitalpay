@@ -80,6 +80,7 @@ public class UserCardService {
     }
 
     public ResultDTO registerClientCard(RegisterUserCardDto dto) {
+        validateCardExpireMonth(dto);
         ResponseEntity<String> response = restTemplate.postForEntity(cardHoldingUrl + "/card-data/register",
                 dto, String.class);
         String token = response.getBody();
@@ -92,6 +93,12 @@ public class UserCardService {
         clientCard.setToken(token);
         clientCard = clientCardRepository.save(clientCard);
         return new ResultDTO(true, clientCard, 0);
+    }
+
+    private void validateCardExpireMonth(RegisterUserCardDto dto) {
+        if (dto.getExpireMonth().length() == 1) {
+            dto.setExpireMonth("0" + dto.getExpireMonth());
+        }
     }
 
     public ResultDTO checkClientCardValidity(Long cardId, String ipAddress, String userAgent) {
