@@ -1,2 +1,0 @@
-[receivingMerchantBank='АО «Народный банк Казахстана»', binMerchant='null', totalAmountPayment='88280.00', merchant='null', purposePayment='107', budgetCode='03', codeSenderCash='12', codePurposePayment='107', iinContributor='110640015478', contributorName='Инстант Пейментс'
-]
