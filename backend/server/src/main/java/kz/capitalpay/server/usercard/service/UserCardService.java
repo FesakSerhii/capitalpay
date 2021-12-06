@@ -40,16 +40,17 @@ public class UserCardService {
     }
 
     public ResultDTO registerMerchantCard(RegisterUserCardDto dto, Long userId) {
-        ResponseEntity<String> response = restTemplate.postForEntity(cardHoldingUrl + "/card-data/register", dto, String.class);
+        ResponseEntity<String> response = restTemplate.postForEntity(cardHoldingUrl + "/card-data/register",
+                dto, String.class);
         String token = response.getBody();
         if (Objects.isNull(token) || token.trim().isEmpty()) {
             return ErrorDictionary.error129;
         }
 
         UserCard userCard = new UserCard();
-        userCard.setUserId(userId);
         userCard.setCardNumber(maskCardNumber(dto.getCardNumber()));
         userCard.setToken(token);
+        userCard.setUserId(userId);
         userCard = userCardRepository.save(userCard);
         return new ResultDTO(true, userCard, 0);
     }
@@ -77,6 +78,10 @@ public class UserCardService {
 
     public ResultDTO getClientCards() {
         return new ResultDTO(true, clientCardRepository.findAllByValidTrue(), 0);
+    }
+
+    public ResultDTO getUserCards(Long userId) {
+        return new ResultDTO(true, userCardRepository.findAllByUserId(userId), 0);
     }
 
     public ResultDTO registerClientCard(RegisterUserCardDto dto) {
@@ -107,6 +112,22 @@ public class UserCardService {
         boolean valid = halykSoapService.checkCardValidity(ipAddress, userAgent, dto);
         clientCard.setValid(valid);
         clientCardRepository.save(clientCard);
+        return new ResultDTO(true, valid, 0);
+    }
+
+    public ResultDTO checkUserCardValidity(Long cardId, String ipAddress, String userAgent) {
+        UserCard userCard = userCardRepository.findById(cardId).orElse(null);
+        if (Objects.isNull(userCard)) {
+            return ErrorDictionary.error130;
+        }
+        CardDataResponseDto dto = getCardDataFromTokenServer(userCard.getToken());
+        if (Objects.isNull(dto)) {
+            return ErrorDictionary.error130;
+        }
+
+        boolean valid = halykSoapService.checkCardValidity(ipAddress, userAgent, dto);
+        userCard.setValid(valid);
+        userCardRepository.save(userCard);
         return new ResultDTO(true, valid, 0);
     }
 

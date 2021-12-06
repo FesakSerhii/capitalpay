@@ -8,11 +8,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
+
 @RestController
-@RequestMapping(value = "/api/v1/user-card", produces = "application/json;charset=UTF-8")
+@RequestMapping(value = "/api/v1/auth/user-card", produces = "application/json;charset=UTF-8")
 public class UserCardController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserCardController.class);
@@ -26,8 +29,11 @@ public class UserCardController {
     }
 
     @PostMapping("/register")
-    public ResultDTO saveUserCard(@Valid @RequestBody RegisterUserCardDto dto) {
-        return userCardService.registerClientCard(dto);
+    @RolesAllowed({ADMIN})
+    public ResultDTO saveUserCard(@Valid @RequestBody RegisterUserCardDto dto,
+                                  HttpServletRequest request) {
+        Long merchantId = applicationUserService.getMerchantIdFromToken(request);
+        return userCardService.registerMerchantCard(dto, merchantId);
     }
 
     @PostMapping("/check-validity/{cardId}")
@@ -38,7 +44,7 @@ public class UserCardController {
             ipAddress = httpRequest.getRemoteAddr();
         }
         String userAgent = httpRequest.getHeader("User-Agent");
-        return userCardService.checkClientCardValidity(cardId, ipAddress, userAgent);
+        return userCardService.checkUserCardValidity(cardId, ipAddress, userAgent);
     }
 
     @GetMapping
@@ -46,8 +52,9 @@ public class UserCardController {
         return userCardService.getCardData(token);
     }
 
-    @GetMapping("/client-cards")
-    public ResultDTO getClientCards() {
-        return userCardService.getClientCards();
+    @GetMapping("/list")
+    public ResultDTO getClientCards(HttpServletRequest request) {
+        Long merchantId = applicationUserService.getMerchantIdFromToken(request);
+        return userCardService.getUserCards(merchantId);
     }
 }
