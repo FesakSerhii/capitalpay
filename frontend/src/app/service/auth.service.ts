@@ -23,7 +23,7 @@ export class AuthService {
   }
 
   checkSessions() {
-    return this.apiService.post('/api/v1/auth/userlist/numbersSession').toPromise();
+    return this.apiService.post('/userlist/numbersSession').toPromise();
   }
 
   checkToken() {

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {UserCardService} from '../service/user-card.service';
+import {ActivatedRoute} from '@angular/router';
 const valid = require("card-validator");
 
 @Component({
@@ -18,11 +19,16 @@ export class PaymentFormComponent implements OnInit {
   });
   token: string = null;
   id: number = null;
+  merchantId: number = null;
   isCardValid: boolean = null;
 
-  constructor(private userCardService:UserCardService) { }
+
+  constructor(private userCardService:UserCardService,private activatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
+    this.activatedRoute.queryParamMap.subscribe((param) => {
+      this.merchantId = +param.get("merchantId");
+    })
     this.cardForm.controls.cardNumber.valueChanges.subscribe(cardNumber=>{
       const isCardValid = valid.number(cardNumber)
       console.log(isCardValid);
@@ -40,7 +46,7 @@ export class PaymentFormComponent implements OnInit {
     // })
   }
   saveCard(){
-    this.userCardService.registerCard(this.cardForm.value.cardNumber,this.cardForm.value.expirationYear,this.cardForm.value.expirationMonth,this.cardForm.value.cvv2Code)
+    this.userCardService.registerCard(this.cardForm.value.cardNumber,this.cardForm.value.expirationYear,this.cardForm.value.expirationMonth,this.cardForm.value.cvv2Code,this.merchantId)
       .then(resp=>{
         this.token = resp.data.token;
         this.id = resp.data.id;

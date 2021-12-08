@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
 import {UserService} from '../../service/user.service';
@@ -8,6 +8,7 @@ import {MassageModalComponent} from '../../../../../../common-blocks/massage-mod
 import {PaymentsService} from '../../service/payments.service';
 import {Subscription} from 'rxjs';
 import {ExtValidators} from '../../../../../../src/app/validators/ext-validators';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-user-settings',
@@ -16,12 +17,14 @@ import {ExtValidators} from '../../../../../../src/app/validators/ext-validators
 })
 export class UserSettingsComponent implements OnInit {
   @ViewChild('massageModal', {static: false}) massageModal: MassageModalComponent;
+  @ViewChild('paymentCard', {static: false}) paymentCard: TemplateRef<any>;
 
   constructor(private router: Router,
               private userService: UserService,
               private activatedRoute: ActivatedRoute,
               private currencyService: CurrencyService,
               private paymentsService: PaymentsService,
+              private modalService: NgbModal,
               private kycService: KycService) {
   }
 
@@ -93,6 +96,8 @@ export class UserSettingsComponent implements OnInit {
   activeTab: string = 'tab1';
   cashBoxList = new FormArray([])
   regEx = '/(^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$)||(^[+-]?([0-9]+([,][0-9]*)?|[.][0-9]+)$)/gm'
+  defaultPaymentCard:string = null;
+  isP2PActive = new FormControl();
 
   ngOnInit(): void {
     this.activatedRoute.queryParamMap.subscribe((param) => {
@@ -102,6 +107,11 @@ export class UserSettingsComponent implements OnInit {
     });
 
     this.isEditMode = false;
+    this.isP2PActive.valueChanges.subscribe(v=>{
+      if(v&&!this.defaultPaymentCard){
+        this.openModal()
+      }
+    })
   }
 
   navigateToSettings() {
@@ -281,5 +291,9 @@ export class UserSettingsComponent implements OnInit {
     this.userService.changeUserRolesList(newRoles).then(() => {
       this.getUserInfo()
     })
+  }
+
+  openModal() {
+    this.modalService.open(this.paymentCard)
   }
 }
