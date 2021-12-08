@@ -1,7 +1,7 @@
 package kz.capitalpay.server.usercard.controller;
 
 import kz.capitalpay.server.dto.ResultDTO;
-import kz.capitalpay.server.usercard.dto.RegisterUserCardDto;
+import kz.capitalpay.server.usercard.dto.RegisterClientCardDto;
 import kz.capitalpay.server.usercard.service.UserCardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +23,7 @@ public class ClientCardController {
     }
 
     @PostMapping("/register")
-    public ResultDTO saveUserCard(@Valid @RequestBody RegisterUserCardDto dto) {
+    public ResultDTO saveUserCard(@Valid @RequestBody RegisterClientCardDto dto) {
         return userCardService.registerClientCard(dto);
     }
 

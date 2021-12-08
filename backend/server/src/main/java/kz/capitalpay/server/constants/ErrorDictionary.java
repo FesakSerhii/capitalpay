@@ -34,6 +34,8 @@ public class ErrorDictionary {
     public static final ResultDTO error128 = new ResultDTO(false, "BIN or IIN isn't valid! Check input and try again.", 128);
     public static final ResultDTO error129 = new ResultDTO(false, "Card registration error!", 129);
     public static final ResultDTO error130 = new ResultDTO(false, "Card not found!", 130);
+    public static final ResultDTO error131 = new ResultDTO(false, "P2P payment error!", 131);
+
 
 }
 

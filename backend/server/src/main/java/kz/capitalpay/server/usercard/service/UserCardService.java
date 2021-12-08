@@ -6,6 +6,7 @@ import kz.capitalpay.server.constants.ErrorDictionary;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import kz.capitalpay.server.usercard.dto.CardDataResponseDto;
+import kz.capitalpay.server.usercard.dto.RegisterClientCardDto;
 import kz.capitalpay.server.usercard.dto.RegisterUserCardDto;
 import kz.capitalpay.server.usercard.model.ClientCard;
 import kz.capitalpay.server.usercard.model.UserCard;
@@ -64,7 +65,15 @@ public class UserCardService {
         return new ResultDTO(true, dto, 0);
     }
 
-    private CardDataResponseDto getCardDataFromTokenServer(String token) {
+    public UserCard findUserCardByMerchantId(Long userId) {
+        return userCardRepository.findByUserId(userId).orElse(null);
+    }
+
+    public ClientCard findClientCardById(Long id) {
+        return clientCardRepository.findById(id).orElse(null);
+    }
+
+    public CardDataResponseDto getCardDataFromTokenServer(String token) {
         String url = cardHoldingUrl + "/card-data?token=" + token;
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
         CardDataResponseDto dto = null;
@@ -84,7 +93,7 @@ public class UserCardService {
         return new ResultDTO(true, userCardRepository.findAllByUserId(userId), 0);
     }
 
-    public ResultDTO registerClientCard(RegisterUserCardDto dto) {
+    public ResultDTO registerClientCard(RegisterClientCardDto dto) {
         ResponseEntity<String> response = restTemplate.postForEntity(cardHoldingUrl + "/card-data/register",
                 dto, String.class);
         String token = response.getBody();
@@ -95,6 +104,7 @@ public class UserCardService {
         ClientCard clientCard = new ClientCard();
         clientCard.setCardNumber(maskCardNumber(dto.getCardNumber()));
         clientCard.setToken(token);
+        clientCard.setMerchantId(dto.getMerchantId());
         clientCard = clientCardRepository.save(clientCard);
         return new ResultDTO(true, clientCard, 0);
     }

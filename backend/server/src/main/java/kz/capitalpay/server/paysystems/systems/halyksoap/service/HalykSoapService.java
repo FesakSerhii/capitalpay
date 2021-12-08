@@ -2,9 +2,13 @@ package kz.capitalpay.server.paysystems.systems.halyksoap.service;
 
 import com.google.gson.Gson;
 import kz.capitalpay.server.cashbox.model.Cashbox;
+import kz.capitalpay.server.payments.dto.SendP2pToClientDto;
 import kz.capitalpay.server.payments.model.CheckCardValidityPayment;
+import kz.capitalpay.server.payments.model.P2pPayment;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.repository.CheckCardValidityPaymentRepository;
+import kz.capitalpay.server.payments.repository.P2pPaymentRepository;
+import kz.capitalpay.server.payments.service.P2pPaymentLogService;
 import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.paysystems.systems.halyksoap.dto.HalykTransferOrderDTO;
 import kz.capitalpay.server.paysystems.systems.halyksoap.kkbsign.KKBSign;
@@ -35,8 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import static kz.capitalpay.server.simple.service.SimpleService.PENDING;
-import static kz.capitalpay.server.simple.service.SimpleService.SUCCESS;
+import static kz.capitalpay.server.simple.service.SimpleService.*;
 
 @Service
 public class HalykSoapService {
@@ -90,6 +93,12 @@ public class HalykSoapService {
 
     @Autowired
     CheckCardValidityPaymentRepository checkCardValidityPaymentRepository;
+
+    @Autowired
+    P2pPaymentRepository p2pPaymentRepository;
+
+    @Autowired
+    P2pPaymentLogService p2pPaymentLogService;
 
     private String createTransferOrder(HalykTransferOrderDTO paymentOrder, String cvc, String month, String year, String pan) {
         String concatString = paymentOrder.getOrderid() + paymentOrder.getAmount() + paymentOrder.getCurrency() +
@@ -288,6 +297,29 @@ public class HalykSoapService {
         return false;
     }
 
+    public boolean sendP2ToClient(String ipAddress, String userAgent, CardDataResponseDto merchantCardData, SendP2pToClientDto dto,
+                                  String paymentToPan) {
+        P2pPayment payment = generateP2pPayment(ipAddress, userAgent, dto.getMerchantId(), dto.getAcceptedSum(), dto.getCashBoxId());
+        String orderId = payment.getOrderId();
+        String pan = merchantCardData.getCardNumber();
+        String year = merchantCardData.getExpireYear().substring(2);
+        String month = merchantCardData.getExpireMonth();
+        String cvv2 = merchantCardData.getCvv2Code();
+        String amount = dto.getAcceptedSum().toString().replace(".", ",");
+        String currency = "KZT";
+
+        EpayServiceStub.TransferOrderResponse transferOrderResponse = sendTransferOrderRequest(amount, currency, cvv2,
+                merchantid, month, year, orderId, pan, paymentToPan);
+
+        if (transferOrderResponse.get_return().getReturnCode().equals("00")) {
+            payment.setStatus(SUCCESS);
+            p2pPaymentLogService.newEvent(payment.getGuid(), ipAddress, SUCCESS, gson.toJson(payment));
+            p2pPaymentRepository.save(payment);
+            return true;
+        }
+        return false;
+    }
+
     private EpayServiceStub.PaymentOrderResponse sendPaymentOrderRequest(String amount, String currency, String cvv2,
                                                                          String requestMerchantId, String month, String year,
                                                                          String orderId, String pan, String trType) {
@@ -376,6 +408,51 @@ public class HalykSoapService {
         return response;
     }
 
+    private EpayServiceStub.TransferOrderResponse sendTransferOrderRequest(String amount, String currency, String cvv2,
+                                                                           String requestMerchantId, String month, String year,
+                                                                           String orderId, String senderPan, String paymenToPan) {
+        EpayServiceStub stub = null;
+        try {
+            stub = new EpayServiceStub();
+        } catch (AxisFault axisFault) {
+            axisFault.printStackTrace();
+        }
+        final String trType = "8";
+        EpayServiceStub.TransferOrderE transferOrderE = new EpayServiceStub.TransferOrderE();
+        EpayServiceStub.TransferOrder transferOrder = new EpayServiceStub.TransferOrder();
+        transferOrder.setAmount(amount);
+        transferOrder.setCurrency(currency);
+        transferOrder.setCvc(cvv2);
+        transferOrder.setDesc(" ");
+        transferOrder.setMerchantid(merchantid);
+        transferOrder.setMonth(month);
+        transferOrder.setTrtype(trType);
+        transferOrder.setOrderid(orderId);
+        transferOrder.setPan(senderPan);
+        transferOrder.setYear(year);
+        transferOrder.setPaymentto(paymenToPan);
+
+        String concatString = orderId + amount + currency +
+                trType + senderPan + requestMerchantId;
+        KKBSign kkbSign = new KKBSign();
+        String signatureValue = kkbSign.sign64(concatString, keystore, clientAlias, keypass, storepass);
+
+        transferOrderE.setTransferOrder(transferOrder);
+        EpayServiceStub.RequestSignature signature = new EpayServiceStub.RequestSignature();
+        signature.setMerchantCertificate(merchantCertificate);
+        signature.setMerchantId(requestMerchantId);
+        signature.setSignatureValue(signatureValue);
+        transferOrderE.setRequestSignature(signature);
+        EpayServiceStub.TransferOrderResponse response = null;
+        try {
+            response = stub.transferOrder(transferOrderE);
+        } catch (RemoteException | EpayServiceSAXExceptionException | EpayServiceParserConfigurationExceptionException | EpayServiceSignatureExceptionException | EpayServiceCertificateExceptionException | EpayServiceUnrecoverableKeyExceptionException | EpayServiceKeyStoreExceptionException | EpayServiceIOExceptionException | EpayServiceNoSuchAlgorithmExceptionException | EpayServiceInvalidKeyExceptionException e) {
+            e.printStackTrace();
+        }
+
+        return response;
+    }
+
     private CheckCardValidityPayment generateCardCheckPayment(String ipAddress, String userAgent, Long merchantId,
                                                               BigDecimal totalAmount) {
         CheckCardValidityPayment payment = new CheckCardValidityPayment();
@@ -395,6 +472,29 @@ public class HalykSoapService {
         payment.setUserAgent(userAgent);
         payment.setStatus("NEW");
         payment = checkCardValidityPaymentRepository.save(payment);
+        return payment;
+    }
+
+    private P2pPayment generateP2pPayment(String ipAddress, String userAgent, Long merchantId,
+                                          BigDecimal totalAmount, Long cashBoxId) {
+        P2pPayment payment = new P2pPayment();
+        P2pPayment lastPayment = p2pPaymentRepository.findLast().orElse(null);
+        if (Objects.nonNull(lastPayment)) {
+            payment.setOrderId(generateOrderId(lastPayment.getOrderId()));
+        } else {
+            payment.setOrderId("00000163801600");
+        }
+        payment.setCurrency("KZT");
+        payment.setLocalDateTime(LocalDateTime.now());
+        payment.setIpAddress(ipAddress);
+        payment.setCashboxId(cashBoxId);
+        payment.setMerchantId(merchantId);
+
+        payment.setTotalAmount(totalAmount);
+        payment.setUserAgent(userAgent);
+        payment.setStatus(NEW_PAYMENT);
+        payment = p2pPaymentRepository.save(payment);
+        p2pPaymentLogService.newEvent(payment.getGuid(), ipAddress, NEW_PAYMENT, gson.toJson(payment));
         return payment;
     }
 
