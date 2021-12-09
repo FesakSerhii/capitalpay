@@ -4,9 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.cashbox.repository.CashboxRepository;
+import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.constants.ErrorDictionary;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
+import kz.capitalpay.server.usercard.dto.CardDataForMerchantDto;
 import kz.capitalpay.server.usercard.dto.CardDataResponseDto;
 import kz.capitalpay.server.usercard.dto.RegisterClientCardDto;
 import kz.capitalpay.server.usercard.dto.RegisterUserCardDto;
@@ -14,6 +16,7 @@ import kz.capitalpay.server.usercard.model.ClientCard;
 import kz.capitalpay.server.usercard.model.UserCard;
 import kz.capitalpay.server.usercard.repository.ClientCardRepository;
 import kz.capitalpay.server.usercard.repository.UserCardRepository;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -35,14 +38,16 @@ public class UserCardService {
     private final ClientCardRepository clientCardRepository;
     private final ObjectMapper objectMapper;
     private final CashboxRepository cashboxRepository;
+    private final CashboxService cashboxService;
 
-    public UserCardService(UserCardRepository userCardRepository, RestTemplate restTemplate, HalykSoapService halykSoapService, ClientCardRepository clientCardRepository, ObjectMapper objectMapper, CashboxRepository cashboxRepository) {
+    public UserCardService(UserCardRepository userCardRepository, RestTemplate restTemplate, HalykSoapService halykSoapService, ClientCardRepository clientCardRepository, ObjectMapper objectMapper, CashboxRepository cashboxRepository, CashboxService cashboxService) {
         this.userCardRepository = userCardRepository;
         this.restTemplate = restTemplate;
         this.halykSoapService = halykSoapService;
         this.clientCardRepository = clientCardRepository;
         this.objectMapper = objectMapper;
         this.cashboxRepository = cashboxRepository;
+        this.cashboxService = cashboxService;
     }
 
     public ResultDTO registerMerchantCard(RegisterUserCardDto dto) {
@@ -113,6 +118,7 @@ public class UserCardService {
         ClientCard clientCard = new ClientCard();
         clientCard.setCardNumber(maskCardNumber(dto.getCardNumber()));
         clientCard.setToken(token);
+        clientCard.setCashBoxId(dto.getCashBoxId());
         clientCard.setMerchantId(dto.getMerchantId());
         clientCard = clientCardRepository.save(clientCard);
         return new ResultDTO(true, clientCard, 0);
@@ -131,6 +137,7 @@ public class UserCardService {
         boolean valid = halykSoapService.checkCardValidity(ipAddress, userAgent, dto);
         clientCard.setValid(valid);
         clientCardRepository.save(clientCard);
+        sendClientCardDataToMerchant(clientCard);
         return new ResultDTO(true, valid, 0);
     }
 
@@ -161,8 +168,31 @@ public class UserCardService {
         }
     }
 
+    private void sendClientCardDataToMerchant(ClientCard clientCard) {
+        try {
+            String interactionUrl = cashboxService.getInteractUrl(clientCard.getCashBoxId());
+//            String interactionUrl = "http://localhost:8080/testshop/listener";
+            CardDataForMerchantDto detailsJson = generateClientCardResponseDto(clientCard);
+            String response = restTemplate.postForObject(interactionUrl,
+                    detailsJson, String.class, java.util.Optional.ofNullable(null));
+            LOGGER.info(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private String maskCardNumber(String cardNumber) {
         return cardNumber.replaceAll("\\b(\\d{4})(\\d{8})(\\d{4})", "$1XXXXXXXX$3");
+    }
+
+    private CardDataForMerchantDto generateClientCardResponseDto(ClientCard clientCard) {
+        CardDataForMerchantDto dto = new CardDataForMerchantDto();
+        String secret = cashboxService.getSecret(clientCard.getCashBoxId());
+        dto.setCardId(clientCard.getId());
+        dto.setCardNumber(clientCard.getCardNumber());
+        dto.setToken(clientCard.getToken());
+        dto.setSignature(DigestUtils.sha256Hex(clientCard.getId() + clientCard.getToken() + clientCard.getCardNumber() + secret));
+        return dto;
     }
 
 }

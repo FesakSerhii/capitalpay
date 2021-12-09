@@ -13,6 +13,7 @@ public class ClientCard {
     @Column(columnDefinition = "boolean default false")
     private boolean valid;
     private Long merchantId;
+    private Long cashBoxId;
 
     public Long getId() {
         return id;
@@ -52,5 +53,13 @@ public class ClientCard {
 
     public void setMerchantId(Long merchantId) {
         this.merchantId = merchantId;
+    }
+
+    public Long getCashBoxId() {
+        return cashBoxId;
+    }
+
+    public void setCashBoxId(Long cashBoxId) {
+        this.cashBoxId = cashBoxId;
     }
 }

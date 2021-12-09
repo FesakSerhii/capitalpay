@@ -206,6 +206,10 @@ public class CashboxService {
         return interactionUrl;
     }
 
+    public String getInteractUrl(Long cashBoxId) {
+        return cashboxSettingsService.getField(cashBoxId, INTERACTION_URL);
+    }
+
     public ResultDTO all() {
         try {
 

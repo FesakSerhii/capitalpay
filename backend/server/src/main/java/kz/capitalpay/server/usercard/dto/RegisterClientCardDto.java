@@ -15,6 +15,9 @@ public class RegisterClientCardDto {
     private String cvv2Code;
     @NotNull(message = "merchantId must not be null")
     private Long merchantId;
+    @NotNull(message = "cashBoxId must not be null")
+    private Long cashBoxId;
+
 
     public String getCardNumber() {
         return cardNumber;
@@ -54,5 +57,13 @@ public class RegisterClientCardDto {
 
     public void setMerchantId(Long merchantId) {
         this.merchantId = merchantId;
+    }
+
+    public Long getCashBoxId() {
+        return cashBoxId;
+    }
+
+    public void setCashBoxId(Long cashBoxId) {
+        this.cashBoxId = cashBoxId;
     }
 }
