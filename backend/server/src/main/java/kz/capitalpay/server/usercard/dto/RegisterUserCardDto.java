@@ -1,6 +1,7 @@
 package kz.capitalpay.server.usercard.dto;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public class RegisterUserCardDto {
 
@@ -12,6 +13,8 @@ public class RegisterUserCardDto {
     private String expireMonth;
     @NotBlank(message = "cvv2Code must not be blank")
     private String cvv2Code;
+    @NotNull(message = "merchantId must not be null")
+    private Long merchantId;
 
     public String getCardNumber() {
         return cardNumber;
@@ -43,5 +46,13 @@ public class RegisterUserCardDto {
 
     public void setCvv2Code(String cvv2Code) {
         this.cvv2Code = cvv2Code;
+    }
+
+    public Long getMerchantId() {
+        return merchantId;
+    }
+
+    public void setMerchantId(Long merchantId) {
+        this.merchantId = merchantId;
     }
 }

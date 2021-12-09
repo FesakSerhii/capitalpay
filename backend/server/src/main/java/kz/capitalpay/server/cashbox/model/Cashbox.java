@@ -14,6 +14,7 @@ public class Cashbox {
     String name;
     @Column(name = "deleted", columnDefinition = "boolean default false", nullable = false)
     boolean deleted;
+    Long userCardId;
 
     public Long getId() {
         return id;
@@ -45,5 +46,13 @@ public class Cashbox {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public Long getUserCardId() {
+        return userCardId;
+    }
+
+    public void setUserCardId(Long userCardId) {
+        this.userCardId = userCardId;
     }
 }

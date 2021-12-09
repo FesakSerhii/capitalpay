@@ -50,6 +50,7 @@ public class P2pService {
 
             return paymentSuccess ? new ResultDTO(true, "Successful payment", 0) : ErrorDictionary.error131;
         } catch (Exception e) {
+            e.printStackTrace();
             return ErrorDictionary.error130;
         }
     }

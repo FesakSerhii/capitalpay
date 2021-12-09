@@ -30,10 +30,8 @@ public class UserCardController {
 
     @PostMapping("/register")
     @RolesAllowed({ADMIN})
-    public ResultDTO saveUserCard(@Valid @RequestBody RegisterUserCardDto dto,
-                                  HttpServletRequest request) {
-        Long merchantId = applicationUserService.getMerchantIdFromToken(request);
-        return userCardService.registerMerchantCard(dto, merchantId);
+    public ResultDTO saveUserCard(@Valid @RequestBody RegisterUserCardDto dto) {
+        return userCardService.registerMerchantCard(dto);
     }
 
     @PostMapping("/check-validity/{cardId}")

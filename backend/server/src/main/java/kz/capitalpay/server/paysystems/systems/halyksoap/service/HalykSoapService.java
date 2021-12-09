@@ -38,6 +38,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 import static kz.capitalpay.server.simple.service.SimpleService.*;
 
@@ -484,6 +485,7 @@ public class HalykSoapService {
         } else {
             payment.setOrderId("00000163801600");
         }
+        payment.setGuid(UUID.randomUUID().toString());
         payment.setCurrency("KZT");
         payment.setLocalDateTime(LocalDateTime.now());
         payment.setIpAddress(ipAddress);

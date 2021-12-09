@@ -40,7 +40,7 @@ public class UserCardService {
         this.objectMapper = objectMapper;
     }
 
-    public ResultDTO registerMerchantCard(RegisterUserCardDto dto, Long userId) {
+    public ResultDTO registerMerchantCard(RegisterUserCardDto dto) {
         ResponseEntity<String> response = restTemplate.postForEntity(cardHoldingUrl + "/card-data/register",
                 dto, String.class);
         String token = response.getBody();
@@ -51,7 +51,7 @@ public class UserCardService {
         UserCard userCard = new UserCard();
         userCard.setCardNumber(maskCardNumber(dto.getCardNumber()));
         userCard.setToken(token);
-        userCard.setUserId(userId);
+        userCard.setUserId(dto.getMerchantId());
         userCard = userCardRepository.save(userCard);
         return new ResultDTO(true, userCard, 0);
     }
@@ -90,7 +90,7 @@ public class UserCardService {
     }
 
     public ResultDTO getUserCards(Long userId) {
-        return new ResultDTO(true, userCardRepository.findAllByUserId(userId), 0);
+        return new ResultDTO(true, userCardRepository.findAllByUserIdAndValidTrue(userId), 0);
     }
 
     public ResultDTO registerClientCard(RegisterClientCardDto dto) {
