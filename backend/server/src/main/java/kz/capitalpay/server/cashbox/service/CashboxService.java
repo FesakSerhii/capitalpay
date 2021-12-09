@@ -148,6 +148,9 @@ public class CashboxService {
         return cashboxRepository.findById(cashboxid).orElse(null);
     }
 
+    public Long findUserCardIdByCashBoxId(Long cashBoxId) {
+        return cashboxRepository.findCardById(cashBoxId);
+    }
 
     public String getUrlByPayment(Payment payment) {
         try {
@@ -206,9 +209,9 @@ public class CashboxService {
     public ResultDTO all() {
         try {
 
-            List<Cashbox> cashboxList = cashboxRepository.findByDeleted( false);
+            List<Cashbox> cashboxList = cashboxRepository.findByDeleted(false);
 
-            return new ResultDTO(true, addBalance( cashboxList), 0);
+            return new ResultDTO(true, addBalance(cashboxList), 0);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -219,7 +222,7 @@ public class CashboxService {
 
     private List<CashboxDTO> addBalance(List<Cashbox> cashboxList) {
         List<CashboxDTO> result = new ArrayList<>();
-        for(Cashbox cashbox : cashboxList){
+        for (Cashbox cashbox : cashboxList) {
             result.add(addBalance(cashbox));
         }
         return result;

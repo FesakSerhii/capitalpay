@@ -2,6 +2,8 @@ package kz.capitalpay.server.usercard.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kz.capitalpay.server.cashbox.model.Cashbox;
+import kz.capitalpay.server.cashbox.repository.CashboxRepository;
 import kz.capitalpay.server.constants.ErrorDictionary;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
@@ -18,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -31,13 +34,15 @@ public class UserCardService {
     private final HalykSoapService halykSoapService;
     private final ClientCardRepository clientCardRepository;
     private final ObjectMapper objectMapper;
+    private final CashboxRepository cashboxRepository;
 
-    public UserCardService(UserCardRepository userCardRepository, RestTemplate restTemplate, HalykSoapService halykSoapService, ClientCardRepository clientCardRepository, ObjectMapper objectMapper) {
+    public UserCardService(UserCardRepository userCardRepository, RestTemplate restTemplate, HalykSoapService halykSoapService, ClientCardRepository clientCardRepository, ObjectMapper objectMapper, CashboxRepository cashboxRepository) {
         this.userCardRepository = userCardRepository;
         this.restTemplate = restTemplate;
         this.halykSoapService = halykSoapService;
         this.clientCardRepository = clientCardRepository;
         this.objectMapper = objectMapper;
+        this.cashboxRepository = cashboxRepository;
     }
 
     public ResultDTO registerMerchantCard(RegisterUserCardDto dto) {
@@ -67,6 +72,10 @@ public class UserCardService {
 
     public UserCard findUserCardByMerchantId(Long userId) {
         return userCardRepository.findByUserId(userId).orElse(null);
+    }
+
+    public UserCard findUserCardById(Long id) {
+        return userCardRepository.findById(id).orElse(null);
     }
 
     public ClientCard findClientCardById(Long id) {
@@ -138,7 +147,18 @@ public class UserCardService {
         boolean valid = halykSoapService.checkCardValidity(ipAddress, userAgent, dto);
         userCard.setValid(valid);
         userCardRepository.save(userCard);
+        setDefaultCashBoxCard(userCard);
+
         return new ResultDTO(true, valid, 0);
+    }
+
+    private void setDefaultCashBoxCard(UserCard userCard) {
+        List<Cashbox> userCashBoxes = cashboxRepository.findByMerchantIdAndDeleted(userCard.getUserId(), false);
+        boolean defaultCardExists = userCashBoxes.stream().anyMatch(x -> Objects.nonNull(x.getUserCardId()));
+        if (!defaultCardExists) {
+            userCashBoxes.forEach(x -> x.setUserCardId(userCard.getId()));
+            cashboxRepository.saveAll(userCashBoxes);
+        }
     }
 
     private String maskCardNumber(String cardNumber) {
