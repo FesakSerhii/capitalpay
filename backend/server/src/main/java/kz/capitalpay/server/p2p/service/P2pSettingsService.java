@@ -7,7 +7,7 @@ import kz.capitalpay.server.p2p.dto.P2pSettingsResponseDto;
 import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
 import kz.capitalpay.server.p2p.repository.P2pSettingsRepository;
 import kz.capitalpay.server.usercard.model.UserCard;
-import kz.capitalpay.server.usercard.service.UserCardService;
+import kz.capitalpay.server.usercard.repository.UserCardRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -20,11 +20,11 @@ public class P2pSettingsService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(P2pSettingsService.class);
     private final P2pSettingsRepository p2pSettingsRepository;
-    private final UserCardService userCardService;
+    private final UserCardRepository userCardRepository;
 
-    public P2pSettingsService(P2pSettingsRepository p2pSettingsRepository, UserCardService userCardService) {
+    public P2pSettingsService(P2pSettingsRepository p2pSettingsRepository, UserCardRepository userCardRepository) {
         this.p2pSettingsRepository = p2pSettingsRepository;
-        this.userCardService = userCardService;
+        this.userCardRepository = userCardRepository;
     }
 
     public void createMerchantP2pSettings(Long merchantId, Long cardId) {
@@ -46,7 +46,7 @@ public class P2pSettingsService {
         }
 
         P2pSettingsResponseDto dto = new P2pSettingsResponseDto();
-        UserCard userCard = userCardService.findUserCardById(merchantP2pSettings.getDefaultCardId());
+        UserCard userCard = userCardRepository.findById(merchantP2pSettings.getDefaultCardId()).orElse(null);
         dto.setCardNumber(userCard.getCardNumber());
         dto.setMerchantId(merchantP2pSettings.getUserId());
         dto.setP2pAllowed(merchantP2pSettings.isP2pAllowed());
