@@ -23,7 +23,7 @@ public class P2pSettingsController {
     }
 
 
-    @GetMapping("/get")
+    @GetMapping
     public ResultDTO getP2pSettings(@RequestParam Long merchantId) {
         return p2pSettingsService.getP2pSettingsByMerchantId(merchantId);
     }

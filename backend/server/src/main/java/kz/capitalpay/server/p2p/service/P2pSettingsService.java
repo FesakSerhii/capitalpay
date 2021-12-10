@@ -3,12 +3,16 @@ package kz.capitalpay.server.p2p.service;
 import kz.capitalpay.server.constants.ErrorDictionary;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.p2p.dto.P2pSettingsDto;
+import kz.capitalpay.server.p2p.dto.P2pSettingsResponseDto;
 import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
 import kz.capitalpay.server.p2p.repository.P2pSettingsRepository;
+import kz.capitalpay.server.usercard.model.UserCard;
+import kz.capitalpay.server.usercard.service.UserCardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -16,9 +20,11 @@ public class P2pSettingsService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(P2pSettingsService.class);
     private final P2pSettingsRepository p2pSettingsRepository;
+    private final UserCardService userCardService;
 
-    public P2pSettingsService(P2pSettingsRepository p2pSettingsRepository) {
+    public P2pSettingsService(P2pSettingsRepository p2pSettingsRepository, UserCardService userCardService) {
         this.p2pSettingsRepository = p2pSettingsRepository;
+        this.userCardService = userCardService;
     }
 
     public void createMerchantP2pSettings(Long merchantId, Long cardId) {
@@ -34,12 +40,18 @@ public class P2pSettingsService {
     }
 
     public ResultDTO getP2pSettingsByMerchantId(Long merchantId) {
-        Optional<MerchantP2pSettings> optionalMerchantP2pSettings = p2pSettingsRepository.findByUserId(merchantId);
-        if (optionalMerchantP2pSettings.isEmpty()) {
+        MerchantP2pSettings merchantP2pSettings = p2pSettingsRepository.findByUserId(merchantId).orElse(null);
+        if (Objects.nonNull(merchantP2pSettings)) {
             return ErrorDictionary.error132;
         }
 
-        return new ResultDTO(true, optionalMerchantP2pSettings.get(), 0);
+        P2pSettingsResponseDto dto = new P2pSettingsResponseDto();
+        UserCard userCard = userCardService.findUserCardById(merchantP2pSettings.getDefaultCardId());
+        dto.setCardNumber(userCard.getCardNumber());
+        dto.setMerchantId(merchantP2pSettings.getUserId());
+        dto.setP2pAllowed(merchantP2pSettings.isP2pAllowed());
+
+        return new ResultDTO(true, dto, 0);
     }
 
     public ResultDTO setP2pSettings(P2pSettingsDto dto) {
