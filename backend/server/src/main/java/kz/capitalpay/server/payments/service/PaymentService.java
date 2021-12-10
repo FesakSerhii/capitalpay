@@ -113,8 +113,11 @@ public class PaymentService {
         try {
             String interactionUrl = cashboxService.getInteractUrl(payment);
             PaymentDetailDTO detailsJson = simpleService.signDetail(payment);
+            Map<String, Object> requestJson = new HashMap<>();
+            requestJson.put("type", "paymentStatus");
+            requestJson.put("data", detailsJson);
             String response = restTemplate.postForObject(interactionUrl,
-                    detailsJson, String.class, java.util.Optional.ofNullable(null));
+                    requestJson, String.class, java.util.Optional.ofNullable(null));
             logger.info(response);
 
 

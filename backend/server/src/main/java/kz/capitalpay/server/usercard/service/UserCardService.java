@@ -23,7 +23,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -173,8 +175,11 @@ public class UserCardService {
             String interactionUrl = cashboxService.getInteractUrl(clientCard.getCashBoxId());
 //            String interactionUrl = "http://localhost:8080/testshop/listener";
             CardDataForMerchantDto detailsJson = generateClientCardResponseDto(clientCard);
+            Map<String, Object> requestJson = new HashMap<>();
+            requestJson.put("type", "registerClientCard");
+            requestJson.put("data", detailsJson);
             String response = restTemplate.postForObject(interactionUrl,
-                    detailsJson, String.class, java.util.Optional.ofNullable(null));
+                    requestJson, String.class, java.util.Optional.ofNullable(null));
             LOGGER.info(response);
         } catch (Exception e) {
             e.printStackTrace();
