@@ -12,7 +12,7 @@ import javax.annotation.security.RolesAllowed;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
 
 @RestController
-@RequestMapping("/api/v1/p2p-settings")
+@RequestMapping("/api/v1/auth/p2p-settings")
 public class P2pSettingsController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(P2pPaymentsController.class);
