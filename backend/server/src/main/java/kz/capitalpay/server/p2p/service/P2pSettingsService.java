@@ -53,7 +53,6 @@ public class P2pSettingsService {
         dto.setCardNumber(userCard.getCardNumber());
         dto.setMerchantId(merchantP2pSettings.getUserId());
         dto.setP2pAllowed(merchantP2pSettings.isP2pAllowed());
-
         return new ResultDTO(true, dto, 0);
     }
 
