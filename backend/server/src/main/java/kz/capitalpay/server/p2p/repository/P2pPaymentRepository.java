@@ -1,6 +1,6 @@
-package kz.capitalpay.server.payments.repository;
+package kz.capitalpay.server.p2p.repository;
 
-import kz.capitalpay.server.payments.model.P2pPayment;
+import kz.capitalpay.server.p2p.model.P2pPayment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

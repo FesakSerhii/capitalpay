@@ -1,7 +1,8 @@
-package kz.capitalpay.server.payments.service;
+package kz.capitalpay.server.p2p.service;
 
-import kz.capitalpay.server.payments.model.P2pPaymentLog;
-import kz.capitalpay.server.payments.repository.P2pPaymentLogRepository;
+import kz.capitalpay.server.p2p.model.P2pPaymentLog;
+import kz.capitalpay.server.p2p.repository.P2pPaymentLogRepository;
+import kz.capitalpay.server.payments.service.PaymentLogService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

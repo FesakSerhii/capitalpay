@@ -1,9 +1,9 @@
-package kz.capitalpay.server.payments.service;
+package kz.capitalpay.server.p2p.service;
 
 import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.constants.ErrorDictionary;
 import kz.capitalpay.server.dto.ResultDTO;
-import kz.capitalpay.server.payments.dto.SendP2pToClientDto;
+import kz.capitalpay.server.p2p.dto.SendP2pToClientDto;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import kz.capitalpay.server.usercard.dto.CardDataResponseDto;
 import kz.capitalpay.server.usercard.model.ClientCard;

@@ -1,4 +1,4 @@
-package kz.capitalpay.server.payments.dto;
+package kz.capitalpay.server.p2p.dto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

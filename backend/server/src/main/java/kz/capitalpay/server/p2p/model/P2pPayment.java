@@ -1,4 +1,4 @@
-package kz.capitalpay.server.payments.model;
+package kz.capitalpay.server.p2p.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

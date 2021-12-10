@@ -2,13 +2,13 @@ package kz.capitalpay.server.paysystems.systems.halyksoap.service;
 
 import com.google.gson.Gson;
 import kz.capitalpay.server.cashbox.model.Cashbox;
-import kz.capitalpay.server.payments.dto.SendP2pToClientDto;
+import kz.capitalpay.server.p2p.dto.SendP2pToClientDto;
 import kz.capitalpay.server.payments.model.CheckCardValidityPayment;
-import kz.capitalpay.server.payments.model.P2pPayment;
+import kz.capitalpay.server.p2p.model.P2pPayment;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.repository.CheckCardValidityPaymentRepository;
-import kz.capitalpay.server.payments.repository.P2pPaymentRepository;
-import kz.capitalpay.server.payments.service.P2pPaymentLogService;
+import kz.capitalpay.server.p2p.repository.P2pPaymentRepository;
+import kz.capitalpay.server.p2p.service.P2pPaymentLogService;
 import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.paysystems.systems.halyksoap.dto.HalykTransferOrderDTO;
 import kz.capitalpay.server.paysystems.systems.halyksoap.kkbsign.KKBSign;

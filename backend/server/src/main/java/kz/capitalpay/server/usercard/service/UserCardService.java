@@ -7,6 +7,7 @@ import kz.capitalpay.server.cashbox.repository.CashboxRepository;
 import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.constants.ErrorDictionary;
 import kz.capitalpay.server.dto.ResultDTO;
+import kz.capitalpay.server.p2p.service.P2pSettingsService;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import kz.capitalpay.server.usercard.dto.CardDataForMerchantDto;
 import kz.capitalpay.server.usercard.dto.CardDataResponseDto;
@@ -41,8 +42,9 @@ public class UserCardService {
     private final ObjectMapper objectMapper;
     private final CashboxRepository cashboxRepository;
     private final CashboxService cashboxService;
+    private final P2pSettingsService p2pSettingsService;
 
-    public UserCardService(UserCardRepository userCardRepository, RestTemplate restTemplate, HalykSoapService halykSoapService, ClientCardRepository clientCardRepository, ObjectMapper objectMapper, CashboxRepository cashboxRepository, CashboxService cashboxService) {
+    public UserCardService(UserCardRepository userCardRepository, RestTemplate restTemplate, HalykSoapService halykSoapService, ClientCardRepository clientCardRepository, ObjectMapper objectMapper, CashboxRepository cashboxRepository, CashboxService cashboxService, P2pSettingsService p2pSettingsService) {
         this.userCardRepository = userCardRepository;
         this.restTemplate = restTemplate;
         this.halykSoapService = halykSoapService;
@@ -50,6 +52,7 @@ public class UserCardService {
         this.objectMapper = objectMapper;
         this.cashboxRepository = cashboxRepository;
         this.cashboxService = cashboxService;
+        this.p2pSettingsService = p2pSettingsService;
     }
 
     public ResultDTO registerMerchantCard(RegisterUserCardDto dto) {
@@ -157,6 +160,9 @@ public class UserCardService {
         userCard.setValid(valid);
         userCardRepository.save(userCard);
         setDefaultCashBoxCard(userCard);
+        if (!p2pSettingsService.existsByMerchantId(userCard.getUserId())) {
+            p2pSettingsService.createMerchantP2pSettings(userCard.getUserId(), userCard.getId());
+        }
 
         return new ResultDTO(true, valid, 0);
     }
@@ -187,7 +193,7 @@ public class UserCardService {
     }
 
     private String maskCardNumber(String cardNumber) {
-        return cardNumber.replaceAll("\\b(\\d{4})(\\d{8})(\\d{4})", "$1XXXXXXXX$3");
+        return cardNumber.replaceAll("\\b(\\d{4})(\\d{8})(\\d{4})", "$1********$3");
     }
 
     private CardDataForMerchantDto generateClientCardResponseDto(ClientCard clientCard) {
