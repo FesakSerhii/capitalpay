@@ -54,6 +54,7 @@ public class P2pSettingsService {
 //        dto.setMerchantId(merchantP2pSettings.getUserId());
 //        dto.setP2pAllowed(merchantP2pSettings.isP2pAllowed());
 //        return new ResultDTO(true, dto, 0);
+        LOGGER.info("TEST OUTPUT");
         return new ResultDTO(true, "test", 0);
     }
 
