@@ -8,11 +8,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import javax.validation.Valid;
 
 import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
 
 @RestController
-@RequestMapping("/api/v1/p2p-settings")
+@RequestMapping("/api/v1/auth/p2p-settings")
 public class P2pSettingsController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(P2pPaymentsController.class);
@@ -30,7 +31,7 @@ public class P2pSettingsController {
 
     @PostMapping
     @RolesAllowed({ADMIN})
-    public ResultDTO setP2pSettings(P2pSettingsDto dto) {
+    public ResultDTO setP2pSettings(@Valid P2pSettingsDto dto) {
         return p2pSettingsService.setP2pSettings(dto);
     }
 }
