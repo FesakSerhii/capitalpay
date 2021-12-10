@@ -31,7 +31,7 @@ public class P2pSettingsController {
 
     @PostMapping("/set")
     @RolesAllowed({ADMIN})
-    public ResultDTO setP2pSettings(@Valid P2pSettingsDto dto) {
+    public ResultDTO setP2pSettings(@RequestBody @Valid P2pSettingsDto dto) {
         return p2pSettingsService.setP2pSettings(dto);
     }
 }
