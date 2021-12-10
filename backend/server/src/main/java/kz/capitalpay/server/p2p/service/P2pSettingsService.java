@@ -30,7 +30,7 @@ public class P2pSettingsService {
     public void createMerchantP2pSettings(Long merchantId, Long cardId) {
         MerchantP2pSettings merchantP2pSettings = new MerchantP2pSettings();
         merchantP2pSettings.setDefaultCardId(cardId);
-        merchantP2pSettings.setP2pAllowed(true);
+        merchantP2pSettings.setP2pAllowed(false);
         merchantP2pSettings.setUserId(merchantId);
         p2pSettingsRepository.save(merchantP2pSettings);
     }
@@ -41,11 +41,13 @@ public class P2pSettingsService {
 
     public ResultDTO getP2pSettingsByMerchantId(Long merchantId) {
         MerchantP2pSettings merchantP2pSettings = p2pSettingsRepository.findByUserId(merchantId).orElse(null);
-        if (Objects.nonNull(merchantP2pSettings)) {
-            return ErrorDictionary.error132;
-        }
-
         P2pSettingsResponseDto dto = new P2pSettingsResponseDto();
+        if (Objects.nonNull(merchantP2pSettings)) {
+            dto.setCardNumber(null);
+            dto.setMerchantId(merchantId);
+            dto.setP2pAllowed(false);
+            return new ResultDTO(true, dto, 0);
+        }
         UserCard userCard = userCardRepository.findById(merchantP2pSettings.getDefaultCardId()).orElse(null);
         dto.setCardNumber(userCard.getCardNumber());
         dto.setMerchantId(merchantP2pSettings.getUserId());
