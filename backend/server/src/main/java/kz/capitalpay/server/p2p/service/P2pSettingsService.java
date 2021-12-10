@@ -50,6 +50,9 @@ public class P2pSettingsService {
         }
 
         UserCard userCard = userCardRepository.findById(merchantP2pSettings.getDefaultCardId()).orElse(null);
+        if (Objects.isNull(userCard)) {
+            return ErrorDictionary.error130;
+        }
         dto.setCardNumber(userCard.getCardNumber());
         dto.setMerchantId(merchantP2pSettings.getUserId());
         dto.setP2pAllowed(merchantP2pSettings.isP2pAllowed());
