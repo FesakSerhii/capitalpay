@@ -40,20 +40,21 @@ public class P2pSettingsService {
     }
 
     public ResultDTO getP2pSettingsByMerchantId(Long merchantId) {
-        MerchantP2pSettings merchantP2pSettings = p2pSettingsRepository.findByUserId(merchantId).orElse(null);
-        P2pSettingsResponseDto dto = new P2pSettingsResponseDto();
-        if (Objects.isNull(merchantP2pSettings)) {
-            dto.setCardNumber(null);
-            dto.setMerchantId(merchantId);
-            dto.setP2pAllowed(false);
-            return new ResultDTO(true, dto, 0);
-        }
-
-        UserCard userCard = userCardRepository.findById(merchantP2pSettings.getDefaultCardId()).orElse(null);
-        dto.setCardNumber(userCard.getCardNumber());
-        dto.setMerchantId(merchantP2pSettings.getUserId());
-        dto.setP2pAllowed(merchantP2pSettings.isP2pAllowed());
-        return new ResultDTO(true, dto, 0);
+//        MerchantP2pSettings merchantP2pSettings = p2pSettingsRepository.findByUserId(merchantId).orElse(null);
+//        P2pSettingsResponseDto dto = new P2pSettingsResponseDto();
+//        if (Objects.isNull(merchantP2pSettings)) {
+//            dto.setCardNumber(null);
+//            dto.setMerchantId(merchantId);
+//            dto.setP2pAllowed(false);
+//            return new ResultDTO(true, dto, 0);
+//        }
+//
+//        UserCard userCard = userCardRepository.findById(merchantP2pSettings.getDefaultCardId()).orElse(null);
+//        dto.setCardNumber(userCard.getCardNumber());
+//        dto.setMerchantId(merchantP2pSettings.getUserId());
+//        dto.setP2pAllowed(merchantP2pSettings.isP2pAllowed());
+//        return new ResultDTO(true, dto, 0);
+        return new ResultDTO(true, "test", 0);
     }
 
     public ResultDTO setP2pSettings(P2pSettingsDto dto) {
