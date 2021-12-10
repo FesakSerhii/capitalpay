@@ -3,7 +3,6 @@ package kz.capitalpay.server.p2p.dto;
 import javax.validation.constraints.NotNull;
 
 public class P2pSettingsDto {
-    @NotNull(message = "p2pAllowed must not be null")
     private boolean p2pAllowed;
     @NotNull(message = "merchantId must not be null")
     private Long merchantId;
