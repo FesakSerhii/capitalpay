@@ -4,7 +4,6 @@ import javax.validation.constraints.NotNull;
 
 public class P2pSettingsDto {
     private boolean p2pAllowed;
-    @NotNull(message = "merchantId must not be null")
     private Long merchantId;
 
     public boolean isP2pAllowed() {
