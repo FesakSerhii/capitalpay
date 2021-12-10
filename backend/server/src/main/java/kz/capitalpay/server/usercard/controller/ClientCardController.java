@@ -38,12 +38,12 @@ public class ClientCardController {
         return userCardService.checkClientCardValidity(cardId, ipAddress, userAgent);
     }
 
-    @GetMapping
+    @PostMapping("/get")
     public ResultDTO getCardData(@RequestParam String token) {
         return userCardService.getCardData(token);
     }
 
-    @GetMapping("/client-cards")
+    @PostMapping("/get-client-cards")
     public ResultDTO getClientCards() {
         return userCardService.getClientCards();
     }

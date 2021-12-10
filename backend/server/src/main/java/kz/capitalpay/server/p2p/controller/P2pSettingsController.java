@@ -24,12 +24,12 @@ public class P2pSettingsController {
     }
 
 
-    @GetMapping
+    @PostMapping("/get")
     public ResultDTO getP2pSettings(@RequestParam Long merchantId) {
         return p2pSettingsService.getP2pSettingsByMerchantId(merchantId);
     }
 
-    @PostMapping
+    @PostMapping("/set")
     @RolesAllowed({ADMIN})
     public ResultDTO setP2pSettings(@Valid P2pSettingsDto dto) {
         return p2pSettingsService.setP2pSettings(dto);

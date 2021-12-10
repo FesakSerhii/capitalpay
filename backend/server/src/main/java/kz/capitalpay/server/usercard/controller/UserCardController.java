@@ -45,12 +45,12 @@ public class UserCardController {
         return userCardService.checkUserCardValidity(cardId, ipAddress, userAgent);
     }
 
-    @GetMapping
+    @PostMapping("/get")
     public ResultDTO getCardData(@RequestParam String token) {
         return userCardService.getCardData(token);
     }
 
-    @GetMapping("/list")
+    @PostMapping("/list")
     public ResultDTO getClientCards(HttpServletRequest request) {
         Long merchantId = applicationUserService.getMerchantIdFromToken(request);
         return userCardService.getUserCards(merchantId);
