@@ -1,7 +1,7 @@
 package kz.capitalpay.server.merchantsettings.service;
 
 import kz.capitalpay.server.cashbox.model.Cashbox;
-import kz.capitalpay.server.cashbox.service.CashboxService;
+import kz.capitalpay.server.cashbox.repository.CashboxRepository;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.service.ApplicationRoleService;
@@ -9,9 +9,7 @@ import kz.capitalpay.server.login.service.ApplicationUserService;
 import kz.capitalpay.server.merchantsettings.dto.CashBoxSettingDTO;
 import kz.capitalpay.server.merchantsettings.dto.CashBoxSettingFieldDTO;
 import kz.capitalpay.server.merchantsettings.model.CashboxSettings;
-import kz.capitalpay.server.merchantsettings.model.MerchantKyc;
 import kz.capitalpay.server.merchantsettings.repository.CashboxSettingsRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -26,20 +24,11 @@ import static kz.capitalpay.server.merchantsettings.service.MerchantKycService.T
 @Service
 public class CashboxSettingsService {
 
-    @Autowired
-    private CashboxSettingsRepository cashboxSettingsRepository;
-
-    @Autowired
-    private CashboxService cashboxService;
-
-    @Autowired
-    private MerchantKycService merchantKycService;
-
-    @Autowired
-    private ApplicationUserService applicationUserService;
-
-    @Autowired
-    private ApplicationRoleService applicationRoleService;
+    private final CashboxSettingsRepository cashboxSettingsRepository;
+    private final MerchantKycService merchantKycService;
+    private final ApplicationUserService applicationUserService;
+    private final ApplicationRoleService applicationRoleService;
+    private final CashboxRepository cashboxRepository;
 
     public static final String CASHBOX_CURRENCY_LIST = "currencylist";
     public static final String CASHBOX_PAYSYSTEM_LIST = "paysystemlist";
@@ -51,6 +40,14 @@ public class CashboxSettingsService {
     public static final String SECRET = "secret";
     public static final String CLIENT_FEE = "client_fee";
 
+    public CashboxSettingsService(CashboxSettingsRepository cashboxSettingsRepository, MerchantKycService merchantKycService, ApplicationUserService applicationUserService, ApplicationRoleService applicationRoleService, CashboxRepository cashboxRepository) {
+        this.cashboxSettingsRepository = cashboxSettingsRepository;
+        this.cashboxRepository = cashboxRepository;
+        this.merchantKycService = merchantKycService;
+        this.applicationUserService = applicationUserService;
+        this.applicationRoleService = applicationRoleService;
+    }
+
     public ResultDTO setOrUpdateCashboxSettings(Principal principal, CashBoxSettingDTO request) {
         try {
             ApplicationUser admin = applicationUserService.getUserByLogin(principal.getName());
@@ -58,10 +55,10 @@ public class CashboxSettingsService {
                     || admin.getRoles().contains(applicationRoleService.getRole(OPERATOR))
                     || admin.getRoles().contains(applicationRoleService.getRole(MERCHANT))) {
                 for (CashBoxSettingFieldDTO field : request.getFields()) {
-                    if(field.getFieldName().equalsIgnoreCase(CLIENT_FEE)) {
+                    if (field.getFieldName().equalsIgnoreCase(CLIENT_FEE)) {
                         ResultDTO resultDTO = savedClientFee(field.getCashBoxId(), field.getFieldName(),
                                 field.getFieldValue());
-                        if(!resultDTO.isResult()) {
+                        if (!resultDTO.isResult()) {
                             return resultDTO;
                         }
                         continue;
@@ -147,7 +144,7 @@ public class CashboxSettingsService {
     }
 
     public ResultDTO savedClientFee(Long cashboxId, String fieldName, String fieldValue) {
-        Cashbox cashbox = cashboxService.findById(cashboxId);
+        Cashbox cashbox = cashboxRepository.findById(cashboxId).orElse(null);
         double total_fee = Double.parseDouble(merchantKycService.getField(cashbox.getMerchantId(), TOTAL_FEE));
         if (Double.parseDouble(fieldValue) > total_fee) {
             return error127;

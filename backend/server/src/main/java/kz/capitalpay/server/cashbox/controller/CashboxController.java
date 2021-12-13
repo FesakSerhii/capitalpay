@@ -1,25 +1,15 @@
 package kz.capitalpay.server.cashbox.controller;
 
-import com.google.gson.Gson;
-import kz.capitalpay.server.cashbox.dto.CashboxCreateRequestDTO;
-import kz.capitalpay.server.cashbox.dto.CashboxNameRequestDTO;
-import kz.capitalpay.server.cashbox.dto.CashboxRequestDTO;
-import kz.capitalpay.server.cashbox.model.Cashbox;
-import kz.capitalpay.server.cashbox.repository.CashboxRepository;
+import kz.capitalpay.server.cashbox.dto.*;
 import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.currency.dto.MerchantRequestDTO;
 import kz.capitalpay.server.dto.ResultDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
-
 import java.security.Principal;
 
 import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
@@ -30,15 +20,12 @@ public class CashboxController {
 
 
     Logger logger = LoggerFactory.getLogger(CashboxController.class);
+    private final CashboxService cashboxService;
 
-    @Autowired
-    Gson gson;
+    public CashboxController(CashboxService cashboxService) {
+        this.cashboxService = cashboxService;
+    }
 
-    @Autowired
-    CashboxService cashboxService;
-
-    @Autowired
-    CashboxRepository cashboxRepository;
 
     @PostMapping("/create")
     @RolesAllowed({MERCHANT})
@@ -74,6 +61,24 @@ public class CashboxController {
     ResultDTO all() {
         logger.info("All system cashbox");
         return cashboxService.all();
+    }
+
+    @PostMapping("/set-card")
+    @RolesAllowed({ADMIN})
+    public ResultDTO setCashBoxCard(@RequestBody @Valid SetCashBoxCardDto dto) {
+        return cashboxService.setCashBoxCard(dto);
+    }
+
+    @PostMapping("/get-p2p-settings")
+    @RolesAllowed({ADMIN})
+    public ResultDTO getP2pSettings(@RequestParam Long cashBoxId) {
+        return cashboxService.getCashBoxP2pSettings(cashBoxId);
+    }
+
+    @PostMapping("/set-p2p-settings")
+    @RolesAllowed({ADMIN})
+    public ResultDTO setP2pSettings(@RequestBody @Valid SetCashBoxP2pSettingsDto dto) {
+        return cashboxService.setCashBoxP2pSettings(dto);
     }
 
 

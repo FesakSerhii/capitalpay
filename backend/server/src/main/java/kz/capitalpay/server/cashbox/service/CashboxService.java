@@ -1,12 +1,10 @@
 package kz.capitalpay.server.cashbox.service;
 
 import com.google.gson.Gson;
-import kz.capitalpay.server.cashbox.dto.CashboxCreateRequestDTO;
-import kz.capitalpay.server.cashbox.dto.CashboxDTO;
-import kz.capitalpay.server.cashbox.dto.CashboxNameRequestDTO;
-import kz.capitalpay.server.cashbox.dto.CashboxRequestDTO;
+import kz.capitalpay.server.cashbox.dto.*;
 import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.cashbox.repository.CashboxRepository;
+import kz.capitalpay.server.constants.ErrorDictionary;
 import kz.capitalpay.server.currency.dto.MerchantRequestDTO;
 import kz.capitalpay.server.currency.service.CurrencyService;
 import kz.capitalpay.server.dto.ResultDTO;
@@ -16,6 +14,8 @@ import kz.capitalpay.server.login.service.ApplicationUserService;
 import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
+import kz.capitalpay.server.usercard.model.UserCard;
+import kz.capitalpay.server.usercard.repository.UserCardRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +24,7 @@ import org.springframework.stereotype.Service;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
 import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.*;
@@ -60,6 +58,9 @@ public class CashboxService {
 
     @Autowired
     PaymentService paymentService;
+
+    @Autowired
+    UserCardRepository userCardRepository;
 
     public ResultDTO createNew(Principal principal, CashboxCreateRequestDTO request) {
         try {
@@ -222,6 +223,78 @@ public class CashboxService {
             return new ResultDTO(false, e.getMessage(), -1);
         }
 
+    }
+
+    public ResultDTO setCashBoxCard(SetCashBoxCardDto dto) {
+        Optional<Cashbox> optionalCashBox = cashboxRepository.findById(dto.getCashBoxId());
+        if (optionalCashBox.isEmpty()) {
+            return ErrorDictionary.error113;
+        }
+        Cashbox cashbox = optionalCashBox.get();
+        if (!cashbox.getMerchantId().equals(dto.getMerchantId())) {
+            return ErrorDictionary.error122;
+        }
+
+        UserCard userCard = userCardRepository.findById(dto.getCardId()).orElse(null);
+        if (Objects.isNull(userCard)) {
+            return ErrorDictionary.error130;
+        }
+        if (!userCard.getUserId().equals(dto.getMerchantId())) {
+            return ErrorDictionary.error133;
+        }
+
+        cashbox.setUserCardId(dto.getCardId());
+        cashbox = cashboxRepository.save(cashbox);
+
+        CashBoxP2pDto cashBoxP2pDto = new CashBoxP2pDto(cashbox.getId(), cashbox.getMerchantId(),
+                cashbox.getUserCardId(), userCard.getCardNumber(), cashbox.isP2pAllowed());
+        return new ResultDTO(true, cashBoxP2pDto, 0);
+    }
+
+    public ResultDTO getCashBoxP2pSettings(Long cashBoxId) {
+        Optional<Cashbox> optionalCashBox = cashboxRepository.findById(cashBoxId);
+        if (optionalCashBox.isEmpty()) {
+            return ErrorDictionary.error113;
+        }
+        Cashbox cashbox = optionalCashBox.get();
+        UserCard userCard = userCardRepository.findById(cashbox.getUserCardId()).orElse(null);
+        CashBoxP2pDto cashBoxP2pDto = new CashBoxP2pDto();
+        if (Objects.isNull(userCard)) {
+            cashBoxP2pDto.setCardId(null);
+            cashBoxP2pDto.setCardNumber(null);
+            cashBoxP2pDto.setId(cashbox.getId());
+            cashBoxP2pDto.setMerchantId(cashbox.getMerchantId());
+            cashBoxP2pDto.setP2pAllowed(cashbox.isP2pAllowed());
+            return new ResultDTO(true, cashBoxP2pDto, 0);
+        }
+
+        cashBoxP2pDto.setCardId(userCard.getId());
+        cashBoxP2pDto.setCardNumber(userCard.getCardNumber());
+        return new ResultDTO(true, cashBoxP2pDto, 0);
+    }
+
+    public ResultDTO setCashBoxP2pSettings(SetCashBoxP2pSettingsDto dto) {
+        Optional<Cashbox> optionalCashBox = cashboxRepository.findById(dto.getCashBoxId());
+        if (optionalCashBox.isEmpty()) {
+            return ErrorDictionary.error113;
+        }
+        Cashbox cashbox = optionalCashBox.get();
+        cashbox.setP2pAllowed(dto.isP2pAllowed());
+        cashbox = cashboxRepository.save(cashbox);
+        UserCard userCard = userCardRepository.findById(cashbox.getUserCardId()).orElse(null);
+        CashBoxP2pDto cashBoxP2pDto = new CashBoxP2pDto();
+        if (Objects.isNull(userCard)) {
+            cashBoxP2pDto.setCardId(null);
+            cashBoxP2pDto.setCardNumber(null);
+            cashBoxP2pDto.setId(cashbox.getId());
+            cashBoxP2pDto.setMerchantId(cashbox.getMerchantId());
+            cashBoxP2pDto.setP2pAllowed(cashbox.isP2pAllowed());
+            return new ResultDTO(true, cashBoxP2pDto, 0);
+        }
+
+        cashBoxP2pDto.setCardId(userCard.getId());
+        cashBoxP2pDto.setCardNumber(userCard.getCardNumber());
+        return new ResultDTO(true, cashBoxP2pDto, 0);
     }
 
     private List<CashboxDTO> addBalance(List<Cashbox> cashboxList) {

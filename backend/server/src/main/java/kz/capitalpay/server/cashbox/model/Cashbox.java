@@ -15,6 +15,8 @@ public class Cashbox {
     @Column(name = "deleted", columnDefinition = "boolean default false", nullable = false)
     boolean deleted;
     Long userCardId;
+    @Column(columnDefinition = "boolean default false", nullable = false)
+    boolean p2pAllowed;
 
     public Long getId() {
         return id;
@@ -54,5 +56,13 @@ public class Cashbox {
 
     public void setUserCardId(Long userCardId) {
         this.userCardId = userCardId;
+    }
+
+    public boolean isP2pAllowed() {
+        return p2pAllowed;
+    }
+
+    public void setP2pAllowed(boolean p2pAllowed) {
+        this.p2pAllowed = p2pAllowed;
     }
 }
