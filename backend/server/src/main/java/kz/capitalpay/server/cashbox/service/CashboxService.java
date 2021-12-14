@@ -120,7 +120,7 @@ public class CashboxService {
             cashbox.setDeleted(true);
 
             cashboxRepository.save(cashbox);
-            List<Cashbox> cashboxList = cashboxRepository.findByMerchantIdAndDeleted(owner.getId(), false);
+            List<Cashbox> cashboxList = cashboxRepository.findByMerchantIdAndDeletedFalse(owner.getId());
 
             return new ResultDTO(true, cashboxList, 0);
 
@@ -135,7 +135,7 @@ public class CashboxService {
         try {
             ApplicationUser owner = applicationUserService.getUserByLogin(principal.getName());
 
-            List<Cashbox> cashboxList = cashboxRepository.findByMerchantIdAndDeleted(owner.getId(), false);
+            List<Cashbox> cashboxList = cashboxRepository.findByMerchantIdAndDeletedFalse(owner.getId());
 
             return new ResultDTO(true, cashboxList, 0);
 

@@ -2,6 +2,7 @@ package kz.capitalpay.server.usercard.controller;
 
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.login.service.ApplicationUserService;
+import kz.capitalpay.server.usercard.dto.ChangeMerchantDefaultCardDto;
 import kz.capitalpay.server.usercard.dto.RegisterUserCardDto;
 import kz.capitalpay.server.usercard.service.UserCardService;
 import org.slf4j.Logger;
@@ -54,5 +55,10 @@ public class UserCardController {
     public ResultDTO getClientCards(HttpServletRequest request) {
         Long merchantId = applicationUserService.getMerchantIdFromToken(request);
         return userCardService.getUserCards(merchantId);
+    }
+
+    @PostMapping
+    public ResultDTO changeDefaultCard(@Valid @RequestBody ChangeMerchantDefaultCardDto dto) {
+        return userCardService.changeMerchantDefaultCard(dto);
     }
 }

@@ -71,4 +71,12 @@ public class P2pSettingsService {
         return new ResultDTO(true, merchantP2pSettings, 0);
     }
 
+    public MerchantP2pSettings findP2pSettingsByMerchantId(Long merchantId) {
+        return p2pSettingsRepository.findByUserId(merchantId).orElse(null);
+    }
+
+    public MerchantP2pSettings save(MerchantP2pSettings merchantP2pSettings) {
+        return p2pSettingsRepository.save(merchantP2pSettings);
+    }
+
 }

@@ -7,12 +7,11 @@ import kz.capitalpay.server.cashbox.repository.CashboxRepository;
 import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.constants.ErrorDictionary;
 import kz.capitalpay.server.dto.ResultDTO;
+import kz.capitalpay.server.p2p.dto.P2pSettingsResponseDto;
+import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
 import kz.capitalpay.server.p2p.service.P2pSettingsService;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
-import kz.capitalpay.server.usercard.dto.CardDataForMerchantDto;
-import kz.capitalpay.server.usercard.dto.CardDataResponseDto;
-import kz.capitalpay.server.usercard.dto.RegisterClientCardDto;
-import kz.capitalpay.server.usercard.dto.RegisterUserCardDto;
+import kz.capitalpay.server.usercard.dto.*;
 import kz.capitalpay.server.usercard.model.ClientCard;
 import kz.capitalpay.server.usercard.model.UserCard;
 import kz.capitalpay.server.usercard.repository.ClientCardRepository;
@@ -28,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class UserCardService {
@@ -167,8 +167,37 @@ public class UserCardService {
         return new ResultDTO(true, valid, 0);
     }
 
+    public ResultDTO changeMerchantDefaultCard(ChangeMerchantDefaultCardDto dto) {
+        MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(dto.getMerchantId());
+        if (Objects.isNull(merchantP2pSettings)) {
+            return ErrorDictionary.error132;
+        }
+        UserCard userCard = userCardRepository.findById(dto.getCardId()).orElse(null);
+        if (Objects.isNull(userCard)) {
+            return ErrorDictionary.error130;
+        }
+
+        final Long oldDefaultCardId = merchantP2pSettings.getDefaultCardId();
+        List<Cashbox> merchantCashBoxesWithDefaultCard = cashboxRepository.findByMerchantIdAndDeletedFalse(dto.getMerchantId())
+                .stream()
+                .filter(x -> x.getUserCardId().equals(oldDefaultCardId))
+                .collect(Collectors.toList());
+
+        merchantCashBoxesWithDefaultCard.forEach(cashbox -> cashbox.setUserCardId(dto.getCardId()));
+        cashboxRepository.saveAll(merchantCashBoxesWithDefaultCard);
+        merchantP2pSettings.setDefaultCardId(dto.getCardId());
+        merchantP2pSettings = p2pSettingsService.save(merchantP2pSettings);
+
+        P2pSettingsResponseDto responseDto = new P2pSettingsResponseDto();
+        responseDto.setP2pAllowed(merchantP2pSettings.isP2pAllowed());
+        responseDto.setMerchantId(merchantP2pSettings.getUserId());
+        responseDto.setCardNumber(userCard.getCardNumber());
+
+        return new ResultDTO(true, responseDto, 0);
+    }
+
     private void setDefaultCashBoxCard(UserCard userCard) {
-        List<Cashbox> userCashBoxes = cashboxRepository.findByMerchantIdAndDeleted(userCard.getUserId(), false);
+        List<Cashbox> userCashBoxes = cashboxRepository.findByMerchantIdAndDeletedFalse(userCard.getUserId());
         boolean defaultCardExists = userCashBoxes.stream().anyMatch(x -> Objects.nonNull(x.getUserCardId()));
         if (!defaultCardExists) {
             userCashBoxes.forEach(x -> x.setUserCardId(userCard.getId()));

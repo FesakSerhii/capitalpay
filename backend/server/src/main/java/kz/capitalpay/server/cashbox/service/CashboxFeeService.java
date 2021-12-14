@@ -5,7 +5,6 @@ import kz.capitalpay.server.cashbox.dto.CashBoxFeeListDto;
 import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.cashbox.repository.CashboxRepository;
 import kz.capitalpay.server.dto.ResultDTO;
-import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.service.ApplicationUserService;
 import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.merchantsettings.service.MerchantKycService;
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
-import static kz.capitalpay.server.constants.ErrorDictionary.error122;
+
 import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.CLIENT_FEE;
 
 @Service
@@ -33,7 +32,7 @@ public class CashboxFeeService {
 
     public ResultDTO getCashBoxFeeList(CashBoxFeeDto feeDto) {
         try {
-            List<Cashbox> cashboxList = cashboxRepository.findByMerchantIdAndDeleted(feeDto.getMerchantId(), false);
+            List<Cashbox> cashboxList = cashboxRepository.findByMerchantIdAndDeletedFalse(feeDto.getMerchantId());
             List<CashBoxFeeListDto> result = cashboxList.stream()
                             .map(o -> new CashBoxFeeListDto(o.getId(), o.getName(), getTotalFee(o.getMerchantId()),
                                     getClientFee(o.getId()), getMerchantFee(o.getMerchantId(), o.getId())))
