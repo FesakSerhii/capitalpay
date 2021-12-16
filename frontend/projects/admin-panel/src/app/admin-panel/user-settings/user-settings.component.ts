@@ -8,7 +8,10 @@ import {MassageModalComponent} from '../../../../../../common-blocks/massage-mod
 import {PaymentsService} from '../../service/payments.service';
 import {Subscription} from 'rxjs';
 import {ExtValidators} from '../../../../../../src/app/validators/ext-validators';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
+import {P2pService} from '../../service/p2p.service';
+import {PaymentCardModalComponent} from '../../../../../../common-blocks/payment-card-modal/payment-card-modal.component';
+import {switchMap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-user-settings',
@@ -17,7 +20,7 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 })
 export class UserSettingsComponent implements OnInit {
   @ViewChild('massageModal', {static: false}) massageModal: MassageModalComponent;
-  @ViewChild('paymentCard', {static: false}) paymentCard: TemplateRef<any>;
+  @ViewChild('paymentCard', {static: false}) paymentCard: PaymentCardModalComponent;
 
   constructor(private router: Router,
               private userService: UserService,
@@ -25,6 +28,7 @@ export class UserSettingsComponent implements OnInit {
               private currencyService: CurrencyService,
               private paymentsService: PaymentsService,
               private modalService: NgbModal,
+              private p2pService: P2pService,
               private kycService: KycService) {
   }
 
@@ -96,8 +100,15 @@ export class UserSettingsComponent implements OnInit {
   activeTab: string = 'tab1';
   cashBoxList = new FormArray([])
   regEx = '/(^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$)||(^[+-]?([0-9]+([,][0-9]*)?|[.][0-9]+)$)/gm'
-  defaultPaymentCard:string = null;
+  defaultPaymentCard: string = null;
+  p2pOnSave: string = null;
   isP2PActive = new FormControl();
+  cardForm = new FormGroup({
+    cardNumber: new FormControl(),
+    expirationMonth: new FormControl(),
+    expirationYear: new FormControl(),
+    cvv2Code: new FormControl(),
+  });
 
   ngOnInit(): void {
     this.activatedRoute.queryParamMap.subscribe((param) => {
@@ -107,9 +118,18 @@ export class UserSettingsComponent implements OnInit {
     });
 
     this.isEditMode = false;
-    this.isP2PActive.valueChanges.subscribe(v=>{
-      if(v&&!this.defaultPaymentCard){
-        this.openModal()
+    this.isP2PActive.valueChanges.subscribe(v => {
+      if (v && !this.defaultPaymentCard) {
+        this.addMerchantPaymentCard()
+      }else if(this.defaultPaymentCard){
+        const data = {
+          'p2pAllowed': false,
+          'merchantId': this.userId
+        }
+        this.p2pService.setP2p(data).then(() => {
+          this.getP2pInfo()
+         this.getCommissions()
+        })
       }
     })
   }
@@ -126,6 +146,7 @@ export class UserSettingsComponent implements OnInit {
         this.userRoles[roles[role].authority] = true;
         this.userRolesForm.controls[roles[role].authority].setValue(true, {emitEvent: false})
       }
+      this.getP2pInfo()
 
       if (this.userRoles.ROLE_MERCHANT) {
         this.kycService.getKycInfo(this.userId).then(resp => {
@@ -160,17 +181,29 @@ export class UserSettingsComponent implements OnInit {
     })
   }
 
+  getP2pInfo() {
+    this.p2pService.getP2pInfo(this.userId).then(resp => {
+      this.isP2PActive.patchValue(resp.data.p2pAllowed, {emitEvent: false})
+      this.defaultPaymentCard = resp.data.cardNumber
+    })
+  }
+
   async getCommissions() {
     const data = {...await this.userService.getUsersCommissions(this.userId)}.data
     for (const cashBox of data) {
-      const form = new FormGroup({
-        cashBoxId: new FormControl(cashBox['cashBoxId']),
-        cashBoxName: new FormControl(cashBox['cashBoxName']),
-        clientFee: new FormControl(cashBox['clientFee']),
-        merchantFee: new FormControl(cashBox['merchantFee']),
-        totalFee: new FormControl(cashBox['totalFee'])
+      this.p2pService.getCashBoxP2pInfo(cashBox['cashBoxId']).then(resp => {
+        const p2pInfo = resp.data
+        const form = new FormGroup({
+          cashBoxId: new FormControl(cashBox['cashBoxId']),
+          cashBoxName: new FormControl(cashBox['cashBoxName']),
+          clientFee: new FormControl(cashBox['clientFee']),
+          merchantFee: new FormControl(cashBox['merchantFee']),
+          totalFee: new FormControl(cashBox['totalFee']),
+          cardNumber: new FormControl(p2pInfo['cardNumber']),
+          p2pAllowed: new FormControl(p2pInfo['p2pAllowed'])
+        });
+        this.cashBoxList.controls.push(form);
       })
-      this.cashBoxList.controls.push(form);
     }
   }
 
@@ -247,15 +280,6 @@ export class UserSettingsComponent implements OnInit {
   }
 
   saveCashBoxFee(formGroup) {
-    // let data = {
-    //     "merchantId": this.userId,
-    //     "cashBoxId": formGroup.cashBoxId,
-    //     "merchantFee": formGroup.merchantFee,
-    //     "clientFee": formGroup.clientFee
-    //   };
-    // this.userService.editUsersCommissions(data).then(()=>{
-    //   this.getCommissions()
-    // })
     let newFees = [...this.cashBoxList.controls.map(el => el.value)]
     newFees = newFees.map(el => {
       return {
@@ -293,7 +317,45 @@ export class UserSettingsComponent implements OnInit {
     })
   }
 
-  openModal() {
-    this.modalService.open(this.paymentCard)
+  cancelModal() {
+    if (this.p2pOnSave === 'mainSettings' && !this.defaultPaymentCard) {
+      this.isP2PActive.patchValue(false)
+    }
+    this.p2pOnSave = null;
+    this.modalService.dismissAll(false)
+  }
+
+  setCashBoxP2p(cashBox) {
+    console.log(cashBox);
+    let data = {
+        'p2pAllowed': cashBox.p2pAllowed,
+        'cashBoxId': cashBox.cashBoxId
+      }
+      this.p2pService.setP2pCashBox(data).then(() => {
+        this.getCommissions()
+      })
+  }
+
+  addMerchantPaymentCard() {
+    this.paymentCard.open().then(modalResult => {
+        this.registerPaymentCard(modalResult.cardNumber, modalResult.expirationYear, modalResult.expirationMonth, modalResult.cvv2Code)
+          .subscribe(response => {
+            const data = {
+              'p2pAllowed': response.result,
+              'merchantId': this.userId
+            }
+            this.p2pService.setP2p(data).then(() => {
+              this.getP2pInfo()
+              this.modalService.dismissAll(false)
+            })
+          })
+      }
+    )
+  }
+
+  registerPaymentCard(cardNumber, expirationYear, expirationMonth, cvv2Code){
+    return this.p2pService.registerCard(cardNumber, expirationYear, expirationMonth, cvv2Code, this.userId).pipe(switchMap(resp => {
+      return this.p2pService.cardCheckValidity(resp.data.id)
+    }))
   }
 }

@@ -20,6 +20,7 @@ export class PaymentFormComponent implements OnInit {
   token: string = null;
   id: number = null;
   merchantId: number = null;
+  cashBoxId: number = null;
   isCardValid: boolean = null;
 
 
@@ -28,6 +29,7 @@ export class PaymentFormComponent implements OnInit {
   ngOnInit(): void {
     this.activatedRoute.queryParamMap.subscribe((param) => {
       this.merchantId = +param.get("merchantId");
+      this.cashBoxId = +param.get("cashBoxId");
     })
     this.cardForm.controls.cardNumber.valueChanges.subscribe(cardNumber=>{
       const isCardValid = valid.number(cardNumber)
@@ -46,7 +48,7 @@ export class PaymentFormComponent implements OnInit {
     // })
   }
   saveCard(){
-    this.userCardService.registerCard(this.cardForm.value.cardNumber,this.cardForm.value.expirationYear,this.cardForm.value.expirationMonth,this.cardForm.value.cvv2Code,this.merchantId)
+    this.userCardService.registerCard(this.cardForm.value.cardNumber,this.cardForm.value.expirationYear,this.cardForm.value.expirationMonth,this.cardForm.value.cvv2Code,this.merchantId,this.cashBoxId)
       .then(resp=>{
         this.token = resp.data.token;
         this.id = resp.data.id;
