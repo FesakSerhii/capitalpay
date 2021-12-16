@@ -57,7 +57,7 @@ public class UserCardController {
         return userCardService.getUserCards(merchantId);
     }
 
-    @PostMapping
+    @PostMapping("/change-default-card")
     public ResultDTO changeDefaultCard(@Valid @RequestBody ChangeMerchantDefaultCardDto dto) {
         return userCardService.changeMerchantDefaultCard(dto);
     }
