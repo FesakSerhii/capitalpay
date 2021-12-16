@@ -12,6 +12,8 @@ import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.service.ApplicationRoleService;
 import kz.capitalpay.server.login.service.ApplicationUserService;
 import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
+import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
+import kz.capitalpay.server.p2p.service.P2pSettingsService;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.usercard.model.UserCard;
@@ -61,6 +63,9 @@ public class CashboxService {
 
     @Autowired
     UserCardRepository userCardRepository;
+
+    @Autowired
+    P2pSettingsService p2pSettingsService;
 
     public ResultDTO createNew(Principal principal, CashboxCreateRequestDTO request) {
         try {
@@ -150,7 +155,19 @@ public class CashboxService {
     }
 
     public Long findUserCardIdByCashBoxId(Long cashBoxId) {
-        return cashboxRepository.findCardById(cashBoxId);
+        Cashbox cashbox = cashboxRepository.findById(cashBoxId).orElse(null);
+        if (Objects.isNull(cashbox)) {
+            return 0L;
+        }
+        if (!cashbox.isUseDefaultCard()) {
+            return cashboxRepository.findCardById(cashBoxId);
+        }
+
+        MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(cashbox.getMerchantId());
+        if (Objects.isNull(merchantP2pSettings)) {
+            return 0L;
+        }
+        return merchantP2pSettings.getDefaultCardId();
     }
 
     public String getUrlByPayment(Payment payment) {

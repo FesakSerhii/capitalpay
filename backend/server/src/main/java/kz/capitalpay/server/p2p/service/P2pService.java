@@ -42,6 +42,9 @@ public class P2pService {
 
         try {
             Long merchantCardId = cashboxService.findUserCardIdByCashBoxId(dto.getCashBoxId());
+            if (merchantCardId.equals(1L)) {
+                return ErrorDictionary.error130;
+            }
             UserCard merchantCard = userCardService.findUserCardById(merchantCardId);
             ClientCard clientCard = userCardService.findClientCardById(dto.getClientCardId());
             CardDataResponseDto merchantCardData = userCardService.getCardDataFromTokenServer(merchantCard.getToken());
