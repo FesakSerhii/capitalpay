@@ -164,7 +164,9 @@ public class UserCardService {
             p2pSettingsService.createMerchantP2pSettings(userCard.getUserId(), userCard.getId());
         }
 
-        return new ResultDTO(true, valid, 0);
+        CheckCardValidityResponseDto responseDto = new CheckCardValidityResponseDto(valid, userCard.getId());
+
+        return new ResultDTO(true, responseDto, 0);
     }
 
     public ResultDTO changeMerchantDefaultCard(ChangeMerchantDefaultCardDto dto) {
