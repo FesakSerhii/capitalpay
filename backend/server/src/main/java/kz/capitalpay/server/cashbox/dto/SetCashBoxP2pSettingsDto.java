@@ -8,6 +8,8 @@ public class SetCashBoxP2pSettingsDto {
     private Long cashBoxId;
     @NotNull(message = "p2pAllowed must not be null")
     private boolean p2pAllowed;
+    @NotNull(message = "useDefaultCard must not be null")
+    private boolean useDefaultCard;
 
     public Long getCashBoxId() {
         return cashBoxId;
@@ -23,5 +25,13 @@ public class SetCashBoxP2pSettingsDto {
 
     public void setP2pAllowed(boolean p2pAllowed) {
         this.p2pAllowed = p2pAllowed;
+    }
+
+    public boolean isUseDefaultCard() {
+        return useDefaultCard;
+    }
+
+    public void setUseDefaultCard(boolean useDefaultCard) {
+        this.useDefaultCard = useDefaultCard;
     }
 }

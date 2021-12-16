@@ -7,16 +7,18 @@ public class CashBoxP2pDto {
     private Long cardId;
     private String cardNumber;
     private boolean p2pAllowed;
+    private boolean useDefaultCard;
 
     public CashBoxP2pDto() {
     }
 
-    public CashBoxP2pDto(Long id, Long merchantId, Long cardId, String cardNumber, boolean p2pAllowed) {
+    public CashBoxP2pDto(Long id, Long merchantId, Long cardId, String cardNumber, boolean p2pAllowed, boolean useDefaultCard) {
         this.id = id;
         this.merchantId = merchantId;
         this.cardId = cardId;
         this.cardNumber = cardNumber;
         this.p2pAllowed = p2pAllowed;
+        this.useDefaultCard = useDefaultCard;
     }
 
 
@@ -58,5 +60,13 @@ public class CashBoxP2pDto {
 
     public void setP2pAllowed(boolean p2pAllowed) {
         this.p2pAllowed = p2pAllowed;
+    }
+
+    public boolean isUseDefaultCard() {
+        return useDefaultCard;
+    }
+
+    public void setUseDefaultCard(boolean useDefaultCard) {
+        this.useDefaultCard = useDefaultCard;
     }
 }

@@ -17,6 +17,8 @@ public class Cashbox {
     Long userCardId;
     @Column(columnDefinition = "boolean default false", nullable = false)
     boolean p2pAllowed;
+    @Column(columnDefinition = "boolean default true", nullable = false)
+    boolean useDefaultCard;
 
     public Long getId() {
         return id;
@@ -64,5 +66,13 @@ public class Cashbox {
 
     public void setP2pAllowed(boolean p2pAllowed) {
         this.p2pAllowed = p2pAllowed;
+    }
+
+    public boolean isUseDefaultCard() {
+        return useDefaultCard;
+    }
+
+    public void setUseDefaultCard(boolean useDefaultCard) {
+        this.useDefaultCard = useDefaultCard;
     }
 }
