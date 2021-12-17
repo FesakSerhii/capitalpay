@@ -52,8 +52,7 @@ public class UserCardController {
     }
 
     @PostMapping("/list")
-    public ResultDTO getClientCards(HttpServletRequest request) {
-        Long merchantId = applicationUserService.getMerchantIdFromToken(request);
+    public ResultDTO getClientCards(@RequestParam Long merchantId) {
         return userCardService.getUserCards(merchantId);
     }
 
