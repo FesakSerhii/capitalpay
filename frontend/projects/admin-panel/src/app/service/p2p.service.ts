@@ -26,8 +26,14 @@ export class P2pService {
   setP2pCashBox(data) {
     return this.apiService.post('api',`/cashbox/set-p2p-settings`,data).toPromise();
   }
-  clientCardList() {
-    return this.apiService.post('api',`/user-card/list`).toPromise();
+  setDefaultCard(data) {
+    return this.apiService.post('api',`/user-card/change-default-card`,data)
+  }
+  setCashBoxCard(data) {
+    return this.apiService.post('api',`/cashbox/set-card`,data)
+  }
+  clientCardList(merchantId) {
+    return this.apiService.post('api',`/user-card/list?merchantId=${merchantId}`).toPromise();
   }
   getCashBoxP2pInfo(cashBoxId) {
     return this.apiService.post('api',`/cashbox/get-p2p-settings?cashBoxId=${cashBoxId}`).toPromise();

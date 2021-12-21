@@ -295,14 +295,14 @@
                     </div>
                     <div class="togglebutton ml-5" *ngIf="cashBox.value.p2pAllowed">
                       <label>
-                        <input type="checkbox" [value]="cashBox.value?.cardNumber===defaultPaymentCard">
+                        <input type="checkbox" formControlName="useDefaultCard">
                         <span class="toggle"></span>
                         Использовать карту по умолчанию
                       </label>
                     </div>
                     <div class="text-right mt-3" *ngIf="cashBox.value.p2pAllowed">
                       <label class="col-form-label col-8" style="margin-right: 90px;">Карта кассы : {{cashBox.value.cardNumber}}</label>
-                      <button class="btn btn-success slim btn-round btn-back" (click)="p2pOnSave='cashBoxSettings'">Изменить карту
+                      <button class="btn btn-success slim btn-round btn-back" (click)="p2pOnSave='cashBoxSettings';addCashBoxPaymentCard(cashBox.value.cashBoxId)">Изменить карту
                       </button>
                     </div>
                   </div>
@@ -313,7 +313,7 @@
                 <button class="btn btn-success slim btn-round btn-back ml-auto mb-1"
                         [disabled]="+cashBox.value.totalFee !== +cashBox.value.merchantFee + +cashBox.value.clientFee"
                         [class.disabled]="+cashBox.value.totalFee !== +cashBox.value.merchantFee + +cashBox.value.clientFee"
-                        (click)="$event.preventDefault();saveCashBoxFee(cashBox.value)">Сохранить
+                        (click)="$event.preventDefault();saveCashBoxFee()">Сохранить
                 </button>
               </div>
             </div>

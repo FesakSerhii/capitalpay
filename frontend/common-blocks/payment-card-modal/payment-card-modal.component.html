@@ -10,7 +10,11 @@
       </button>
     </div>
     <div class="card-body">
-      <form [formGroup]="cardForm">
+      <ng-container *ngIf="!isAddNew">
+        <app-custom-select [values]="cardListTitles" [formControl]="selectedCard"></app-custom-select>
+        <button class="btn btn-success btn-round" (click)="isAddNew=true">Добавить новую</button>
+      </ng-container>
+      <form [formGroup]="cardForm" *ngIf="isAddNew">
         <div class="form-group has-default bmd-form-group d-flex">
           <label class="col-form-label w160">Card number  *</label>
           <input type="text" class="form-control w500" placeholder="card number" formControlName="cardNumber">
