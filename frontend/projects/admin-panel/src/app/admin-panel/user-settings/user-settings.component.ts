@@ -185,6 +185,7 @@ export class UserSettingsComponent implements OnInit {
   }
 
   async getCommissions() {
+    this.cashBoxList.clear();
     const data = {...await this.userService.getUsersCommissions(this.userId)}.data
     for (const cashBox of data) {
       this.p2pService.getCashBoxP2pInfo(cashBox['cashBoxId']).then(resp => {
