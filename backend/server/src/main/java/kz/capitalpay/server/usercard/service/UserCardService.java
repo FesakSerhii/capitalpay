@@ -185,8 +185,12 @@ public class UserCardService {
                 .filter(x -> x.getUserCardId().equals(oldDefaultCardId))
                 .collect(Collectors.toList());
 
+        List<Cashbox> cashBoxesWithNewDefaultCard = cashboxRepository.findByMerchantIdAndUserCardIdAndDeletedFalse(dto.getMerchantId(), dto.getCardId());
+        cashBoxesWithNewDefaultCard.forEach(x -> x.setUseDefaultCard(true));
+
         merchantCashBoxesWithDefaultCard.forEach(cashbox -> cashbox.setUserCardId(dto.getCardId()));
         cashboxRepository.saveAll(merchantCashBoxesWithDefaultCard);
+        cashboxRepository.saveAll(cashBoxesWithNewDefaultCard);
         merchantP2pSettings.setDefaultCardId(dto.getCardId());
         merchantP2pSettings = p2pSettingsService.save(merchantP2pSettings);
 
