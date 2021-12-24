@@ -260,7 +260,9 @@ public class CashboxService {
             return ErrorDictionary.error133;
         }
 
+        MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(cashbox.getMerchantId());
         cashbox.setUserCardId(dto.getCardId());
+        cashbox.setUseDefaultCard(cashbox.getUserCardId().equals(merchantP2pSettings.getDefaultCardId()));
         cashbox = cashboxRepository.save(cashbox);
 
         CashBoxP2pDto cashBoxP2pDto = new CashBoxP2pDto(cashbox.getId(), cashbox.getMerchantId(),
@@ -299,8 +301,15 @@ public class CashboxService {
         Cashbox cashbox = optionalCashBox.get();
         cashbox.setP2pAllowed(dto.isP2pAllowed());
         cashbox.setUseDefaultCard(dto.isUseDefaultCard());
-        cashbox = cashboxRepository.save(cashbox);
-        UserCard userCard = userCardRepository.findById(cashbox.getUserCardId()).orElse(null);
+
+        UserCard userCard = null;
+        if (dto.isUseDefaultCard()) {
+            MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(cashbox.getMerchantId());
+            userCard = userCardRepository.findById(merchantP2pSettings.getDefaultCardId()).orElse(null);
+        } else {
+            userCard = userCardRepository.findById(cashbox.getUserCardId()).orElse(null);
+        }
+
         CashBoxP2pDto cashBoxP2pDto = new CashBoxP2pDto();
         cashBoxP2pDto.setId(cashbox.getId());
         cashBoxP2pDto.setMerchantId(cashbox.getMerchantId());
@@ -311,6 +320,9 @@ public class CashboxService {
             cashBoxP2pDto.setCardNumber(null);
             return new ResultDTO(true, cashBoxP2pDto, 0);
         }
+
+        cashbox.setUserCardId(userCard.getId());
+        cashboxRepository.save(cashbox);
 
         cashBoxP2pDto.setCardId(userCard.getId());
         cashBoxP2pDto.setCardNumber(userCard.getCardNumber());
