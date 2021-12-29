@@ -13,6 +13,8 @@ public class UserCard {
     private Long userId;
     @Column(columnDefinition = "boolean default false")
     private boolean valid;
+    @Column(columnDefinition = "boolean default false")
+    private boolean deleted;
 
     public Long getId() {
         return id;
@@ -52,5 +54,13 @@ public class UserCard {
 
     public void setValid(boolean valid) {
         this.valid = valid;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

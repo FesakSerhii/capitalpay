@@ -105,11 +105,11 @@ public class UserCardService {
     }
 
     public ResultDTO getClientCards() {
-        return new ResultDTO(true, clientCardRepository.findAllByValidTrue(), 0);
+        return new ResultDTO(true, clientCardRepository.findAllByValidTrueAndDeletedFalse(), 0);
     }
 
     public ResultDTO getUserCards(Long userId) {
-        return new ResultDTO(true, userCardRepository.findAllByUserIdAndValidTrue(userId), 0);
+        return new ResultDTO(true, userCardRepository.findAllByUserIdAndValidTrueAndDeletedFalse(userId), 0);
     }
 
     public ResultDTO registerClientCard(RegisterClientCardDto dto) {
@@ -200,6 +200,29 @@ public class UserCardService {
         responseDto.setCardNumber(userCard.getCardNumber());
 
         return new ResultDTO(true, responseDto, 0);
+    }
+
+    public ResultDTO deleteUserCard(DeleteUserCardDto dto) {
+        UserCard userCard = userCardRepository.findById(dto.getCardId()).orElse(null);
+        if (Objects.isNull(userCard)) {
+            return ErrorDictionary.error130;
+        }
+        if (!userCard.getUserId().equals(dto.getMerchantId())) {
+            return ErrorDictionary.error133;
+        }
+
+        userCard.setDeleted(true);
+        return new ResultDTO(true, true, 0);
+    }
+
+    public ResultDTO deleteClientCard(Long cardId) {
+        ClientCard clientCard = clientCardRepository.findById(cardId).orElse(null);
+        if (Objects.isNull(clientCard)) {
+            return ErrorDictionary.error130;
+        }
+
+        clientCard.setDeleted(true);
+        return new ResultDTO(true, true, 0);
     }
 
     private void setDefaultCashBoxCard(UserCard userCard) {

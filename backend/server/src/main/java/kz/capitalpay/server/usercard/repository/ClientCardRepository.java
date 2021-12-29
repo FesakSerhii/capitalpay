@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ClientCardRepository extends JpaRepository<ClientCard, Long> {
 
-    List<ClientCard> findAllByValidTrue();
+    List<ClientCard> findAllByValidTrueAndDeletedFalse();
 }

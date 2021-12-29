@@ -14,6 +14,8 @@ public class ClientCard {
     private boolean valid;
     private Long merchantId;
     private Long cashBoxId;
+    @Column(columnDefinition = "boolean default false")
+    private boolean deleted;
 
     public Long getId() {
         return id;
@@ -61,5 +63,13 @@ public class ClientCard {
 
     public void setCashBoxId(Long cashBoxId) {
         this.cashBoxId = cashBoxId;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

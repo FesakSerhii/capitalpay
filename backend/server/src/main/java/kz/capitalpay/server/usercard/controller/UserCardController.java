@@ -3,6 +3,7 @@ package kz.capitalpay.server.usercard.controller;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.login.service.ApplicationUserService;
 import kz.capitalpay.server.usercard.dto.ChangeMerchantDefaultCardDto;
+import kz.capitalpay.server.usercard.dto.DeleteUserCardDto;
 import kz.capitalpay.server.usercard.dto.RegisterUserCardDto;
 import kz.capitalpay.server.usercard.service.UserCardService;
 import org.slf4j.Logger;
@@ -59,5 +60,10 @@ public class UserCardController {
     @PostMapping("/change-default-card")
     public ResultDTO changeDefaultCard(@Valid @RequestBody ChangeMerchantDefaultCardDto dto) {
         return userCardService.changeMerchantDefaultCard(dto);
+    }
+
+    @PostMapping("/delete")
+    public ResultDTO delete(@Valid @RequestBody DeleteUserCardDto dto) {
+        return userCardService.deleteUserCard(dto);
     }
 }

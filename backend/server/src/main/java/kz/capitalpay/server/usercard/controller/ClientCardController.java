@@ -47,4 +47,9 @@ public class ClientCardController {
     public ResultDTO getClientCards() {
         return userCardService.getClientCards();
     }
+
+    @PostMapping("delete")
+    public ResultDTO deleteClientCard(@RequestParam Long id) {
+        return userCardService.deleteClientCard(id);
+    }
 }
