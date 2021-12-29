@@ -48,8 +48,8 @@ public class ClientCardController {
         return userCardService.getClientCards();
     }
 
-    @PostMapping("/delete")
-    public ResultDTO deleteClientCard(@RequestParam Long id) {
+    @PostMapping("/delete/{id}")
+    public ResultDTO deleteClientCard(@PathVariable Long id) {
         return userCardService.deleteClientCard(id);
     }
 }
