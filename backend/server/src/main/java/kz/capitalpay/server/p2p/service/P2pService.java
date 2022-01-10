@@ -1,9 +1,11 @@
 package kz.capitalpay.server.p2p.service;
 
+import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.constants.ErrorDictionary;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.p2p.dto.SendP2pToClientDto;
+import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import kz.capitalpay.server.usercard.dto.CardDataResponseDto;
 import kz.capitalpay.server.usercard.model.ClientCard;
@@ -21,11 +23,13 @@ public class P2pService {
     private final HalykSoapService halykSoapService;
     private final CashboxService cashboxService;
     private final UserCardService userCardService;
+    private final P2pSettingsService p2pSettingsService;
 
-    public P2pService(HalykSoapService halykSoapService, CashboxService cashboxService, UserCardService userCardService) {
+    public P2pService(HalykSoapService halykSoapService, CashboxService cashboxService, UserCardService userCardService, P2pSettingsService p2pSettingsService) {
         this.halykSoapService = halykSoapService;
         this.cashboxService = cashboxService;
         this.userCardService = userCardService;
+        this.p2pSettingsService = p2pSettingsService;
     }
 
     public ResultDTO sendP2pToClient(SendP2pToClientDto dto, String userAgent, String ipAddress) {
@@ -42,9 +46,21 @@ public class P2pService {
 
         try {
             Long merchantCardId = cashboxService.findUserCardIdByCashBoxId(dto.getCashBoxId());
-            if (merchantCardId.equals(1L)) {
+            if (merchantCardId.equals(0L)) {
                 return ErrorDictionary.error130;
             }
+
+            MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(dto.getMerchantId());
+            if (!merchantP2pSettings.isP2pAllowed()) {
+                return ErrorDictionary.error134;
+            }
+
+            Cashbox cashbox = cashboxService.findById(dto.getCashBoxId());
+            if (!cashbox.isP2pAllowed()) {
+                return ErrorDictionary.error134;
+            }
+
+
             UserCard merchantCard = userCardService.findUserCardById(merchantCardId);
             ClientCard clientCard = userCardService.findClientCardById(dto.getClientCardId());
             CardDataResponseDto merchantCardData = userCardService.getCardDataFromTokenServer(merchantCard.getToken());

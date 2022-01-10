@@ -56,6 +56,11 @@ public class UserCardService {
     }
 
     public ResultDTO registerMerchantCard(RegisterUserCardDto dto) {
+        MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(dto.getMerchantId());
+        if (!merchantP2pSettings.isP2pAllowed()) {
+            return ErrorDictionary.error134;
+        }
+
         ResponseEntity<String> response = restTemplate.postForEntity(cardHoldingUrl + "/card-data/register",
                 dto, String.class);
         String token = response.getBody();
@@ -113,6 +118,16 @@ public class UserCardService {
     }
 
     public ResultDTO registerClientCard(RegisterClientCardDto dto) {
+        MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(dto.getMerchantId());
+        if (!merchantP2pSettings.isP2pAllowed()) {
+            return ErrorDictionary.error134;
+        }
+
+        Cashbox cashbox = cashboxService.findById(dto.getCashBoxId());
+        if (!cashbox.isP2pAllowed()) {
+            return ErrorDictionary.error134;
+        }
+
         ResponseEntity<String> response = restTemplate.postForEntity(cardHoldingUrl + "/card-data/register",
                 dto, String.class);
         String token = response.getBody();
@@ -134,6 +149,17 @@ public class UserCardService {
         if (Objects.isNull(clientCard)) {
             return ErrorDictionary.error130;
         }
+
+        MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(clientCard.getMerchantId());
+        if (!merchantP2pSettings.isP2pAllowed()) {
+            return ErrorDictionary.error134;
+        }
+
+        Cashbox cashbox = cashboxService.findById(clientCard.getCashBoxId());
+        if (!cashbox.isP2pAllowed()) {
+            return ErrorDictionary.error134;
+        }
+
         CardDataResponseDto dto = getCardDataFromTokenServer(clientCard.getToken());
         if (Objects.isNull(dto)) {
             return ErrorDictionary.error130;
@@ -153,6 +179,11 @@ public class UserCardService {
         if (Objects.isNull(userCard)) {
             return ErrorDictionary.error130;
         }
+        MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(userCard.getUserId());
+        if (!merchantP2pSettings.isP2pAllowed()) {
+            return ErrorDictionary.error134;
+        }
+
         CardDataResponseDto dto = getCardDataFromTokenServer(userCard.getToken());
         if (Objects.isNull(dto)) {
             return ErrorDictionary.error130;
@@ -179,6 +210,10 @@ public class UserCardService {
         UserCard userCard = userCardRepository.findById(dto.getCardId()).orElse(null);
         if (Objects.isNull(userCard)) {
             return ErrorDictionary.error130;
+        }
+
+        if (!merchantP2pSettings.isP2pAllowed()) {
+            return ErrorDictionary.error134;
         }
 
         final Long oldDefaultCardId = merchantP2pSettings.getDefaultCardId();
@@ -213,6 +248,11 @@ public class UserCardService {
             return ErrorDictionary.error133;
         }
 
+        MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(dto.getMerchantId());
+        if (!merchantP2pSettings.isP2pAllowed()) {
+            return ErrorDictionary.error134;
+        }
+
         userCard.setDeleted(true);
         return new ResultDTO(true, true, 0);
     }
@@ -221,6 +261,16 @@ public class UserCardService {
         ClientCard clientCard = clientCardRepository.findById(cardId).orElse(null);
         if (Objects.isNull(clientCard)) {
             return ErrorDictionary.error130;
+        }
+
+        MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(clientCard.getMerchantId());
+        if (!merchantP2pSettings.isP2pAllowed()) {
+            return ErrorDictionary.error134;
+        }
+
+        Cashbox cashbox = cashboxService.findById(clientCard.getCashBoxId());
+        if (!cashbox.isP2pAllowed()) {
+            return ErrorDictionary.error134;
         }
 
         clientCard.setDeleted(true);
