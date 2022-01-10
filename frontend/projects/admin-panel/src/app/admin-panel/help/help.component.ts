@@ -42,14 +42,18 @@ export class HelpComponent implements OnInit {
     })
   }
   getSupportList(){
+    this.supportList = null;
+    this.supportListClosed = null;
+    this.dontTouched = null;
+    this.dontTouchedClosed = null;
     this.supportService.getSupportList().then(resp=>{
-      this.supportList = resp.data.filter(el=>el.status!=='closed').sort((a,b)=>a.id-b.id);
-      this.supportListClosed = resp.data.filter(el=>el.status==='closed').sort((a,b)=>a.id-b.id);
-      this.dontTouched = [...resp.data.filter(el=>el.status!=='closed').sort((a,b)=>a.id-b.id)];
-      this.dontTouchedClosed = [...resp.data.filter(el=>el.status==='closed').sort((a,b)=>a.id-b.id)];
+      this.supportList = resp.data.filter(el=>el.status!=='closed').sort((a,b)=>b.timestamp-a.timestamp);
+      this.supportListClosed = resp.data.filter(el=>el.status==='closed').sort((a,b)=>b.timestamp-a.timestamp);
+      this.dontTouched = [...resp.data.filter(el=>el.status!=='closed').sort((a,b)=>b.timestamp-a.timestamp)];
+      this.dontTouchedClosed = [...resp.data.filter(el=>el.status==='closed').sort((a,b)=>b.timestamp-a.timestamp)];
     })
   }
-  navigateToSettings(id){
+  navigateToChat(id){
     this.router.navigate(['/admin-panel/help/chat'],{queryParams: {
       id: id,
     },

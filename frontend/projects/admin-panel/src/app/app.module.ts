@@ -14,6 +14,12 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {NgScrollbarModule} from 'ngx-scrollbar';
 import {NgbDateParserFormatter, NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {NgbDateCustomParserFormatter} from '../../../../common-blocks/ngb-date-custom-parser-formatter';
+import { JwtModule } from "@auth0/angular-jwt";
+
+export function tokenGetter() {
+  return sessionStorage.getItem("token");
+}
+
 // import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 // import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
 // import {LocalizeParser, LocalizeRouterModule, LocalizeRouterSettings, ManualParserLoader} from 'localize-router';
@@ -51,6 +57,11 @@ const maskConfigFunction: () => Partial<IConfig> = () => {
     CommonBlocksModule,
     ReactiveFormsModule,
     NgScrollbarModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+      },
+    }),
     // CKEditorModule,
     // LocalizeRouterModule.forRoot(routes, {
     //   parser: {

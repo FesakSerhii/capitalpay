@@ -11,13 +11,18 @@
         <form class="d-flex justify-content-center" [formGroup]="periodForm">
           <label class="col-form-label">Период</label>
           <div class="form-group bmd-form-group mr-5 position-relative">
-            <input type="text" class="form-control" ngbDatepicker [autoClose]="true" readonly #start="ngbDatepicker" formControlName="start">
+            <input type="text" class="form-control" ngbDatepicker [autoClose]="true" readonly #start="ngbDatepicker" formControlName="start" (dateSelect)="dateInvalid('start','end')">
             <a (click)="$event.preventDefault();start.open()"><i class="material-icons icon-color position-absolute" style="top: 10px;right: -22px">date_range</i></a>
           </div>
-          <div class="form-group bmd-form-group position-relative">
-            <input type="text" class="form-control" ngbDatepicker [autoClose]="true" readonly #end="ngbDatepicker" formControlName="end">
+          <div class="form-group bmd-form-group position-relative mr-5">
+            <input type="text" class="form-control" ngbDatepicker [autoClose]="true" readonly #end="ngbDatepicker" formControlName="end" (dateSelect)="dateInvalid('start','end')">
             <a (click)="$event.preventDefault();end.open()"><i class="material-icons icon-color position-absolute" style="top: 10px;right: -22px">date_range</i></a>
           </div>
+          <app-custom-select [classes]="'h-32px mr-5'" [values]='dates' formControlName="dateFilter"></app-custom-select>
+          <button [disabled]="isEditMode||isEditModeMerch||!this.periodForm.value.start||!this.periodForm.value.end"
+                  [class.disabled]="isEditMode||isEditModeMerch||!this.periodForm.value.start||!this.periodForm.value.end"
+                  class="btn btn-success btn-round"
+                  (click)="getDoc();">Сохранить</button>
         </form>
         <form [formGroup]="registryForm">
           <h4 class="title">Отправка денег мерчантам</h4>
@@ -109,11 +114,12 @@
         <button *ngIf="isEditMode" class="btn btn-success btn-round" style="margin-left: 202px" (click)="saveEditedRegistry();">Сохранить</button>
       </div>
       <div class="card-footer">
-        <button [disabled]="isEditMode||isEditModeMerch||!this.periodForm.value.start||!this.periodForm.value.end"
-                [class.disabled]="isEditMode||isEditModeMerch||!this.periodForm.value.start||!this.periodForm.value.end"
-                class="btn btn-success btn-round"
-                (click)="getDoc();">Сохранить</button>
+<!--        <button [disabled]="isEditMode||isEditModeMerch||!this.periodForm.value.start||!this.periodForm.value.end"-->
+<!--                [class.disabled]="isEditMode||isEditModeMerch||!this.periodForm.value.start||!this.periodForm.value.end"-->
+<!--                class="btn btn-success btn-round"-->
+<!--                (click)="getDoc();">Сохранить</button>-->
       </div>
     </div>
   </ng-scrollbar>
 </div>
+<app-massage-modal #invalidDatesModalContent [messageType]="'invalidDateMassage'"></app-massage-modal>

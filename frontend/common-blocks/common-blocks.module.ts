@@ -16,15 +16,16 @@ import {NgxPaginationModule} from 'ngx-pagination';
 import {NgbDateParserFormatter, NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {NgbDateCustomParserFormatter} from './ngb-date-custom-parser-formatter';
 import {ConfirmActionModalComponent} from './confirm-action-modal/confirm-action-modal.component';
+import { PaymentCardModalComponent } from './payment-card-modal/payment-card-modal.component';
 
 
 
 
 @NgModule({
   declarations: [HeaderComponent, FooterComponent, HexagonLinkComponent,SideMenuComponent,
-    PanelHeaderComponent, CustomSelectComponent, TransactionsLogComponent, MassageModalComponent, TransactionsRegistryComponent,ConfirmActionModalComponent],
-  exports: [HeaderComponent, FooterComponent, HexagonLinkComponent, SideMenuComponent,
-    PanelHeaderComponent,CustomSelectComponent, TransactionsLogComponent, MassageModalComponent,TransactionsRegistryComponent,ConfirmActionModalComponent],
+    PanelHeaderComponent, CustomSelectComponent, TransactionsLogComponent, MassageModalComponent, TransactionsRegistryComponent,ConfirmActionModalComponent, PaymentCardModalComponent],
+    exports: [HeaderComponent, FooterComponent, HexagonLinkComponent, SideMenuComponent,
+        PanelHeaderComponent, CustomSelectComponent, TransactionsLogComponent, MassageModalComponent, TransactionsRegistryComponent, ConfirmActionModalComponent, PaymentCardModalComponent],
   imports: [
     CommonModule,
     RouterModule,

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild} from '@angular/core';
 import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
@@ -12,6 +12,7 @@ export class MassageModalComponent implements OnInit {
 
   @Input() messageType:string;
   @ViewChild("massageModalContent", {static: false}) massageModal: TemplateRef<any>;
+  @Output() onModalClose = new EventEmitter<any>();
 
   massages : any = {
     saveMassage: "Данные сохранены.",
@@ -28,8 +29,14 @@ export class MassageModalComponent implements OnInit {
 
   ngOnInit() {
   }
+
   open():Promise<any>{
     this.modal = this.modalService.open(this.massageModal);
     return this.modal.result;
+  }
+
+  close() {
+    this.modal.close(true);
+    this.onModalClose.emit(true);
   }
 }

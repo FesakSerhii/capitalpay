@@ -1,0 +1,50 @@
+<div>
+    <div class="row">
+      <ng-scrollbar class="calc200" [visibility]="'always'" style="width: 1620px">
+        <div>
+          <a href="#" class="btn btn-success btn-round" (click)="$event.preventDefault();navigateToHelp()">Назад<div class="ripple-container"></div></a>
+          <div class="card w1600">
+            <div class="card-header card-header-success card-header-icon d-flex justify-content-end pt-3">
+              <span class="chat-header-info">21.05.2021 | 11:34:09</span>
+              <span class="chat-header-info ml-3" *ngIf="authorInfo">Merchant ID {{authorInfo?.id}}</span>
+            </div>
+            <div class="card-body">
+              <h4 class="message-title">{{theme}}</h4>
+              <p>{{text}}</p>
+              <ng-container *ngFor="let file of fileListToDownload">
+              <img class="mr-2" [src]="'https://capitalpay.kz/files/'+file.path" alt="" style="max-width: 250px">
+              </ng-container>
+            </div>
+          </div>
+          <div class="card w1600">
+            <div class="card-body">
+              <ng-container *ngIf="supportAnswer">
+                <ng-container *ngFor="let answer of supportAnswer">
+                  <div class="card-header card-header-success card-header-icon d-flex justify-content-end pt-3">
+                    <span class="chat-header-info">21.05.2021 | 11:34:09</span>
+                    <span class="chat-header-info ml-3">Merchant ID {{answer.operatorId}}</span>
+                  </div>
+                  <p>{{answer.text}}</p>
+                  <ng-container *ngFor="let file of answer.fileList">
+                    <img class="mr-2" [src]="'https://capitalpay.kz/files/'+file.path" alt="" style="max-width: 250px">
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+              <textarea class="mt-1" [formControl]="answerForm" placeholder="Текст  сообщения" name="massage" cols="30" rows="10" style="min-height: 140px;width: 100%"></textarea>
+              <div>
+                <div class="d-flex">
+                  <input type="file" id="fileUpload" accept="image/*" class="d-none" (change)="handleFileInput($event.target.files)">
+                  <label for="fileUpload">Прикрепить документ<i class="material-icons-outlined" style="transform: rotate(45deg);">attach_file</i></label>
+                </div>
+  <!--                <i class="material-icons-outlined" style="transform: rotate(45deg);">attach_file</i>Прикрепить документ</p>-->
+  <!--              <button class="btn btn-success btn-round">Выбрать файлы<div class="ripple-container"></div></button>-->
+              </div>
+             </div>
+            <div class="card-footer">
+              <button class="btn btn-success btn-round ml-auto" (click)="sendAnswer()">Отправить и закрыть<div class="ripple-container"></div></button>
+            </div>
+          </div>
+        </div>
+      </ng-scrollbar>
+    </div>
+  </div>

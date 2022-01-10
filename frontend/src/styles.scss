@@ -1,5 +1,4 @@
 /* You can add global styles to this file, and also import other style files */
-
 body{
   font-family: 'CircularStd-Book',sans-serif;
   margin: 0;
@@ -185,4 +184,9 @@ textarea{
 }
 .icon-color{
   color: #008E67;
+}
+.api-container{
+  p{
+    margin: 0!important;
+  }
 }

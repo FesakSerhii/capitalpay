@@ -1,0 +1,29 @@
+<form class="tpsform form2-theme" [formGroup]="cardForm">
+
+  <label class="tpsform_input" for="cardnumber">
+    <span class="focused">Card number  *</span>
+    <!--добавьте к span класс .focused при фокусе на инпуте-->
+    <input type="tel" placeholder="" id="cardnumber" formControlName="cardNumber" [class.invalid]="cardForm.controls.cardNumber.invalid">
+  </label>
+  <div class="formline">
+    <div class="select form2-theme">
+      <div class="select_label">Expiration Date *</div>
+      <app-custom-select classes="noArrow" [values]="['01','02','03','04','05','06','07','08','09','10','11','12']" formControlName="expirationMonth"></app-custom-select>
+    </div>
+    <div class="select form2-theme">
+      <div class="select_label">&nbsp;</div>
+      <app-custom-select classes="noArrow" [values]="[2021,2022,2023,2024,2025,2026]" formControlName="expirationYear"></app-custom-select>
+    </div>
+    <label class="tpsform_input ico pass" for="cardseccode">
+      <span>Card Security Code *</span>
+      <!--добавьте к span класс .focused при фокусе на инпуте-->
+      <input type="password" placeholder="" id="cardseccode" formControlName="cvv2Code">
+    </label>
+  </div>
+  <div class="checkbox">
+    <input type="checkbox" name="" id="termsandprivacy">
+    <label for="termsandprivacy">I accept the <a href="#!">terms of service</a> and have read the
+      <a href="#!">privacy policy</a>.</label>
+  </div>
+  <button class="form-btn form2-theme green-theme" type="submit" (click)="saveCard()">Pay</button>
+</form>
