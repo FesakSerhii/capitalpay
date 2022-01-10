@@ -28,6 +28,10 @@ app.get("/success", function (req, res) {
     res.send(`<h1>Success</h1>`)
 })
 
+app.get("/fail", function (req, res) {
+    res.send(`<h1>Fail</h1>`)
+})
+
 app.post("/inter", jsonParser, async function (req, res) {
     console.log("Adding card", req.body);
     const cardData = req.body.data;
