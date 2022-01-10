@@ -101,6 +101,28 @@ public class CashboxSettingsService {
         }
     }
 
+    public ResultDTO getPublicCashboxSettings(Principal principal, CashBoxSettingDTO cashBoxDTO) {
+        try {
+            ApplicationUser admin = applicationUserService.getUserByLogin(principal.getName());
+            if (admin.getRoles().contains(applicationRoleService.getRole(ADMIN))
+                    || admin.getRoles().contains(applicationRoleService.getRole(OPERATOR))
+                    || admin.getRoles().contains(applicationRoleService.getRole(MERCHANT))) {
+                Map<String, String> result = new HashMap<>();
+                result.put(INTERACTION_URL, getField(cashBoxDTO.getCashBoxId(), INTERACTION_URL));
+                result.put(REDIRECT_URL, getField(cashBoxDTO.getCashBoxId(), REDIRECT_URL));
+                result.put(REDIRECT_SUCCESS_URL, getField(cashBoxDTO.getCashBoxId(), REDIRECT_SUCCESS_URL));
+                result.put(REDIRECT_FAILED_URL, getField(cashBoxDTO.getCashBoxId(), REDIRECT_FAILED_URL));
+                result.put(REDIRECT_PENDING_URL, getField(cashBoxDTO.getCashBoxId(), REDIRECT_PENDING_URL));
+                return new ResultDTO(true, result, 0);
+            } else {
+                return error121;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultDTO(false, e.getMessage(), -1);
+        }
+    }
+
     public ResultDTO deleteCashboxSettings(Principal principal, CashBoxSettingFieldDTO request) {
         try {
             ApplicationUser admin = applicationUserService.getUserByLogin(principal.getName());
