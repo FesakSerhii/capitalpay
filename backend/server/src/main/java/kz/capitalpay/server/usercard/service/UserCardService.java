@@ -142,7 +142,9 @@ public class UserCardService {
         boolean valid = halykSoapService.checkCardValidity(ipAddress, userAgent, dto);
         clientCard.setValid(valid);
         clientCardRepository.save(clientCard);
-        sendClientCardDataToMerchant(clientCard);
+        if (valid) {
+            sendClientCardDataToMerchant(clientCard);
+        }
         return new ResultDTO(true, valid, 0);
     }
 
