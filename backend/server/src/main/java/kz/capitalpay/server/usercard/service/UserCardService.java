@@ -119,7 +119,7 @@ public class UserCardService {
 
     public ResultDTO registerClientCard(RegisterClientCardDto dto) {
         MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(dto.getMerchantId());
-        if (!merchantP2pSettings.isP2pAllowed()) {
+        if (Objects.isNull(merchantP2pSettings) || !merchantP2pSettings.isP2pAllowed()) {
             return ErrorDictionary.error134;
         }
 
