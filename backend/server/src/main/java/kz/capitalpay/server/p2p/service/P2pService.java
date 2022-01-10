@@ -16,6 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 public class P2pService {
 
@@ -51,7 +53,7 @@ public class P2pService {
             }
 
             MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(dto.getMerchantId());
-            if (!merchantP2pSettings.isP2pAllowed()) {
+            if (Objects.isNull(merchantP2pSettings) || !merchantP2pSettings.isP2pAllowed()) {
                 return ErrorDictionary.error134;
             }
 

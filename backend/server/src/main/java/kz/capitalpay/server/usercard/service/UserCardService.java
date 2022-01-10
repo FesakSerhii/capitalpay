@@ -57,7 +57,7 @@ public class UserCardService {
 
     public ResultDTO registerMerchantCard(RegisterUserCardDto dto) {
         MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(dto.getMerchantId());
-        if (!merchantP2pSettings.isP2pAllowed()) {
+        if (Objects.isNull(merchantP2pSettings) || !merchantP2pSettings.isP2pAllowed()) {
             return ErrorDictionary.error134;
         }
 
@@ -118,11 +118,6 @@ public class UserCardService {
     }
 
     public ResultDTO registerClientCard(RegisterClientCardDto dto) {
-        MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(dto.getMerchantId());
-        if (Objects.isNull(merchantP2pSettings) || !merchantP2pSettings.isP2pAllowed()) {
-            return ErrorDictionary.error134;
-        }
-
         Cashbox cashbox = cashboxService.findById(dto.getCashBoxId());
         if (!cashbox.isP2pAllowed()) {
             return ErrorDictionary.error134;
@@ -150,11 +145,6 @@ public class UserCardService {
             return ErrorDictionary.error130;
         }
 
-        MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(clientCard.getMerchantId());
-        if (!merchantP2pSettings.isP2pAllowed()) {
-            return ErrorDictionary.error134;
-        }
-
         Cashbox cashbox = cashboxService.findById(clientCard.getCashBoxId());
         if (!cashbox.isP2pAllowed()) {
             return ErrorDictionary.error134;
@@ -180,7 +170,7 @@ public class UserCardService {
             return ErrorDictionary.error130;
         }
         MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(userCard.getUserId());
-        if (!merchantP2pSettings.isP2pAllowed()) {
+        if (Objects.isNull(merchantP2pSettings) || !merchantP2pSettings.isP2pAllowed()) {
             return ErrorDictionary.error134;
         }
 
@@ -249,7 +239,7 @@ public class UserCardService {
         }
 
         MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(dto.getMerchantId());
-        if (!merchantP2pSettings.isP2pAllowed()) {
+        if (Objects.isNull(merchantP2pSettings) || !merchantP2pSettings.isP2pAllowed()) {
             return ErrorDictionary.error134;
         }
 
@@ -264,7 +254,7 @@ public class UserCardService {
         }
 
         MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(clientCard.getMerchantId());
-        if (!merchantP2pSettings.isP2pAllowed()) {
+        if (Objects.isNull(merchantP2pSettings) || !merchantP2pSettings.isP2pAllowed()) {
             return ErrorDictionary.error134;
         }
 
