@@ -491,7 +491,7 @@ public class HalykSoapService {
         if (Objects.nonNull(lastPayment)) {
             payment.setOrderId(generateOrderId(lastPayment.getOrderId()));
         } else {
-            payment.setOrderId("00000163801600");
+            payment.setOrderId("00000173801600");
         }
         payment.setGuid(UUID.randomUUID().toString());
         payment.setCurrency("KZT");
@@ -499,7 +499,7 @@ public class HalykSoapService {
         payment.setIpAddress(ipAddress);
         payment.setCashboxId(cashBoxId);
         payment.setMerchantId(merchantId);
-
+        payment.setTimestamp(System.currentTimeMillis());
         payment.setTotalAmount(totalAmount);
         payment.setUserAgent(userAgent);
         payment.setStatus(NEW_PAYMENT);
