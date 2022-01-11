@@ -155,13 +155,16 @@ public class UserCardService {
             return ErrorDictionary.error130;
         }
 
-        boolean valid = halykSoapService.checkCardValidity(ipAddress, userAgent, dto);
-        clientCard.setValid(valid);
+        CheckCardValidityResponse response = halykSoapService.checkCardValidity(ipAddress, userAgent, dto);
+        clientCard.setValid(response.isValid());
         clientCardRepository.save(clientCard);
-        if (valid) {
+        if (response.isValid()) {
             sendClientCardDataToMerchant(clientCard);
         }
-        return new ResultDTO(true, valid, 0);
+
+        CheckCardValidityResponseDto responseDto = new CheckCardValidityResponseDto(response.isValid(), clientCard.getId(), response.getReturnCode());
+
+        return new ResultDTO(true, responseDto, 0);
     }
 
     public ResultDTO checkUserCardValidity(Long cardId, String ipAddress, String userAgent) {
@@ -179,15 +182,15 @@ public class UserCardService {
             return ErrorDictionary.error130;
         }
 
-        boolean valid = halykSoapService.checkCardValidity(ipAddress, userAgent, dto);
-        userCard.setValid(valid);
+        CheckCardValidityResponse response = halykSoapService.checkCardValidity(ipAddress, userAgent, dto);
+        userCard.setValid(response.isValid());
         userCardRepository.save(userCard);
         setDefaultCashBoxCard(userCard);
         if (!p2pSettingsService.existsByMerchantId(userCard.getUserId())) {
             p2pSettingsService.createMerchantP2pSettings(userCard.getUserId(), userCard.getId());
         }
 
-        CheckCardValidityResponseDto responseDto = new CheckCardValidityResponseDto(valid, userCard.getId());
+        CheckCardValidityResponseDto responseDto = new CheckCardValidityResponseDto(response.isValid(), userCard.getId(), response.getReturnCode());
 
         return new ResultDTO(true, responseDto, 0);
     }

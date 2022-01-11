@@ -4,10 +4,12 @@ public class CheckCardValidityResponseDto {
 
     private boolean valid;
     private Long cardId;
+    private String returnCode;
 
-    public CheckCardValidityResponseDto(boolean valid, Long cardId) {
+    public CheckCardValidityResponseDto(boolean valid, Long cardId, String returnCode) {
         this.valid = valid;
         this.cardId = cardId;
+        this.returnCode = returnCode;
     }
 
     public boolean isValid() {
@@ -24,5 +26,13 @@ public class CheckCardValidityResponseDto {
 
     public void setCardId(Long cardId) {
         this.cardId = cardId;
+    }
+
+    public String getReturnCode() {
+        return returnCode;
+    }
+
+    public void setReturnCode(String returnCode) {
+        this.returnCode = returnCode;
     }
 }
