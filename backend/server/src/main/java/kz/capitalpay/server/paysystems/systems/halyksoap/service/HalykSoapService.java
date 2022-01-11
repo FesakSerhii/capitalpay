@@ -313,6 +313,13 @@ public class HalykSoapService {
         EpayServiceStub.TransferOrderResponse transferOrderResponse = sendTransferOrderRequest(amount, currency, cvv2,
                 merchantid, month, year, orderId, pan, paymentToPan);
 
+
+        logger.info("transferOrderResponse");
+        logger.info("Message: " + transferOrderResponse.get_return().getMessage());
+        logger.info("Approval code: " + transferOrderResponse.get_return().getApprovalcode());
+        logger.info("OrderId: " + transferOrderResponse.get_return().getOrderid());
+        logger.info("getReference: " + transferOrderResponse.get_return().getReference());
+        logger.info("getReturnCode: " + transferOrderResponse.get_return().getReturnCode());
         if (transferOrderResponse.get_return().getReturnCode().equals("00")) {
             payment.setStatus(SUCCESS);
             p2pPaymentLogService.newEvent(payment.getGuid(), ipAddress, SUCCESS, gson.toJson(payment));
