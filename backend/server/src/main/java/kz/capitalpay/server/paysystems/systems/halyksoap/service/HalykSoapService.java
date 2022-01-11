@@ -3,12 +3,12 @@ package kz.capitalpay.server.paysystems.systems.halyksoap.service;
 import com.google.gson.Gson;
 import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.p2p.dto.SendP2pToClientDto;
-import kz.capitalpay.server.payments.model.CheckCardValidityPayment;
 import kz.capitalpay.server.p2p.model.P2pPayment;
-import kz.capitalpay.server.payments.model.Payment;
-import kz.capitalpay.server.payments.repository.CheckCardValidityPaymentRepository;
 import kz.capitalpay.server.p2p.repository.P2pPaymentRepository;
 import kz.capitalpay.server.p2p.service.P2pPaymentLogService;
+import kz.capitalpay.server.payments.model.CheckCardValidityPayment;
+import kz.capitalpay.server.payments.model.Payment;
+import kz.capitalpay.server.payments.repository.CheckCardValidityPaymentRepository;
 import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.paysystems.systems.halyksoap.dto.HalykTransferOrderDTO;
 import kz.capitalpay.server.paysystems.systems.halyksoap.kkbsign.KKBSign;
@@ -19,6 +19,7 @@ import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykCheckOr
 import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykPaymentOrderAcsRepository;
 import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykPaymentOrderRepository;
 import kz.capitalpay.server.usercard.dto.CardDataResponseDto;
+import kz.capitalpay.server.usercard.dto.CheckCardValidityResponse;
 import kz.capitalpay.server.wsdl.*;
 import org.apache.axis2.AxisFault;
 import org.dom4j.Document;
@@ -256,7 +257,7 @@ public class HalykSoapService {
         return "FAIL";
     }
 
-    public boolean checkCardValidity(String ipAddress, String userAgent, CardDataResponseDto cardData) {
+    public CheckCardValidityResponse checkCardValidity(String ipAddress, String userAgent, CardDataResponseDto cardData) {
         CheckCardValidityPayment payment = generateCardCheckPayment(ipAddress, userAgent, Long.parseLong(merchantid),
                 new BigDecimal(10));
         String orderId = payment.getOrderId();
@@ -293,9 +294,9 @@ public class HalykSoapService {
                 checkCardValidityPaymentRepository.save(payment);
             }
 
-            return true;
+            return new CheckCardValidityResponse(true, "00");
         }
-        return false;
+        return new CheckCardValidityResponse(false, paymentOrderResponse.get_return().getReturnCode());
     }
 
     public boolean sendP2ToClient(String ipAddress, String userAgent, CardDataResponseDto merchantCardData, SendP2pToClientDto dto,

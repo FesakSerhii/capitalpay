@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
-import java.security.Principal;
 
 import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
 
@@ -24,7 +23,7 @@ public class CashBoxPublicSettingsController {
 
     @PostMapping("/get")
     @RolesAllowed({ADMIN, OPERATOR, MERCHANT})
-    ResultDTO getCashBoxSettings(@Valid @RequestBody CashBoxSettingDTO request, Principal principal) {
-        return cashboxSettingsService.getPublicCashboxSettings(principal, request);
+    ResultDTO getCashBoxSettings(@Valid @RequestBody CashBoxSettingDTO request) {
+        return cashboxSettingsService.getPublicCashboxSettings(request);
     }
 }
