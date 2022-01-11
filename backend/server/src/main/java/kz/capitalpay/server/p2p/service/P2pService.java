@@ -47,6 +47,11 @@ public class P2pService {
         }
 
         try {
+            Cashbox cashbox = cashboxService.findById(dto.getCashBoxId());
+            if (!cashbox.getMerchantId().equals(dto.getMerchantId())) {
+                return ErrorDictionary.error122;
+            }
+
             Long merchantCardId = cashboxService.findUserCardIdByCashBoxId(dto.getCashBoxId());
             if (merchantCardId.equals(0L)) {
                 return ErrorDictionary.error130;
@@ -57,7 +62,6 @@ public class P2pService {
                 return ErrorDictionary.error134;
             }
 
-            Cashbox cashbox = cashboxService.findById(dto.getCashBoxId());
             if (!cashbox.isP2pAllowed()) {
                 return ErrorDictionary.error134;
             }
