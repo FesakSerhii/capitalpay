@@ -19,10 +19,12 @@ import kz.capitalpay.server.usercard.repository.UserCardRepository;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +45,9 @@ public class UserCardService {
     private final CashboxRepository cashboxRepository;
     private final CashboxService cashboxService;
     private final P2pSettingsService p2pSettingsService;
+
+    @Value("${server.test}")
+    private boolean isTestServer;
 
     public UserCardService(UserCardRepository userCardRepository, RestTemplate restTemplate, HalykSoapService halykSoapService, ClientCardRepository clientCardRepository, ObjectMapper objectMapper, CashboxRepository cashboxRepository, CashboxService cashboxService, P2pSettingsService p2pSettingsService) {
         this.userCardRepository = userCardRepository;
@@ -66,6 +71,10 @@ public class UserCardService {
         String token = response.getBody();
         if (Objects.isNull(token) || token.trim().isEmpty()) {
             return ErrorDictionary.error129;
+        }
+
+        if (!isTestServer && userCardRepository.existsByUserIdAndToken(dto.getMerchantId(), token)) {
+            return ErrorDictionary.error136;
         }
 
         UserCard userCard = new UserCard();

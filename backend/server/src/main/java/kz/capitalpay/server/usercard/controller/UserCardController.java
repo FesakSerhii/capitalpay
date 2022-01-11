@@ -1,7 +1,6 @@
 package kz.capitalpay.server.usercard.controller;
 
 import kz.capitalpay.server.dto.ResultDTO;
-import kz.capitalpay.server.login.service.ApplicationUserService;
 import kz.capitalpay.server.usercard.dto.ChangeMerchantDefaultCardDto;
 import kz.capitalpay.server.usercard.dto.DeleteUserCardDto;
 import kz.capitalpay.server.usercard.dto.RegisterUserCardDto;
@@ -22,12 +21,10 @@ public class UserCardController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserCardController.class);
     private final UserCardService userCardService;
-    private final ApplicationUserService applicationUserService;
 
 
-    public UserCardController(UserCardService userCardService, ApplicationUserService applicationUserService) {
+    public UserCardController(UserCardService userCardService) {
         this.userCardService = userCardService;
-        this.applicationUserService = applicationUserService;
     }
 
     @PostMapping("/register")

@@ -13,4 +13,6 @@ public interface UserCardRepository extends JpaRepository<UserCard, Long> {
     List<UserCard> findAllByUserIdAndValidTrueAndDeletedFalse(Long userId);
 
     Optional<UserCard> findByUserId(Long userId);
+
+    boolean existsByUserIdAndToken(Long userId, String token);
 }
