@@ -1,3 +1,4 @@
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <style>
     table {
         border-collapse: collapse;
@@ -8,12 +9,14 @@
     }
 </style>
 <h1>Added Cards</h1>
-<a href="https://card.capitalpay.kz?merchantId=663&cashBoxId=13978">Add Card</a>
+<a href="https://card.capitalpay.kz?merchantId=663&cashBoxId=13978" id="addCard">Add Card</a>
 <table>
     <thead>
     <tr>
         <th>Number</th>
         <th>Id</th>
+        <th>Param</th>
+        <th></th>
     </tr>
     </thead>
     <tbody>
@@ -21,7 +24,51 @@
         <tr>
             <td><%= card.card_number %></td>
             <td><%= card.card_id %></td>
+            <td><%= card.param %></td>
+            <td><button class="pay" data-card-id="<%= card.card_id %>">Pay</button></td>
         </tr>
     <% }) %>
     </tbody>
 </table>
+
+<h2>Payments</h2>
+<table>
+    <thead>
+    <tr>
+        <th>Card Number</th>
+        <th>Sum</th>
+        <th>result</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% payments.forEach(function (payments) { %>
+        <tr>
+            <td><%= payments.card_number %></td>
+            <td><%= payments.sum %></td>
+            <td><pre><%= payments.result %></pre></td>
+        </tr>
+    <% }) %>
+    </tbody>
+</table>
+<script>
+    window.addEventListener("load", function () {
+        document.querySelectorAll(".pay").forEach((b) => {
+            b.addEventListener("click", function () {
+                const sum = prompt("Input sum");
+                axios.post("/pay", {
+                    cardId: parseInt(this.dataset.cardId),
+                    sum: parseFloat(sum)
+                }).then(
+                    () => {
+                        location.reload();
+                    }
+                )
+            });
+        });
+        addCard.addEventListener("click", function (e)  {
+            e.preventDefault();
+            const param = prompt("Input param");
+            location.href = this.href + `&parameters=${param}`;
+        })
+    });
+</script>
