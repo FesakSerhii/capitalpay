@@ -36,14 +36,14 @@ public class P2pService {
 
     public ResultDTO sendP2pToClient(SendP2pToClientDto dto, String userAgent, String ipAddress) {
         String secret = cashboxService.getSecret(dto.getCashBoxId());
-        String sha256hex = DigestUtils.sha256Hex(dto.getCashBoxId() + dto.getMerchantId() + dto.getClientCardId() + secret);
+        String sha256hex = DigestUtils.sha256Hex(dto.getCashBoxId() + dto.getMerchantId() + dto.getClientCardToken() + secret);
         if (!sha256hex.equals(dto.getSignature())) {
             LOGGER.error("Cashbox ID: {}", dto.getCashBoxId());
             LOGGER.error("Merchant ID: {}", dto.getMerchantId());
-            LOGGER.error("Client card ID: {}", dto.getClientCardId());
+            LOGGER.error("Client card ID: {}", dto.getClientCardToken());
             LOGGER.error("Server sign: {}", sha256hex);
             LOGGER.error("Client sign: {}", dto.getSignature());
-            return new ResultDTO(false, "Signature: SHA256(cashboxId + merchantId + clientCardId + secret)", -1);
+            return new ResultDTO(false, "Invalid signature", -1);
         }
 
         try {
@@ -66,15 +66,13 @@ public class P2pService {
                 return ErrorDictionary.error134;
             }
 
-
             UserCard merchantCard = userCardService.findUserCardById(merchantCardId);
-            ClientCard clientCard = userCardService.findClientCardById(dto.getClientCardId());
             CardDataResponseDto merchantCardData = userCardService.getCardDataFromTokenServer(merchantCard.getToken());
-            CardDataResponseDto clientCardData = userCardService.getCardDataFromTokenServer(clientCard.getToken());
+            CardDataResponseDto clientCardData = userCardService.getCardDataFromTokenServer(dto.getClientCardToken());
 
             boolean paymentSuccess = halykSoapService.sendP2ToClient(ipAddress, userAgent, merchantCardData, dto, clientCardData.getCardNumber());
 
-            return paymentSuccess ? new ResultDTO(true, "Successful payment", 0) : ErrorDictionary.error131;
+            return paymentSuccess ? new ResultDTO(true, "Successful payment", 0) : ErrorDictionary.error135;
         } catch (Exception e) {
             e.printStackTrace();
             return ErrorDictionary.error130;

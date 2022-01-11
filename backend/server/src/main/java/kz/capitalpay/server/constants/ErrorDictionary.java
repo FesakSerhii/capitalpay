@@ -37,7 +37,8 @@ public class ErrorDictionary {
     public static final ResultDTO error131 = new ResultDTO(false, "P2P payment error!", 131);
     public static final ResultDTO error132 = new ResultDTO(false, "P2P setiings not found!", 132);
     public static final ResultDTO error133 = new ResultDTO(false, "Action available only for card owner!", 133);
-    public static final ResultDTO error134 = new ResultDTO(false, "P2p is not allowed!", 133);
+    public static final ResultDTO error134 = new ResultDTO(false, "P2p is not allowed!", 134);
+    public static final ResultDTO error135 = new ResultDTO(false, "Bank error", 135);
 
 
 }

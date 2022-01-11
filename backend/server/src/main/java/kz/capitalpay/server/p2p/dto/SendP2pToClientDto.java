@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 public class SendP2pToClientDto {
 
     @NotNull(message = "clientCardId must not be null")
-    private Long clientCardId;
+    private String clientCardToken;
     @NotNull(message = "merchantId must not be null")
     private Long merchantId;
     @NotNull(message = "acceptedSum must not be null")
@@ -17,12 +17,12 @@ public class SendP2pToClientDto {
     @NotBlank(message = "sign must not be blank")
     private String signature;
 
-    public Long getClientCardId() {
-        return clientCardId;
+    public String getClientCardToken() {
+        return clientCardToken;
     }
 
-    public void setClientCardId(Long clientCardId) {
-        this.clientCardId = clientCardId;
+    public void setClientCardToken(String clientCardToken) {
+        this.clientCardToken = clientCardToken;
     }
 
     public Long getMerchantId() {

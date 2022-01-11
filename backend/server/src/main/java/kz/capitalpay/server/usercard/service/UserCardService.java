@@ -97,6 +97,10 @@ public class UserCardService {
         return clientCardRepository.findById(id).orElse(null);
     }
 
+    public ClientCard findClientCardByToken(String token) {
+        return clientCardRepository.findByTokenAndValidTrueAndDeletedFalse(token).orElse(null);
+    }
+
     public CardDataResponseDto getCardDataFromTokenServer(String token) {
         String url = cardHoldingUrl + "/card-data?token=" + token;
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
@@ -135,6 +139,7 @@ public class UserCardService {
         clientCard.setToken(token);
         clientCard.setCashBoxId(dto.getCashBoxId());
         clientCard.setMerchantId(dto.getMerchantId());
+        clientCard.setParams(dto.getParameters());
         clientCard = clientCardRepository.save(clientCard);
         return new ResultDTO(true, clientCard, 0);
     }
@@ -305,6 +310,7 @@ public class UserCardService {
         dto.setCardId(clientCard.getId());
         dto.setCardNumber(clientCard.getCardNumber());
         dto.setToken(clientCard.getToken());
+        dto.setParams(clientCard.getParams());
         dto.setSignature(DigestUtils.sha256Hex(clientCard.getId() + clientCard.getToken() + clientCard.getCardNumber() + secret));
         return dto;
     }

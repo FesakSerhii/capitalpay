@@ -6,6 +6,7 @@ public class CardDataForMerchantDto {
     private String token;
     private Long cardId;
     private String signature;
+    private String params;
 
     public String getCardNumber() {
         return cardNumber;
@@ -37,5 +38,13 @@ public class CardDataForMerchantDto {
 
     public void setSignature(String signature) {
         this.signature = signature;
+    }
+
+    public String getParams() {
+        return params;
+    }
+
+    public void setParams(String params) {
+        this.params = params;
     }
 }

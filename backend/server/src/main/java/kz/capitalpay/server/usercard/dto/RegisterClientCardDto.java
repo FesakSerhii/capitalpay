@@ -17,6 +17,7 @@ public class RegisterClientCardDto {
     private Long merchantId;
     @NotNull(message = "cashBoxId must not be null")
     private Long cashBoxId;
+    private String parameters;
 
 
     public String getCardNumber() {
@@ -65,5 +66,13 @@ public class RegisterClientCardDto {
 
     public void setCashBoxId(Long cashBoxId) {
         this.cashBoxId = cashBoxId;
+    }
+
+    public String getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(String parameters) {
+        this.parameters = parameters;
     }
 }

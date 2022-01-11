@@ -16,6 +16,8 @@ public class ClientCard {
     private Long cashBoxId;
     @Column(columnDefinition = "boolean default false")
     private boolean deleted;
+    @Column(columnDefinition = "text")
+    private String params;
 
     public Long getId() {
         return id;
@@ -71,5 +73,13 @@ public class ClientCard {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public String getParams() {
+        return params;
+    }
+
+    public void setParams(String params) {
+        this.params = params;
     }
 }
