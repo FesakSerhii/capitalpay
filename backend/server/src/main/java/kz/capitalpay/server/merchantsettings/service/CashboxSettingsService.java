@@ -10,12 +10,15 @@ import kz.capitalpay.server.merchantsettings.dto.CashBoxSettingDTO;
 import kz.capitalpay.server.merchantsettings.dto.CashBoxSettingFieldDTO;
 import kz.capitalpay.server.merchantsettings.model.CashboxSettings;
 import kz.capitalpay.server.merchantsettings.repository.CashboxSettingsRepository;
+import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
+import kz.capitalpay.server.p2p.service.P2pSettingsService;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
@@ -29,6 +32,7 @@ public class CashboxSettingsService {
     private final ApplicationUserService applicationUserService;
     private final ApplicationRoleService applicationRoleService;
     private final CashboxRepository cashboxRepository;
+    private final P2pSettingsService p2pSettingsService;
 
     public static final String CASHBOX_CURRENCY_LIST = "currencylist";
     public static final String CASHBOX_PAYSYSTEM_LIST = "paysystemlist";
@@ -40,12 +44,13 @@ public class CashboxSettingsService {
     public static final String SECRET = "secret";
     public static final String CLIENT_FEE = "client_fee";
 
-    public CashboxSettingsService(CashboxSettingsRepository cashboxSettingsRepository, MerchantKycService merchantKycService, ApplicationUserService applicationUserService, ApplicationRoleService applicationRoleService, CashboxRepository cashboxRepository) {
+    public CashboxSettingsService(CashboxSettingsRepository cashboxSettingsRepository, MerchantKycService merchantKycService, ApplicationUserService applicationUserService, ApplicationRoleService applicationRoleService, CashboxRepository cashboxRepository, P2pSettingsService p2pSettingsService) {
         this.cashboxSettingsRepository = cashboxSettingsRepository;
         this.cashboxRepository = cashboxRepository;
         this.merchantKycService = merchantKycService;
         this.applicationUserService = applicationUserService;
         this.applicationRoleService = applicationRoleService;
+        this.p2pSettingsService = p2pSettingsService;
     }
 
     public ResultDTO setOrUpdateCashboxSettings(Principal principal, CashBoxSettingDTO request) {
@@ -103,12 +108,18 @@ public class CashboxSettingsService {
 
     public ResultDTO getPublicCashboxSettings(CashBoxSettingDTO cashBoxDTO) {
         try {
-            Map<String, String> result = new HashMap<>();
+            Cashbox cashbox = cashboxRepository.findById(cashBoxDTO.getCashBoxId()).orElse(null);
+            if (Objects.isNull(cashbox)) {
+                return error113;
+            }
+            MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(cashbox.getMerchantId());
+            Map<String, Object> result = new HashMap<>();
             result.put(INTERACTION_URL, getField(cashBoxDTO.getCashBoxId(), INTERACTION_URL));
             result.put(REDIRECT_URL, getField(cashBoxDTO.getCashBoxId(), REDIRECT_URL));
             result.put(REDIRECT_SUCCESS_URL, getField(cashBoxDTO.getCashBoxId(), REDIRECT_SUCCESS_URL));
             result.put(REDIRECT_FAILED_URL, getField(cashBoxDTO.getCashBoxId(), REDIRECT_FAILED_URL));
             result.put(REDIRECT_PENDING_URL, getField(cashBoxDTO.getCashBoxId(), REDIRECT_PENDING_URL));
+            result.put("p2pEnabled", Objects.nonNull(merchantP2pSettings) && merchantP2pSettings.isP2pAllowed() && cashbox.isP2pAllowed());
             return new ResultDTO(true, result, 0);
         } catch (Exception e) {
             e.printStackTrace();
