@@ -8,6 +8,13 @@ import {PaymentFormComponent} from './payment-form/payment-form.component';
 import {CommonBlocksModule} from '../../../../common-blocks/common-blocks.module';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {HttpClientModule} from '@angular/common/http';
+import {IConfig, NgxMaskModule} from 'ngx-mask';
+
+const maskConfigFunction: () => Partial<IConfig> = () => {
+  return {
+    validation: true,
+  };
+};
 @NgModule({
   declarations: [
     AppComponent,
@@ -20,6 +27,8 @@ import {HttpClientModule} from '@angular/common/http';
     HttpClientModule,
     ReactiveFormsModule,
     CommonBlocksModule,
+    NgxMaskModule,
+    NgxMaskModule.forRoot(maskConfigFunction),
   ],
   providers: [],
   bootstrap: [AppComponent]

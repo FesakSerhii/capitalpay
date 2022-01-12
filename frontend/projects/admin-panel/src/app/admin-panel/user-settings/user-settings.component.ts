@@ -12,6 +12,8 @@ import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {P2pService} from '../../service/p2p.service';
 import {PaymentCardModalComponent} from '../../../../../../common-blocks/payment-card-modal/payment-card-modal.component';
 import {map, switchMap} from 'rxjs/operators';
+import {SortHelper} from '../../../../../../src/app/helper/sort-helper';
+import {SearchInputService} from '../../../../../../src/app/service/search-input.service';
 
 @Component({
   selector: 'app-user-settings',
@@ -29,6 +31,7 @@ export class UserSettingsComponent implements OnInit {
               private paymentsService: PaymentsService,
               private modalService: NgbModal,
               private p2pService: P2pService,
+              private searchInputService: SearchInputService,
               private kycService: KycService) {
   }
 
@@ -79,6 +82,7 @@ export class UserSettingsComponent implements OnInit {
   })
   modalTypes = {
     deleteConfirm: 'userDeleteConfirmation',
+    deleteCardConfirm: 'cardDeleteConfirmation',
     blockConfirm: 'userBlockSuccessful',
     delete: 'userDeleteSuccessful',
     block: 'userBlockSuccessful',
@@ -110,7 +114,18 @@ export class UserSettingsComponent implements OnInit {
     cvv2Code: new FormControl(),
   });
   isNewCardAdded: boolean = false
-  cardList: any = []
+  cardList: any = [];
+  dontTouched: any[] = [];
+  //{cashBoxId:string,
+  // methodsArr:[{
+  // method: function,
+  // args: []
+  // }]}
+
+  cardListMethods: any = [];
+  sortHelper = new SortHelper();
+  tableSearch = new FormControl();
+
 
   ngOnInit(): void {
     this.activatedRoute.queryParamMap.subscribe((param) => {
@@ -185,7 +200,8 @@ export class UserSettingsComponent implements OnInit {
   }
 
   async getCommissions() {
-    this.cashBoxList.clear();
+    this.cardListMethods = []
+    this.cashBoxList = new FormArray([])
     const data = {...await this.userService.getUsersCommissions(this.userId)}.data
     for (const cashBox of data) {
       this.p2pService.getCashBoxP2pInfo(cashBox['cashBoxId']).then(resp => {
@@ -288,9 +304,7 @@ export class UserSettingsComponent implements OnInit {
       'merchantId': this.userId,
       'feeList': newFees
     }
-    this.userService.editUsersCommissions(data).then(() => {
-      this.getCommissions()
-    })
+    return this.userService.editUsersCommissions(data)
   }
 
   replaceSymbols(string) {
@@ -321,68 +335,115 @@ export class UserSettingsComponent implements OnInit {
     this.modalService.dismissAll(false)
   }
 
-  setCashBoxP2p(cashBox) {
+  onChangeCashBoxP2p(cashBox) {
+    this.saveMethodsOnCashBoxBeforeSave(cashBox, 'setCashBoxP2p', {...cashBox.value})
+  }
+
+  setCashBoxP2p(cashBox, useDefaultCard = false) {
     let data = {
       'p2pAllowed': cashBox.p2pAllowed,
-      'cashBoxId': cashBox.cashBoxId
+      'cashBoxId': cashBox.cashBoxId,
+      'useDefaultCard': useDefaultCard ? useDefaultCard : cashBox.useDefaultCard
     }
-    this.p2pService.setP2pCashBox(data).then(() => {
-      this.getCommissions()
-    })
+    return this.p2pService.setP2pCashBox(data)
+    //   .then(() => {
+    //   this.getCommissions()
+    // })
   }
-  setMerchantP2p(value=null) {
+
+  setMerchantP2p(value = null) {
     let data = {
-      'p2pAllowed': value!==null?value:this.isP2PActive.value,
+      'p2pAllowed': value !== null ? value : this.isP2PActive.value,
       'merchantId': this.userId
     }
     this.p2pService.setP2p(data).then(() => {
       this.getP2pInfo()
-      this.getCommissions()
+      if (!value) {
+        this.cashBoxList.controls.forEach(cashBox => {
+          if (cashBox['value'].p2pAllowed) {
+            cashBox['controls'].p2pAllowed.patchValue(false)
+            this.saveMethodsOnCashBoxBeforeSave(cashBox, 'setCashBoxP2p', {...cashBox.value})
+            // this.setCashBoxP2p(cashBox.value)
+          }
+        })
+      } else {
+        this.getCommissions()
+      }
     })
   }
 
-  addCashBoxPaymentCard(cashBoxId) {
+  saveMethodsOnCashBoxBeforeSave(cashBox, method, args = null) {
+    const newMetod = {
+      method: method,
+      args: [args]
+    }
+    const cashBoxExistMethods = this.cardListMethods.filter(el => el.cashBoxId === cashBox.value.cashBoxId)[0]
+    if (cashBoxExistMethods) {
+      const existingMethod = cashBoxExistMethods.methodsArr.filter(el => el.method === method)[0]
+      if (existingMethod) {
+        existingMethod.args = [args];
+      } else {
+        cashBoxExistMethods.methodsArr.push({...newMetod})
+      }
+    } else {
+      this.cardListMethods.push({
+        cashBoxId: cashBox.value.cashBoxId,
+        methodsArr: [{...newMetod}]
+      })
+    }
+  }
+
+  saveButton
+
+  addCashBoxPaymentCard(cashBox) {
     this.paymentCard.open().then(card => {
       if (card.hasOwnProperty('token')) {
-        this.setCashBoxCard(card.id, cashBoxId).subscribe(() => {
-          this.getCommissions()
-          this.modalService.dismissAll(false)
-        })
+        this.saveMethodsOnCashBoxBeforeSave(cashBox, 'setCashBoxCard', [card.id, cashBox.value.cashBoxId])
+        // this.setCashBoxCard(card.id, cashBox.value.cashBoxId).subscribe(() => {
+        //   this.getCommissions()
+        this.modalService.dismissAll(false)
+        // })
       } else {
         this.registerPaymentCard(card.cardNumber, card.expirationYear, card.expirationMonth, card.cvv2Code)
           .subscribe(response => {
             this.getCardList()
-            this.setCashBoxCard(response.data.cardId, cashBoxId).subscribe(()=>{
-              this.getCommissions()
-              this.modalService.dismissAll(false)
-            })
+            this.saveMethodsOnCashBoxBeforeSave(cashBox, 'setCashBoxCard', [response.data.cardId, cashBox.value.cashBoxId])
+            // this.setCashBoxCard(response.data.cardId, cashBox.value.cashBoxId).subscribe(()=>{
+            //   this.getCommissions()
+            //   this.modalService.dismissAll(false)
+            // })
+            this.modalService.dismissAll(false)
           })
       }
-      console.log(card);
+      cashBox.controls.useDefaultCard.setValue(card.cardNumber === this.defaultPaymentCard)
+      cashBox.controls.cardNumber.setValue(card.cardNumber)
+      console.log(card.cardNumber === this.defaultPaymentCard);
     })
   }
 
   addMerchantPaymentCard() {
-    console.log(this.isNewCardAdded);
     this.paymentCard.open().then(modalResult => {
         if (modalResult.hasOwnProperty('token')) {
           this.setDefaultCard(modalResult.id)
-        } else {
+        } else if (modalResult) {
           this.registerPaymentCard(modalResult.cardNumber, modalResult.expirationYear, modalResult.expirationMonth, modalResult.cvv2Code)
             .subscribe(response => {
-              if(response){
-                this.isP2PActive?this.setDefaultCard(response['data'].cardId):this.setMerchantP2p()
+              if (response) {
+                this.isP2PActive ? this.setDefaultCard(response['data'].cardId) : this.setMerchantP2p()
               }
-              this.modalService.dismissAll(false)
+              this.paymentCard.close();
               this.getCardList()
             })
+        } else {
+          this.isP2PActive.setValue(false, {emitEvent:false})
+          this.modalService.dismissAll(false)
         }
       }
     )
   }
 
   registerPaymentCard(cardNumber, expirationYear, expirationMonth, cvv2Code) {
-    return this.p2pService.registerCard(cardNumber.trim().replaceAll(' ',''), expirationYear, expirationMonth, cvv2Code, this.userId).pipe(switchMap(resp => {
+    return this.p2pService.registerCard(cardNumber.trim().replaceAll(' ', ''), expirationYear, expirationMonth, cvv2Code, this.userId).pipe(switchMap(resp => {
       return this.p2pService.cardCheckValidity(resp.data.id)
     }))
   }
@@ -392,11 +453,12 @@ export class UserSettingsComponent implements OnInit {
       'merchantId': this.userId,
       'cardId': cardId
     }
-    this.p2pService.setDefaultCard(data).subscribe(()=>{
+    this.p2pService.setDefaultCard(data).subscribe(() => {
       this.getP2pInfo()
       this.modalService.dismissAll(false)
     })
   }
+
   setCashBoxCard(cardId, cashBoxId) {
     const data = {
       'cashBoxId': cashBoxId,
@@ -407,12 +469,78 @@ export class UserSettingsComponent implements OnInit {
   }
 
   async getCardList() {
-    this.cardList = {...await this.p2pService.clientCardList(this.userId)}.data
+    this.cardList = {...await this.p2pService.clientCardList(this.userId)}.data;
+    this.dontTouched = {...await this.p2pService.clientCardList(this.userId)}.data;
   }
 
   logData(data1, data2) {
     console.log(data1);
     console.log(data2);
     console.log(data1 === data2);
+  }
+
+  onUseDefaultCard(cashBox) {
+    if (!cashBox.value.useDefaultCard) {
+      cashBox.controls.cardNumber.reset();
+    } else {
+      cashBox.controls.cardNumber.setValue(this.defaultPaymentCard)
+      this.saveMethodsOnCashBoxBeforeSave(cashBox, 'setCashBoxP2p', {...cashBox.value})
+      // this.setCashBoxP2p(cashBox.value,true)
+    }
+
+  }
+
+  saveCashBoxSettings(cashBox) {
+    //{cashBoxId:string,
+    // methodsArr:[{
+    // method: function,
+    // args: []
+    // }]}
+    this.cardListMethods.forEach(el => {
+      if (el.cashBoxId === cashBox.cashBoxId) {
+        const promises = []
+        el.methodsArr.forEach(method => {
+          console.log(method.args);
+          promises.push(this[method.method](...method.args))
+        })
+        promises.push(this.saveCashBoxFee())
+        Promise.all(promises).then(() => {
+          this.getCommissions();
+        })
+      }
+    })
+  }
+
+  nextSort(field) {
+    let sh: SortHelper = this.sortHelper;
+    this.sortHelper = sh.nextSort(field);
+  }
+
+  get sortedActions() {
+    if (this.sortHelper.sort.sortBy === null) {
+      this.cardList = this.searchInputService.filterData(this.dontTouched, this.tableSearch.value);
+      return this.cardList
+    } else {
+      let sorted = this.dontTouched.sort(
+        (a, b) => {
+          let aField = a[this.sortHelper.sort.sortBy];
+          let bField = b[this.sortHelper.sort.sortBy];
+          let res = aField == bField ? 0 : (aField > bField ? 1 : -1);
+          return this.sortHelper.sort.increase ? res : -res;
+        }
+      );
+      sorted = this.searchInputService.filterData(sorted, '');
+      this.cardList = [...sorted];
+      return this.cardList
+    }
+  }
+
+  deleteCard(card: any) {
+    this.modalType = this.modalTypes['deleteCardConfirm']
+    this.massageModal.open().then(() => {
+      this.p2pService.deleteMerchantCard(card.id, this.userId).then(() => {
+        this.getCardList()
+      })
+    })
   }
 }

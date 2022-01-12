@@ -9,16 +9,19 @@ export class UserCardService {
 
   constructor( public apiService: ApiService) { }
 
-  registerCard(cardNumber,expireYear,expireMonth,cvv2Code,merchantId,cashBoxId) {
-    return this.apiService.post('/client-card/register', {cardNumber,expireYear,expireMonth,cvv2Code,merchantId,cashBoxId}).toPromise();
+  registerCard(cardNumber,expireYear,expireMonth,cvv2Code,merchantId,cashBoxId,parameters) {
+    return this.apiService.post('api','/client-card/register', {cardNumber,expireYear,expireMonth,cvv2Code,merchantId,cashBoxId,parameters}).toPromise();
   }
   cardCheckValidity(cardId) {
-    return this.apiService.post(`/client-card/check-validity/${cardId}`).toPromise();
+    return this.apiService.post('api',`/client-card/check-validity/${cardId}`).toPromise();
   }
   getCardInfo(token) {
-    return this.apiService.post(`/client-card?token=${token}`).toPromise();
+    return this.apiService.post('api',`/client-card?token=${token}`).toPromise();
+  }
+  getCashBoxInfo(cashBoxId) {
+    return this.apiService.post('api',`/cashboxsetting/get`,{cashBoxId}).toPromise();
   }
   clientCardList(token) {
-    return this.apiService.post(`/client-card/client-cards`).toPromise();
+    return this.apiService.post('api',`/client-card/client-cards`).toPromise();
   }
 }

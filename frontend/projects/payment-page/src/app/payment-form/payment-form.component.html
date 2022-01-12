@@ -1,29 +1,49 @@
 <form class="tpsform form2-theme" [formGroup]="cardForm">
 
-  <label class="tpsform_input" for="cardnumber">
+  <label class="tpsform_input" style="position: relative" for="cardnumber">
     <span class="focused">Card number  *</span>
+    <span class="error" style="left: 132px;bottom: -42px;"
+          *ngIf="expInvalid">invalid exp date</span>
     <!--добавьте к span класс .focused при фокусе на инпуте-->
-    <input type="tel" placeholder="" id="cardnumber" formControlName="cardNumber" [class.invalid]="cardForm.controls.cardNumber.invalid">
+    <input type="text" placeholder="" id="cardnumber" formControlName="cardNumber" mask="0000 0000 0000 0000"
+           [disabled]="redirect"
+           [class.disabled]="redirect"
+           [class.invalid]="cardForm.controls.cardNumber.invalid">
+    <span class="error" *ngIf="cardForm.controls.cardNumber.invalid">card invalid</span>
   </label>
   <div class="formline">
     <div class="select form2-theme">
       <div class="select_label">Expiration Date *</div>
-      <app-custom-select classes="noArrow" [values]="['01','02','03','04','05','06','07','08','09','10','11','12']" formControlName="expirationMonth"></app-custom-select>
+      <app-custom-select classes="noArrow"
+                         [disabled]="redirect"
+                         [class.disabled]="redirect"
+                         [values]="['01','02','03','04','05','06','07','08','09','10','11','12']" formControlName="expirationMonth" (click)="dateInvalid()"></app-custom-select>
     </div>
     <div class="select form2-theme">
       <div class="select_label">&nbsp;</div>
-      <app-custom-select classes="noArrow" [values]="[2021,2022,2023,2024,2025,2026]" formControlName="expirationYear"></app-custom-select>
+      <app-custom-select classes="noArrow"
+                         [disabled]="redirect"
+                         [class.disabled]="redirect"
+                         [values]="[2021,2022,2023,2024,2025,2026]" formControlName="expirationYear" (click)="dateInvalid()"></app-custom-select>
     </div>
     <label class="tpsform_input ico pass" for="cardseccode">
       <span>Card Security Code *</span>
       <!--добавьте к span класс .focused при фокусе на инпуте-->
-      <input type="password" placeholder="" id="cardseccode" formControlName="cvv2Code">
+      <input type="number" placeholder="" id="cardseccode" formControlName="cvv2Code" minlength="3" maxlength="3">
+      <span class="error" *ngIf="cardForm.controls.cvv2Code.invalid">invalid cvv length</span>
     </label>
   </div>
   <div class="checkbox">
-    <input type="checkbox" name="" id="termsandprivacy">
+    <input type="checkbox" name="" id="termsandprivacy" [formControl]="acceptTerms">
     <label for="termsandprivacy">I accept the <a href="#!">terms of service</a> and have read the
       <a href="#!">privacy policy</a>.</label>
   </div>
-  <button class="form-btn form2-theme green-theme" type="submit" (click)="saveCard()">Pay</button>
+  <button *ngIf="!redirect"
+    class="form-btn form2-theme" (click)="redirectFailed()">Cancel</button>
+  <button
+    [disabled]="!acceptTerms.value||redirect||cardForm.invalid"
+    [class.disabled]="!acceptTerms.value||redirect||cardForm.invalid"
+    class="form-btn form2-theme green-theme" type="submit" (click)="saveCard()">{{redirect?'You will be redirected to merchant site in '+ redirectTimer +' secs...':'Add Card'}}</button>
 </form>
+
+<!--<app-massage-modal #invalidCardNumber [messageType]="'cardNumberInvalid'"></app-massage-modal>-->

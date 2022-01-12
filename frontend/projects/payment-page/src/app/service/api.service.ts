@@ -7,13 +7,13 @@ import {Observable} from "rxjs";
   providedIn: 'root'
 })
 export class ApiService {
-  private readonly apiBase = environment.api;
+  private readonly apiBase = environment;
 
   constructor(private http: HttpClient) {
   }
-  public get(url: string, params = null): Observable<any> {
+  public get(api, url: string, params = null): Observable<any> {
     const httpParams = this.prepareParams(params);
-    return this.http.get(this.apiBase + url + (httpParams ? '?' + httpParams.toString() : ''));
+    return this.http.get(this.apiBase[api] + url + (httpParams ? '?' + httpParams.toString() : ''));
   }
 
   // tslint:disable-next-line:typedef
@@ -30,43 +30,45 @@ export class ApiService {
     }
     return httpParams;
   }
-  log(url: string, data: any = {}, waitBlob: boolean = false){
+
+  public post(api, url: string, data: any = {}, waitBlob: boolean = false): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const body = JSON.stringify(data);
+    return this.http.post(this.apiBase[api] + url, body, {headers});
+  }
+  log(api, url: string, data: any = {}, waitBlob: boolean = false){
     // const headers = new HttpHeaders({ 'Content-Type': 'application/json'});
     const body = JSON.stringify(data);
     return this.http.post(
-      this.apiBase + url, body, {observe: 'response'});
+      this.apiBase[api] + url, body, {observe: 'response'});
   }
-  public post(url: string, data: any = {}, waitBlob: boolean = false): Observable<any> {
-    const headers = { 'content-type': 'application/json'};
-    const body = JSON.stringify(data);
-    return this.http.post(this.apiBase + url, body, {headers});
-  }
-  public postJwt(url: string, token, data: any = {},): Observable<any> {
+  public postJwt(api, url: string, token, data: any = {},): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json','Authorization':token});
     const body = JSON.stringify(data);
-    return this.http.post(this.apiBase + url, body, {headers});
+    return this.http.post(this.apiBase[api] + url, body, {headers});
+  }
+  public postJwtFile(api, url: string, token, data: any = {},): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json','Authorization':token});
+    const body = JSON.stringify(data);
+    return this.http.post(this.apiBase[api] + url, body, {responseType: 'blob',headers,observe: 'response'});
   }
 
-  public postFormData(url, token, data: FormData): Observable<any> {
-    const headers = new HttpHeaders({ 'Mime-Type': 'multipart/form-data','Authorization':token });
-    return this.http.post(this.apiBase + url, data, { headers });
-  }
 
-  public put(url: string, data: any = {}): Observable<any> {
+  public put(api, url: string, data: any = {}): Observable<any> {
     console.log(url);
-    return this.http.put(this.apiBase + url, data);
+    return this.http.put(this.apiBase[api] + url, data);
   }
 
 
   // tslint:disable-next-line:typedef
-  public delete(url: string, param2: any = null) {
+  public delete(api, url: string, param2: any = null) {
     if (param2 !== null) {
       const options = {
         headers: new HttpHeaders({'Content-Type': 'application/json'}),
         body: param2
       };
-      return this.http.delete(this.apiBase + url, options);
+      return this.http.delete(this.apiBase[api] + url, options);
     }
-    return this.http.delete(this.apiBase + url);
+    return this.http.delete(this.apiBase[api] + url);
   }
 }
