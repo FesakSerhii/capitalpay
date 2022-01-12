@@ -1,5 +1,4 @@
-<form class="tpsform form2-theme" [formGroup]="cardForm">
-
+<form class="tpsform form2-theme" [formGroup]="cardForm" *ngIf="cashBoxInfo.p2pEnabled">
   <label class="tpsform_input" style="position: relative" for="cardnumber">
     <span class="focused">Card number  *</span>
     <span class="error" style="left: 132px;bottom: -42px;"
@@ -45,5 +44,9 @@
     [class.disabled]="!acceptTerms.value||redirect||cardForm.invalid"
     class="form-btn form2-theme green-theme" type="submit" (click)="saveCard()">{{redirect?'You will be redirected to merchant site in '+ redirectTimer +' secs...':'Add Card'}}</button>
 </form>
-
+<ng-container *ngIf="!cashBoxInfo.p2pEnabled">
+  <div class="permitted">
+    <span>Operation not permitted {{redirectTimer}}</span>
+  </div>
+</ng-container>
 <!--<app-massage-modal #invalidCardNumber [messageType]="'cardNumberInvalid'"></app-massage-modal>-->

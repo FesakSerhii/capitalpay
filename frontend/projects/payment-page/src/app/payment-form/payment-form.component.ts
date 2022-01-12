@@ -40,34 +40,36 @@ export class PaymentFormComponent implements OnInit {
       this.merchantId = +param.get('merchantId');
       this.cashBoxId = +param.get('cashBoxId');
       this.parameters = param.get('parameters');
-
-      this.userCardService.getCashBoxInfo(this.cashBoxId).then(resp => {
-        this.cashBoxInfo = resp.data
-      })
+        this.userCardService.getCashBoxInfo(this.cashBoxId).then(resp => {
+          this.cashBoxInfo = resp.data
+          if (this.cashBoxInfo&&!this.cashBoxInfo.p2pEnabled) {
+            this.redirectTimerStart('redirectfailed')
+          }
+        })
     })
     let dateFields = {
       expirationMonth: 'expirationYear',
     };
     for (let v in dateFields) {
       this.cardForm.get(v).setValidators([Validators.required, expirationDateValidator(this.cardForm, dateFields[v])]);
-      // this.cardForm.get(v).valueChanges.subscribe(()=>this.cardForm.get(dateFields[v]).updateValueAndValidity({emitEvent:false}))
       this.cardForm.get(dateFields[v]).setValidators([Validators.required, expirationDateValidator(this.cardForm, v, true)]);
-      // this.cardForm.get(dateFields[v]).valueChanges.subscribe(()=>this.cardForm.get(v).updateValueAndValidity({emitEvent:false}))
     }
-
-
-    // this.cardForm.controls.expirationMonth.valueChanges.subscribe(expirationMonth=>{
-    //   console.log(expirationMonth);
-    //   const isCardValid = valid.expirationMonth('04/24')
-    //   console.log(isCardValid);
-    //   if(!isCardValid.isPotentiallyValid){
-    //     this.cardForm.controls.expirationMonth.setErrors({'invalid expirationMonth': true},{emitEvent:false})
-    //   }
-    // })
+  }
+  redirectTimerStart(type){
+    this.limitedInterval = setInterval(() => {
+      if (this.redirectTimer) {
+        this.redirectTimer = this.redirectTimer - 1;
+      } else {
+        clearInterval(this.limitedInterval);
+        const link = document.createElement('a')
+        link.href = this.cashBoxInfo[type]
+        link.click()
+      }
+    }, 1000)
   }
 
   saveCard() {
-    this.userCardService.registerCard(this.cardForm.value.cardNumber, this.cardForm.value.expirationYear, this.cardForm.value.expirationMonth, this.cardForm.value.cvv2Code, this.merchantId, this.cashBoxId,this.parameters)
+    this.userCardService.registerCard(this.cardForm.value.cardNumber, this.cardForm.value.expirationYear, this.cardForm.value.expirationMonth, this.cardForm.value.cvv2Code, this.merchantId, this.cashBoxId, this.parameters)
       .then(resp => {
           this.token = resp.data.token;
           this.id = resp.data.id;
@@ -75,16 +77,7 @@ export class PaymentFormComponent implements OnInit {
             this.isCardValid = response.result
           }).then(() => {
             this.redirect = true;
-            this.limitedInterval = setInterval(() => {
-              if (this.redirectTimer) {
-                this.redirectTimer = this.redirectTimer - 1;
-              }else{
-                clearInterval(this.limitedInterval);
-                const link = document.createElement('a')
-                link.href = this.cashBoxInfo.redirectsuccess
-                link.click()
-              }
-            },1000)
+            this.redirectTimerStart('redirectsuccess')
           })
         }
       )
