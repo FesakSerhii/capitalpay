@@ -4,6 +4,7 @@ import {UserCardService} from '../service/user-card.service';
 import {ActivatedRoute} from '@angular/router';
 import {validateCard} from '../../../../../common-blocks/validators/paymentCardNumberValidator';
 import {expirationDateValidator} from '../../../../../common-blocks/validators/dateCompareValidator';
+import {filter} from 'rxjs/operators';
 
 @Component({
   selector: 'app-payment-form',
@@ -29,6 +30,7 @@ export class PaymentFormComponent implements OnInit {
   redirect: boolean = false;
   redirectTimer: number = 5;
   parameters: string = null;
+  queryParamEnable: boolean = false;
   acceptTerms = new FormControl();
 
 
@@ -36,17 +38,6 @@ export class PaymentFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.activatedRoute.queryParamMap.subscribe((param) => {
-      this.merchantId = +param.get('merchantId');
-      this.cashBoxId = +param.get('cashBoxId');
-      this.parameters = param.get('parameters');
-        this.userCardService.getCashBoxInfo(this.cashBoxId).then(resp => {
-          this.cashBoxInfo = resp.data
-          if (this.cashBoxInfo&&!this.cashBoxInfo.p2pEnabled) {
-            this.redirectTimerStart('redirectfailed')
-          }
-        })
-    })
     let dateFields = {
       expirationMonth: 'expirationYear',
     };
@@ -54,8 +45,23 @@ export class PaymentFormComponent implements OnInit {
       this.cardForm.get(v).setValidators([Validators.required, expirationDateValidator(this.cardForm, dateFields[v])]);
       this.cardForm.get(dateFields[v]).setValidators([Validators.required, expirationDateValidator(this.cardForm, v, true)]);
     }
+    throw this.activatedRoute.queryParamMap.pipe(filter(param => {
+      return !location.href.includes('merchantId') || param.has('merchantId')
+    })).subscribe(params => {
+      this.queryParamEnable = true;
+      this.merchantId = +params.get('merchantId');
+      this.cashBoxId = +params.get('cashBoxId');
+      this.parameters = params.get('parameters');
+      this.userCardService.getCashBoxInfo(this.cashBoxId).then(resp => {
+        this.cashBoxInfo = resp.data
+        if (this.cashBoxInfo && !this.cashBoxInfo.p2pEnabled) {
+          this.redirectTimerStart('redirectfailed')
+        }
+      })
+    })
   }
-  redirectTimerStart(type){
+
+  redirectTimerStart(type) {
     this.limitedInterval = setInterval(() => {
       if (this.redirectTimer) {
         this.redirectTimer = this.redirectTimer - 1;
