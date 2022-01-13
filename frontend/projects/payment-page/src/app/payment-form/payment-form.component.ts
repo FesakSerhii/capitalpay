@@ -5,6 +5,7 @@ import {ActivatedRoute} from '@angular/router';
 import {validateCard} from '../../../../../common-blocks/validators/paymentCardNumberValidator';
 import {expirationDateValidator} from '../../../../../common-blocks/validators/dateCompareValidator';
 import {filter} from 'rxjs/operators';
+import {BankErrorCodesService} from '../service/bank-error-codes.service';
 
 @Component({
   selector: 'app-payment-form',
@@ -28,13 +29,15 @@ export class PaymentFormComponent implements OnInit {
   isCardValid: boolean = false;
   expInvalid: boolean = false;
   redirect: boolean = false;
+  validityError: boolean = false;
+  validityErrorCode: boolean = false;
   redirectTimer: number = 5;
   parameters: string = null;
   queryParamEnable: boolean = false;
   acceptTerms = new FormControl();
 
 
-  constructor(private userCardService: UserCardService, private activatedRoute: ActivatedRoute) {
+  constructor(private userCardService: UserCardService, private activatedRoute: ActivatedRoute, public bankErrorCodesService:BankErrorCodesService) {
   }
 
   ngOnInit(): void {
@@ -69,7 +72,7 @@ export class PaymentFormComponent implements OnInit {
         clearInterval(this.limitedInterval);
         const link = document.createElement('a')
         link.href = this.cashBoxInfo[type]
-        link.click()
+        // link.click()
       }
     }, 1000)
   }
@@ -77,13 +80,21 @@ export class PaymentFormComponent implements OnInit {
   saveCard() {
     this.userCardService.registerCard(this.cardForm.value.cardNumber, this.cardForm.value.expirationYear, this.cardForm.value.expirationMonth, this.cardForm.value.cvv2Code, this.merchantId, this.cashBoxId, this.parameters)
       .then(resp => {
-          this.token = resp.data.token;
+        // console.log(resp);
+        this.token = resp.data.token;
           this.id = resp.data.id;
           this.userCardService.cardCheckValidity(this.id).then(response => {
+            console.log(response);
             this.isCardValid = response.result
+            if(!response.data.valid){
+              throw new Error(response.data.returnCode)
+            }
           }).then(() => {
             this.redirect = true;
             this.redirectTimerStart('redirectsuccess')
+          }).catch(err=>{
+            this.validityError = true;
+            this.validityErrorCode = err.message;
           })
         }
       )
@@ -106,5 +117,8 @@ export class PaymentFormComponent implements OnInit {
     const link = document.createElement('a')
     link.href = this.cashBoxInfo.redirectfailed
     link.click()
+  }
+  getErrMassage(){
+   return this.bankErrorCodesService.getErrMassage(this.validityErrorCode)
   }
 }

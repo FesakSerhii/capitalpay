@@ -33,10 +33,11 @@
         <span class="error" *ngIf="cardForm.controls.cvv2Code.invalid">invalid cvv length</span>
       </label>
     </div>
-    <div class="checkbox">
+    <div class="checkbox" style="position: relative">
       <input type="checkbox" name="" id="termsandprivacy" [formControl]="acceptTerms">
       <label for="termsandprivacy">I accept the <a href="#!">terms of service</a> and have read the
         <a href="#!">privacy policy</a>.</label>
+      <span class="error" *ngIf="validityError">Error on card validity check.{{getErrMassage()}} Use other card or try again</span>
     </div>
     <button *ngIf="!redirect"
             class="form-btn form2-theme" (click)="redirectFailed()">Cancel</button>
