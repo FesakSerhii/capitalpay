@@ -72,7 +72,7 @@ export class PaymentFormComponent implements OnInit {
         clearInterval(this.limitedInterval);
         const link = document.createElement('a')
         link.href = this.cashBoxInfo[type]
-        // link.click()
+        link.click()
       }
     }, 1000)
   }
