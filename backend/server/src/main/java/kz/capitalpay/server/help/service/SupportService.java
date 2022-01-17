@@ -74,12 +74,6 @@ public class SupportService {
             supportRequest.setStatus(NEW_SUPPORT_REQUEST);
             supportRequest.setTimestamp(System.currentTimeMillis());
             supportRequestRepository.save(supportRequest);
-
-//            String text = String.format("Ваше обращение в службу поддержки принято.<br/>" +
-//                    "Ему присвоен номер: %s <br/>", supportRequest.getId());
-
-//            sendEmailService.sendMail(applicationUser.getEmail(), "CapitalPay", text);
-
             return new ResultDTO(true, supportRequest.getId(), 0);
 
         } catch (Exception e) {
@@ -281,5 +275,13 @@ public class SupportService {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }
+    }
+
+    public List<SupportRequest> findAllByEmailMessageSentFalse() {
+        return supportRequestRepository.findAllByEmailMessageSentFalse();
+    }
+
+    public List<SupportRequest> saveAllSupportRequests(List<SupportRequest> request) {
+        return supportRequestRepository.saveAll(request);
     }
 }

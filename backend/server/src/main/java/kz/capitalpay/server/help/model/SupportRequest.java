@@ -1,6 +1,9 @@
 package kz.capitalpay.server.help.model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 @Entity
 public class SupportRequest {
@@ -22,6 +25,9 @@ public class SupportRequest {
     String status;
     @Column(name = "important", columnDefinition = "boolean default false", nullable = false)
     boolean important;
+
+    @Column(columnDefinition = "boolean default false")
+    boolean emailMessageSent;
 
     public Long getTimestamp() {
         return timestamp;
@@ -93,5 +99,13 @@ public class SupportRequest {
 
     public void setImportant(boolean important) {
         this.important = important;
+    }
+
+    public boolean isEmailMessageSent() {
+        return emailMessageSent;
+    }
+
+    public void setEmailMessageSent(boolean emailMessageSent) {
+        this.emailMessageSent = emailMessageSent;
     }
 }

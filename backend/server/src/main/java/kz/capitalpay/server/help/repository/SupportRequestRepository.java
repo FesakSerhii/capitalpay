@@ -8,4 +8,6 @@ import java.util.List;
 public interface SupportRequestRepository extends JpaRepository<SupportRequest, Long> {
 
     List<SupportRequest> findAllByAuthorId(Long id);
+
+    List<SupportRequest> findAllByEmailMessageSentFalse();
 }
