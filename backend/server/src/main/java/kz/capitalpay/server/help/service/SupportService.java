@@ -81,7 +81,7 @@ public class SupportService {
             String text = String.format("Ваше обращение в службу поддержки принято.<br/>" +
                     "Ему присвоен номер: %s <br/>", supportRequest.getId());
 
-            sendEmailService.sendMail(applicationUser.getEmail(), "CapitalPay", text);
+//            sendEmailService.sendMail(applicationUser.getEmail(), "CapitalPay", text);
 
             return new ResultDTO(true, supportRequest.getId(), 0);
 
