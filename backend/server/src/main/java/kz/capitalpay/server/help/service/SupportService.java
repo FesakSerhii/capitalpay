@@ -66,7 +66,6 @@ public class SupportService {
     public ResultDTO supportRequest(Principal principal, SupportRequestDTO request) {
         try {
             ApplicationUser applicationUser = applicationUserService.getUserByLogin(principal.getName());
-
             SupportRequest supportRequest = new SupportRequest();
             supportRequest.setAuthorId(applicationUser.getId());
             supportRequest.setSubject(request.getSubject());
@@ -75,13 +74,12 @@ public class SupportService {
             supportRequest.setFileIdList(gson.toJson(request.getFileList()));
             supportRequest.setStatus(NEW_SUPPORT_REQUEST);
             supportRequest.setTimestamp(System.currentTimeMillis());
-
             supportRequestRepository.save(supportRequest);
 
             String text = String.format("Ваше обращение в службу поддержки принято.<br/>" +
                     "Ему присвоен номер: %s <br/>", supportRequest.getId());
 
-//            sendEmailService.sendMail(applicationUser.getEmail(), "CapitalPay", text);
+            sendEmailService.sendMail(applicationUser.getEmail(), "CapitalPay", text);
 
             return new ResultDTO(true, supportRequest.getId(), 0);
 

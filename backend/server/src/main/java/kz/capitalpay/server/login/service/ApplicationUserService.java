@@ -176,8 +176,7 @@ public class ApplicationUserService {
     }
 
     public ApplicationUser getUserByLogin(String name) {
-        ApplicationUser applicationUser = applicationUserRepository.findByUsername(name);
-        return applicationUser;
+        return applicationUserRepository.findByUsername(name);
     }
 
     public String validIpAddress(HttpServletRequest request, String username) {
