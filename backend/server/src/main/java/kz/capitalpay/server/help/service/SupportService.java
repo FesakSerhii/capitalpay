@@ -38,7 +38,6 @@ public class SupportService {
     public static final String PROCESSED = "processed";
     public static final String CLOSED = "closed";
 
-
     @Autowired
     Gson gson;
 
@@ -76,10 +75,10 @@ public class SupportService {
             supportRequest.setTimestamp(System.currentTimeMillis());
             supportRequestRepository.save(supportRequest);
 
-            String text = String.format("Ваше обращение в службу поддержки принято.<br/>" +
-                    "Ему присвоен номер: %s <br/>", supportRequest.getId());
+//            String text = String.format("Ваше обращение в службу поддержки принято.<br/>" +
+//                    "Ему присвоен номер: %s <br/>", supportRequest.getId());
 
-            sendEmailService.sendMail(applicationUser.getEmail(), "CapitalPay", text);
+//            sendEmailService.sendMail(applicationUser.getEmail(), "CapitalPay", text);
 
             return new ResultDTO(true, supportRequest.getId(), 0);
 
