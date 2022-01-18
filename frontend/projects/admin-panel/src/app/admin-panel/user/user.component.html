@@ -49,7 +49,7 @@
 <!--                    <input type="text" class="form-control">-->
 <!--                  </div>-->
 <!--                </div>-->
-              
+
 <!--                <div class="d-flex">-->
 <!--                  <label class="col-form-label">Статус</label>-->
 <!--                  <div class="form-group has-default bmd-form-group">-->
@@ -151,7 +151,8 @@
                         <td>{{user.username}}</td>
                         <td>{{user.email}}</td>
                         <td>{{user.realname}}</td>
-                        <td>{{user.roles}}</td>
+<!--                        <td>{{user.roles}}</td>-->
+                        <td>{{converseUserList(user.roles)}}</td>
                         <td>{{statuses[user.status]}}</td>
                       </tr>
                       </tbody>
