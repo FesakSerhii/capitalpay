@@ -299,20 +299,19 @@ public class HalykSoapService {
         return new CheckCardValidityResponse(false, paymentOrderResponse.get_return().getReturnCode());
     }
 
-    public boolean sendP2ToClient(String ipAddress, String userAgent, CardDataResponseDto merchantCardData, SendP2pToClientDto dto,
-                                  String paymentToPan) {
-        P2pPayment payment = generateP2pPayment(ipAddress, userAgent, dto.getMerchantId(), dto.getAcceptedSum(), dto.getCashBoxId());
+    public boolean sendP2p(String ipAddress, String userAgent, CardDataResponseDto payerCardData, SendP2pToClientDto dto,
+                           String paymentToPan, boolean toClient) {
+        P2pPayment payment = generateP2pPayment(ipAddress, userAgent, dto.getMerchantId(), dto.getAcceptedSum(), dto.getCashBoxId(), toClient);
         String orderId = payment.getOrderId();
-        String pan = merchantCardData.getCardNumber();
-        String year = merchantCardData.getExpireYear().substring(2);
-        String month = merchantCardData.getExpireMonth();
-        String cvv2 = merchantCardData.getCvv2Code();
+        String pan = payerCardData.getCardNumber();
+        String year = payerCardData.getExpireYear().substring(2);
+        String month = payerCardData.getExpireMonth();
+        String cvv2 = payerCardData.getCvv2Code();
         String amount = dto.getAcceptedSum().toString().replace(".", ",");
         String currency = "KZT";
 
         EpayServiceStub.TransferOrderResponse transferOrderResponse = sendTransferOrderRequest(amount, currency, cvv2,
                 merchantid, month, year, orderId, pan, paymentToPan);
-
 
         logger.info("transferOrderResponse");
         logger.info("Message: " + transferOrderResponse.get_return().getMessage());
@@ -485,7 +484,7 @@ public class HalykSoapService {
     }
 
     private P2pPayment generateP2pPayment(String ipAddress, String userAgent, Long merchantId,
-                                          BigDecimal totalAmount, Long cashBoxId) {
+                                          BigDecimal totalAmount, Long cashBoxId, boolean toClient) {
         P2pPayment payment = new P2pPayment();
         P2pPayment lastPayment = p2pPaymentRepository.findLast().orElse(null);
         if (Objects.nonNull(lastPayment)) {
@@ -502,6 +501,7 @@ public class HalykSoapService {
         payment.setTimestamp(System.currentTimeMillis());
         payment.setTotalAmount(totalAmount);
         payment.setUserAgent(userAgent);
+        payment.setToClient(toClient);
         payment.setStatus(NEW_PAYMENT);
         payment = p2pPaymentRepository.save(payment);
         p2pPaymentLogService.newEvent(payment.getGuid(), ipAddress, NEW_PAYMENT, gson.toJson(payment));

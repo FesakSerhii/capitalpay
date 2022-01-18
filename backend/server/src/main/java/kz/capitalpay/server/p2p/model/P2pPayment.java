@@ -22,6 +22,7 @@ public class P2pPayment {
     String ipAddress;
     String userAgent;
     String status;
+    boolean toClient;
 
     public String getGuid() {
         return guid;
@@ -109,5 +110,13 @@ public class P2pPayment {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public boolean isToClient() {
+        return toClient;
+    }
+
+    public void setToClient(boolean toClient) {
+        this.toClient = toClient;
     }
 }

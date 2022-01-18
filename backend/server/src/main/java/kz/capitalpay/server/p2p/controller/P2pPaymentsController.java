@@ -36,4 +36,15 @@ public class P2pPaymentsController {
         String userAgent = httpRequest.getHeader("User-Agent");
         return p2pService.sendP2pToClient(dto, userAgent, ipAddress);
     }
+
+    @PostMapping("/send-p2p-to-merchant")
+    public ResultDTO sendP2pToMerchant(@RequestBody @Valid SendP2pToClientDto dto,
+                                       HttpServletRequest httpRequest) {
+        String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
+        if (ipAddress == null) {
+            ipAddress = httpRequest.getRemoteAddr();
+        }
+        String userAgent = httpRequest.getHeader("User-Agent");
+        return p2pService.sendP2pToMerchant(dto, userAgent, ipAddress);
+    }
 }

@@ -8,7 +8,6 @@ import kz.capitalpay.server.p2p.dto.SendP2pToClientDto;
 import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import kz.capitalpay.server.usercard.dto.CardDataResponseDto;
-import kz.capitalpay.server.usercard.model.ClientCard;
 import kz.capitalpay.server.usercard.model.UserCard;
 import kz.capitalpay.server.usercard.service.UserCardService;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -70,7 +69,52 @@ public class P2pService {
             CardDataResponseDto merchantCardData = userCardService.getCardDataFromTokenServer(merchantCard.getToken());
             CardDataResponseDto clientCardData = userCardService.getCardDataFromTokenServer(dto.getClientCardToken());
 
-            boolean paymentSuccess = halykSoapService.sendP2ToClient(ipAddress, userAgent, merchantCardData, dto, clientCardData.getCardNumber());
+            boolean paymentSuccess = halykSoapService.sendP2p(ipAddress, userAgent, merchantCardData, dto, clientCardData.getCardNumber(), true);
+
+            return paymentSuccess ? new ResultDTO(true, "Successful payment", 0) : ErrorDictionary.error135;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ErrorDictionary.error130;
+        }
+    }
+
+    public ResultDTO sendP2pToMerchant(SendP2pToClientDto dto, String userAgent, String ipAddress) {
+        String secret = cashboxService.getSecret(dto.getCashBoxId());
+        String sha256hex = DigestUtils.sha256Hex(dto.getCashBoxId() + dto.getMerchantId() + dto.getClientCardToken() + secret);
+        if (!sha256hex.equals(dto.getSignature())) {
+            LOGGER.error("Cashbox ID: {}", dto.getCashBoxId());
+            LOGGER.error("Merchant ID: {}", dto.getMerchantId());
+            LOGGER.error("Client card ID: {}", dto.getClientCardToken());
+            LOGGER.error("Server sign: {}", sha256hex);
+            LOGGER.error("Client sign: {}", dto.getSignature());
+            return new ResultDTO(false, "Invalid signature", -1);
+        }
+
+        try {
+            Cashbox cashbox = cashboxService.findById(dto.getCashBoxId());
+            if (!cashbox.getMerchantId().equals(dto.getMerchantId())) {
+                return ErrorDictionary.error122;
+            }
+
+            Long merchantCardId = cashboxService.findUserCardIdByCashBoxId(dto.getCashBoxId());
+            if (merchantCardId.equals(0L)) {
+                return ErrorDictionary.error130;
+            }
+
+            MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(dto.getMerchantId());
+            if (Objects.isNull(merchantP2pSettings) || !merchantP2pSettings.isP2pAllowed()) {
+                return ErrorDictionary.error134;
+            }
+
+            if (!cashbox.isP2pAllowed()) {
+                return ErrorDictionary.error134;
+            }
+
+            UserCard merchantCard = userCardService.findUserCardById(merchantCardId);
+            CardDataResponseDto merchantCardData = userCardService.getCardDataFromTokenServer(merchantCard.getToken());
+            CardDataResponseDto clientCardData = userCardService.getCardDataFromTokenServer(dto.getClientCardToken());
+
+            boolean paymentSuccess = halykSoapService.sendP2p(ipAddress, userAgent, clientCardData, dto, merchantCardData.getCardNumber(), false);
 
             return paymentSuccess ? new ResultDTO(true, "Successful payment", 0) : ErrorDictionary.error135;
         } catch (Exception e) {
