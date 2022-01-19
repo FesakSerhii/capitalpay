@@ -209,8 +209,8 @@ public class CashboxService {
             return "error";
         }
         String location = cashboxSettingsService.getField(payment.getCashboxId(), REDIRECT_URL)
-                + "?billid=" + payment.getBillId()
-                + "&status=" + payment.getStatus()
+                + "?status=" + payment.getStatus()
+                + (Objects.nonNull(payment.getBillId()) ? "?billid=" + payment.getBillId() : "")
                 + "&paymentid=" + payment.getGuid();
         if (payment.getParam() != null && payment.getParam().length() > 0) {
             location = location + "&param=" + URLEncoder.encode(payment.getParam(), Charset.defaultCharset());

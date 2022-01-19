@@ -10,6 +10,9 @@ import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.service.ApplicationUserService;
 import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.merchantsettings.service.MerchantKycService;
+import kz.capitalpay.server.p2p.mapper.P2pPaymentMapper;
+import kz.capitalpay.server.p2p.model.P2pPayment;
+import kz.capitalpay.server.p2p.service.P2pPaymentService;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.paysystems.dto.ActivatePaysystemDTO;
@@ -76,12 +79,18 @@ public class PaysystemService {
     @Autowired
     CashboxService cashboxService;
 
+    @Autowired
+    P2pPaymentService p2pPaymentService;
+
 
     @Value("${remote.api.addres}")
     String apiAddress;
 
     @Autowired
     HalykSoapService halykSoapService;
+
+    @Autowired
+    P2pPaymentMapper p2pPaymentMapper;
 
     Map<String, PaySystem> paySystems = new HashMap<>();
 
@@ -245,7 +254,6 @@ public class PaysystemService {
                 httpResponse.setHeader("Location", url);
             } catch (Exception e) {
                 e.printStackTrace();
-
             }
         }
         httpResponse.setStatus(302);
@@ -255,7 +263,7 @@ public class PaysystemService {
     public HttpServletResponse paymentPayAndRedirect(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
                                                      String paymentid, String cardHolderName, String cvv,
                                                      String month, String pan, String year,
-                                                     String phone, String email) {
+                                                     String phone, String email, boolean p2p) {
 
         String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
         if (ipAddress == null) {
@@ -265,13 +273,18 @@ public class PaysystemService {
         logger.info("Request IP: {}", ipAddress);
         logger.info("Request User-Agent: {}", httpRequest.getHeader("User-Agent"));
 
-        Payment payment = paymentService.addPhoneAndEmail(paymentid, phone, email);
+        String result;
+        Payment payment;
+        if (p2p) {
+            P2pPayment p2pPayment = p2pPaymentService.addPhoneAndEmail(paymentid, phone, email);
+            payment = p2pPaymentMapper.toPayment(p2pPayment);
+        } else {
+            payment = paymentService.addPhoneAndEmail(paymentid, phone, email);
+        }
 
-        String result = halykSoapService.paymentOrder(payment.getTotalAmount(),
-                cardHolderName, cvv, payment.getDescription(), month, payment.getPaySysPayId(), pan, year);
-
+        result = halykSoapService.paymentOrder(payment.getTotalAmount(),
+                cardHolderName, cvv, payment.getDescription(), month, payment.getPaySysPayId(), pan, year, p2p);
         BillPaymentDto bill = createBill(payment, httpRequest, cardHolderName, pan, result);
-
         return redirectAfterPay(httpResponse, bill);
     }
 }

@@ -1,11 +1,13 @@
 package kz.capitalpay.server.p2p.service;
 
 import kz.capitalpay.server.cashbox.model.Cashbox;
+import kz.capitalpay.server.cashbox.service.CashboxCurrencyService;
 import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.constants.ErrorDictionary;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.p2p.dto.SendP2pToClientDto;
 import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
+import kz.capitalpay.server.p2p.model.P2pPayment;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import kz.capitalpay.server.usercard.dto.CardDataResponseDto;
 import kz.capitalpay.server.usercard.model.UserCard;
@@ -15,7 +17,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
+
+import static kz.capitalpay.server.constants.ErrorDictionary.*;
 
 @Service
 public class P2pService {
@@ -25,23 +31,20 @@ public class P2pService {
     private final CashboxService cashboxService;
     private final UserCardService userCardService;
     private final P2pSettingsService p2pSettingsService;
+    private final P2pPaymentService p2pPaymentService;
+    private final CashboxCurrencyService cashboxCurrencyService;
 
-    public P2pService(HalykSoapService halykSoapService, CashboxService cashboxService, UserCardService userCardService, P2pSettingsService p2pSettingsService) {
+    public P2pService(HalykSoapService halykSoapService, CashboxService cashboxService, UserCardService userCardService, P2pSettingsService p2pSettingsService, P2pPaymentService p2pPaymentService, CashboxCurrencyService cashboxCurrencyService) {
         this.halykSoapService = halykSoapService;
         this.cashboxService = cashboxService;
         this.userCardService = userCardService;
         this.p2pSettingsService = p2pSettingsService;
+        this.p2pPaymentService = p2pPaymentService;
+        this.cashboxCurrencyService = cashboxCurrencyService;
     }
 
     public ResultDTO sendP2pToClient(SendP2pToClientDto dto, String userAgent, String ipAddress) {
-        String secret = cashboxService.getSecret(dto.getCashBoxId());
-        String sha256hex = DigestUtils.sha256Hex(dto.getCashBoxId() + dto.getMerchantId() + dto.getClientCardToken() + secret);
-        if (!sha256hex.equals(dto.getSignature())) {
-            LOGGER.error("Cashbox ID: {}", dto.getCashBoxId());
-            LOGGER.error("Merchant ID: {}", dto.getMerchantId());
-            LOGGER.error("Client card ID: {}", dto.getClientCardToken());
-            LOGGER.error("Server sign: {}", sha256hex);
-            LOGGER.error("Client sign: {}", dto.getSignature());
+        if (checkP2pSignature(dto)) {
             return new ResultDTO(false, "Invalid signature", -1);
         }
 
@@ -79,14 +82,7 @@ public class P2pService {
     }
 
     public ResultDTO sendP2pToMerchant(SendP2pToClientDto dto, String userAgent, String ipAddress) {
-        String secret = cashboxService.getSecret(dto.getCashBoxId());
-        String sha256hex = DigestUtils.sha256Hex(dto.getCashBoxId() + dto.getMerchantId() + dto.getClientCardToken() + secret);
-        if (!sha256hex.equals(dto.getSignature())) {
-            LOGGER.error("Cashbox ID: {}", dto.getCashBoxId());
-            LOGGER.error("Merchant ID: {}", dto.getMerchantId());
-            LOGGER.error("Client card ID: {}", dto.getClientCardToken());
-            LOGGER.error("Server sign: {}", sha256hex);
-            LOGGER.error("Client sign: {}", dto.getSignature());
+        if (checkP2pSignature(dto)) {
             return new ResultDTO(false, "Invalid signature", -1);
         }
 
@@ -121,5 +117,58 @@ public class P2pService {
             e.printStackTrace();
             return ErrorDictionary.error130;
         }
+    }
+
+    public ResultDTO createAnonymousP2pPayment(String userAgent, String ipAddress, Long cashBoxId, Long merchantId,
+                                               BigDecimal totalAmount, String currency, String param, String signature) {
+        if (checkAnonymousP2pSignature(cashBoxId, merchantId, totalAmount, signature)) {
+            return new ResultDTO(false, "Invalid signature", -1);
+        }
+
+        Cashbox cashbox = cashboxService.findById(cashBoxId);
+        if (cashbox == null) {
+            return error113;
+        }
+
+        if (!cashbox.getMerchantId().equals(merchantId)) {
+            return ErrorDictionary.error122;
+        }
+        BigDecimal amount = totalAmount.movePointLeft(2).setScale(2, RoundingMode.HALF_UP);
+
+        if (!cashboxCurrencyService.checkCurrencyEnable(cashbox.getId(), merchantId, currency)) {
+            return error112;
+        }
+
+        if (param != null && param.length() > 255) {
+            return error117;
+        }
+
+        P2pPayment p2pPayment = p2pPaymentService.generateP2pPayment(ipAddress, userAgent, merchantId, amount, cashBoxId, false, currency, param);
+        return new ResultDTO(true, p2pPayment, 0);
+    }
+
+    private boolean checkP2pSignature(SendP2pToClientDto dto) {
+        String secret = cashboxService.getSecret(dto.getCashBoxId());
+        BigDecimal amount = dto.getAcceptedSum().movePointLeft(2).setScale(2, RoundingMode.HALF_UP);
+        String sha256hex = DigestUtils.sha256Hex(dto.getCashBoxId() + dto.getMerchantId() + dto.getClientCardToken() + amount.toString() + secret);
+        LOGGER.error("Cashbox ID: {}", dto.getCashBoxId());
+        LOGGER.error("Merchant ID: {}", dto.getMerchantId());
+        LOGGER.error("Client card ID: {}", dto.getClientCardToken());
+        LOGGER.error("amount.toString(): {}", amount.toString());
+        LOGGER.error("Server sign: {}", sha256hex);
+        LOGGER.error("Client sign: {}", dto.getSignature());
+        return sha256hex.equals(dto.getSignature());
+    }
+
+    private boolean checkAnonymousP2pSignature(Long cashBoxId, Long merchantId, BigDecimal totalAmount, String signature) {
+        String secret = cashboxService.getSecret(cashBoxId);
+        BigDecimal amount = totalAmount.movePointLeft(2).setScale(2, RoundingMode.HALF_UP);
+        String sha256hex = DigestUtils.sha256Hex(cashBoxId + merchantId + amount.toString() + secret);
+        LOGGER.error("Cashbox ID: {}", cashBoxId);
+        LOGGER.error("Merchant ID: {}", merchantId);
+        LOGGER.error("amount.toString(): {}", amount.toString());
+        LOGGER.error("Server sign: {}", sha256hex);
+        LOGGER.error("Client sign: {}", signature);
+        return sha256hex.equals(signature);
     }
 }

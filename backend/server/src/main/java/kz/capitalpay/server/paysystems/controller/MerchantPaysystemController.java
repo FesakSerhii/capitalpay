@@ -1,7 +1,6 @@
 package kz.capitalpay.server.paysystems.controller;
 
 import com.google.gson.Gson;
-
 import kz.capitalpay.server.currency.dto.MerchantRequestDTO;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.paysystems.dto.MerchantEditListDTO;
@@ -47,8 +46,6 @@ public class MerchantPaysystemController {
     }
 
 
-
-
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResultDTO handleValidationExceptions(
@@ -59,6 +56,6 @@ public class MerchantPaysystemController {
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-        return new ResultDTO(false, errors,-2);
+        return new ResultDTO(false, errors, -2);
     }
 }

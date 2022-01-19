@@ -6,6 +6,7 @@ import kz.capitalpay.server.p2p.dto.SendP2pToClientDto;
 import kz.capitalpay.server.p2p.model.P2pPayment;
 import kz.capitalpay.server.p2p.repository.P2pPaymentRepository;
 import kz.capitalpay.server.p2p.service.P2pPaymentLogService;
+import kz.capitalpay.server.p2p.service.P2pPaymentService;
 import kz.capitalpay.server.payments.model.CheckCardValidityPayment;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.repository.CheckCardValidityPaymentRepository;
@@ -39,9 +40,9 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
 
-import static kz.capitalpay.server.simple.service.SimpleService.*;
+import static kz.capitalpay.server.simple.service.SimpleService.PENDING;
+import static kz.capitalpay.server.simple.service.SimpleService.SUCCESS;
 
 @Service
 public class HalykSoapService {
@@ -101,6 +102,9 @@ public class HalykSoapService {
 
     @Autowired
     P2pPaymentLogService p2pPaymentLogService;
+
+    @Autowired
+    P2pPaymentService p2pPaymentService;
 
     private String createTransferOrder(HalykTransferOrderDTO paymentOrder, String cvc, String month, String year, String pan) {
         String concatString = paymentOrder.getOrderid() + paymentOrder.getAmount() + paymentOrder.getCurrency() +
@@ -206,7 +210,7 @@ public class HalykSoapService {
     }
 
     public String paymentOrder(BigDecimal amount, String cardholderName, String cvc, String desc,
-                               String month, String orderid, String pan, String year) {
+                               String month, String orderid, String pan, String year, boolean p2p) {
         try {
             HalykPaymentOrder paymentOrder = new HalykPaymentOrder();
             paymentOrder.setTimestamp(System.currentTimeMillis());
@@ -237,7 +241,11 @@ public class HalykSoapService {
             }
             if (paymentOrder.getReturnCode() != null && paymentOrder.getReturnCode().equals("00")) {
                 logger.info("Code 00, order: {}", gson.toJson(paymentOrder));
-                paymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), SUCCESS);
+                if (p2p) {
+                    p2pPaymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), SUCCESS);
+                } else {
+                    paymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), SUCCESS);
+                }
             } else {
                 if (paymentOrder.getPareq() != null && paymentOrder.getMd() != null) {
 
@@ -246,7 +254,11 @@ public class HalykSoapService {
                     param.put("MD", paymentOrder.getMd());
                     param.put("PaReq", paymentOrder.getPareq());
                     logger.info("Code 00, order: {}", gson.toJson(paymentOrder));
-                    paymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), PENDING);
+                    if (p2p) {
+                        p2pPaymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), PENDING);
+                    } else {
+                        paymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), PENDING);
+                    }
                     return gson.toJson(param);
                 }
             }
@@ -301,7 +313,8 @@ public class HalykSoapService {
 
     public boolean sendP2p(String ipAddress, String userAgent, CardDataResponseDto payerCardData, SendP2pToClientDto dto,
                            String paymentToPan, boolean toClient) {
-        P2pPayment payment = generateP2pPayment(ipAddress, userAgent, dto.getMerchantId(), dto.getAcceptedSum(), dto.getCashBoxId(), toClient);
+        P2pPayment payment = p2pPaymentService.generateP2pPayment(ipAddress, userAgent, dto.getMerchantId(),
+                dto.getAcceptedSum(), dto.getCashBoxId(), toClient, "KZT", null);
         String orderId = payment.getOrderId();
         String pan = payerCardData.getCardNumber();
         String year = payerCardData.getExpireYear().substring(2);
@@ -466,7 +479,7 @@ public class HalykSoapService {
         CheckCardValidityPayment payment = new CheckCardValidityPayment();
         CheckCardValidityPayment lastPayment = checkCardValidityPaymentRepository.findLast().orElse(null);
         if (Objects.nonNull(lastPayment)) {
-            payment.setOrderId(generateOrderId(lastPayment.getOrderId()));
+            payment.setOrderId(p2pPaymentService.generateOrderId(lastPayment.getOrderId()));
         } else {
             payment.setOrderId("00000163601600");
         }
@@ -481,41 +494,6 @@ public class HalykSoapService {
         payment.setStatus("NEW");
         payment = checkCardValidityPaymentRepository.save(payment);
         return payment;
-    }
-
-    private P2pPayment generateP2pPayment(String ipAddress, String userAgent, Long merchantId,
-                                          BigDecimal totalAmount, Long cashBoxId, boolean toClient) {
-        P2pPayment payment = new P2pPayment();
-        P2pPayment lastPayment = p2pPaymentRepository.findLast().orElse(null);
-        if (Objects.nonNull(lastPayment)) {
-            payment.setOrderId(generateOrderId(lastPayment.getOrderId()));
-        } else {
-            payment.setOrderId("00000173801600");
-        }
-        payment.setGuid(UUID.randomUUID().toString());
-        payment.setCurrency("KZT");
-        payment.setLocalDateTime(LocalDateTime.now());
-        payment.setIpAddress(ipAddress);
-        payment.setCashboxId(cashBoxId);
-        payment.setMerchantId(merchantId);
-        payment.setTimestamp(System.currentTimeMillis());
-        payment.setTotalAmount(totalAmount);
-        payment.setUserAgent(userAgent);
-        payment.setToClient(toClient);
-        payment.setStatus(NEW_PAYMENT);
-        payment = p2pPaymentRepository.save(payment);
-        p2pPaymentLogService.newEvent(payment.getGuid(), ipAddress, NEW_PAYMENT, gson.toJson(payment));
-        return payment;
-    }
-
-    private String generateOrderId(String lastOrderId) {
-        Long lastOrderIdLong = Long.parseLong(lastOrderId);
-        Long newOrderId = lastOrderIdLong + 1;
-        StringBuilder zerosStr = new StringBuilder();
-        if (String.valueOf(newOrderId).length() < 14) {
-            zerosStr.append("0".repeat(Math.max(0, 14 - String.valueOf(newOrderId).length())));
-        }
-        return zerosStr.toString() + newOrderId;
     }
 
     public String checkOrder(String orderid) {
@@ -693,7 +671,7 @@ public class HalykSoapService {
 
     }
 
-    public Payment paymentOrderAcs(String md, String pares, String sessionid) {
+    public Object paymentOrderAcs(String md, String pares, String sessionid, boolean p2p) {
         try {
             HalykPaymentOrderAcs paymentOrderAcs = new HalykPaymentOrderAcs();
             paymentOrderAcs.setTimestamp(System.currentTimeMillis());
@@ -722,9 +700,11 @@ public class HalykSoapService {
             logger.info(gson.toJson(paymentOrderAcs));
             if (paymentOrderAcs.getReturnCode() != null && paymentOrderAcs.getReturnCode().equals("00")) {
                 logger.info("Return code: {}", paymentOrderAcs.getReturnCode());
-
-                Payment payment = paymentService.setStatusByPaySysPayId(paymentOrderAcs.getOrderid(), SUCCESS);
-                return payment;
+                if (p2p) {
+                    return p2pPaymentService.setStatusByPaySysPayId(paymentOrderAcs.getOrderid(), SUCCESS);
+                } else {
+                    return paymentService.setStatusByPaySysPayId(paymentOrderAcs.getOrderid(), SUCCESS);
+                }
             }
             return null;
 
@@ -864,10 +844,13 @@ public class HalykSoapService {
         return cashbox;
     }
 
-    public Payment getPaymentByMd(String md) {
+    public Object getPaymentByMd(String md) {
         HalykPaymentOrder paymentOrder = halykPaymentOrderRepository.findTopByMd(md);
         Payment payment = paymentService.getPaymentByOrderId(paymentOrder.getOrderid());
-        return payment;
+        if (Objects.nonNull(payment)) {
+            return payment;
+        }
+        return p2pPaymentService.findByOrderId(paymentOrder.getOrderid());
     }
 
     public String getSessionByPaRes(String paRes) {
@@ -876,11 +859,14 @@ public class HalykSoapService {
         return paymentOrder.getSessionid();
     }
 
-    public Payment getPaymentByPaRes(String paRes) {
+    public Object getPaymentByPaRes(String paRes) {
         String pareq = paRes.replace("-OK", "");
         HalykPaymentOrder paymentOrder = halykPaymentOrderRepository.findTopByPareq(pareq);
         logger.info("PayOrder: {}", gson.toJson(paymentOrder));
         Payment payment = paymentService.getByPaySysPayId(paymentOrder.getOrderid());
-        return payment;
+        if (Objects.nonNull(payment)) {
+            return payment;
+        }
+        return p2pPaymentService.findByOrderId(paymentOrder.getOrderid());
     }
 }

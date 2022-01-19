@@ -23,6 +23,9 @@ public class P2pPayment {
     String userAgent;
     String status;
     boolean toClient;
+    String phone;
+    String email;
+    String param;
 
     public String getGuid() {
         return guid;
@@ -118,5 +121,29 @@ public class P2pPayment {
 
     public void setToClient(boolean toClient) {
         this.toClient = toClient;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getParam() {
+        return param;
+    }
+
+    public void setParam(String param) {
+        this.param = param;
     }
 }

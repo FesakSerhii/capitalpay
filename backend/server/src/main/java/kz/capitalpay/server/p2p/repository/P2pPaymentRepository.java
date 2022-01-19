@@ -15,4 +15,6 @@ public interface P2pPaymentRepository extends JpaRepository<P2pPayment, String> 
             " order by timestamp desc " +
             " limit 1 ", nativeQuery = true)
     Optional<P2pPayment> findLast();
+
+    Optional<P2pPayment> findByOrderId(String orderId);
 }
