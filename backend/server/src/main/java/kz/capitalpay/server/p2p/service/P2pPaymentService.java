@@ -150,7 +150,7 @@ public class P2pPaymentService {
         paymentDetail.setCurrency(payment.getCurrency());
         paymentDetail.setParam(payment.getParam());
         paymentDetail.setStatus(payment.getStatus());
-        BigDecimal amount = payment.getTotalAmount().movePointLeft(2).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal amount = payment.getTotalAmount().setScale(2, RoundingMode.HALF_UP);
         String sha256hex = DigestUtils.sha256Hex(payment.getCashboxId().toString() + payment.getStatus() + amount.toString() + secret);
         paymentDetail.setSignature(sha256hex);
         return paymentDetail;

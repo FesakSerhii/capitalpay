@@ -133,7 +133,7 @@ public class P2pService {
         if (!cashbox.getMerchantId().equals(merchantId)) {
             return ErrorDictionary.error122;
         }
-        BigDecimal amount = totalAmount.movePointLeft(2).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal amount = totalAmount.setScale(2, RoundingMode.HALF_UP);
 
         if (!cashboxCurrencyService.checkCurrencyEnable(cashbox.getId(), merchantId, currency)) {
             return error112;
@@ -149,26 +149,26 @@ public class P2pService {
 
     private boolean checkP2pSignature(SendP2pToClientDto dto) {
         String secret = cashboxService.getSecret(dto.getCashBoxId());
-        BigDecimal amount = dto.getAcceptedSum().movePointLeft(2).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal amount = dto.getAcceptedSum().setScale(2, RoundingMode.HALF_UP);
         String sha256hex = DigestUtils.sha256Hex(dto.getCashBoxId() + dto.getMerchantId() + dto.getClientCardToken() + amount.toString() + secret);
-        LOGGER.error("Cashbox ID: {}", dto.getCashBoxId());
-        LOGGER.error("Merchant ID: {}", dto.getMerchantId());
-        LOGGER.error("Client card ID: {}", dto.getClientCardToken());
-        LOGGER.error("amount.toString(): {}", amount.toString());
-        LOGGER.error("Server sign: {}", sha256hex);
-        LOGGER.error("Client sign: {}", dto.getSignature());
+        LOGGER.info("Cashbox ID: {}", dto.getCashBoxId());
+        LOGGER.info("Merchant ID: {}", dto.getMerchantId());
+        LOGGER.info("Client card ID: {}", dto.getClientCardToken());
+        LOGGER.info("amount.toString(): {}", amount.toString());
+        LOGGER.info("Server sign: {}", sha256hex);
+        LOGGER.info("Client sign: {}", dto.getSignature());
         return sha256hex.equals(dto.getSignature());
     }
 
     private boolean checkAnonymousP2pSignature(Long cashBoxId, Long merchantId, BigDecimal totalAmount, String signature) {
         String secret = cashboxService.getSecret(cashBoxId);
-        BigDecimal amount = totalAmount.movePointLeft(2).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal amount = totalAmount.setScale(2, RoundingMode.HALF_UP);
         String sha256hex = DigestUtils.sha256Hex(cashBoxId + merchantId + amount.toString() + secret);
-        LOGGER.error("Cashbox ID: {}", cashBoxId);
-        LOGGER.error("Merchant ID: {}", merchantId);
-        LOGGER.error("amount.toString(): {}", amount.toString());
-        LOGGER.error("Server sign: {}", sha256hex);
-        LOGGER.error("Client sign: {}", signature);
+        LOGGER.info("Cashbox ID: {}", cashBoxId);
+        LOGGER.info("Merchant ID: {}", merchantId);
+        LOGGER.info("amount.toString(): {}", amount.toString());
+        LOGGER.info("Server sign: {}", sha256hex);
+        LOGGER.info("Client sign: {}", signature);
         return sha256hex.equals(signature);
     }
 }
