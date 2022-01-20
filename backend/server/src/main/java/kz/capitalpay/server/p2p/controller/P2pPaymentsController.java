@@ -64,7 +64,7 @@ public class P2pPaymentsController {
     @PostMapping("/send-anonymous-p2p-to-merchant")
     public void paymentCardPay(HttpServletRequest httpRequest,
                                HttpServletResponse httpResponse,
-                               SendAnonymousP2pToMerchantDto dto) {
+                               @Valid @RequestBody SendAnonymousP2pToMerchantDto dto) {
 
         paysystemService.paymentPayAndRedirect(
                 httpRequest, httpResponse, dto.getPaymentId(), dto.getCardHolderName(), dto.getCvv(),
