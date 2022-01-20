@@ -184,7 +184,7 @@ public class P2pService {
         String result = halykSoapService.paymentOrder(p2pPayment.getTotalAmount(),
                 cardHolderName, cvv, "P2p payment to merchant", month, p2pPayment.getOrderId(), pan, year, true);
         BillPaymentDto bill = createBill(p2pPayment, httpRequest, cardHolderName, pan, result);
-        return redirectAfterPay(bill);
+        return checkReturnCode(bill);
     }
 
     private boolean checkP2pSignature(SendP2pToClientDto dto) {
@@ -212,7 +212,7 @@ public class P2pService {
         return sha256hex.equals(signature);
     }
 
-    private ResultDTO redirectAfterPay(BillPaymentDto bill) {
+    private ResultDTO checkReturnCode(BillPaymentDto bill) {
         if (("OK").equals(bill.getResultPayment())) {
             return new ResultDTO(true, "Successful payment", 0);
         }
