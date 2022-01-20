@@ -1,19 +1,16 @@
 package kz.capitalpay.server.p2p.dto;
 
-import kz.capitalpay.server.paysystems.dto.BillPaymentDto;
-
 public class AnonymousP2pPaymentResponseDto {
     private String acsUrl;
     private String MD;
     private String PaReq;
-    private BillPaymentDto billPaymentDto;
+    //    private BillPaymentDto billPaymentDto;
     private String paySystemCallbackUrl;
 
-    public AnonymousP2pPaymentResponseDto(String acsUrl, String MD, String paReq, BillPaymentDto billPaymentDto, String paySystemCallbackUrl) {
+    public AnonymousP2pPaymentResponseDto(String acsUrl, String MD, String paReq, String paySystemCallbackUrl) {
         this.acsUrl = acsUrl;
         this.MD = MD;
         PaReq = paReq;
-        this.billPaymentDto = billPaymentDto;
         this.paySystemCallbackUrl = paySystemCallbackUrl;
     }
 
@@ -39,14 +36,6 @@ public class AnonymousP2pPaymentResponseDto {
 
     public void setPaReq(String paReq) {
         PaReq = paReq;
-    }
-
-    public BillPaymentDto getBillPaymentDto() {
-        return billPaymentDto;
-    }
-
-    public void setBillPaymentDto(BillPaymentDto billPaymentDto) {
-        this.billPaymentDto = billPaymentDto;
     }
 
     public String getPaySystemCallbackUrl() {

@@ -226,7 +226,7 @@ public class P2pService {
         try {
             LinkedHashMap<String, String> param = gson.fromJson(bill.getResultPayment(), LinkedHashMap.class);
             AnonymousP2pPaymentResponseDto dto = new AnonymousP2pPaymentResponseDto(param.get("acsUrl"),
-                    param.get("MD"), param.get("PaReq"), bill, termUrl);
+                    param.get("MD"), param.get("PaReq"), termUrl);
             return new ResultDTO(true, dto, 0);
         } catch (Exception e) {
             e.printStackTrace();
