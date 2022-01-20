@@ -11,6 +11,8 @@ import kz.capitalpay.server.merchantsettings.dto.CashBoxSettingFieldDTO;
 import kz.capitalpay.server.merchantsettings.model.CashboxSettings;
 import kz.capitalpay.server.merchantsettings.repository.CashboxSettingsRepository;
 import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
+import kz.capitalpay.server.p2p.model.P2pPayment;
+import kz.capitalpay.server.p2p.service.P2pPaymentService;
 import kz.capitalpay.server.p2p.service.P2pSettingsService;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +35,7 @@ public class CashboxSettingsService {
     private final ApplicationRoleService applicationRoleService;
     private final CashboxRepository cashboxRepository;
     private final P2pSettingsService p2pSettingsService;
+    private final P2pPaymentService p2pPaymentService;
 
     public static final String CASHBOX_CURRENCY_LIST = "currencylist";
     public static final String CASHBOX_PAYSYSTEM_LIST = "paysystemlist";
@@ -44,13 +47,14 @@ public class CashboxSettingsService {
     public static final String SECRET = "secret";
     public static final String CLIENT_FEE = "client_fee";
 
-    public CashboxSettingsService(CashboxSettingsRepository cashboxSettingsRepository, MerchantKycService merchantKycService, ApplicationUserService applicationUserService, ApplicationRoleService applicationRoleService, CashboxRepository cashboxRepository, P2pSettingsService p2pSettingsService) {
+    public CashboxSettingsService(CashboxSettingsRepository cashboxSettingsRepository, MerchantKycService merchantKycService, ApplicationUserService applicationUserService, ApplicationRoleService applicationRoleService, CashboxRepository cashboxRepository, P2pSettingsService p2pSettingsService, P2pPaymentService p2pPaymentService) {
         this.cashboxSettingsRepository = cashboxSettingsRepository;
         this.cashboxRepository = cashboxRepository;
         this.merchantKycService = merchantKycService;
         this.applicationUserService = applicationUserService;
         this.applicationRoleService = applicationRoleService;
         this.p2pSettingsService = p2pSettingsService;
+        this.p2pPaymentService = p2pPaymentService;
     }
 
     public ResultDTO setOrUpdateCashboxSettings(Principal principal, CashBoxSettingDTO request) {
@@ -119,6 +123,31 @@ public class CashboxSettingsService {
             result.put(REDIRECT_SUCCESS_URL, getField(cashBoxDTO.getCashBoxId(), REDIRECT_SUCCESS_URL));
             result.put(REDIRECT_FAILED_URL, getField(cashBoxDTO.getCashBoxId(), REDIRECT_FAILED_URL));
             result.put(REDIRECT_PENDING_URL, getField(cashBoxDTO.getCashBoxId(), REDIRECT_PENDING_URL));
+            result.put("p2pEnabled", Objects.nonNull(merchantP2pSettings) && merchantP2pSettings.isP2pAllowed() && cashbox.isP2pAllowed());
+            return new ResultDTO(true, result, 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultDTO(false, e.getMessage(), -1);
+        }
+    }
+
+    public ResultDTO getPublicCashboxSettings(String p2pPaymentId) {
+        try {
+            P2pPayment p2pPayment = p2pPaymentService.findById(p2pPaymentId);
+            if (Objects.isNull(p2pPayment)) {
+                return error118;
+            }
+            Cashbox cashbox = cashboxRepository.findById(p2pPayment.getCashboxId()).orElse(null);
+            if (Objects.isNull(cashbox)) {
+                return error113;
+            }
+            MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(cashbox.getMerchantId());
+            Map<String, Object> result = new HashMap<>();
+            result.put(INTERACTION_URL, getField(p2pPayment.getCashboxId(), INTERACTION_URL));
+            result.put(REDIRECT_URL, getField(p2pPayment.getCashboxId(), REDIRECT_URL));
+            result.put(REDIRECT_SUCCESS_URL, getField(p2pPayment.getCashboxId(), REDIRECT_SUCCESS_URL));
+            result.put(REDIRECT_FAILED_URL, getField(p2pPayment.getCashboxId(), REDIRECT_FAILED_URL));
+            result.put(REDIRECT_PENDING_URL, getField(p2pPayment.getCashboxId(), REDIRECT_PENDING_URL));
             result.put("p2pEnabled", Objects.nonNull(merchantP2pSettings) && merchantP2pSettings.isP2pAllowed() && cashbox.isP2pAllowed());
             return new ResultDTO(true, result, 0);
         } catch (Exception e) {

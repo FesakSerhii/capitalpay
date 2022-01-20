@@ -4,10 +4,7 @@ import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.merchantsettings.dto.CashBoxSettingDTO;
 import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
@@ -25,5 +22,11 @@ public class CashBoxPublicSettingsController {
     @RolesAllowed({ADMIN, OPERATOR, MERCHANT})
     ResultDTO getCashBoxSettings(@Valid @RequestBody CashBoxSettingDTO request) {
         return cashboxSettingsService.getPublicCashboxSettings(request);
+    }
+
+    @PostMapping("/get-by-paymentid")
+    @RolesAllowed({ADMIN, OPERATOR, MERCHANT})
+    ResultDTO getCashBoxSettings(@RequestParam String paymentId) {
+        return cashboxSettingsService.getPublicCashboxSettings(paymentId);
     }
 }
