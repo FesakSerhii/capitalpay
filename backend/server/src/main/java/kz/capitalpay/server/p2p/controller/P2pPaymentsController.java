@@ -90,7 +90,7 @@ public class P2pPaymentsController {
                 totalAmount, currency, param, signature);
         if (resultDTO.isResult() && resultDTO.getData() instanceof P2pPayment) {
             P2pPayment payment = (P2pPayment) resultDTO.getData();
-            redirectAttributes.addAttribute("paymentId", payment.getGuid());
+            redirectAttributes.addAttribute("id", payment.getGuid());
         } else {
             redirectAttributes.addAttribute("error", resultDTO.getError());
             redirectAttributes.addAttribute("data", resultDTO.getData());
