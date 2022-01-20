@@ -11,7 +11,6 @@ import kz.capitalpay.server.login.service.ApplicationUserService;
 import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.merchantsettings.service.MerchantKycService;
 import kz.capitalpay.server.p2p.mapper.P2pPaymentMapper;
-import kz.capitalpay.server.p2p.model.P2pPayment;
 import kz.capitalpay.server.p2p.service.P2pPaymentService;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
@@ -263,7 +262,7 @@ public class PaysystemService {
     public HttpServletResponse paymentPayAndRedirect(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
                                                      String paymentid, String cardHolderName, String cvv,
                                                      String month, String pan, String year,
-                                                     String phone, String email, boolean p2p) {
+                                                     String phone, String email) {
 
         String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
         if (ipAddress == null) {
@@ -273,17 +272,10 @@ public class PaysystemService {
         logger.info("Request IP: {}", ipAddress);
         logger.info("Request User-Agent: {}", httpRequest.getHeader("User-Agent"));
 
-        String result;
-        Payment payment;
-        if (p2p) {
-            P2pPayment p2pPayment = p2pPaymentService.addPhoneAndEmail(paymentid, phone, email);
-            payment = p2pPaymentMapper.toPayment(p2pPayment);
-        } else {
-            payment = paymentService.addPhoneAndEmail(paymentid, phone, email);
-        }
+        Payment payment = paymentService.addPhoneAndEmail(paymentid, phone, email);
 
-        result = halykSoapService.paymentOrder(payment.getTotalAmount(),
-                cardHolderName, cvv, payment.getDescription(), month, payment.getPaySysPayId(), pan, year, p2p);
+        String result = halykSoapService.paymentOrder(payment.getTotalAmount(),
+                cardHolderName, cvv, payment.getDescription(), month, payment.getPaySysPayId(), pan, year, false);
         BillPaymentDto bill = createBill(payment, httpRequest, cardHolderName, pan, result);
         return redirectAfterPay(httpResponse, bill);
     }

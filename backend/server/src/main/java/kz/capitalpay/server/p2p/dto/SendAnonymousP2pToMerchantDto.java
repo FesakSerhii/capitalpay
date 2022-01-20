@@ -15,10 +15,6 @@ public class SendAnonymousP2pToMerchantDto {
     private String pan;
     @NotNull(message = "year must not be null")
     private String year;
-    @NotNull(message = "phone must not be null")
-    private String phone;
-    @NotNull(message = "email must not be null")
-    private String email;
 
     public String getPaymentId() {
         return paymentId;
@@ -66,21 +62,5 @@ public class SendAnonymousP2pToMerchantDto {
 
     public void setYear(String year) {
         this.year = year;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 }

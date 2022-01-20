@@ -1,12 +1,14 @@
 package kz.capitalpay.server.p2p.controller;
 
+import com.google.gson.Gson;
+import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.p2p.dto.SendAnonymousP2pToMerchantDto;
 import kz.capitalpay.server.p2p.dto.SendP2pToClientDto;
 import kz.capitalpay.server.p2p.model.P2pPayment;
 import kz.capitalpay.server.p2p.service.P2pPaymentService;
 import kz.capitalpay.server.p2p.service.P2pService;
-import kz.capitalpay.server.paysystems.service.PaysystemService;
+import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +17,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 
@@ -26,16 +27,23 @@ public class P2pPaymentsController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(P2pPaymentsController.class);
     private final P2pService p2pService;
-    private final PaysystemService paysystemService;
     private final P2pPaymentService p2pPaymentService;
+    private final HalykSoapService halykSoapService;
+    private final CashboxService cashboxService;
+    private final Gson gson;
 
     @Value("${payment.p2p.redirect.url}")
     private String paymentRedirectUrl;
 
-    public P2pPaymentsController(P2pService p2pService, PaysystemService paysystemService, P2pPaymentService p2pPaymentService) {
+    @Value("${kkbsign.send.order.action.link}")
+    String actionLink;
+
+    public P2pPaymentsController(P2pService p2pService, P2pPaymentService p2pPaymentService, HalykSoapService halykSoapService, CashboxService cashboxService, Gson gson) {
         this.p2pService = p2pService;
-        this.paysystemService = paysystemService;
         this.p2pPaymentService = p2pPaymentService;
+        this.halykSoapService = halykSoapService;
+        this.cashboxService = cashboxService;
+        this.gson = gson;
     }
 
 
@@ -62,13 +70,11 @@ public class P2pPaymentsController {
     }
 
     @PostMapping("/send-anonymous-p2p-to-merchant")
-    public void paymentCardPay(HttpServletRequest httpRequest,
-                               HttpServletResponse httpResponse,
-                               @Valid @RequestBody SendAnonymousP2pToMerchantDto dto) {
+    public ResultDTO paymentCardPay(HttpServletRequest httpRequest,
+                                    @Valid @RequestBody SendAnonymousP2pToMerchantDto dto) {
 
-        paysystemService.paymentPayAndRedirect(
-                httpRequest, httpResponse, dto.getPaymentId(), dto.getCardHolderName(), dto.getCvv(),
-                dto.getMonth(), dto.getPan(), dto.getYear(), dto.getPhone(), dto.getEmail(), true);
+        return p2pService.sendAnonymousP2pPayment(httpRequest, dto.getPaymentId(), dto.getCardHolderName(),
+                dto.getCvv(), dto.getMonth(), dto.getPan(), dto.getYear());
     }
 
     @PostMapping("/anonymous-p2p-to-merchant")
@@ -101,5 +107,37 @@ public class P2pPaymentsController {
     @PostMapping("/get-payment")
     public ResultDTO getP2pPaymentData(@RequestParam String id) {
         return p2pPaymentService.getP2pPaymentDataById(id);
+    }
+
+    @PostMapping("/paysystem/listener")
+    public RedirectView listener(@RequestParam String PaRes,
+                                 @RequestParam String MD,
+                                 @RequestParam String TermUrl,
+                                 RedirectAttributes redirectAttributes) {
+        LOGGER.info("PaRes: {}", PaRes);
+        LOGGER.info("MD: {}", MD);
+        LOGGER.info("TermUrl: {}", TermUrl);
+
+
+        String sessionid;
+        Object payment;
+        // TODO: Костыль ради песочницы
+        if (actionLink.equals("https://testpay.kkb.kz")) {
+            sessionid = halykSoapService.getSessionByPaRes(PaRes);
+            payment = halykSoapService.getPaymentByPaRes(PaRes);
+        } else {
+            sessionid = halykSoapService.getSessionByMD(MD);
+            payment = halykSoapService.getPaymentByMd(MD);
+        }
+
+        LOGGER.info(sessionid);
+        LOGGER.info(gson.toJson(payment));
+
+        payment = halykSoapService.paymentOrderAcs(MD, PaRes, sessionid, true);
+        P2pPayment p2pPayment = (P2pPayment) payment;
+
+        redirectAttributes.addAttribute("paymentId", p2pPayment);
+        redirectAttributes.addAttribute("status", p2pPayment.getStatus());
+        return new RedirectView(paymentRedirectUrl);
     }
 }

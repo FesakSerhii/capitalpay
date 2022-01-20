@@ -68,7 +68,7 @@ public class PublicPaysystemController {
 
         httpResponse = paysystemService.paymentPayAndRedirect(
                 httpRequest, httpResponse,
-                paymentid, cardHolderName, cvv, month, pan, year, phone, email, false);
+                paymentid, cardHolderName, cvv, month, pan, year, phone, email);
 
     }
 

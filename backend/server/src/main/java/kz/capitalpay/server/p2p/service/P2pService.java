@@ -1,13 +1,18 @@
 package kz.capitalpay.server.p2p.service;
 
+import com.google.gson.Gson;
 import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.cashbox.service.CashboxCurrencyService;
 import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.constants.ErrorDictionary;
 import kz.capitalpay.server.dto.ResultDTO;
+import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
+import kz.capitalpay.server.merchantsettings.service.MerchantKycService;
+import kz.capitalpay.server.p2p.dto.AnonymousP2pPaymentResponseDto;
 import kz.capitalpay.server.p2p.dto.SendP2pToClientDto;
 import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
 import kz.capitalpay.server.p2p.model.P2pPayment;
+import kz.capitalpay.server.paysystems.dto.BillPaymentDto;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import kz.capitalpay.server.usercard.dto.CardDataResponseDto;
 import kz.capitalpay.server.usercard.model.UserCard;
@@ -15,13 +20,19 @@ import kz.capitalpay.server.usercard.service.UserCardService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.LinkedHashMap;
 import java.util.Objects;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
+import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.CLIENT_FEE;
+import static kz.capitalpay.server.merchantsettings.service.MerchantKycService.TOTAL_FEE;
 
 @Service
 public class P2pService {
@@ -33,14 +44,23 @@ public class P2pService {
     private final P2pSettingsService p2pSettingsService;
     private final P2pPaymentService p2pPaymentService;
     private final CashboxCurrencyService cashboxCurrencyService;
+    private final Gson gson;
+    private final MerchantKycService merchantKycService;
+    private final CashboxSettingsService cashboxSettingsService;
 
-    public P2pService(HalykSoapService halykSoapService, CashboxService cashboxService, UserCardService userCardService, P2pSettingsService p2pSettingsService, P2pPaymentService p2pPaymentService, CashboxCurrencyService cashboxCurrencyService) {
+    @Value("${halyk.soap.p2p.termurl}")
+    private String termUrl;
+
+    public P2pService(HalykSoapService halykSoapService, CashboxService cashboxService, UserCardService userCardService, P2pSettingsService p2pSettingsService, P2pPaymentService p2pPaymentService, CashboxCurrencyService cashboxCurrencyService, Gson gson, MerchantKycService merchantKycService, CashboxSettingsService cashboxSettingsService) {
         this.halykSoapService = halykSoapService;
         this.cashboxService = cashboxService;
         this.userCardService = userCardService;
         this.p2pSettingsService = p2pSettingsService;
         this.p2pPaymentService = p2pPaymentService;
         this.cashboxCurrencyService = cashboxCurrencyService;
+        this.gson = gson;
+        this.merchantKycService = merchantKycService;
+        this.cashboxSettingsService = cashboxSettingsService;
     }
 
     public ResultDTO sendP2pToClient(SendP2pToClientDto dto, String userAgent, String ipAddress) {
@@ -147,6 +167,26 @@ public class P2pService {
         return new ResultDTO(true, p2pPayment, 0);
     }
 
+    public ResultDTO sendAnonymousP2pPayment(HttpServletRequest httpRequest, String paymentId,
+                                             String cardHolderName, String cvv,
+                                             String month, String pan, String year) {
+
+        String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
+        if (ipAddress == null) {
+            ipAddress = httpRequest.getRemoteAddr();
+        }
+        LOGGER.info("Payment ID: {}", paymentId);
+        LOGGER.info("Request IP: {}", ipAddress);
+        LOGGER.info("Request User-Agent: {}", httpRequest.getHeader("User-Agent"));
+
+        P2pPayment p2pPayment = p2pPaymentService.findById(paymentId);
+
+        String result = halykSoapService.paymentOrder(p2pPayment.getTotalAmount(),
+                cardHolderName, cvv, "P2p payment to merchant", month, p2pPayment.getOrderId(), pan, year, true);
+        BillPaymentDto bill = createBill(p2pPayment, httpRequest, cardHolderName, pan, result);
+        return redirectAfterPay(bill);
+    }
+
     private boolean checkP2pSignature(SendP2pToClientDto dto) {
         String secret = cashboxService.getSecret(dto.getCashBoxId());
         BigDecimal amount = dto.getAcceptedSum().setScale(2, RoundingMode.HALF_UP);
@@ -170,5 +210,67 @@ public class P2pService {
         LOGGER.info("Server sign: {}", sha256hex);
         LOGGER.info("Client sign: {}", signature);
         return sha256hex.equals(signature);
+    }
+
+    private ResultDTO redirectAfterPay(BillPaymentDto bill) {
+        if (("OK").equals(bill.getResultPayment())) {
+            return new ResultDTO(true, "Successful payment", 0);
+        }
+
+        if ("FAIL".equals(bill.getResultPayment())) {
+            return ErrorDictionary.error135;
+        }
+
+        LOGGER.info("Redirect to 3DS");
+        LOGGER.info("Result: {}", bill.getResultPayment());
+        try {
+            LinkedHashMap<String, String> param = gson.fromJson(bill.getResultPayment(), LinkedHashMap.class);
+            AnonymousP2pPaymentResponseDto dto = new AnonymousP2pPaymentResponseDto(param.get("acsUrl"),
+                    param.get("MD"), param.get("PaReq"), bill, termUrl);
+            return new ResultDTO(true, dto, 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return error135;
+        }
+    }
+
+    private BillPaymentDto createBill(P2pPayment payment, HttpServletRequest httpRequest, String cardHolderName, String pan, String result) {
+        BillPaymentDto billPaymentDto = new BillPaymentDto();
+        billPaymentDto.setResultPayment(result);
+        setAmountFields(payment.getCashboxId(), payment.getTotalAmount(), billPaymentDto, payment.getCurrency());
+        billPaymentDto.setNumberTransaction(payment.getOrderId());
+        if (!"ok".equalsIgnoreCase(result)) {
+            return billPaymentDto;
+        }
+        billPaymentDto.setWebSiteMerchant(httpRequest.getServerName());
+        billPaymentDto.setDateTransaction(payment.getLocalDateTime());
+        billPaymentDto.setTypeTransaction(1);
+        billPaymentDto.setCardHolderName(cardHolderName);
+        billPaymentDto.setCardNumber(pan);
+        billPaymentDto.setPaySystemName(pan);
+        return billPaymentDto;
+    }
+
+    private void setAmountFields(Long cashboxId, BigDecimal totalAmount, BillPaymentDto billPaymentDto, String currency) {
+        BigDecimal oneHundred = new BigDecimal(100);
+        Cashbox cashbox = cashboxService.findById(cashboxId);
+        BigDecimal totalFee = BigDecimal.valueOf(Long.parseLong(merchantKycService.getField(cashbox.getMerchantId(),
+                TOTAL_FEE)));
+        BigDecimal clientFee = BigDecimal.valueOf(Long.parseLong(cashboxSettingsService
+                .getField(cashboxId, CLIENT_FEE)));
+
+        BigDecimal amountWithoutClientFee = totalAmount
+                .divide((BigDecimal.ONE
+                                .subtract(clientFee
+                                        .divide(oneHundred, MathContext.DECIMAL128))
+                                .divide(BigDecimal.ONE
+                                                .subtract(totalFee
+                                                        .divide(oneHundred, MathContext.DECIMAL128)),
+                                        MathContext.DECIMAL128)),
+                        MathContext.DECIMAL128)
+                .setScale(0, RoundingMode.HALF_UP);
+        billPaymentDto.setTotalAmount(totalAmount.toString(), currency);
+        billPaymentDto.setAmountPayment(amountWithoutClientFee.toString(), currency);
+        billPaymentDto.setAmountFee(totalAmount.subtract(amountWithoutClientFee).toString(), currency);
     }
 }
