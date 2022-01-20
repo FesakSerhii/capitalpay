@@ -2,6 +2,8 @@ package kz.capitalpay.server.p2p.service;
 
 import com.google.gson.Gson;
 import kz.capitalpay.server.cashbox.service.CashboxService;
+import kz.capitalpay.server.constants.ErrorDictionary;
+import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.p2p.model.P2pPayment;
 import kz.capitalpay.server.p2p.repository.P2pPaymentRepository;
 import kz.capitalpay.server.simple.dto.PaymentDetailDTO;
@@ -114,6 +116,14 @@ public class P2pPaymentService {
             LOGGER.error("Payment: {}", payment);
         }
         return null;
+    }
+
+    public ResultDTO getP2pPaymentDataById(String id) {
+        P2pPayment p2pPayment = findById(id);
+        if (Objects.isNull(p2pPayment)) {
+            return ErrorDictionary.error118;
+        }
+        return new ResultDTO(true, p2pPayment, 0);
     }
 
     private void notifyMerchant(P2pPayment payment) {
