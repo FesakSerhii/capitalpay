@@ -111,49 +111,15 @@ public class CashboxSettingsService {
     }
 
     public ResultDTO getPublicCashboxSettings(CashBoxSettingDTO cashBoxDTO) {
-        try {
-            Cashbox cashbox = cashboxRepository.findById(cashBoxDTO.getCashBoxId()).orElse(null);
-            if (Objects.isNull(cashbox)) {
-                return error113;
-            }
-            MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(cashbox.getMerchantId());
-            Map<String, Object> result = new HashMap<>();
-            result.put(INTERACTION_URL, getField(cashBoxDTO.getCashBoxId(), INTERACTION_URL));
-            result.put(REDIRECT_URL, getField(cashBoxDTO.getCashBoxId(), REDIRECT_URL));
-            result.put(REDIRECT_SUCCESS_URL, getField(cashBoxDTO.getCashBoxId(), REDIRECT_SUCCESS_URL));
-            result.put(REDIRECT_FAILED_URL, getField(cashBoxDTO.getCashBoxId(), REDIRECT_FAILED_URL));
-            result.put(REDIRECT_PENDING_URL, getField(cashBoxDTO.getCashBoxId(), REDIRECT_PENDING_URL));
-            result.put("p2pEnabled", Objects.nonNull(merchantP2pSettings) && merchantP2pSettings.isP2pAllowed() && cashbox.isP2pAllowed());
-            return new ResultDTO(true, result, 0);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResultDTO(false, e.getMessage(), -1);
-        }
+        return getPublicCashBoxSettings(cashBoxDTO.getCashBoxId());
     }
 
     public ResultDTO getPublicCashboxSettings(String p2pPaymentId) {
-        try {
-            P2pPayment p2pPayment = p2pPaymentService.findById(p2pPaymentId);
-            if (Objects.isNull(p2pPayment)) {
-                return error118;
-            }
-            Cashbox cashbox = cashboxRepository.findById(p2pPayment.getCashboxId()).orElse(null);
-            if (Objects.isNull(cashbox)) {
-                return error113;
-            }
-            MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(cashbox.getMerchantId());
-            Map<String, Object> result = new HashMap<>();
-            result.put(INTERACTION_URL, getField(p2pPayment.getCashboxId(), INTERACTION_URL));
-            result.put(REDIRECT_URL, getField(p2pPayment.getCashboxId(), REDIRECT_URL));
-            result.put(REDIRECT_SUCCESS_URL, getField(p2pPayment.getCashboxId(), REDIRECT_SUCCESS_URL));
-            result.put(REDIRECT_FAILED_URL, getField(p2pPayment.getCashboxId(), REDIRECT_FAILED_URL));
-            result.put(REDIRECT_PENDING_URL, getField(p2pPayment.getCashboxId(), REDIRECT_PENDING_URL));
-            result.put("p2pEnabled", Objects.nonNull(merchantP2pSettings) && merchantP2pSettings.isP2pAllowed() && cashbox.isP2pAllowed());
-            return new ResultDTO(true, result, 0);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResultDTO(false, e.getMessage(), -1);
+        P2pPayment p2pPayment = p2pPaymentService.findById(p2pPaymentId);
+        if (Objects.isNull(p2pPayment)) {
+            return error118;
         }
+        return getPublicCashBoxSettings(p2pPayment.getCashboxId());
     }
 
     public ResultDTO deleteCashboxSettings(Principal principal, CashBoxSettingFieldDTO request) {
@@ -212,5 +178,26 @@ public class CashboxSettingsService {
         fieldValue = decimalFormat.format(Double.parseDouble(fieldValue)).replace(",", ".");
         setField(cashboxId, fieldName, fieldValue);
         return new ResultDTO(true, "Client fee saved!", 0);
+    }
+
+    private ResultDTO getPublicCashBoxSettings(Long cashBoxId) {
+        try {
+            Cashbox cashbox = cashboxRepository.findById(cashBoxId).orElse(null);
+            if (Objects.isNull(cashbox)) {
+                return error113;
+            }
+            MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(cashbox.getMerchantId());
+            Map<String, Object> result = new HashMap<>();
+            result.put(INTERACTION_URL, getField(cashBoxId, INTERACTION_URL));
+            result.put(REDIRECT_URL, getField(cashBoxId, REDIRECT_URL));
+            result.put(REDIRECT_SUCCESS_URL, getField(cashBoxId, REDIRECT_SUCCESS_URL));
+            result.put(REDIRECT_FAILED_URL, getField(cashBoxId, REDIRECT_FAILED_URL));
+            result.put(REDIRECT_PENDING_URL, getField(cashBoxId, REDIRECT_PENDING_URL));
+            result.put("p2pEnabled", Objects.nonNull(merchantP2pSettings) && merchantP2pSettings.isP2pAllowed() && cashbox.isP2pAllowed());
+            return new ResultDTO(true, result, 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultDTO(false, e.getMessage(), -1);
+        }
     }
 }
