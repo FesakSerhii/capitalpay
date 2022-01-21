@@ -41,8 +41,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import static kz.capitalpay.server.simple.service.SimpleService.PENDING;
-import static kz.capitalpay.server.simple.service.SimpleService.SUCCESS;
+import static kz.capitalpay.server.simple.service.SimpleService.*;
 
 @Service
 public class HalykSoapService {
@@ -261,6 +260,12 @@ public class HalykSoapService {
                     }
                     return gson.toJson(param);
                 }
+                if (p2p) {
+                    p2pPaymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), FAILED);
+                } else {
+                    paymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), FAILED);
+                }
+                return "FAIL";
             }
             return "OK";
         } catch (Exception e) {
