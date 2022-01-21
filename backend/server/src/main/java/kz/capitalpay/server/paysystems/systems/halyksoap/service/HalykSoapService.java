@@ -214,7 +214,7 @@ public class HalykSoapService {
             HalykPaymentOrder paymentOrder = new HalykPaymentOrder();
             paymentOrder.setTimestamp(System.currentTimeMillis());
             paymentOrder.setLocalDateTime(LocalDateTime.now());
-            paymentOrder.setAmount(amount.setScale(2).toString());
+            paymentOrder.setAmount(amount.setScale(2).toString().replace(".", ","));
             paymentOrder.setCardholderName(cardholderName);
             paymentOrder.setCurrency(currency);
             paymentOrder.setDesc(desc);
@@ -223,6 +223,8 @@ public class HalykSoapService {
             paymentOrder.setTrtype(1);
 
             halykPaymentOrderRepository.save(paymentOrder);
+
+            year = year.length() > 2 ? year.substring(2) : year;
 
             String signedXML = createPaymentOrderXML(paymentOrder, cvc, month, year, pan);
             Map<String, String> vars = new HashMap<>();
