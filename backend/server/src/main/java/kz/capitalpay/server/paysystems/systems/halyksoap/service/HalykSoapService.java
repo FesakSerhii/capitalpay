@@ -228,6 +228,7 @@ public class HalykSoapService {
             String signedXML = createPaymentOrderXML(paymentOrder, cvc, month, year, pan);
             Map<String, String> vars = new HashMap<>();
             vars.put("signedXML", signedXML);
+            logger.info("signedXML: {}", signedXML);
 
             String response = restTemplate.postForObject(sendOrderActionLink + "/axis2/services/EpayService.EpayServiceHttpSoap12Endpoint/",
                     signedXML, String.class, java.util.Optional.ofNullable(null));
@@ -248,7 +249,6 @@ public class HalykSoapService {
                 }
             } else {
                 if (paymentOrder.getPareq() != null && paymentOrder.getMd() != null) {
-
                     Map<String, String> param = new HashMap<>();
                     param.put("acsUrl", paymentOrder.getAcsUrl());
                     param.put("MD", paymentOrder.getMd());
