@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {UserCardService} from '../service/user-card.service';
 import {ActivatedRoute} from '@angular/router';
@@ -6,6 +6,7 @@ import {validateCard} from '../../../../../common-blocks/validators/paymentCardN
 import {expirationDateValidator} from '../../../../../common-blocks/validators/dateCompareValidator';
 import {filter} from 'rxjs/operators';
 import {BankErrorCodesService} from '../service/bank-error-codes.service';
+import {RedirectService} from '../service/redirect.service';
 
 @Component({
   selector: 'app-payment-form',
@@ -14,11 +15,22 @@ import {BankErrorCodesService} from '../service/bank-error-codes.service';
 })
 export class PaymentFormComponent implements OnInit {
 
+  @Output() cardDataEvent = new EventEmitter();
+  @Output() cancelEvent = new EventEmitter();
+  @Input() validityErrorCode: string = null;
+  @Input() validityError: boolean = false;
+  @Input() queryParamEnable: boolean = true;
+  @Input() p2pEnabled: boolean = true;
+  @Input() redirect: boolean = false;
+
   cardForm = new FormGroup({
     cardNumber: new FormControl('', [validateCard()]),
+    cardHolderName: new FormControl(),
     expirationMonth: new FormControl(),
     expirationYear: new FormControl(),
-    cvv2Code: new FormControl(),
+    phone: new FormControl(),
+    email: new FormControl(),
+    cvv2Code: new FormControl('',[Validators.min(100),Validators.max(999)]),
   });
   token: string = null;
   id: number = null;
@@ -26,21 +38,24 @@ export class PaymentFormComponent implements OnInit {
   cashBoxId: number = null;
   cashBoxInfo: any = null;
   limitedInterval: any = null;
-  isCardValid: boolean = false;
+  // isCardValid: boolean = false;
   expInvalid: boolean = false;
-  redirect: boolean = false;
-  validityError: boolean = false;
-  validityErrorCode: boolean = false;
+
+  // validityError: boolean = false;
+  // validityErrorCode: boolean = false;
   redirectTimer: number = 5;
-  parameters: string = null;
-  queryParamEnable: boolean = false;
+  // parameters: string = null;
   acceptTerms = new FormControl();
 
 
-  constructor(private userCardService: UserCardService, private activatedRoute: ActivatedRoute, public bankErrorCodesService:BankErrorCodesService) {
+  constructor(private userCardService: UserCardService,
+              private activatedRoute: ActivatedRoute,
+              public bankErrorCodesService:BankErrorCodesService,
+              private redirectService: RedirectService) {
   }
 
   ngOnInit(): void {
+    this.cardHolderNameEnabled()
     let dateFields = {
       expirationMonth: 'expirationYear',
     };
@@ -48,56 +63,20 @@ export class PaymentFormComponent implements OnInit {
       this.cardForm.get(v).setValidators([Validators.required, expirationDateValidator(this.cardForm, dateFields[v])]);
       this.cardForm.get(dateFields[v]).setValidators([Validators.required, expirationDateValidator(this.cardForm, v, true)]);
     }
-    throw this.activatedRoute.queryParamMap.pipe(filter(param => {
-      return !location.href.includes('merchantId') || param.has('merchantId')
-    })).subscribe(params => {
-      this.queryParamEnable = true;
-      this.merchantId = +params.get('merchantId');
-      this.cashBoxId = +params.get('cashBoxId');
-      this.parameters = params.get('parameters');
-      this.userCardService.getCashBoxInfo(this.cashBoxId).then(resp => {
-        this.cashBoxInfo = resp.data
-        if (this.cashBoxInfo && !this.cashBoxInfo.p2pEnabled) {
-          this.redirectTimerStart('redirectfailed')
-        }
-      })
+    this.redirectService.redirectTimerEvent.subscribe(value => {
+      console.log(value);
+      this.redirectTimer = value;
+      if(value<5) this.redirect=true;
     })
   }
 
-  redirectTimerStart(type) {
-    this.limitedInterval = setInterval(() => {
-      if (this.redirectTimer) {
-        this.redirectTimer = this.redirectTimer - 1;
-      } else {
-        clearInterval(this.limitedInterval);
-        const link = document.createElement('a')
-        link.href = this.cashBoxInfo[type]
-        link.click()
-      }
-    }, 1000)
-  }
 
   saveCard() {
-    this.userCardService.registerCard(this.cardForm.value.cardNumber, this.cardForm.value.expirationYear, this.cardForm.value.expirationMonth, this.cardForm.value.cvv2Code, this.merchantId, this.cashBoxId, this.parameters)
-      .then(resp => {
-        // console.log(resp);
-        this.token = resp.data.token;
-          this.id = resp.data.id;
-          this.userCardService.cardCheckValidity(this.id).then(response => {
-            console.log(response);
-            this.isCardValid = response.result
-            if(!response.data.valid){
-              throw new Error(response.data.returnCode)
-            }
-          }).then(() => {
-            this.redirect = true;
-            this.redirectTimerStart('redirectsuccess')
-          }).catch(err=>{
-            this.validityError = true;
-            this.validityErrorCode = err.message;
-          })
-        }
-      )
+    console.log('start interval in payment-form:',new Date());
+    this.cardDataEvent.emit(this.cardForm.value)
+  }
+  cancel() {
+    this.cancelEvent.emit(null)
   }
 
   dateInvalid() {
@@ -112,13 +91,10 @@ export class PaymentFormComponent implements OnInit {
       }, 200);
     }
   }
-
-  redirectFailed() {
-    const link = document.createElement('a')
-    link.href = this.cashBoxInfo.redirectfailed
-    link.click()
-  }
   getErrMassage(){
-   return this.bankErrorCodesService.getErrMassage(this.validityErrorCode)
+    return this.bankErrorCodesService.getErrMassage(this.validityErrorCode)
+  }
+  cardHolderNameEnabled(){
+   return window.location.pathname==='/payment'
   }
 }

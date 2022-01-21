@@ -9,6 +9,8 @@ import {CommonBlocksModule} from '../../../../common-blocks/common-blocks.module
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {HttpClientModule} from '@angular/common/http';
 import {IConfig, NgxMaskModule} from 'ngx-mask';
+import { CardBindingComponent } from './card-binding/card-binding.component';
+import { CardPaymentComponent } from './card-payment/card-payment.component';
 
 const maskConfigFunction: () => Partial<IConfig> = () => {
   return {
@@ -18,7 +20,9 @@ const maskConfigFunction: () => Partial<IConfig> = () => {
 @NgModule({
   declarations: [
     AppComponent,
-    PaymentFormComponent
+    PaymentFormComponent,
+    CardBindingComponent,
+    CardPaymentComponent
   ],
   imports: [
     BrowserModule,

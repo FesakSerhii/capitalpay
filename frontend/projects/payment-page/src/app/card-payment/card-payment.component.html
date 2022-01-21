@@ -1,0 +1,5 @@
+<app-payment-form (cardDataEvent)="getCardData($event)"
+                  (cancelEvent)="redirectFailed()"
+                  [validityErrorCode]="validityErrorCode"
+                  [validityError]="validityError"
+                  [queryParamEnable]="queryParamEnable"></app-payment-form>

@@ -1,20 +1,41 @@
 <ng-container *ngIf="queryParamEnable">
-  <form class="tpsform form2-theme" [formGroup]="cardForm" *ngIf="cashBoxInfo.p2pEnabled">
+  <form class="tpsform form2-theme" [formGroup]="cardForm" *ngIf="p2pEnabled">
     <label class="tpsform_input" style="position: relative" for="cardnumber">
       <span class="focused">Card number  *</span>
-      <span class="error" style="left: 132px;bottom: -42px;"
+      <span class="error" style="left: 141px;bottom: -42px;"
             *ngIf="expInvalid">invalid exp date</span>
       <!--добавьте к span класс .focused при фокусе на инпуте-->
-      <input type="text" placeholder="" id="cardnumber" formControlName="cardNumber" mask="0000 0000 0000 0000"
+      <input type="text" placeholder="" id="cardnumber" autocomplete="cc-number" formControlName="cardNumber" mask="0000 0000 0000 0000"
              [disabled]="redirect"
              [class.disabled]="redirect"
              [class.invalid]="cardForm.controls.cardNumber.invalid">
       <span class="error" *ngIf="cardForm.controls.cardNumber.invalid">card invalid</span>
     </label>
+    <label class="tpsform_input" for="cardHolderName" *ngIf="cardHolderNameEnabled()">
+      <span class="focused">Card Holder Name</span>
+      <!--добавьте к span класс .focused при фокусе на инпуте-->
+      <input type="text" placeholder="" id="cardHolderName" autocomplete="cc-name" formControlName="cardHolderName"
+             [disabled]="redirect"
+             [class.disabled]="redirect">
+    </label>
+    <label class="tpsform_input" for="email" *ngIf="cardHolderNameEnabled()">
+      <span class="focused">Email</span>
+      <!--добавьте к span класс .focused при фокусе на инпуте-->
+      <input type="email" placeholder="" id="email" autocomplete="email" formControlName="email"
+             [disabled]="redirect"
+             [class.disabled]="redirect">
+    </label>
+    <label class="tpsform_input" for="phone" *ngIf="cardHolderNameEnabled()">
+      <span class="focused">Phone</span>
+      <!--добавьте к span класс .focused при фокусе на инпуте-->
+      <input type="tel" placeholder="" id="phone" autocomplete="tel" formControlName="phone"
+             [disabled]="redirect"
+             [class.disabled]="redirect">
+    </label>
     <div class="formline">
       <div class="select form2-theme">
         <div class="select_label">Expiration Date *</div>
-        <app-custom-select classes="noArrow"
+        <app-custom-select classes="noArrow" autocomplete="cc-exp-month"
                            [disabled]="redirect"
                            [class.disabled]="redirect"
                            [values]="['01','02','03','04','05','06','07','08','09','10','11','12']" formControlName="expirationMonth" (click)="dateInvalid()"></app-custom-select>
@@ -22,6 +43,7 @@
       <div class="select form2-theme">
         <div class="select_label">&nbsp;</div>
         <app-custom-select classes="noArrow"
+                           autocomplete="cc-exp-year"
                            [disabled]="redirect"
                            [class.disabled]="redirect"
                            [values]="[2021,2022,2023,2024,2025,2026]" formControlName="expirationYear" (click)="dateInvalid()"></app-custom-select>
@@ -29,8 +51,8 @@
       <label class="tpsform_input ico pass" for="cardseccode">
         <span>Card Security Code *</span>
         <!--добавьте к span класс .focused при фокусе на инпуте-->
-        <input type="number" placeholder="" id="cardseccode" formControlName="cvv2Code" minlength="3" maxlength="3">
-        <span class="error" *ngIf="cardForm.controls.cvv2Code.invalid">invalid cvv length</span>
+        <input type="number" autocomplete="cc-exp" id="cardseccode" formControlName="cvv2Code">
+        <span class="error" *ngIf="cardForm.controls.cvv2Code.touched&&cardForm.controls.cvv2Code.invalid">invalid cvv length</span>
       </label>
     </div>
     <div class="checkbox" style="position: relative">
@@ -39,14 +61,14 @@
         <a href="#!">privacy policy</a>.</label>
       <span class="error" *ngIf="validityError">Error on card validity check.{{getErrMassage()}} Use other card or try again</span>
     </div>
-    <button *ngIf="!redirect"
-            class="form-btn form2-theme" (click)="redirectFailed()">Cancel</button>
+    <button [disabled]="redirect" [class.disabled]="redirect"
+            class="form-btn form2-theme" (click)="cancel()">Cancel</button>
     <button
       [disabled]="!acceptTerms.value||redirect||cardForm.invalid"
       [class.disabled]="!acceptTerms.value||redirect||cardForm.invalid"
-      class="form-btn form2-theme green-theme" type="submit" (click)="saveCard()">{{redirect?'You will be redirected to merchant site in '+ redirectTimer +' secs...':'Add Card'}}</button>
+      class="form-btn form2-theme green-theme" type="submit" (click)="saveCard()">{{redirect?'You will be redirected to merchant site in '+ redirectTimer +' secs...':cardHolderNameEnabled()?'Pay':'Add Card'}}</button>
   </form>
-  <ng-container *ngIf="!cashBoxInfo.p2pEnabled">
+  <ng-container *ngIf="!p2pEnabled">
     <div class="permitted">
       <span>Operation not permitted</span>
     </div>
@@ -57,4 +79,3 @@
     <span>Missing query parameters</span>
   </div>
 </ng-container>
-<!--<app-massage-modal #invalidCardNumber [messageType]="'cardNumberInvalid'"></app-massage-modal>-->

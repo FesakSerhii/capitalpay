@@ -24,4 +24,10 @@ export class UserCardService {
   clientCardList(token) {
     return this.apiService.post('api',`/client-card/client-cards`).toPromise();
   }
+  sendAnonP2pToMerchant(data) {
+    return this.apiService.post('api',`/p2p/send-anonymous-p2p-to-merchant`,data).toPromise();
+  }
+  getByPaymentId(paymentId) {
+    return this.apiService.post('api',`/cashboxsetting/get-by-paymentid?paymentId=${paymentId}`).toPromise();
+  }
 }
