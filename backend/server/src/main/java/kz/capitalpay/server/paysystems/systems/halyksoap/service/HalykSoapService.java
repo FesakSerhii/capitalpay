@@ -41,8 +41,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import static kz.capitalpay.server.simple.service.SimpleService.PENDING;
-import static kz.capitalpay.server.simple.service.SimpleService.SUCCESS;
+import static kz.capitalpay.server.simple.service.SimpleService.*;
 
 @Service
 public class HalykSoapService {
@@ -215,7 +214,7 @@ public class HalykSoapService {
             HalykPaymentOrder paymentOrder = new HalykPaymentOrder();
             paymentOrder.setTimestamp(System.currentTimeMillis());
             paymentOrder.setLocalDateTime(LocalDateTime.now());
-            paymentOrder.setAmount(amount.setScale(2).toString());
+            paymentOrder.setAmount(amount.setScale(2).toString().replace(".", ","));
             paymentOrder.setCardholderName(cardholderName);
             paymentOrder.setCurrency(currency);
             paymentOrder.setDesc(desc);
@@ -225,9 +224,12 @@ public class HalykSoapService {
 
             halykPaymentOrderRepository.save(paymentOrder);
 
+            year = year.length() > 2 ? year.substring(2) : year;
+
             String signedXML = createPaymentOrderXML(paymentOrder, cvc, month, year, pan);
             Map<String, String> vars = new HashMap<>();
             vars.put("signedXML", signedXML);
+            logger.info("signedXML: {}", signedXML);
 
             String response = restTemplate.postForObject(sendOrderActionLink + "/axis2/services/EpayService.EpayServiceHttpSoap12Endpoint/",
                     signedXML, String.class, java.util.Optional.ofNullable(null));
@@ -248,7 +250,6 @@ public class HalykSoapService {
                 }
             } else {
                 if (paymentOrder.getPareq() != null && paymentOrder.getMd() != null) {
-
                     Map<String, String> param = new HashMap<>();
                     param.put("acsUrl", paymentOrder.getAcsUrl());
                     param.put("MD", paymentOrder.getMd());
@@ -261,6 +262,12 @@ public class HalykSoapService {
                     }
                     return gson.toJson(param);
                 }
+                if (p2p) {
+                    p2pPaymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), FAILED);
+                } else {
+                    paymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), FAILED);
+                }
+                return "FAIL";
             }
             return "OK";
         } catch (Exception e) {
