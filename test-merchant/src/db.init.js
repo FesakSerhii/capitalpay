@@ -27,6 +27,14 @@ async function createTables(pool) {
             sum decimal(10,2) not null,
             result text
         )
+    `);
+    await pool.query(`
+        create table if not exists client_payments (
+            id serial primary key not null,
+            card_id integer not null,
+            sum decimal(10,2) not null,
+            result text
+        )
     `)
 }
 module.exports = { createDBConnection };

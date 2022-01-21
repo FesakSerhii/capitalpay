@@ -3,6 +3,7 @@
     table {
         border-collapse: collapse;
     }
+
     td, th {
         border: 1px solid black;
         padding: 7px;
@@ -10,6 +11,10 @@
 </style>
 <h1>Added Cards</h1>
 <a href="https://card.capitalpay.kz?merchantId=663&cashBoxId=13978" id="addCard">Add Card</a>
+<button id="pay-with-any-card">Pay to merchant with any card</button>
+<p>
+    <a href="/client-payments/0">Payments from non-added cards</a>
+</p>
 <table>
     <thead>
     <tr>
@@ -22,10 +27,15 @@
     <tbody>
     <% cards.forEach(function (card) { %>
         <tr>
-            <td><%= card.card_number %></td>
-            <td><%= card.card_id %></td>
+            <td>
+                <%= card.card_number %>
+            </td>
+            <td><a href="/client-payments/<%= card.card_id %>"><%= card.card_id %></a></td>
             <td><%= card.param %></td>
-            <td><button class="pay" data-card-id="<%= card.card_id %>">Pay</button></td>
+            <td>
+                <button class="pay" data-card-id="<%= card.card_id %>">Pay <b>to</b> client card</button>
+                <button class="pay-client" data-card-id="<%= card.card_id %>">Pay <b>from</b> client card</button>
+            </td>
         </tr>
     <% }) %>
     </tbody>
@@ -45,7 +55,9 @@
         <tr>
             <td><%= payments.card_number %></td>
             <td><%= payments.sum %></td>
-            <td><pre><%= payments.result %></pre></td>
+            <td>
+                <pre><%= payments.result %></pre>
+            </td>
         </tr>
     <% }) %>
     </tbody>
@@ -65,10 +77,36 @@
                 )
             });
         });
-        addCard.addEventListener("click", function (e)  {
+        document.querySelectorAll(".pay-client").forEach((b) => {
+            b.addEventListener("click", function () {
+                const sum = prompt("Input sum");
+                axios.post("/pay-from-client", {
+                    cardId: parseInt(this.dataset.cardId),
+                    sum: parseFloat(sum)
+                }).then(
+                    () => {
+                        alert("Done!");
+                    }
+                );
+            })
+        })
+        addCard.addEventListener("click", function (e) {
             e.preventDefault();
             const param = prompt("Input param");
             location.href = this.href + `&parameters=${param}`;
+        });
+        document.getElementById("pay-with-any-card").addEventListener("click", function () {
+            const sum = prompt("Input sum");
+            const form = document.createElement("form");
+            const sumInput = document.createElement("input");
+            sumInput.type = "hidden";
+            sumInput.value = sum;
+            sumInput.name = "sum";
+            form.appendChild(sumInput);
+            form.method = "post";
+            form.action = "/pay-with-any-card";
+            document.body.appendChild(form);
+            form.submit();
         })
     });
 </script>
