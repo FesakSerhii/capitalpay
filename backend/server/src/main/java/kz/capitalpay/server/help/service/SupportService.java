@@ -20,9 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.error109;
@@ -88,7 +86,10 @@ public class SupportService {
         try {
             List<SupportRequestDtoList> requestList = supportRequestRepository.findAll().stream()
                     .map(this::createSupportRequestDtoListObject)
+                    .sorted(Comparator.comparing(SupportRequestDtoList::getTimestamp))
                     .collect(Collectors.toList());
+
+            Collections.reverse(requestList);
 
             if (requestList == null) requestList = new ArrayList<>();
 
@@ -104,7 +105,10 @@ public class SupportService {
         try {
             List<SupportRequestDtoList> requestList = supportRequestRepository.findAllByAuthorId(merchantId).stream()
                     .map(this::createSupportRequestDtoListObject)
+                    .sorted(Comparator.comparing(SupportRequestDtoList::getTimestamp))
                     .collect(Collectors.toList());
+
+            Collections.reverse(requestList);
 
             if (requestList == null) requestList = new ArrayList<>();
 
