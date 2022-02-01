@@ -1,0 +1,10 @@
+<form method="post" id="f1" action="https://api.capitalpay.kz/api/v1/p2p/anonymous-p2p-to-merchant">
+    <input type="hidden" name="cashBoxId" value="<%= cashBoxId %>">
+    <input type="hidden" name="merchantId" value="<%= merchantId %>">
+    <input type="hidden" name="totalAmount" value="<%= totalAmount %>">
+    <input type="hidden" name="currency" value="KZT">
+    <input type="hidden" name="signature" value="<%= signature %>">
+</form>
+<script>
+    window.addEventListener("load", () => f1.submit());
+</script>

@@ -1,0 +1,33 @@
+<style>
+    table {
+        border-collapse: collapse;
+    }
+
+    td, th {
+        border: 1px solid black;
+        padding: 7px;
+    }
+</style>
+<% if (card) { %>
+<h1>Payments of card <%= card.card_number %></h1>
+<% } else {%>
+    <h1>Payments from not-added cards</h1>
+<% } %>
+<table>
+    <thead>
+    <tr>
+        <th>Card Number</th>
+        <th>Sum</th>
+        <th>result</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% cardPayments.forEach(function (payments) { %>
+        <tr>
+            <td><%= card ? card.card_number: "non added" %></td>
+            <td><%= payments.sum %></td>
+            <td><pre><%= payments.result %></pre></td>
+        </tr>
+    <% }) %>
+    </tbody>
+</table>
