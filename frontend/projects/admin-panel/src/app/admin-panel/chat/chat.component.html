@@ -52,8 +52,8 @@
               <!--              <button class="btn btn-success btn-round">Выбрать файлы<div class="ripple-container"></div></button>-->
             </div>
           </div>
-          <div class="card-footer">
-            <button *ngIf="status!=='closed'" class="btn btn-success btn-round ml-auto" (click)="sendAnswer()">Отправить и закрыть
+          <div class="card-footer" *ngIf="status!=='closed'">
+            <button  class="btn btn-success btn-round ml-auto" (click)="sendAnswer()">Отправить и закрыть
               <div class="ripple-container"></div>
             </button>
           </div>
