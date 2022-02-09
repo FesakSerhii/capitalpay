@@ -1,4 +1,19 @@
 /* You can add global styles to this file, and also import other style files */
+@mixin for-phone-only {
+  @media (max-width: 599px) { @content; }
+}
+@mixin for-tablet-portrait-up {
+  @media (min-width: 600px) { @content; }
+}
+@mixin for-tablet-landscape-up {
+  @media (min-width: 900px) { @content; }
+}
+@mixin for-desktop-up {
+  @media (min-width: 1200px) { @content; }
+}
+@mixin for-big-desktop-up {
+  @media (min-width: 1800px) { @content; }
+}
 body{
   font-family: 'CircularStd-Book',sans-serif;
   margin: 0;
@@ -87,8 +102,13 @@ body{
   background-color: #ffff99;
 }
 .carousel-inner{
-  width: 120%!important;
-  margin-left: -32px;
+  width: min(120%,90vw)!important;
+  @include for-desktop-up {
+    margin-left: 32px;
+  }
+  @include for-big-desktop-up {
+    margin-left: -32px;
+  }
 }
 @media(max-width: 321px){
   //.carousel-cells{

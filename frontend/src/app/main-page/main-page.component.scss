@@ -1,25 +1,45 @@
+@mixin for-phone-only {
+  @media (max-width: 599px) { @content; }
+}
+@mixin for-tablet-portrait-up {
+  @media (min-width: 600px) { @content; }
+}
+@mixin for-tablet-landscape-up {
+  @media (min-width: 900px) { @content; }
+}
+@mixin for-desktop-up {
+  @media (min-width: 1200px) { @content; }
+}
+@mixin for-big-desktop-up {
+  @media (min-width: 1800px) { @content; }
+}
+@mixin smaller-than-desktop {
+  @media (max-width: 1000px) { @content; }
+}
+
+
 @keyframes phone {
   from {
-    top: 493px;left: 493px;opacity: 0;
+    top: 493px;left: 25vw;opacity: 0;
   }
   to {
-    top: 115px;left: 544px;opacity: 1;
+    top: 115px;left: 29vw;opacity: 1;
   }
 }
 @keyframes phoneMd {
   from {
-    top: 493px;left: 393px;opacity: 0;
+    top: 493px;left: 25vw;opacity: 0;
   }
   to {
-    top: 115px;left: 428px;opacity: 1;
+    top: 115px;left: 29vw;opacity: 1;
   }
 }
 @keyframes phoneSm {
   from {
-    top: 150px;left: 100px;opacity: 0;
+    top: 150px;left: 25vw;opacity: 0;
   }
   to {
-    top: -24px;left: 115px;opacity: 1;
+    top: -24px;left: 29vw;opacity: 1;
   }
 }
 .phone-img{
@@ -29,7 +49,16 @@
   opacity: 1;
   top: 115px;
   position: absolute;
-  left: 544px;
+  width: 14vw;
+  left: 29vw;
+  display: none;
+  @include for-big-desktop-up {
+    display: inline;
+    width: 100%;
+  }
+  @include for-desktop-up {
+    display: inline;
+  }
 }
 @keyframes visa {
   from {top: 474px;left: 203px;}
@@ -175,29 +204,46 @@
   display: none;
 }
 .content{
-  width: 1111px;
+  width: max(1111px,50vw);
   margin:0 auto;
   margin-top: 82px
 }
 
 .start-section{
-  margin-bottom: 130px;
+  margin-bottom: min(130px,1rem);
   &__img{
     position: absolute;
     left: 106px;
+    display: none;
+    @include for-big-desktop-up {
+      display: inline;
+      width: 40vw!important;
+    }
+    @include for-desktop-up {
+      display: inline;
+      left: 0;
+      width: 60vw;
+    }
   }
   .carousel{
-    width:332px;
+    width:70vw;
     margin: unset;
+    padding-left: 32px;
     margin-top: 36px;
-    padding-bottom: 50px;
+    @include for-desktop-up {
+      width:332px;
+    }
     h1{
       font-size: 40px;
     }
     p{
-      margin: 0 auto;
-      margin-top: 30px;
-      width: 320px;
+      margin-top: 1rem;
+      width: 60vw;
+      @include for-desktop-up {
+        width: 320px;
+        margin: 0 auto;
+        margin-top: 30px;
+      }
     }
   }
 }
@@ -206,13 +252,13 @@
   background: #177960;
   color: white;
   border-radius: 30px;
-  margin-top: 45px;
+  margin-top: max(45px,1em);
   display:inline-block;
 }
 
 .card{
   background: white;
-  width: 541px;
+  width: min(541px,72vw);
   height: 541px;
   border: none;
   border-radius: 30px;
@@ -359,12 +405,18 @@
   &__sub-title{
     width: 362px;
     margin-right: 112px;
-    color: white;
     margin-bottom: 0;
+    color: black!important;
+    @include for-desktop-up {
+      color: white!important;
+    }
   }
   &__sub-text{
     width: 635px;
-    color: #FFFFFF;
+    color: black!important;
+    @include for-desktop-up {
+      color: white!important;
+    }
   }
   &__text{
     font-size: 16px;
@@ -395,20 +447,21 @@
     display: flex;
     margin-top: 360px;
     width: 1111px;
-    color: white;
+    color: black;
+    @include for-desktop-up {
+      color: white!important;
+    }
   }
 }
 .carousel-wrap{
-  margin-top: 112px;
-  margin-bottom: 91px;
+  margin: 0 auto;
+  padding-top: 112px;
+  padding-bottom: 91px;
+  width: 63vw
 }
-@media(max-width: 769px){
-  .phone-img{
-    left: 428px;
-    animation-name: phoneMd;
-  }
+@include smaller-than-desktop{
   .content{
-    width: 748px;
+    //width: 748px;
     margin:0 auto;
     margin-top: 82px
   }
@@ -552,7 +605,6 @@
       width: 100%;
       align-items: center;
       flex-direction: column;
-      color: white;
     }
   }
 }
@@ -764,28 +816,35 @@
   //    margin: 0 auto;
   //    text-align: center;
 }
-.carousel-wrap{
-  @media(max-width: 768px){
-    margin-left: 75px;
-  }
-  @media(max-width: 320px){
-    margin-left: 45px;
-  }
-}
+
 .header-parallax-img{
   position: absolute;
-  top: -783px;
-  right: -1260px;
+  top: -75vh;
+  right: -60vw;
   width: 161%;
+  display: none;
+  @include for-desktop-up {
+    display: inline;
+  }
+  @include for-big-desktop-up {
+    display: inline;
+  }
 }
 .parallax-wrap{
   top: 2796px
 }
 .bottom-parallax-img{
   position: absolute;
-  top: -2410px;
-  right: -977px;
-  width: 5000px;
+  top: -200vh;
+  right: -50vw;
+  display: none;
+  @include for-desktop-up {
+    display: inline;
+    width: 450vw;
+  }
+  @include for-big-desktop-up {
+    width: 250vw;
+  }
 }
 .btn-to-top{
   position: sticky;
@@ -797,18 +856,19 @@
   .bottom-parallax-img{
     top: 62px;
     right: -2000px;
+    @include for-phone-only {
+      display: none;
+    }
   }
   .header-parallax-img{
     right: -700px;
     width: 1900px;
+    display: none;
+    @include for-desktop-up {
+      display: inline;
+    }
+    @include for-big-desktop-up {
+      display: inline;
+    }
   }
 }
-@media(max-width: 321px){
-  .bottom-parallax-img{
-    //top: -1538px;
-  }
-  .header-parallax-img{
-    width:1200px;
-  }
-}
-

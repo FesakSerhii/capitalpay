@@ -20,6 +20,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     private router: Router,
     private route: ActivatedRoute
   ) { }
+  isDropdownOpen:boolean=false;
 
   ngAfterViewInit(): void {
     this.subscription.add(
