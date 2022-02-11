@@ -13,6 +13,9 @@
 @mixin for-big-desktop-up {
   @media (min-width: 1800px) { @content; }
 }
+@mixin smaller-than-desktop {
+  @media (max-width: 1000px) { @content; }
+}
 
 a {
   text-decoration: none !important;
@@ -34,13 +37,13 @@ a {
 .sign-up--button{
   margin-left: 20px;
   padding: 11px 17px;
-  background: #177960;
+  background: #008d68;
   color: white!important;
   border-radius: 20px;
   display: none;
   .white{
     background: white;
-    color: #177960!important;
+    color: #008d68!important;
   }
   @include for-big-desktop-up {
     display: inline;
@@ -123,7 +126,7 @@ a {
 }
 
 .section-btn {
-  background: #177960;
+  background: #008d68;
   color: white;
   border-radius: 45px;
   margin-top: 39px;
@@ -150,8 +153,8 @@ a {
   width: min(1111px,90%);
   height: 50px;
   margin: 0 auto;
-  margin-top: 16px;
-  margin-bottom: 17px;
+  padding-top: 32px;
+  padding-bottom: 34px;
   justify-content: space-between;
   align-items: center;
   display: flex;
@@ -160,16 +163,21 @@ a {
   display: flex;
   flex-direction: column;
   position: absolute;
-  top: 80px;
+  top: 66px;
   right: 0;
   z-index: 1;
-  background: whitesmoke;
+  background: #313234b3;
   border-bottom-left-radius: 5px;
+  padding-bottom: 16px;
 }
 .dropdown-link{
   margin-top: 12px;
   padding:0 16px 0 16px;
   font-size: 16px;
-  color: black;
+  color: white;
 }
-
+@include smaller-than-desktop {
+  .header{
+    background: #313234!important;
+  }
+}

@@ -9,7 +9,7 @@ import {NgbCarouselConfig, NgbTabset} from '@ng-bootstrap/ng-bootstrap';
 })
 export class MainPageComponent implements OnInit {
   currentTabId = '0';
-  width = 0;
+  width:number = 0;
   activeAnimation = false;
   scrollValue = 0;
   constructor() { }
@@ -42,5 +42,9 @@ export class MainPageComponent implements OnInit {
   log(event: any): void {
     this.scrollValue = event.target.scrollTop;
     console.log(event.target.scrollTop);
+  }
+  getImgSrc(str){
+    const fileType = this.width<1200?'png':'svg';
+    return str+fileType;
   }
 }

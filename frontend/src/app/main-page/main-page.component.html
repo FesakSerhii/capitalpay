@@ -83,7 +83,7 @@
 <!--      <img class="phone-img" src="../../assets/shapes/img/phone.png" alt="phone">-->
 <!--    </div>-->
 <!--  </div>-->
-  <div class="d-flex cards justify-content-between" style="width: 100vw">
+  <div class="d-flex cards justify-content-between">
     <div class="card">
       <div class="card__content">
         <h2 class="card__title">Доверие</h2>
@@ -99,7 +99,7 @@
       </div>
     </div>
   </div>
-  <div class="advantages">
+  <div class="advantages cards">
     <h2 class="advantages__title">Ideal for your customers</h2>
     <div class="advantages__wrap">
       <div class="advantages__container">
@@ -233,7 +233,7 @@
   </div>
   <div class="payment-methods" id="pay">
     <div class="payment-methods__wrap">
-      <div class="payment-methods__hexas-bg">
+      <div class="payment-methods__hexas-bg" *ngIf="width>1000">
         <div class="position-relative">
           <div class="payment-methods__hexas-shadow"></div>
           <div class="payment-methods__links">
@@ -331,7 +331,7 @@
       </div>
     </div>
   </div>
-  <div class="position-relative" >
+  <div class="position-relative cards" >
     <div class="manage">
 <!--      <ng-container *ngIf="scrollValue>2270">-->
       <h2 class="mb-0 manage__title">Payment methods</h2>
@@ -354,80 +354,80 @@
   <div class="carousel-wrap">
     <carousel *ngIf="width>=769" [height]="40" [arrowsOutside]="true" [autoplay]="true">
       <div class="carousel-cell">
-        <img style="width: 69px;height: 33px;" src="../../assets/shapes/carousel/3ds.svg">
+        <img style="width: 69px;height: 33px;" [src]="getImgSrc('../../assets/shapes/carousel/3ds.')">
       </div>
       <div class="carousel-cell">
-        <img style="width: 69px;height: 39px;" src="../../assets/shapes/carousel/comodo.svg">
+        <img style="width: 69px;height: 39px;" [src]="getImgSrc('../../assets/shapes/carousel/comodo.')">
       </div>
       <div class="carousel-cell">
-        <img style="width: 68px;height: 26px;" src="../../assets/shapes/carousel/pcj.svg">
+        <img style="width: 68px;height: 26px;" [src]="getImgSrc('../../assets/shapes/carousel/pcj.')">
       </div>
       <div class="carousel-cell">
-        <img style="width: 69px;height: 29px;" src="../../assets/shapes/carousel/visa.svg">
+        <img style="width: 69px;height: 29px;" [src]="getImgSrc('../../assets/shapes/carousel/visa.')">
       </div>
       <div class="carousel-cell">
-        <img style="width: 85px;height: 29px;" src="../../assets/shapes/carousel/mastercard.svg">
+        <img style="width: 85px;height: 29px;" [src]="getImgSrc('../../assets/shapes/carousel/mastercard.')">
       </div>
       <div class="carousel-cell">
-        <img style="width: 100px;height: 37px;" src="../../assets/shapes/carousel/qiwi.svg">
+        <img style="width: 100px;height: 37px;" [src]="getImgSrc('../../assets/shapes/carousel/qiwi.')">
       </div>
       <div class="carousel-cell">
-        <img style="width: 40px;height: 40px;" src="../../assets/shapes/carousel/am-ex.svg">
+        <img style="width: 40px;height: 40px;" [src]="getImgSrc('../../assets/shapes/carousel/am-ex.')">
       </div>
       <div class="carousel-cell">
-        <img style="width: 123px;height: 25px;" src="../../assets/shapes/carousel/alfa.svg">
+        <img style="width: 123px;height: 25px;" [src]="getImgSrc('../../assets/shapes/carousel/alfa.')">
       </div>
     </carousel>
-    <carousel *ngIf="width<=769&&width>321" [width]="600" [height]="40" [arrowsOutside]="true" [autoplay]="true">
+    <carousel *ngIf="width<=769&&width>321" [width]="'66vw'" [height]="40" [arrowsOutside]="true" [autoplay]="true">
       <div class="carousel-cell">
-        <img style="width: 69px;height: 33px;" src="../../assets/shapes/carousel/3ds.svg">
+        <img style="width: 69px;height: 33px;" [src]="getImgSrc('../../assets/shapes/carousel/3ds.')">
       </div>
       <div class="carousel-cell">
-        <img style="width: 69px;height: 39px;" src="../../assets/shapes/carousel/comodo.svg">
+        <img style="width: 69px;height: 39px;" [src]="getImgSrc('../../assets/shapes/carousel/comodo.')">
       </div>
       <div class="carousel-cell">
-        <img style="width: 68px;height: 26px;" src="../../assets/shapes/carousel/pcj.svg">
+        <img style="width: 68px;height: 26px;" [src]="getImgSrc('../../assets/shapes/carousel/pcj.')">
       </div>
       <div class="carousel-cell">
-        <img style="width: 69px;height: 29px;" src="../../assets/shapes/carousel/visa.svg">
+        <img style="width: 69px;height: 29px;" [src]="getImgSrc('../../assets/shapes/carousel/visa.')">
       </div>
       <div class="carousel-cell">
-        <img style="width: 85px;height: 29px;" src="../../assets/shapes/carousel/mastercard.svg">
+        <img style="width: 85px;height: 29px;" [src]="getImgSrc('../../assets/shapes/carousel/mastercard.')">
       </div>
       <div class="carousel-cell">
-        <img style="width: 100px;height: 37px;" src="../../assets/shapes/carousel/qiwi.svg">
+        <img style="width: 100px;height: 37px;" [src]="getImgSrc('../../assets/shapes/carousel/qiwi.')">
       </div>
       <div class="carousel-cell">
-        <img style="width: 40px;height: 40px;" src="../../assets/shapes/carousel/am-ex.svg">
+        <img style="width: 40px;height: 40px;" [src]="getImgSrc('../../assets/shapes/carousel/am-ex.')">
       </div>
       <div class="carousel-cell">
-        <img style="width: 123px;height: 25px;" src="../../assets/shapes/carousel/alfa.svg">
+        <img style="width: 123px;height: 25px;" [src]="getImgSrc('../../assets/shapes/carousel/alfa.')">
       </div>
     </carousel>
     <carousel *ngIf="width<=320" [width]="215" [height]="40" [arrowsOutside]="true" [autoplay]="true">
       <div class="carousel-cell">
-        <img style="width: 69px;height: 33px;" src="../../assets/shapes/carousel/3ds.svg">
+        <img style="width: 69px;height: 33px;" [src]="getImgSrc('../../assets/shapes/carousel/3ds.')">
       </div>
       <div class="carousel-cell">
-        <img style="width: 69px;height: 39px;" src="../../assets/shapes/carousel/comodo.svg">
+        <img style="width: 69px;height: 39px;" [src]="getImgSrc('../../assets/shapes/carousel/comodo.')">
       </div>
       <div class="carousel-cell">
-        <img style="width: 68px;height: 26px;" src="../../assets/shapes/carousel/pcj.svg">
+        <img style="width: 68px;height: 26px;" [src]="getImgSrc('../../assets/shapes/carousel/pcj.')">
       </div>
       <div class="carousel-cell">
-        <img style="width: 69px;height: 29px;" src="../../assets/shapes/carousel/visa.svg">
+        <img style="width: 69px;height: 29px;" [src]="getImgSrc('../../assets/shapes/carousel/visa.')">
       </div>
       <div class="carousel-cell">
-        <img style="width: 85px;height: 29px;" src="../../assets/shapes/carousel/mastercard.svg">
+        <img style="width: 85px;height: 29px;" [src]="getImgSrc('../../assets/shapes/carousel/mastercard.')">
       </div>
       <div class="carousel-cell">
-        <img style="width: 100px;height: 37px;" src="../../assets/shapes/carousel/qiwi.svg">
+        <img style="width: 100px;height: 37px;" [src]="getImgSrc('../../assets/shapes/carousel/qiwi.')">
       </div>
       <div class="carousel-cell">
-        <img style="width: 40px;height: 40px;" src="../../assets/shapes/carousel/am-ex.svg">
+        <img style="width: 40px;height: 40px;" [src]="getImgSrc('../../assets/shapes/carousel/am-ex.')">
       </div>
       <div class="carousel-cell">
-        <img style="width: 123px;height: 25px;" src="../../assets/shapes/carousel/alfa.svg">
+        <img style="width: 123px;height: 25px;" [src]="getImgSrc('../../assets/shapes/carousel/alfa.')">
       </div>
     </carousel>
   </div>
