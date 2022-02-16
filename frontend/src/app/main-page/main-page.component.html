@@ -351,7 +351,7 @@
 <!--    </div>-->
 
   </div>
-  <div class="carousel-wrap">
+  <div class="carousel-wrap" *ngIf="false">
     <carousel *ngIf="width>=769" [height]="40" [arrowsOutside]="true" [autoplay]="true">
       <div class="carousel-cell">
         <img style="width: 69px;height: 33px;" [src]="getImgSrc('../../assets/shapes/carousel/3ds.')">
@@ -374,11 +374,11 @@
       <div class="carousel-cell">
         <img style="width: 40px;height: 40px;" [src]="getImgSrc('../../assets/shapes/carousel/am-ex.')">
       </div>
-      <div class="carousel-cell">
+      <div  class="carousel-cell">
         <img style="width: 123px;height: 25px;" [src]="getImgSrc('../../assets/shapes/carousel/alfa.')">
       </div>
     </carousel>
-    <carousel *ngIf="width<=769&&width>321" [width]="'66vw'" [height]="40" [arrowsOutside]="true" [autoplay]="true">
+    <carousel *ngIf="width<=769&&width>321" [width]="'66vw'" [cellWidth]="100" [height]="40" [arrowsOutside]="true" [overflowCellsLimit]="3" [loop]="true" [autoplay]="true">
       <div class="carousel-cell">
         <img style="width: 69px;height: 33px;" [src]="getImgSrc('../../assets/shapes/carousel/3ds.')">
       </div>
@@ -430,6 +430,38 @@
         <img style="width: 123px;height: 25px;" [src]="getImgSrc('../../assets/shapes/carousel/alfa.')">
       </div>
     </carousel>
+  </div>
+  <div class="carousel-wrap">
+    <ngx-slick-carousel class="carousel"
+                        [config]="getSlickConfig()">
+<!--      <div ngxSlickItem *ngFor="let slide of slides" class="slide">-->
+<!--        <img src="{{ slide.img }}" alt="" style="margin-right:20px ">-->
+<!--      </div>-->
+      <div ngxSlickItem class="slide">
+        <img style="width: 69px;height: 33px;"  [src]="getImgSrc('../../assets/shapes/carousel/3ds.')">
+      </div>
+      <div ngxSlickItem class="slide">
+        <img style="width: 69px;height: 39px;" [src]="'../../assets/shapes/carousel/comodo.svg'">
+      </div>
+      <div ngxSlickItem class="slide">
+        <img style="width: 68px;height: 26px;" [src]="'../../assets/shapes/carousel/pcj.svg'">
+      </div>
+      <div ngxSlickItem class="slide">
+        <img style="width: 69px;height: 29px;" [src]="getImgSrc('../../assets/shapes/carousel/visa.')">
+      </div>
+      <div ngxSlickItem class="slide">
+        <img style="width: 85px;height: 29px;" [src]="getImgSrc('../../assets/shapes/carousel/mastercard.')">
+      </div>
+      <div ngxSlickItem class="slide">
+        <img style="width: 100px;height: 37px;" [src]="getImgSrc('../../assets/shapes/carousel/qiwi.')">
+      </div>
+      <div ngxSlickItem class="slide">
+        <img style="width: 40px;height: 40px;" [src]="'../../assets/shapes/carousel/am-ex.svg'">
+      </div>
+      <div ngxSlickItem class="slide">
+        <img style="width: 123px;height: 25px;" [src]="getImgSrc('../../assets/shapes/carousel/alfa.')">
+      </div>
+    </ngx-slick-carousel>
   </div>
 </div>
   <div class="parallax__layer parallax__layer--back" style="top: unset">
