@@ -9,7 +9,8 @@
           <a href="#">English</a>
         </div>
       </div>
-      <div class="d-flex menu">
+      <div class="d-flex menu" *ngIf="width>1000">
+        <!--        <div>-->
         <div class="menu-type">
           <p>Modules</p>
           <a href="#" class="menu__link">Payment button</a>
@@ -21,6 +22,8 @@
           <a href="#" class="menu__link">For business</a>
           <a href="#" class="menu__link">For individuals</a>
         </div>
+        <!--        </div>-->
+        <!--        <div>-->
         <div class="menu-type">
           <p>Company</p>
           <a href="#" class="menu__link">About Capitalpay</a>
@@ -31,6 +34,35 @@
           <a class="menu__link" [routerLink]="'/terms-of-use'">Terms of Service</a>
           <a href="#" class="menu__link" [routerLink]="'/terms-of-use'">Privacy Policy</a>
         </div>
+        <!--        </div>-->
+      </div>
+      <div class="d-flex justify-content-around flex-wrap" *ngIf="width<1000">
+        <div class="d-flex menu">
+          <div class="menu-type">
+            <p>Modules</p>
+            <a href="#" class="menu__link">Payment button</a>
+            <a href="#" class="menu__link">Bill</a>
+            <a href="#" class="menu__link">Terminal</a>
+          </div>
+          <div class="menu-type">
+            <p>Pricing</p>
+            <a href="#" class="menu__link">For business</a>
+            <a href="#" class="menu__link">For individuals</a>
+          </div>
+        </div>
+        <div class="d-flex menu mt-3">
+          <div class="menu-type">
+            <p>Company</p>
+            <a href="#" class="menu__link">About Capitalpay</a>
+            <a href="#" class="menu__link">Contact us</a>
+          </div>
+          <div class="menu-type">
+            <p>Legal</p>
+            <a class="menu__link" [routerLink]="'/terms-of-use'">Terms of Service</a>
+            <a href="#" class="menu__link" [routerLink]="'/terms-of-use'">Privacy Policy</a>
+          </div>
+        </div>
+
       </div>
     </div>
     <div class="info-wrap">
@@ -53,7 +85,7 @@
           </a>
         </div>
         <div class="d-inline-block copyright">
-            <p>© 2021 All Rights Reserved Capital Pay.</p>
+          <p>© 2021 All Rights Reserved Capital Pay.</p>
         </div>
       </div>
     </div>

@@ -74,7 +74,7 @@
             margin-top: 58px;
           }
           width: 100%;
-          justify-content: space-between;
+          justify-content: space-around;
           p{
             margin-bottom: 10px;
           }
@@ -110,7 +110,6 @@
       .content{
         .menu{
           width: 249px;
-          flex-wrap: wrap;
           .menu-type{
             margin-top: 47px;
           }
