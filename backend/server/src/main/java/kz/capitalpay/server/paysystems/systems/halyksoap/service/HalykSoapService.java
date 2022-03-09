@@ -296,7 +296,10 @@ public class HalykSoapService {
         logger.info("Approval code: " + paymentOrderResponse.get_return().getApprovalcode());
         logger.info("OrderId: " + paymentOrderResponse.get_return().getOrderid());
         logger.info("getReference: " + paymentOrderResponse.get_return().getReference());
-        logger.info("getReference: " + paymentOrderResponse.get_return().getReturnCode());
+        logger.info("getReturnCode: " + paymentOrderResponse.get_return().getReturnCode());
+        logger.info("PaReq: " + paymentOrderResponse.get_return().getPareq());
+        logger.info("Md: " + paymentOrderResponse.get_return().getMd());
+        logger.info("AcsUrl: " + paymentOrderResponse.get_return().getAcsUrl());
 
         if (paymentOrderResponse.get_return().getReturnCode().equals("00")) {
             String reference = paymentOrderResponse.get_return().getReference();
@@ -307,7 +310,9 @@ public class HalykSoapService {
             logger.info("Approval code: " + controlOrderForCommerceResponse.get_return().getApprovalcode());
             logger.info("OrderId: " + controlOrderForCommerceResponse.get_return().getOrderid());
             logger.info("getReference: " + controlOrderForCommerceResponse.get_return().getReference());
-            logger.info("getReference: " + controlOrderForCommerceResponse.get_return().getReturnCode());
+            logger.info("PaReq: " + controlOrderForCommerceResponse.get_return().getPareq());
+            logger.info("Md: " + controlOrderForCommerceResponse.get_return().getMd());
+            logger.info("AcsUrl: " + controlOrderForCommerceResponse.get_return().getAcsUrl());
             if (controlOrderForCommerceResponse.get_return().getReturnCode().equals("00")) {
                 payment.setStatus("COMPLETED");
                 checkCardValidityPaymentRepository.save(payment);
@@ -339,6 +344,9 @@ public class HalykSoapService {
         logger.info("OrderId: " + transferOrderResponse.get_return().getOrderid());
         logger.info("getReference: " + transferOrderResponse.get_return().getReference());
         logger.info("getReturnCode: " + transferOrderResponse.get_return().getReturnCode());
+        logger.info("AcsUrl: " + transferOrderResponse.get_return().getAcsUrl());
+        logger.info("Md: " + transferOrderResponse.get_return().getMd());
+        logger.info("PaReq: " + transferOrderResponse.get_return().getPareq());
         if (transferOrderResponse.get_return().getReturnCode().equals("00")) {
             payment.setStatus(SUCCESS);
             p2pPaymentLogService.newEvent(payment.getGuid(), ipAddress, SUCCESS, gson.toJson(payment));
@@ -371,10 +379,25 @@ public class HalykSoapService {
         order.setTrtype(trType);
         order.setYear(year);
 
+        logger.info("amount: {}", amount);
+        logger.info("cardholderName: {}", "test");
+        logger.info("currency: {}", currency);
+        logger.info("cvc: {}", cvv2);
+        logger.info("desc: {}", "Check card validity payment");
+        logger.info("merchantId: {}", requestMerchantId);
+        logger.info("month: {}", month);
+        logger.info("orderId: {}", orderId);
+        logger.info("pan: {}", pan);
+        logger.info("trType: {}", trType);
+        logger.info("year: {}", year);
+
         String concatString = orderId + amount + currency +
                 trType + pan + requestMerchantId;
         KKBSign kkbSign = new KKBSign();
         String signatureValue = kkbSign.sign64(concatString, keystore, clientAlias, keypass, storepass);
+
+        logger.info("merchantCertificate {}", merchantCertificate);
+        logger.info("signatureValue {}", signatureValue);
 
         paymentOrder.setOrder(order);
         EpayServiceStub.RequestSignature signature = new EpayServiceStub.RequestSignature();

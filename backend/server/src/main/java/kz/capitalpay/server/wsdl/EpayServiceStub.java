@@ -82,7 +82,9 @@ public class EpayServiceStub extends Stub {
         ConfigurationContext configurationContext)
         throws AxisFault {
         this(configurationContext,
-            "https://testpay.kkb.kz/axis2/services/EpayService.EpayServiceHttpSoap12Endpoint/");
+//            "https://testpay.kkb.kz/axis2/services/EpayService.EpayServiceHttpSoap12Endpoint/"
+            "https://services-epay.kkb.kz/axis2/services/EpayService.EpayServiceHttpSoap12Endpoint/"
+        );
     }
 
     /**
@@ -90,7 +92,9 @@ public class EpayServiceStub extends Stub {
      */
     public EpayServiceStub() throws AxisFault {
         this(
-            "https://testpay.kkb.kz/axis2/services/EpayService.EpayServiceHttpSoap12Endpoint/");
+//            "https://testpay.kkb.kz/axis2/services/EpayService.EpayServiceHttpSoap12Endpoint/"
+            "https://services-epay.kkb.kz/axis2/services/EpayService.EpayServiceHttpSoap12Endpoint/"
+        );
     }
 
     /**
