@@ -293,25 +293,7 @@ public class HalykSoapService {
                     paymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), SUCCESS);
                 }
             } else {
-                if (paymentOrder.getPareq() != null && paymentOrder.getMd() != null) {
-                    Map<String, String> param = new HashMap<>();
-                    param.put("acsUrl", paymentOrder.getAcsUrl());
-                    param.put("MD", paymentOrder.getMd());
-                    param.put("PaReq", paymentOrder.getPareq());
-                    logger.info("Code 00, order: {}", gson.toJson(paymentOrder));
-                    if (p2p) {
-                        p2pPaymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), PENDING);
-                    } else {
-                        paymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), PENDING);
-                    }
-                    return gson.toJson(param);
-                }
-                if (p2p) {
-                    p2pPaymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), FAILED);
-                } else {
-                    paymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), FAILED);
-                }
-                return "FAIL";
+                check3ds(result, p2p);
             }
             return "OK";
         } catch (Exception e) {
@@ -330,10 +312,15 @@ public class HalykSoapService {
         String month = cardData.getExpireMonth();
         String cvv2 = cardData.getCvv2Code();
         String amount = "10";
-        String currency = "KZT";
+
+        HalykPaymentOrder halykPaymentOrder = generateHalykPaymentOrder(new BigDecimal(amount),
+                "", "Check card validity payment", payment.getOrderId(), 0);
 
         EpayServiceStub.PaymentOrderResponse paymentOrderResponse = sendPaymentOrderRequest(amount, currency,
                 cvv2, merchantid, month, year, orderId, pan, trType);
+
+        EpayServiceStub.Result result = paymentOrderResponse.get_return();
+        parsePaymentOrderResponse(halykPaymentOrder, result);
 
         logger.info("paymentOrderResponse");
         logger.info("Message: " + paymentOrderResponse.get_return().getMessage());
@@ -362,7 +349,7 @@ public class HalykSoapService {
                 checkCardValidityPaymentRepository.save(payment);
             }
 
-            return new CheckCardValidityResponse(true, "00");
+            return new CheckCardValidityResponse(true, result.getReturnCode());
         }
         return new CheckCardValidityResponse(false, paymentOrderResponse.get_return().getReturnCode());
     }
@@ -404,7 +391,7 @@ public class HalykSoapService {
             payment.setStatus(SUCCESS);
             p2pPaymentLogService.newEvent(payment.getGuid(), ipAddress, SUCCESS, gson.toJson(payment));
             p2pPaymentRepository.save(payment);
-            return "";
+            return "OK";
         }
         return check3ds(result, true);
     }
