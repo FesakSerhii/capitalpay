@@ -97,7 +97,7 @@ public class P2pService {
             CardDataResponseDto merchantCardData = userCardService.getCardDataFromTokenServer(merchantCard.getToken());
             CardDataResponseDto clientCardData = userCardService.getCardDataFromTokenServer(dto.getClientCardToken());
 
-            String paymentResult = halykSoapService.sendP2p(ipAddress, userAgent, merchantCardData, dto, clientCardData.getCardNumber(), true);
+            boolean paymentSuccess = halykSoapService.sendP2p(ipAddress, userAgent, merchantCardData, dto, clientCardData.getCardNumber(), true);
 
             return paymentSuccess ? new ResultDTO(true, "Successful payment", 0) : ErrorDictionary.error135;
         } catch (Exception e) {
