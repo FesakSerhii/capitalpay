@@ -99,7 +99,7 @@ public class P2pService {
 
             String paymentResult = halykSoapService.sendP2p(ipAddress, userAgent, merchantCardData, dto, clientCardData.getCardNumber(), true);
 
-            return !paymentResult.equals("FAIL") ? new ResultDTO(true, "Successful payment", 0) : ErrorDictionary.error135;
+            return paymentSuccess ? new ResultDTO(true, "Successful payment", 0) : ErrorDictionary.error135;
         } catch (Exception e) {
             e.printStackTrace();
             return ErrorDictionary.error130;
@@ -135,9 +135,9 @@ public class P2pService {
             CardDataResponseDto merchantCardData = userCardService.getCardDataFromTokenServer(merchantCard.getToken());
             CardDataResponseDto clientCardData = userCardService.getCardDataFromTokenServer(dto.getClientCardToken());
 
-            String paymentResult = halykSoapService.sendP2p(ipAddress, userAgent, clientCardData, dto, merchantCardData.getCardNumber(), false);
+            boolean paymentSuccess = halykSoapService.sendP2p(ipAddress, userAgent, clientCardData, dto, merchantCardData.getCardNumber(), false);
 
-            return !paymentResult.equals("FAIL") ? new ResultDTO(true, "Successful payment", 0) : ErrorDictionary.error135;
+            return paymentSuccess ? new ResultDTO(true, "Successful payment", 0) : ErrorDictionary.error135;
         } catch (Exception e) {
             e.printStackTrace();
             return ErrorDictionary.error130;
