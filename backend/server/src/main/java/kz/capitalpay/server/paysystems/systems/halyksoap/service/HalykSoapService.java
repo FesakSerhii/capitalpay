@@ -367,10 +367,14 @@ public class HalykSoapService {
         return new CheckCardValidityResponse(false, paymentOrderResponse.get_return().getReturnCode());
     }
 
-    public boolean sendP2p(String ipAddress, String userAgent, CardDataResponseDto payerCardData, SendP2pToClientDto dto,
-                           String paymentToPan, boolean toClient) {
+    public String sendP2p(String ipAddress, String userAgent, CardDataResponseDto payerCardData, SendP2pToClientDto dto,
+                          String paymentToPan, boolean toClient) {
         P2pPayment payment = p2pPaymentService.generateP2pPayment(ipAddress, userAgent, dto.getMerchantId(),
-                dto.getAcceptedSum(), dto.getCashBoxId(), toClient, "KZT", null);
+                dto.getAcceptedSum(), dto.getCashBoxId(), toClient, currency, null);
+
+        HalykTransferOrder transferOrder = generateHalykTransferOrder(dto.getAcceptedSum(),
+                "p2p", payment.getOrderId(), 8);
+
         String orderId = payment.getOrderId();
         String pan = payerCardData.getCardNumber();
         String year = payerCardData.getExpireYear().substring(2);
@@ -390,13 +394,19 @@ public class HalykSoapService {
         logger.info("AcsUrl: " + transferOrderResponse.get_return().getAcsUrl());
         logger.info("Md: " + transferOrderResponse.get_return().getMd());
         logger.info("PaReq: " + transferOrderResponse.get_return().getPareq());
+
+        EpayServiceStub.Result result = transferOrderResponse.get_return();
+
+        parseTransferOrderResponse(transferOrder, result);
+        logger.info(gson.toJson(transferOrder));
+
         if (transferOrderResponse.get_return().getReturnCode().equals("00")) {
             payment.setStatus(SUCCESS);
             p2pPaymentLogService.newEvent(payment.getGuid(), ipAddress, SUCCESS, gson.toJson(payment));
             p2pPaymentRepository.save(payment);
-            return true;
+            return "";
         }
-        return false;
+        return check3ds(result, true);
     }
 
     private EpayServiceStub.PaymentOrderResponse sendPaymentOrderRequest(String amount, String currency, String cvv2,
