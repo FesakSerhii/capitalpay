@@ -62,16 +62,32 @@ export class CardPaymentComponent implements OnInit {
     }
     this.userCardService.sendAnonP2pToMerchant(data)
       .then(r => {
-      if(r.result){
-        this.redirect = true;
-        this.redirectSource = r.data.is3ds?r.data.acsUrl:this.redirectsuccess;
-        this.redirectService.redirectTimerStart()
-      }else{
-        this.validityError = true;
-        this.validityErrorCode = r.data;
-        this.redirectSource = this.redirectfailed;
-      }
-    }).catch(err => {
+        if (r.result) {
+          this.redirect = true;
+
+          if (r.data.is3ds) {
+            const templateForm = `<FORM  action="${r.data.acsUrl}" METHOD="POST" name="SendOrder" style="visibility:hidden"></br>
+    MD<input name="MD" type="text" value="${r.data.md}" /></br>
+    PaReq<input name="PaReq" type="text" value="${r.data.paReq}"/>
+    </br>
+    TermUrl<input name="TermUrl" type="text" value="${r.data.paySystemCallbackUrl}"/></br>
+    <input type="submit" name="GotoPay"  value="SEND" /></br>
+    <button id="submitButton" type="submit"></button>
+</FORM>`
+            document.getElementById( 'hiddenFormContainer' ).innerHTML=templateForm;
+            const theForm = document.getElementById( 'submitButton' );
+            theForm.click();
+          } else {
+            // this.redirectSource = r.data.is3ds ? r.data.acsUrl : this.redirectsuccess;
+            this.redirectSource = this.redirectsuccess;
+          }
+          this.redirectService.redirectTimerStart()
+        } else {
+          this.validityError = true;
+          this.validityErrorCode = r.data;
+          this.redirectSource = this.redirectfailed;
+        }
+      }).catch(err => {
       this.validityError = true;
       this.validityErrorCode = err.message;
       this.redirectSource = this.redirectfailed;
