@@ -60,10 +60,11 @@ export class CardPaymentComponent implements OnInit {
       'phone': event.phone,
       'email': event.email
     }
-    this.userCardService.sendAnonP2pToMerchant(data).then(r => {
+    this.userCardService.sendAnonP2pToMerchant(data)
+      .then(r => {
       if(r.result){
         this.redirect = true;
-        this.redirectSource = this.redirectsuccess;
+        this.redirectSource = r.data.is3ds?r.data.acsUrl:this.redirectsuccess;
         this.redirectService.redirectTimerStart()
       }else{
         this.validityError = true;
