@@ -6,12 +6,14 @@ public class AnonymousP2pPaymentResponseDto {
     private String PaReq;
     //    private BillPaymentDto billPaymentDto;
     private String paySystemCallbackUrl;
+    private boolean is3ds;
 
-    public AnonymousP2pPaymentResponseDto(String acsUrl, String MD, String paReq, String paySystemCallbackUrl) {
+    public AnonymousP2pPaymentResponseDto(String acsUrl, String MD, String paReq, String paySystemCallbackUrl, boolean is3ds) {
         this.acsUrl = acsUrl;
         this.MD = MD;
         PaReq = paReq;
         this.paySystemCallbackUrl = paySystemCallbackUrl;
+        this.is3ds = is3ds;
     }
 
     public String getAcsUrl() {
@@ -44,5 +46,13 @@ public class AnonymousP2pPaymentResponseDto {
 
     public void setPaySystemCallbackUrl(String paySystemCallbackUrl) {
         this.paySystemCallbackUrl = paySystemCallbackUrl;
+    }
+
+    public boolean isIs3ds() {
+        return is3ds;
+    }
+
+    public void setIs3ds(boolean is3ds) {
+        this.is3ds = is3ds;
     }
 }

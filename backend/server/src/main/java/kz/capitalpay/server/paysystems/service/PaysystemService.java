@@ -274,7 +274,7 @@ public class PaysystemService {
 
         Payment payment = paymentService.addPhoneAndEmail(paymentid, phone, email);
 
-        String result = halykSoapService.paymentOrder(payment.getTotalAmount(),
+        String result = halykSoapService.getPaymentOrderResult(payment.getTotalAmount(),
                 cardHolderName, cvv, payment.getDescription(), month, payment.getPaySysPayId(), pan, year, false);
         BillPaymentDto bill = createBill(payment, httpRequest, cardHolderName, pan, result);
         return redirectAfterPay(httpResponse, bill);

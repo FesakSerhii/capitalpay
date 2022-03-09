@@ -12,7 +12,7 @@ import kz.capitalpay.server.p2p.dto.AnonymousP2pPaymentResponseDto;
 import kz.capitalpay.server.p2p.dto.SendP2pToClientDto;
 import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
 import kz.capitalpay.server.p2p.model.P2pPayment;
-import kz.capitalpay.server.paysystems.dto.BillPaymentDto;
+import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykPaymentOrderRepository;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import kz.capitalpay.server.usercard.dto.CardDataResponseDto;
 import kz.capitalpay.server.usercard.model.UserCard;
@@ -25,14 +25,11 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.LinkedHashMap;
 import java.util.Objects;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
-import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.CLIENT_FEE;
-import static kz.capitalpay.server.merchantsettings.service.MerchantKycService.TOTAL_FEE;
 
 @Service
 public class P2pService {
@@ -47,11 +44,18 @@ public class P2pService {
     private final Gson gson;
     private final MerchantKycService merchantKycService;
     private final CashboxSettingsService cashboxSettingsService;
+    private final HalykPaymentOrderRepository halykPaymentOrderRepository;
 
     @Value("${halyk.soap.p2p.termurl}")
     private String termUrl;
 
-    public P2pService(HalykSoapService halykSoapService, CashboxService cashboxService, UserCardService userCardService, P2pSettingsService p2pSettingsService, P2pPaymentService p2pPaymentService, CashboxCurrencyService cashboxCurrencyService, Gson gson, MerchantKycService merchantKycService, CashboxSettingsService cashboxSettingsService) {
+    @Value("${halyk.soap.merchant.id}")
+    private String merchantid;
+
+    @Value("${halyk.soap.currency}")
+    private String currency;
+
+    public P2pService(HalykSoapService halykSoapService, CashboxService cashboxService, UserCardService userCardService, P2pSettingsService p2pSettingsService, P2pPaymentService p2pPaymentService, CashboxCurrencyService cashboxCurrencyService, Gson gson, MerchantKycService merchantKycService, CashboxSettingsService cashboxSettingsService, HalykPaymentOrderRepository halykPaymentOrderRepository) {
         this.halykSoapService = halykSoapService;
         this.cashboxService = cashboxService;
         this.userCardService = userCardService;
@@ -61,6 +65,7 @@ public class P2pService {
         this.gson = gson;
         this.merchantKycService = merchantKycService;
         this.cashboxSettingsService = cashboxSettingsService;
+        this.halykPaymentOrderRepository = halykPaymentOrderRepository;
     }
 
     public ResultDTO sendP2pToClient(SendP2pToClientDto dto, String userAgent, String ipAddress) {
@@ -92,9 +97,9 @@ public class P2pService {
             CardDataResponseDto merchantCardData = userCardService.getCardDataFromTokenServer(merchantCard.getToken());
             CardDataResponseDto clientCardData = userCardService.getCardDataFromTokenServer(dto.getClientCardToken());
 
-            boolean paymentSuccess = halykSoapService.sendP2p(ipAddress, userAgent, merchantCardData, dto, clientCardData.getCardNumber(), true);
+            String paymentResult = halykSoapService.sendP2p(ipAddress, userAgent, merchantCardData, dto, clientCardData.getCardNumber(), true);
 
-            return paymentSuccess ? new ResultDTO(true, "Successful payment", 0) : ErrorDictionary.error135;
+            return !paymentResult.equals("FAIL") ? new ResultDTO(true, "Successful payment", 0) : ErrorDictionary.error135;
         } catch (Exception e) {
             e.printStackTrace();
             return ErrorDictionary.error130;
@@ -130,9 +135,9 @@ public class P2pService {
             CardDataResponseDto merchantCardData = userCardService.getCardDataFromTokenServer(merchantCard.getToken());
             CardDataResponseDto clientCardData = userCardService.getCardDataFromTokenServer(dto.getClientCardToken());
 
-            boolean paymentSuccess = halykSoapService.sendP2p(ipAddress, userAgent, clientCardData, dto, merchantCardData.getCardNumber(), false);
+            String paymentResult = halykSoapService.sendP2p(ipAddress, userAgent, clientCardData, dto, merchantCardData.getCardNumber(), false);
 
-            return paymentSuccess ? new ResultDTO(true, "Successful payment", 0) : ErrorDictionary.error135;
+            return !paymentResult.equals("FAIL") ? new ResultDTO(true, "Successful payment", 0) : ErrorDictionary.error135;
         } catch (Exception e) {
             e.printStackTrace();
             return ErrorDictionary.error130;
@@ -181,10 +186,10 @@ public class P2pService {
 
         P2pPayment p2pPayment = p2pPaymentService.findById(paymentId);
 
-        String result = halykSoapService.paymentOrder(p2pPayment.getTotalAmount(),
+        String result = halykSoapService.getPaymentOrderResult(p2pPayment.getTotalAmount(),
                 cardHolderName, cvv, "P2p payment to merchant", month, p2pPayment.getOrderId(), pan, year, true);
-        BillPaymentDto bill = createBill(p2pPayment, httpRequest, cardHolderName, pan, result);
-        return checkReturnCode(bill);
+//        BillPaymentDto bill = createBill(p2pPayment, httpRequest, cardHolderName, pan, result);
+        return checkReturnCode(result);
     }
 
     private boolean checkP2pSignature(SendP2pToClientDto dto) {
@@ -212,21 +217,21 @@ public class P2pService {
         return sha256hex.equals(signature);
     }
 
-    private ResultDTO checkReturnCode(BillPaymentDto bill) {
-        if (("OK").equals(bill.getResultPayment())) {
+    private ResultDTO checkReturnCode(String paymentResult) {
+        if (("OK").equals(paymentResult)) {
             return new ResultDTO(true, "Successful payment", 0);
         }
 
-        if ("FAIL".equals(bill.getResultPayment())) {
+        if ("FAIL".equals(paymentResult)) {
             return ErrorDictionary.error135;
         }
 
         LOGGER.info("Redirect to 3DS");
-        LOGGER.info("Result: {}", bill.getResultPayment());
+        LOGGER.info("Result: {}", paymentResult);
         try {
-            LinkedHashMap<String, String> param = gson.fromJson(bill.getResultPayment(), LinkedHashMap.class);
+            LinkedHashMap<String, String> param = gson.fromJson(paymentResult, LinkedHashMap.class);
             AnonymousP2pPaymentResponseDto dto = new AnonymousP2pPaymentResponseDto(param.get("acsUrl"),
-                    param.get("MD"), param.get("PaReq"), termUrl);
+                    param.get("MD"), param.get("PaReq"), termUrl, true);
             return new ResultDTO(true, dto, 0);
         } catch (Exception e) {
             e.printStackTrace();
@@ -234,43 +239,43 @@ public class P2pService {
         }
     }
 
-    private BillPaymentDto createBill(P2pPayment payment, HttpServletRequest httpRequest, String cardHolderName, String pan, String result) {
-        BillPaymentDto billPaymentDto = new BillPaymentDto();
-        billPaymentDto.setResultPayment(result);
-        setAmountFields(payment.getCashboxId(), payment.getTotalAmount(), billPaymentDto, payment.getCurrency());
-        billPaymentDto.setNumberTransaction(payment.getOrderId());
-        if (!"ok".equalsIgnoreCase(result)) {
-            return billPaymentDto;
-        }
-        billPaymentDto.setWebSiteMerchant(httpRequest.getServerName());
-        billPaymentDto.setDateTransaction(payment.getLocalDateTime());
-        billPaymentDto.setTypeTransaction(1);
-        billPaymentDto.setCardHolderName(cardHolderName);
-        billPaymentDto.setCardNumber(pan);
-        billPaymentDto.setPaySystemName(pan);
-        return billPaymentDto;
-    }
+//    private BillPaymentDto createBill(P2pPayment payment, HttpServletRequest httpRequest, String cardHolderName, String pan, String result) {
+//        BillPaymentDto billPaymentDto = new BillPaymentDto();
+//        billPaymentDto.setResultPayment(result);
+//        setAmountFields(payment.getCashboxId(), payment.getTotalAmount(), billPaymentDto, payment.getCurrency());
+//        billPaymentDto.setNumberTransaction(payment.getOrderId());
+//        if (!"ok".equalsIgnoreCase(result)) {
+//            return billPaymentDto;
+//        }
+//        billPaymentDto.setWebSiteMerchant(httpRequest.getServerName());
+//        billPaymentDto.setDateTransaction(payment.getLocalDateTime());
+//        billPaymentDto.setTypeTransaction(1);
+//        billPaymentDto.setCardHolderName(cardHolderName);
+//        billPaymentDto.setCardNumber(pan);
+//        billPaymentDto.setPaySystemName(pan);
+//        return billPaymentDto;
+//    }
 
-    private void setAmountFields(Long cashboxId, BigDecimal totalAmount, BillPaymentDto billPaymentDto, String currency) {
-        BigDecimal oneHundred = new BigDecimal(100);
-        Cashbox cashbox = cashboxService.findById(cashboxId);
-        BigDecimal totalFee = BigDecimal.valueOf(Long.parseLong(merchantKycService.getField(cashbox.getMerchantId(),
-                TOTAL_FEE)));
-        BigDecimal clientFee = BigDecimal.valueOf(Long.parseLong(cashboxSettingsService
-                .getField(cashboxId, CLIENT_FEE)));
-
-        BigDecimal amountWithoutClientFee = totalAmount
-                .divide((BigDecimal.ONE
-                                .subtract(clientFee
-                                        .divide(oneHundred, MathContext.DECIMAL128))
-                                .divide(BigDecimal.ONE
-                                                .subtract(totalFee
-                                                        .divide(oneHundred, MathContext.DECIMAL128)),
-                                        MathContext.DECIMAL128)),
-                        MathContext.DECIMAL128)
-                .setScale(0, RoundingMode.HALF_UP);
-        billPaymentDto.setTotalAmount(totalAmount.toString(), currency);
-        billPaymentDto.setAmountPayment(amountWithoutClientFee.toString(), currency);
-        billPaymentDto.setAmountFee(totalAmount.subtract(amountWithoutClientFee).toString(), currency);
-    }
+//    private void setAmountFields(Long cashboxId, BigDecimal totalAmount, BillPaymentDto billPaymentDto, String currency) {
+//        BigDecimal oneHundred = new BigDecimal(100);
+//        Cashbox cashbox = cashboxService.findById(cashboxId);
+//        BigDecimal totalFee = BigDecimal.valueOf(Long.parseLong(merchantKycService.getField(cashbox.getMerchantId(),
+//                TOTAL_FEE)));
+//        BigDecimal clientFee = BigDecimal.valueOf(Long.parseLong(cashboxSettingsService
+//                .getField(cashboxId, CLIENT_FEE)));
+//
+//        BigDecimal amountWithoutClientFee = totalAmount
+//                .divide((BigDecimal.ONE
+//                                .subtract(clientFee
+//                                        .divide(oneHundred, MathContext.DECIMAL128))
+//                                .divide(BigDecimal.ONE
+//                                                .subtract(totalFee
+//                                                        .divide(oneHundred, MathContext.DECIMAL128)),
+//                                        MathContext.DECIMAL128)),
+//                        MathContext.DECIMAL128)
+//                .setScale(0, RoundingMode.HALF_UP);
+//        billPaymentDto.setTotalAmount(totalAmount.toString(), currency);
+//        billPaymentDto.setAmountPayment(amountWithoutClientFee.toString(), currency);
+//        billPaymentDto.setAmountFee(totalAmount.subtract(amountWithoutClientFee).toString(), currency);
+//    }
 }
