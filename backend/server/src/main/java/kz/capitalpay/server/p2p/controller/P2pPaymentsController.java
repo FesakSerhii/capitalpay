@@ -110,7 +110,7 @@ public class P2pPaymentsController {
     }
 
     @PostMapping("/paysystem/listener")
-    public RedirectView listener(@RequestParam String PaReq,
+    public RedirectView listener(@RequestParam(required = false) String PaReq,
                                  @RequestParam String MD,
                                  @RequestParam String TermUrl,
                                  RedirectAttributes redirectAttributes) {

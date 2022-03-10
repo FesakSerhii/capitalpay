@@ -37,7 +37,7 @@ public class HalykController {
 
 
     @PostMapping("/paysystem/halyk/listener")
-    public void listener(@RequestParam String PaReq,
+    public void listener(@RequestParam(required = false) String PaReq,
                          @RequestParam String MD,
                          @RequestParam String TermUrl,
                          HttpServletResponse response) {
