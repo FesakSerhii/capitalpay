@@ -286,6 +286,7 @@ public class HalykSoapService {
                 return "FAIL";
             }
             if (result.getReturnCode().equals("00")) {
+                logger.info("paymentOrder.getOrderid(): {}", paymentOrder.getOrderid());
                 logger.info("Code 00, order: {}", gson.toJson(paymentOrder));
                 String reference = result.getReference();
                 EpayServiceStub.ControlOrderForCommerceResponse controlOrderForCommerceResponse = sendControlOrderForCommerceRequest(amount.toString(),
@@ -299,7 +300,6 @@ public class HalykSoapService {
                 logger.info("Md: " + controlOrderForCommerceResponse.get_return().getMd());
                 logger.info("AcsUrl: " + controlOrderForCommerceResponse.get_return().getAcsUrl());
 
-                logger.info("paymentOrder.getOrderid(): {}", paymentOrder.getOrderid());
                 if (p2p) {
                     p2pPaymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), SUCCESS);
                 } else {
