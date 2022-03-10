@@ -307,7 +307,7 @@ public class HalykSoapService {
                     paymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), SUCCESS);
                 }
             } else {
-                check3ds(result, p2p, paymentOrder.getOrderid());
+                return check3ds(result, p2p, paymentOrder.getOrderid());
             }
             return "OK";
         } catch (Exception e) {
