@@ -110,11 +110,11 @@ public class P2pPaymentsController {
     }
 
     @PostMapping("/paysystem/listener")
-    public RedirectView listener(@RequestParam String PaRes,
+    public RedirectView listener(@RequestParam String PaReq,
                                  @RequestParam String MD,
                                  @RequestParam String TermUrl,
                                  RedirectAttributes redirectAttributes) {
-        LOGGER.info("PaRes: {}", PaRes);
+        LOGGER.info("PaRes: {}", PaReq);
         LOGGER.info("MD: {}", MD);
         LOGGER.info("TermUrl: {}", TermUrl);
 
@@ -123,8 +123,8 @@ public class P2pPaymentsController {
         Object payment;
         // TODO: Костыль ради песочницы
         if (actionLink.equals("https://testpay.kkb.kz")) {
-            sessionid = halykSoapService.getSessionByPaRes(PaRes);
-            payment = halykSoapService.getPaymentByPaRes(PaRes);
+            sessionid = halykSoapService.getSessionByPaRes(PaReq);
+            payment = halykSoapService.getPaymentByPaRes(PaReq);
         } else {
             sessionid = halykSoapService.getSessionByMD(MD);
             payment = halykSoapService.getPaymentByMd(MD);
@@ -133,7 +133,7 @@ public class P2pPaymentsController {
         LOGGER.info(sessionid);
         LOGGER.info(gson.toJson(payment));
 
-        payment = halykSoapService.paymentOrderAcs(MD, PaRes, sessionid, true);
+        payment = halykSoapService.paymentOrderAcs(MD, PaReq, sessionid, true);
         P2pPayment p2pPayment = (P2pPayment) payment;
 
         redirectAttributes.addAttribute("paymentId", p2pPayment);

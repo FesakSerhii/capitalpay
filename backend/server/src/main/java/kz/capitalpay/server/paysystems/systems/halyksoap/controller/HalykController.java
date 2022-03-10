@@ -37,11 +37,11 @@ public class HalykController {
 
 
     @PostMapping("/paysystem/halyk/listener")
-    public void listener(@RequestParam String PaRes,
+    public void listener(@RequestParam String PaReq,
                          @RequestParam String MD,
                          @RequestParam String TermUrl,
                          HttpServletResponse response) {
-        logger.info("PaRes: {}", PaRes);
+        logger.info("PaRes: {}", PaReq);
         logger.info("MD: {}", MD);
         logger.info("TermUrl: {}", TermUrl);
 
@@ -50,8 +50,8 @@ public class HalykController {
         Object payment;
         // TODO: Костыль ради песочницы
         if (actionLink.equals("https://testpay.kkb.kz")) {
-            sessionid = halykSoapService.getSessionByPaRes(PaRes);
-            payment = halykSoapService.getPaymentByPaRes(PaRes);
+            sessionid = halykSoapService.getSessionByPaRes(PaReq);
+            payment = halykSoapService.getPaymentByPaRes(PaReq);
         } else {
             sessionid = halykSoapService.getSessionByMD(MD);
             payment = halykSoapService.getPaymentByMd(MD);
@@ -60,7 +60,7 @@ public class HalykController {
         logger.info(sessionid);
         logger.info(gson.toJson(payment));
 
-        payment = halykSoapService.paymentOrderAcs(MD, PaRes, sessionid, false);
+        payment = halykSoapService.paymentOrderAcs(MD, PaReq, sessionid, false);
         String redirectUrl = cashboxService.getRedirectForPayment((Payment) payment);
 
         response.setHeader("Location", redirectUrl);
