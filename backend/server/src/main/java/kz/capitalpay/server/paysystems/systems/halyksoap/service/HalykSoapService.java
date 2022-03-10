@@ -287,6 +287,17 @@ public class HalykSoapService {
             }
             if (paymentOrder.getReturnCode() != null && paymentOrder.getReturnCode().equals("00")) {
                 logger.info("Code 00, order: {}", gson.toJson(paymentOrder));
+                String reference = result.getReference();
+                EpayServiceStub.ControlOrderForCommerceResponse controlOrderForCommerceResponse = sendControlOrderForCommerceRequest(amount.toString(),
+                        currency, merchantid, orderId, reference, "22");
+                logger.info("controlOrderForCommerceResponse");
+                logger.info("Message: " + controlOrderForCommerceResponse.get_return().getMessage());
+                logger.info("Approval code: " + controlOrderForCommerceResponse.get_return().getApprovalcode());
+                logger.info("OrderId: " + controlOrderForCommerceResponse.get_return().getOrderid());
+                logger.info("getReference: " + controlOrderForCommerceResponse.get_return().getReference());
+                logger.info("PaReq: " + controlOrderForCommerceResponse.get_return().getPareq());
+                logger.info("Md: " + controlOrderForCommerceResponse.get_return().getMd());
+                logger.info("AcsUrl: " + controlOrderForCommerceResponse.get_return().getAcsUrl());
                 if (p2p) {
                     p2pPaymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), SUCCESS);
                 } else {
@@ -333,7 +344,7 @@ public class HalykSoapService {
         logger.info("AcsUrl: " + paymentOrderResponse.get_return().getAcsUrl());
 
         if (paymentOrderResponse.get_return().getReturnCode().equals("00")) {
-            String reference = paymentOrderResponse.get_return().getReference();
+            String reference = result.getReference();
             EpayServiceStub.ControlOrderForCommerceResponse controlOrderForCommerceResponse = sendControlOrderForCommerceRequest(amount,
                     currency, merchantid, orderId, reference, "22");
             logger.info("controlOrderForCommerceResponse");
