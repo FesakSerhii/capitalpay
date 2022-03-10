@@ -880,6 +880,7 @@ public class HalykSoapService {
             String signedXML = createPaymentOrderAcsXML(paymentOrderAcs);
             Map<String, String> vars = new HashMap<>();
             vars.put("signedXML", signedXML);
+            logger.info("signedXML {}", signedXML);
 
             String response = restTemplate.postForObject(sendOrderActionLink + "/axis2/services/EpayService.EpayServiceHttpSoap12Endpoint/",
                     signedXML, String.class, java.util.Optional.ofNullable(null));
@@ -1022,7 +1023,6 @@ public class HalykSoapService {
     public String getSessionByMD(String md) {
         HalykPaymentOrder paymentOrder = halykPaymentOrderRepository.findTopByMd(md);
         return paymentOrder.getSessionid();
-
     }
 
     public Cashbox getCashboxByMD(String md) {

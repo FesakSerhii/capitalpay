@@ -136,7 +136,7 @@ public class P2pPaymentsController {
         payment = halykSoapService.paymentOrderAcs(MD, PaReq, sessionid, true);
         P2pPayment p2pPayment = (P2pPayment) payment;
 
-        redirectAttributes.addAttribute("paymentId", p2pPayment);
+        redirectAttributes.addAttribute("paymentId", p2pPayment.getGuid());
         redirectAttributes.addAttribute("status", p2pPayment.getStatus());
         return new RedirectView(paymentRedirectUrl);
     }
