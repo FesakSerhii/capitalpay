@@ -558,6 +558,47 @@ public class HalykSoapService {
         return response;
     }
 
+    private EpayServiceStub.PaymentOrderAcsResponse sendPaymentOrderAcsRequest(String pares, String MD, String sessionId) {
+        EpayServiceStub stub = null;
+        try {
+            stub = new EpayServiceStub();
+        } catch (AxisFault axisFault) {
+            axisFault.printStackTrace();
+        }
+        EpayServiceStub.PaymentOrderAcs paymentOrderAcs = new EpayServiceStub.PaymentOrderAcs();
+        EpayServiceStub.AcsOrder order = new EpayServiceStub.AcsOrder();
+        order.setPares(pares);
+        order.setMd(MD);
+        order.setSessionid(sessionId);
+
+        logger.info("sendPaymentOrderAcsRequest()");
+        logger.info("pares: {}", pares);
+        logger.info("MD: {}", MD);
+        logger.info("sessionId: {}", sessionId);
+
+        String concatString = MD + pares + sessionId;
+        KKBSign kkbSign = new KKBSign();
+        String signatureValue = kkbSign.sign64(concatString, keystore, clientAlias, keypass, storepass);
+
+        logger.info("merchantCertificate {}", merchantCertificate);
+        logger.info("signatureValue {}", signatureValue);
+
+        paymentOrderAcs.setOrder(order);
+        EpayServiceStub.RequestSignature signature = new EpayServiceStub.RequestSignature();
+        signature.setMerchantCertificate(merchantCertificate);
+        signature.setMerchantId(merchantid);
+        signature.setSignatureValue(signatureValue);
+        paymentOrderAcs.setRequestSignature(signature);
+        EpayServiceStub.PaymentOrderAcsResponse response = null;
+        try {
+            response = stub.paymentOrderAcs(paymentOrderAcs);
+        } catch (RemoteException | EpayServiceSAXExceptionException | EpayServiceInvalidKeyExceptionException | EpayServiceSignatureExceptionException | EpayServiceCertificateExceptionException | EpayServiceUnrecoverableKeyExceptionException | EpayServiceKeyStoreExceptionException | EpayServiceIOExceptionException | EpayServiceNoSuchAlgorithmExceptionException | EpayServiceParserConfigurationExceptionException e) {
+            e.printStackTrace();
+        }
+
+        return response;
+    }
+
     private CheckCardValidityPayment generateCardCheckPayment(String ipAddress, String userAgent, Long merchantId,
                                                               BigDecimal totalAmount) {
         CheckCardValidityPayment payment = new CheckCardValidityPayment();
@@ -877,16 +918,18 @@ public class HalykSoapService {
 
             halykPaymentOrderAcsRepository.save(paymentOrderAcs);
 
-            String signedXML = createPaymentOrderAcsXML(paymentOrderAcs);
-            Map<String, String> vars = new HashMap<>();
-            vars.put("signedXML", signedXML);
-            logger.info("signedXML {}", signedXML);
+//            String signedXML = createPaymentOrderAcsXML(paymentOrderAcs);
+//            Map<String, String> vars = new HashMap<>();
+//            vars.put("signedXML", signedXML);
+//            logger.info("signedXML {}", signedXML);
+//
+//            String response = restTemplate.postForObject(sendOrderActionLink + "/axis2/services/EpayService.EpayServiceHttpSoap12Endpoint/",
+//                    signedXML, String.class, java.util.Optional.ofNullable(null));
+//            logger.info("response: {}", response);
 
-            String response = restTemplate.postForObject(sendOrderActionLink + "/axis2/services/EpayService.EpayServiceHttpSoap12Endpoint/",
-                    signedXML, String.class, java.util.Optional.ofNullable(null));
-            logger.info("response: {}", response);
+            EpayServiceStub.PaymentOrderAcsResponse paymentOrderAcsResponse = sendPaymentOrderAcsRequest(pares, md, sessionid);
+            parsePaymentOrderAcsResponse(paymentOrderAcs, paymentOrderAcsResponse.get_return());
 
-            parsePaymentOrderAcsResponse(paymentOrderAcs, response);
             logger.info(gson.toJson(paymentOrderAcs));
             if (paymentOrderAcs.getReturnCode() != null && paymentOrderAcs.getReturnCode().equals("00")) {
                 logger.info("Return code: {}", paymentOrderAcs.getReturnCode());
@@ -959,7 +1002,33 @@ public class HalykSoapService {
             e.printStackTrace();
         }
         return paymentOrderAcs;
+    }
 
+    private HalykPaymentOrderAcs parsePaymentOrderAcsResponse(HalykPaymentOrderAcs paymentOrderAcs, EpayServiceStub.Result response) {
+        try {
+            paymentOrderAcs.setAcsUrl(response.getAcsUrl());
+            paymentOrderAcs.setApprovalcode(response.getApprovalcode());
+            paymentOrderAcs.setIntreference(response.getIntreference());
+            paymentOrderAcs.setIs3ds(response.getIs3Ds());
+            paymentOrderAcs.setMessage(response.getMessage());
+            paymentOrderAcs.setOrderid(response.getOrderid());
+            paymentOrderAcs.setPareq(response.getPareq());
+            paymentOrderAcs.setReference(response.getReference());
+            paymentOrderAcs.setReturnCode(response.getReturnCode());
+            paymentOrderAcs.setTermUrl(response.getTermUrl());
+
+            String signatureValue = response.getResponseSignature().getSignatureValue();
+            String signedString = response.getResponseSignature().getSignedString();
+            logger.info("SignedString: {}", signedString);
+            KKBSign kkbSign = new KKBSign();
+            boolean signatureValid = kkbSign.verify(signedString, signatureValue, keystore, bankAlias, storepass); /// keypass???
+            logger.info("Verify: {}", signatureValid);
+            paymentOrderAcs.setSignatureValid(signatureValid);
+            halykPaymentOrderAcsRepository.save(paymentOrderAcs);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return paymentOrderAcs;
     }
 
     private String createPaymentOrderAcsXML(HalykPaymentOrderAcs paymentOrderAcs) {
