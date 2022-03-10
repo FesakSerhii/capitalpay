@@ -99,9 +99,9 @@ public class P2pPaymentService {
         return payment;
     }
 
-    public P2pPayment setStatusByPaySysPayId(String paySysPayId, String status) {
-        LOGGER.info("PaySysPay ID: {}", paySysPayId);
-        P2pPayment payment = p2pPaymentRepository.findByOrderId(paySysPayId).orElse(null);
+    public P2pPayment setStatusByPaySysPayId(String orderId, String status) {
+        LOGGER.info("PaySysPay ID: {}", orderId);
+        P2pPayment payment = p2pPaymentRepository.findByOrderId(orderId).orElse(null);
         if (payment != null) {
             LOGGER.info("Payment pspid: {}", payment.getOrderId());
             payment.setStatus(status);
@@ -112,7 +112,7 @@ public class P2pPaymentService {
             LOGGER.info("Change status: {}", gson.toJson(payment));
             return payment;
         } else {
-            LOGGER.error("PaySysPay ID: {}", paySysPayId);
+            LOGGER.error("PaySysPay ID: {}", orderId);
             LOGGER.error("Payment: {}", payment);
         }
         return null;
