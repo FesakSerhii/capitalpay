@@ -281,6 +281,7 @@ public class HalykSoapService {
 
             parsePaymentOrderResponse(paymentOrder, result);
             logger.info(gson.toJson(paymentOrder));
+            logger.info("result.getReturnCode(): {}", result.getReturnCode());
 
             if ("111".equals(cvc)) {
                 return "FAIL";
@@ -306,7 +307,7 @@ public class HalykSoapService {
                     paymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), SUCCESS);
                 }
             } else {
-                check3ds(result, p2p);
+                check3ds(result, p2p, paymentOrder.getOrderid());
             }
             return "OK";
         } catch (Exception e) {
@@ -406,7 +407,7 @@ public class HalykSoapService {
             p2pPaymentRepository.save(payment);
             return "OK";
         }
-        return check3ds(result, true);
+        return check3ds(result, true, transferOrder.getOrderid());
     }
 
     private EpayServiceStub.PaymentOrderResponse sendPaymentOrderRequest(String amount, String currency, String cvv2,
@@ -579,7 +580,7 @@ public class HalykSoapService {
         return payment;
     }
 
-    private String check3ds(EpayServiceStub.Result response, boolean p2p) {
+    private String check3ds(EpayServiceStub.Result response, boolean p2p, String orderId) {
         if (response.getPareq() != null && response.getMd() != null) {
             Map<String, String> param = new HashMap<>();
             param.put("acsUrl", response.getAcsUrl());
@@ -587,16 +588,16 @@ public class HalykSoapService {
             param.put("PaReq", response.getPareq());
             logger.info("Code 00, order: {}", gson.toJson(response));
             if (p2p) {
-                p2pPaymentService.setStatusByPaySysPayId(response.getOrderid(), PENDING);
+                p2pPaymentService.setStatusByPaySysPayId(orderId, PENDING);
             } else {
-                paymentService.setStatusByPaySysPayId(response.getOrderid(), PENDING);
+                paymentService.setStatusByPaySysPayId(orderId, PENDING);
             }
             return gson.toJson(param);
         }
         if (p2p) {
-            p2pPaymentService.setStatusByPaySysPayId(response.getOrderid(), FAILED);
+            p2pPaymentService.setStatusByPaySysPayId(orderId, FAILED);
         } else {
-            paymentService.setStatusByPaySysPayId(response.getOrderid(), FAILED);
+            paymentService.setStatusByPaySysPayId(orderId, FAILED);
         }
         return "FAIL";
     }
