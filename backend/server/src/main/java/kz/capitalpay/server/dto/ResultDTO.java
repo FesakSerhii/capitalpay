@@ -52,4 +52,14 @@ public class ResultDTO {
     public void setError(int error) {
         this.error = error;
     }
+
+    @Override
+    public String toString() {
+        return "ResultDTO{" +
+                "result=" + result +
+                ", data=" + data +
+                ", error=" + error +
+                ", sms='" + sms + '\'' +
+                '}';
+    }
 }

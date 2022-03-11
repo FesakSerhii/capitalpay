@@ -5,12 +5,11 @@
     <title>3D Secure Redirect</title>
 </head>
 <body>
-<FORM action="/" th:action="${acsUrl}" METHOD="POST" name="SendOrder" ></br>
-    MD<input name="MD" type="text" th:value="${MD}" value="264622300-BF423BF9977D7691"/></br>
-    PaReq<input name="PaReq" type="text" th:value="${PaReq}" value="eJxVUttSwjAQ/ZVO3...."/>
-    </br>
-    TermUrl<input name="TermUrl" type="text" th:value="${TermUrl}" value="ваш адрес, куда вернется ответ о результате проверки 3д пароля"/></br>
-    <input type="submit" name="GotoPay"  value="SEND" /></br>
+<FORM action="/" th:action="${acsUrl}" METHOD="POST" name="SendOrder" hidden></br>
+    <input hidden name="MD" type="text" th:value="${MD}"/>
+    <input hidden name="PaReq" type="text" th:value="${PaReq}"/>
+    <input hidden name="TermUrl" type="text" th:value="${TermUrl}"/>
+    <input type="submit" name="GotoPay" value="SEND"/>
 </FORM>
 
 <script>

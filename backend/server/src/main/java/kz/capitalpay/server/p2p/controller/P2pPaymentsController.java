@@ -55,7 +55,7 @@ public class P2pPaymentsController {
 
 
     @PostMapping("/send-p2p-to-client")
-    public ResultDTO sendP2pToClient(@RequestParam @NotNull(message = "clientCardId must not be null") String clientCardToken,
+    public RedirectView sendP2pToClient(@RequestParam @NotNull(message = "clientCardId must not be null") String clientCardToken,
                                      @RequestParam @NotNull(message = "merchantId must not be null") Long merchantId,
                                      @RequestParam @NotNull(message = "acceptedSum must not be null") BigDecimal acceptedSum,
                                      @RequestParam @NotNull(message = "cashBoxId must not be null") Long cashBoxId,
@@ -72,7 +72,7 @@ public class P2pPaymentsController {
     }
 
     @PostMapping("/send-p2p-to-merchant")
-    public ResultDTO sendP2pToMerchant(@RequestParam @NotNull(message = "clientCardId must not be null") String clientCardToken,
+    public RedirectView sendP2pToMerchant(@RequestParam @NotNull(message = "clientCardId must not be null") String clientCardToken,
                                        @RequestParam @NotNull(message = "merchantId must not be null") Long merchantId,
                                        @RequestParam @NotNull(message = "acceptedSum must not be null") BigDecimal acceptedSum,
                                        @RequestParam @NotNull(message = "cashBoxId must not be null") Long cashBoxId,
@@ -136,16 +136,8 @@ public class P2pPaymentsController {
         LOGGER.info("MD: {}", MD);
         LOGGER.info("TermUrl: {}", TermUrl);
 
-        String sessionid;
-        Payment payment;
-        // TODO: Костыль ради песочницы
-        if (actionLink.equals("https://testpay.kkb.kz")) {
-            sessionid = halykSoapService.getSessionByPaRes(PaRes);
-            payment = halykSoapService.getPaymentByPaRes(PaRes);
-        } else {
-            sessionid = halykSoapService.getSessionByMD(MD);
-            payment = halykSoapService.getPaymentByMd(MD);
-        }
+        String sessionid = halykSoapService.getSessionByMD(MD);
+        Payment payment = halykSoapService.getPaymentByMd(MD);
 
         LOGGER.info(sessionid);
         LOGGER.info(gson.toJson(payment));

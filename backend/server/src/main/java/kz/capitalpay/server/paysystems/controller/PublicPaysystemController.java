@@ -77,7 +77,7 @@ public class PublicPaysystemController {
     String secureRedirect(ModelMap modelMap, @RequestParam String acsUrl,
                           @RequestParam String MD,
                           @RequestParam String PaReq,
-                          @RequestParam String bill) {
+                          @RequestParam(required = false, defaultValue = "") String bill) {
 
         modelMap.addAttribute("acsUrl", acsUrl);
         modelMap.addAttribute("MD", MD);
