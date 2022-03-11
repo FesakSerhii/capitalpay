@@ -33,7 +33,7 @@ export class CardPaymentComponent implements OnInit {
       if (value) this.redirectAction()
     })
     this.activatedRoute.queryParamMap.pipe(filter(param => {
-      return param.has('id')
+      return param.has('id')||param.has('paymentId')
     })).subscribe(params => {
       this.queryParamEnable = true;
       this.paymentId = params.get('id');
