@@ -332,16 +332,19 @@ public class HalykSoapService {
         parsePaymentOrderResponse(halykOrder, result);
 
         logger.info("paymentOrderResponse");
-        logger.info("Message: " + paymentOrderResponse.get_return().getMessage());
-        logger.info("Approval code: " + paymentOrderResponse.get_return().getApprovalcode());
-        logger.info("OrderId: " + paymentOrderResponse.get_return().getOrderid());
-        logger.info("getReference: " + paymentOrderResponse.get_return().getReference());
-        logger.info("getReturnCode: " + paymentOrderResponse.get_return().getReturnCode());
-        logger.info("PaReq: " + paymentOrderResponse.get_return().getPareq());
-        logger.info("Md: " + paymentOrderResponse.get_return().getMd());
-        logger.info("AcsUrl: " + paymentOrderResponse.get_return().getAcsUrl());
+        logger.info("Message: " + result.getMessage());
+        logger.info("Approval code: " + result.getApprovalcode());
+        logger.info("OrderId: " + result.getOrderid());
+        logger.info("getReference: " + result.getReference());
+        logger.info("getReturnCode: " + result.getReturnCode());
+        logger.info("PaReq: " + result.getPareq());
+        logger.info("Md: " + result.getMd());
+        logger.info("AcsUrl: " + result.getAcsUrl());
 
-        if (paymentOrderResponse.get_return().getReturnCode().equals("00")) {
+        if (result.getReturnCode() == null && result.getAcsUrl() != null && result.getPareq() != null) {
+            return new CheckCardValidityResponse(true, result.getReturnCode());
+        }
+        if (result.getReturnCode().equals("00")) {
             String reference = result.getReference();
             EpayServiceStub.ControlOrderForCommerceResponse controlOrderForCommerceResponse = sendControlOrderForCommerceRequest(amount,
                     currency, merchantid, orderId, reference, "22");
@@ -357,10 +360,9 @@ public class HalykSoapService {
                 payment.setStatus("COMPLETED");
                 checkCardValidityPaymentRepository.save(payment);
             }
-
             return new CheckCardValidityResponse(true, result.getReturnCode());
         }
-        return new CheckCardValidityResponse(false, paymentOrderResponse.get_return().getReturnCode());
+        return new CheckCardValidityResponse(false, result.getReturnCode());
     }
 
     public String sendP2p(String ipAddress, String userAgent, CardDataResponseDto payerCardData, SendP2pToClientDto dto,
