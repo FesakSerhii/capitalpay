@@ -5,9 +5,9 @@ import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.p2p.dto.SendAnonymousP2pToMerchantDto;
 import kz.capitalpay.server.p2p.dto.SendP2pToClientDto;
-import kz.capitalpay.server.p2p.model.P2pPayment;
 import kz.capitalpay.server.p2p.service.P2pPaymentService;
 import kz.capitalpay.server.p2p.service.P2pService;
+import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +18,8 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @RestController
@@ -48,24 +50,36 @@ public class P2pPaymentsController {
 
 
     @PostMapping("/send-p2p-to-client")
-    public ResultDTO sendP2pToClient(@RequestBody @Valid SendP2pToClientDto dto,
-                                     HttpServletRequest httpRequest) {
+    public ResultDTO sendP2pToClient(@RequestParam @NotNull(message = "clientCardId must not be null") String clientCardToken,
+                                     @RequestParam @NotNull(message = "merchantId must not be null") Long merchantId,
+                                     @RequestParam @NotNull(message = "acceptedSum must not be null") BigDecimal acceptedSum,
+                                     @RequestParam @NotNull(message = "cashBoxId must not be null") Long cashBoxId,
+                                     @RequestParam @NotBlank(message = "sign must not be blank") String signature,
+                                     HttpServletRequest httpRequest,
+                                     RedirectAttributes redirectAttributes) {
         String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
         if (ipAddress == null) {
             ipAddress = httpRequest.getRemoteAddr();
         }
         String userAgent = httpRequest.getHeader("User-Agent");
+        SendP2pToClientDto dto = new SendP2pToClientDto(clientCardToken, merchantId, acceptedSum, cashBoxId, signature);
         return p2pService.sendP2pToClient(dto, userAgent, ipAddress);
     }
 
     @PostMapping("/send-p2p-to-merchant")
-    public ResultDTO sendP2pToMerchant(@RequestBody @Valid SendP2pToClientDto dto,
-                                       HttpServletRequest httpRequest) {
+    public ResultDTO sendP2pToMerchant(@RequestParam @NotNull(message = "clientCardId must not be null") String clientCardToken,
+                                       @RequestParam @NotNull(message = "merchantId must not be null") Long merchantId,
+                                       @RequestParam @NotNull(message = "acceptedSum must not be null") BigDecimal acceptedSum,
+                                       @RequestParam @NotNull(message = "cashBoxId must not be null") Long cashBoxId,
+                                       @RequestParam @NotBlank(message = "sign must not be blank") String signature,
+                                       HttpServletRequest httpRequest,
+                                       RedirectAttributes redirectAttributes) {
         String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
         if (ipAddress == null) {
             ipAddress = httpRequest.getRemoteAddr();
         }
         String userAgent = httpRequest.getHeader("User-Agent");
+        SendP2pToClientDto dto = new SendP2pToClientDto(clientCardToken, merchantId, acceptedSum, cashBoxId, signature);
         return p2pService.sendP2pToMerchant(dto, userAgent, ipAddress);
     }
 
@@ -94,8 +108,8 @@ public class P2pPaymentsController {
         String userAgent = httpRequest.getHeader("User-Agent");
         ResultDTO resultDTO = p2pService.createAnonymousP2pPayment(userAgent, ipAddress, cashBoxId, merchantId,
                 totalAmount, currency, param, signature);
-        if (resultDTO.isResult() && resultDTO.getData() instanceof P2pPayment) {
-            P2pPayment payment = (P2pPayment) resultDTO.getData();
+        if (resultDTO.isResult() && resultDTO.getData() instanceof Payment) {
+            Payment payment = (Payment) resultDTO.getData();
             redirectAttributes.addAttribute("id", payment.getGuid());
         } else {
             redirectAttributes.addAttribute("error", resultDTO.getError());
@@ -120,7 +134,7 @@ public class P2pPaymentsController {
 
 
         String sessionid;
-        Object payment;
+        Payment payment;
         // TODO: Костыль ради песочницы
         if (actionLink.equals("https://testpay.kkb.kz")) {
             sessionid = halykSoapService.getSessionByPaRes(PaRes);
@@ -133,11 +147,10 @@ public class P2pPaymentsController {
         LOGGER.info(sessionid);
         LOGGER.info(gson.toJson(payment));
 
-        payment = halykSoapService.paymentOrderAcs(MD, PaRes, sessionid, true);
-        P2pPayment p2pPayment = (P2pPayment) payment;
+        payment = halykSoapService.paymentOrderAcs(MD, PaRes, sessionid);
 
-        redirectAttributes.addAttribute("paymentId", p2pPayment.getGuid());
-        redirectAttributes.addAttribute("status", p2pPayment.getStatus());
+        redirectAttributes.addAttribute("paymentId", payment.getGuid());
+        redirectAttributes.addAttribute("status", payment.getStatus());
         return new RedirectView(paymentRedirectUrl);
     }
 }

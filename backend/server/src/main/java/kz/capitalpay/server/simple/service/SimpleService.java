@@ -199,7 +199,7 @@ public class SimpleService {
                 return new ResultDTO(false, "Signature: SHA256(cashboxid + billid + secret)", -1);
             }
 
-            PaymentDetailDTO paymentDetail = signDetail(payment);
+            PaymentDetailDTO paymentDetail = paymentService.signDetail(payment);
 
             return new ResultDTO(true, paymentDetail, 0);
 
@@ -207,25 +207,5 @@ public class SimpleService {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }
-    }
-
-    public PaymentDetailDTO signDetail(Payment payment) {
-
-        String secret = cashboxService.getSecret(payment.getCashboxId());
-
-        PaymentDetailDTO paymentDetail = new PaymentDetailDTO();
-        paymentDetail.setTimestamp(payment.getTimestamp());
-        paymentDetail.setLocalDateTime(payment.getLocalDateTime());
-        paymentDetail.setBillId(payment.getBillId());
-        paymentDetail.setTotalAmount(payment.getTotalAmount());
-        paymentDetail.setCurrency(payment.getCurrency());
-        paymentDetail.setDescription(payment.getDescription());
-        paymentDetail.setParam(payment.getParam());
-        paymentDetail.setStatus(payment.getStatus());
-        //    SHA256(cashboxId + billId + status + secret)
-        String sha256hex = DigestUtils.sha256Hex(payment.getCashboxId().toString()
-                + payment.getBillId() + payment.getStatus() + secret);
-        paymentDetail.setSignature(sha256hex);
-        return paymentDetail;
     }
 }

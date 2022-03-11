@@ -2,34 +2,36 @@ package kz.capitalpay.server.payments.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
 public class Payment {
     @Id
-    String guid;
-    Long timestamp;
-    LocalDateTime localDateTime;
-    Long merchantId;
-    String merchantName;
-    Long cashboxId;
-    String cashboxName;
-    String billId;
-    String paySysPayId;
+    private String guid;
+    private Long timestamp;
+    private LocalDateTime localDateTime;
+    private Long merchantId;
+    private String merchantName;
+    private Long cashboxId;
+    private String cashboxName;
+    private String billId;
+    private String paySysPayId;
     @Column(precision = 30, scale = 2)
-    BigDecimal totalAmount;
-    String currency;
-    String description;
-    String phone;
-    String email;
-    String param;
-    String ipAddress;
-    String userAgent;
-    String status;
+    private BigDecimal totalAmount;
+    private String currency;
+    private String description;
+    private String phone;
+    private String email;
+    private String param;
+    private String ipAddress;
+    private String userAgent;
+    private String status;
+    @Column(columnDefinition = "boolean default false")
+    boolean toClient;
+    @Column(columnDefinition = "boolean default false")
+    boolean p2p;
 
     public String getGuid() {
         return guid;
@@ -173,5 +175,21 @@ public class Payment {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public boolean isToClient() {
+        return toClient;
+    }
+
+    public void setToClient(boolean toClient) {
+        this.toClient = toClient;
+    }
+
+    public boolean isP2p() {
+        return p2p;
+    }
+
+    public void setP2p(boolean p2p) {
+        this.p2p = p2p;
     }
 }

@@ -17,6 +17,14 @@ public class SendP2pToClientDto {
     @NotBlank(message = "sign must not be blank")
     private String signature;
 
+    public SendP2pToClientDto(String clientCardToken, Long merchantId, BigDecimal acceptedSum, Long cashBoxId, String signature) {
+        this.clientCardToken = clientCardToken;
+        this.merchantId = merchantId;
+        this.acceptedSum = acceptedSum;
+        this.cashBoxId = cashBoxId;
+        this.signature = signature;
+    }
+
     public String getClientCardToken() {
         return clientCardToken;
     }

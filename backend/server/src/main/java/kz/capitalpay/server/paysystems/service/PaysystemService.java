@@ -10,7 +10,6 @@ import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.service.ApplicationUserService;
 import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.merchantsettings.service.MerchantKycService;
-import kz.capitalpay.server.p2p.mapper.P2pPaymentMapper;
 import kz.capitalpay.server.p2p.service.P2pPaymentService;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
@@ -87,9 +86,6 @@ public class PaysystemService {
 
     @Autowired
     HalykSoapService halykSoapService;
-
-    @Autowired
-    P2pPaymentMapper p2pPaymentMapper;
 
     Map<String, PaySystem> paySystems = new HashMap<>();
 
@@ -275,7 +271,7 @@ public class PaysystemService {
         Payment payment = paymentService.addPhoneAndEmail(paymentid, phone, email);
 
         String result = halykSoapService.getPaymentOrderResult(payment.getTotalAmount(),
-                cardHolderName, cvv, payment.getDescription(), month, payment.getPaySysPayId(), pan, year, false);
+                cardHolderName, cvv, payment.getDescription(), month, payment.getPaySysPayId(), pan, year);
         BillPaymentDto bill = createBill(payment, httpRequest, cardHolderName, pan, result);
         return redirectAfterPay(httpResponse, bill);
     }

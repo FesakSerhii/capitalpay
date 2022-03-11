@@ -12,7 +12,7 @@ import kz.capitalpay.server.payments.dto.OnePaymentDetailsRequestDTO;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.repository.PaymentRepository;
 import kz.capitalpay.server.simple.dto.PaymentDetailDTO;
-import kz.capitalpay.server.simple.service.SimpleService;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,9 +55,6 @@ public class PaymentService {
     RestTemplate restTemplate;
 
     @Autowired
-    SimpleService simpleService;
-
-    @Autowired
     ApplicationUserService applicationUserService;
 
     @Autowired
@@ -90,6 +87,10 @@ public class PaymentService {
         paymentRepository.save(paymentFromBd);
     }
 
+    public Payment findById(String paymentId) {
+        return paymentRepository.findById(paymentId).orElse(null);
+    }
+
     public Payment setStatusByPaySysPayId(String paySysPayId, String status) {
         logger.info("PaySysPay ID: {}", paySysPayId);
         Payment payment = paymentRepository.findTopByPaySysPayId(paySysPayId);
@@ -109,18 +110,16 @@ public class PaymentService {
         return null;
     }
 
-    private void notifyMerchant(Payment payment) {
+    public void notifyMerchant(Payment payment) {
         try {
             String interactionUrl = cashboxService.getInteractUrl(payment);
-            PaymentDetailDTO detailsJson = simpleService.signDetail(payment);
+            PaymentDetailDTO detailsJson = signDetail(payment);
             Map<String, Object> requestJson = new HashMap<>();
             requestJson.put("type", "paymentStatus");
             requestJson.put("data", detailsJson);
             String response = restTemplate.postForObject(interactionUrl,
                     requestJson, String.class, java.util.Optional.ofNullable(null));
             logger.info(response);
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -133,7 +132,7 @@ public class PaymentService {
 
     }
 
-    public Payment getByPaySysPayId(String paySysPayId) {
+    public Payment findByPaySysPayId(String paySysPayId) {
         return paymentRepository.findTopByPaySysPayId(paySysPayId);
     }
 
@@ -147,6 +146,24 @@ public class PaymentService {
 
     public Payment getPaymentByBillAndCashbox(String billid, Long cashboxid) {
         return paymentRepository.findTopByCashboxIdAndAndBillId(cashboxid, billid);
+    }
+
+    public PaymentDetailDTO signDetail(Payment payment) {
+        String secret = cashboxService.getSecret(payment.getCashboxId());
+        PaymentDetailDTO paymentDetail = new PaymentDetailDTO();
+        paymentDetail.setTimestamp(payment.getTimestamp());
+        paymentDetail.setLocalDateTime(payment.getLocalDateTime());
+        paymentDetail.setBillId(payment.getBillId());
+        paymentDetail.setTotalAmount(payment.getTotalAmount());
+        paymentDetail.setCurrency(payment.getCurrency());
+        paymentDetail.setDescription(payment.getDescription());
+        paymentDetail.setParam(payment.getParam());
+        paymentDetail.setStatus(payment.getStatus());
+        //    SHA256(cashboxId + billId + status + secret)
+        String sha256hex = DigestUtils.sha256Hex(payment.getCashboxId().toString()
+                + payment.getBillId() + payment.getStatus() + secret);
+        paymentDetail.setSignature(sha256hex);
+        return paymentDetail;
     }
 
     public ResultDTO paymentList(Principal principal) {
@@ -206,7 +223,7 @@ public class PaymentService {
 
     }
 
-    public List<CashboxBalanceDTO>  getBalance(Long cashboxId) {
+    public List<CashboxBalanceDTO> getBalance(Long cashboxId) {
         Map<String, BigDecimal> result = new HashMap<>();
         List<Payment> paymentList = paymentRepository.findByCashboxIdAndStatus(cashboxId, SUCCESS);
 

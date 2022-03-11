@@ -11,8 +11,8 @@ import kz.capitalpay.server.merchantsettings.service.MerchantKycService;
 import kz.capitalpay.server.p2p.dto.AnonymousP2pPaymentResponseDto;
 import kz.capitalpay.server.p2p.dto.SendP2pToClientDto;
 import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
-import kz.capitalpay.server.p2p.model.P2pPayment;
-import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykPaymentOrderRepository;
+import kz.capitalpay.server.payments.model.Payment;
+import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykOrderRepository;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import kz.capitalpay.server.usercard.dto.CardDataResponseDto;
 import kz.capitalpay.server.usercard.model.UserCard;
@@ -44,7 +44,7 @@ public class P2pService {
     private final Gson gson;
     private final MerchantKycService merchantKycService;
     private final CashboxSettingsService cashboxSettingsService;
-    private final HalykPaymentOrderRepository halykPaymentOrderRepository;
+    private final HalykOrderRepository halykOrderRepository;
 
     @Value("${halyk.soap.p2p.termurl}")
     private String termUrl;
@@ -55,7 +55,7 @@ public class P2pService {
     @Value("${halyk.soap.currency}")
     private String currency;
 
-    public P2pService(HalykSoapService halykSoapService, CashboxService cashboxService, UserCardService userCardService, P2pSettingsService p2pSettingsService, P2pPaymentService p2pPaymentService, CashboxCurrencyService cashboxCurrencyService, Gson gson, MerchantKycService merchantKycService, CashboxSettingsService cashboxSettingsService, HalykPaymentOrderRepository halykPaymentOrderRepository) {
+    public P2pService(HalykSoapService halykSoapService, CashboxService cashboxService, UserCardService userCardService, P2pSettingsService p2pSettingsService, P2pPaymentService p2pPaymentService, CashboxCurrencyService cashboxCurrencyService, Gson gson, MerchantKycService merchantKycService, CashboxSettingsService cashboxSettingsService, HalykOrderRepository halykOrderRepository) {
         this.halykSoapService = halykSoapService;
         this.cashboxService = cashboxService;
         this.userCardService = userCardService;
@@ -65,7 +65,7 @@ public class P2pService {
         this.gson = gson;
         this.merchantKycService = merchantKycService;
         this.cashboxSettingsService = cashboxSettingsService;
-        this.halykPaymentOrderRepository = halykPaymentOrderRepository;
+        this.halykOrderRepository = halykOrderRepository;
     }
 
     public ResultDTO sendP2pToClient(SendP2pToClientDto dto, String userAgent, String ipAddress) {
@@ -166,7 +166,7 @@ public class P2pService {
             return error117;
         }
 
-        P2pPayment p2pPayment = p2pPaymentService.generateP2pPayment(ipAddress, userAgent, merchantId, amount, cashBoxId, false, currency, param);
+        Payment p2pPayment = p2pPaymentService.generateP2pPayment(ipAddress, userAgent, merchantId, amount, cashBoxId, false, currency, param);
         return new ResultDTO(true, p2pPayment, 0);
     }
 
@@ -182,10 +182,10 @@ public class P2pService {
         LOGGER.info("Request IP: {}", ipAddress);
         LOGGER.info("Request User-Agent: {}", httpRequest.getHeader("User-Agent"));
 
-        P2pPayment p2pPayment = p2pPaymentService.findById(paymentId);
+        Payment p2pPayment = p2pPaymentService.findById(paymentId);
 
         String result = halykSoapService.getPaymentOrderResult(p2pPayment.getTotalAmount(),
-                cardHolderName, cvv, "P2p payment to merchant", month, p2pPayment.getOrderId(), pan, year, true);
+                cardHolderName, cvv, "P2p payment to merchant", month, p2pPayment.getPaySysPayId(), pan, year);
 //        BillPaymentDto bill = createBill(p2pPayment, httpRequest, cardHolderName, pan, result);
         return checkReturnCode(result);
     }

@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import java.time.LocalDateTime;
 
 @Entity
-public class HalykTransferOrder {
+public class HalykOrder {
     @Id
     @GeneratedValue
     Long id;
@@ -39,14 +39,6 @@ public class HalykTransferOrder {
 
     //===Signature=======
     boolean signatureValid;
-
-    public String getAcsUrl() {
-        return acsUrl;
-    }
-
-    public void setAcsUrl(String acsUrl) {
-        this.acsUrl = acsUrl;
-    }
 
     public Long getId() {
         return id;
@@ -126,6 +118,14 @@ public class HalykTransferOrder {
 
     public void setTrtype(int trtype) {
         this.trtype = trtype;
+    }
+
+    public String getAcsUrl() {
+        return acsUrl;
+    }
+
+    public void setAcsUrl(String acsUrl) {
+        this.acsUrl = acsUrl;
     }
 
     public String getApprovalcode() {

@@ -4,8 +4,9 @@ import com.google.gson.Gson;
 import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.constants.ErrorDictionary;
 import kz.capitalpay.server.dto.ResultDTO;
-import kz.capitalpay.server.p2p.model.P2pPayment;
-import kz.capitalpay.server.p2p.repository.P2pPaymentRepository;
+import kz.capitalpay.server.payments.model.Payment;
+import kz.capitalpay.server.payments.repository.PaymentRepository;
+import kz.capitalpay.server.payments.service.PaymentLogService;
 import kz.capitalpay.server.simple.dto.PaymentDetailDTO;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
@@ -29,28 +30,28 @@ public class P2pPaymentService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(P2pPaymentService.class);
 
-    private final P2pPaymentRepository p2pPaymentRepository;
-    private final P2pPaymentLogService p2pPaymentLogService;
+    private final PaymentRepository paymentRepository;
+    private final PaymentLogService paymentLogService;
     private final Gson gson;
     private final CashboxService cashboxService;
     private final RestTemplate restTemplate;
 
-    public P2pPaymentService(P2pPaymentRepository p2pPaymentRepository, P2pPaymentLogService p2pPaymentLogService, Gson gson, CashboxService cashboxService, RestTemplate restTemplate) {
-        this.p2pPaymentRepository = p2pPaymentRepository;
-        this.p2pPaymentLogService = p2pPaymentLogService;
+    public P2pPaymentService(PaymentRepository paymentRepository, PaymentLogService paymentLogService, Gson gson, CashboxService cashboxService, RestTemplate restTemplate) {
+        this.paymentRepository = paymentRepository;
+        this.paymentLogService = paymentLogService;
         this.gson = gson;
         this.cashboxService = cashboxService;
         this.restTemplate = restTemplate;
     }
 
-    public P2pPayment generateP2pPayment(String ipAddress, String userAgent, Long merchantId, BigDecimal totalAmount,
-                                         Long cashBoxId, boolean toClient, String currency, String param) {
-        P2pPayment payment = new P2pPayment();
-        P2pPayment lastPayment = p2pPaymentRepository.findLast().orElse(null);
+    public Payment generateP2pPayment(String ipAddress, String userAgent, Long merchantId, BigDecimal totalAmount,
+                                      Long cashBoxId, boolean toClient, String currency, String param) {
+        Payment payment = new Payment();
+        Payment lastPayment = paymentRepository.findLast().orElse(null);
         if (Objects.nonNull(lastPayment)) {
-            payment.setOrderId(generateOrderId(lastPayment.getOrderId()));
+            payment.setPaySysPayId(generateOrderId(lastPayment.getPaySysPayId()));
         } else {
-            payment.setOrderId("00000173801600");
+            payment.setPaySysPayId("00000173801600");
         }
         payment.setGuid(UUID.randomUUID().toString());
         payment.setCurrency(currency);
@@ -63,9 +64,10 @@ public class P2pPaymentService {
         payment.setUserAgent(userAgent);
         payment.setToClient(toClient);
         payment.setParam(param);
+        payment.setP2p(true);
         payment.setStatus(NEW_PAYMENT);
-        payment = p2pPaymentRepository.save(payment);
-        p2pPaymentLogService.newEvent(payment.getGuid(), ipAddress, NEW_PAYMENT, gson.toJson(payment));
+        payment = paymentRepository.save(payment);
+        paymentLogService.newEvent(payment.getGuid(), ipAddress, NEW_PAYMENT, gson.toJson(payment));
         return payment;
     }
 
@@ -79,34 +81,34 @@ public class P2pPaymentService {
         return zerosStr.toString() + newOrderId;
     }
 
-    public P2pPayment findById(String paymentId) {
-        return p2pPaymentRepository.findById(paymentId).orElse(null);
+    public Payment findById(String paymentId) {
+        return paymentRepository.findById(paymentId).orElse(null);
     }
 
-    public P2pPayment findByOrderId(String orderId) {
-        return p2pPaymentRepository.findByOrderId(orderId).orElse(null);
+    public Payment findByOrderId(String orderId) {
+        return paymentRepository.findByPaySysPayId(orderId).orElse(null);
     }
 
 
-    public P2pPayment addPhoneAndEmail(String paymentId, String phone, String email) {
-        P2pPayment payment = findById(paymentId);
-        if (Objects.isNull(payment)) {
-            return null;
-        }
-        payment.setPhone(phone);
-        payment.setEmail(email);
-        p2pPaymentRepository.save(payment);
-        return payment;
-    }
+//    public P2pPayment addPhoneAndEmail(String paymentId, String phone, String email) {
+//        P2pPayment payment = findById(paymentId);
+//        if (Objects.isNull(payment)) {
+//            return null;
+//        }
+//        payment.setPhone(phone);
+//        payment.setEmail(email);
+//        p2pPaymentRepository.save(payment);
+//        return payment;
+//    }
 
-    public P2pPayment setStatusByPaySysPayId(String orderId, String status) {
+    public Payment setStatusByPaySysPayId(String orderId, String status) {
         LOGGER.info("PaySysPay ID: {}", orderId);
-        P2pPayment payment = p2pPaymentRepository.findByOrderId(orderId).orElse(null);
+        Payment payment = paymentRepository.findByPaySysPayId(orderId).orElse(null);
         if (payment != null) {
-            LOGGER.info("Payment pspid: {}", payment.getOrderId());
+            LOGGER.info("Payment pspid: {}", payment.getPaySysPayId());
             payment.setStatus(status);
-            p2pPaymentRepository.save(payment);
-            p2pPaymentLogService.newEvent(payment.getGuid(), payment.getIpAddress(), CHANGE_STATUS_PAYMENT,
+            paymentRepository.save(payment);
+            paymentLogService.newEvent(payment.getGuid(), payment.getIpAddress(), CHANGE_STATUS_PAYMENT,
                     gson.toJson(payment));
             notifyMerchant(payment);
             LOGGER.info("Change status: {}", gson.toJson(payment));
@@ -119,14 +121,14 @@ public class P2pPaymentService {
     }
 
     public ResultDTO getP2pPaymentDataById(String id) {
-        P2pPayment p2pPayment = findById(id);
+        Payment p2pPayment = findById(id);
         if (Objects.isNull(p2pPayment)) {
             return ErrorDictionary.error118;
         }
         return new ResultDTO(true, p2pPayment, 0);
     }
 
-    private void notifyMerchant(P2pPayment payment) {
+    private void notifyMerchant(Payment payment) {
         try {
             String interactionUrl = cashboxService.getInteractUrl(payment.getCashboxId());
             PaymentDetailDTO detailsJson = signDetail(payment);
@@ -141,7 +143,7 @@ public class P2pPaymentService {
         }
     }
 
-    private PaymentDetailDTO signDetail(P2pPayment payment) {
+    private PaymentDetailDTO signDetail(Payment payment) {
         String secret = cashboxService.getSecret(payment.getCashboxId());
         PaymentDetailDTO paymentDetail = new PaymentDetailDTO();
         paymentDetail.setTimestamp(payment.getTimestamp());

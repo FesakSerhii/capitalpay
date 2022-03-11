@@ -2,7 +2,6 @@ package kz.capitalpay.server.paysystems.systems.halyksoap.controller;
 
 import com.google.gson.Gson;
 import kz.capitalpay.server.cashbox.service.CashboxService;
-import kz.capitalpay.server.p2p.mapper.P2pPaymentMapper;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import org.slf4j.Logger;
@@ -28,9 +27,6 @@ public class HalykController {
 
     @Autowired
     CashboxService cashboxService;
-
-    @Autowired
-    P2pPaymentMapper p2pPaymentMapper;
 
     @Value("${kkbsign.send.order.action.link}")
     String actionLink;
@@ -60,7 +56,7 @@ public class HalykController {
         logger.info(sessionid);
         logger.info(gson.toJson(payment));
 
-        payment = halykSoapService.paymentOrderAcs(MD, PaRes, sessionid, false);
+        payment = halykSoapService.paymentOrderAcs(MD, PaRes, sessionid);
         String redirectUrl = cashboxService.getRedirectForPayment((Payment) payment);
 
         response.setHeader("Location", redirectUrl);
