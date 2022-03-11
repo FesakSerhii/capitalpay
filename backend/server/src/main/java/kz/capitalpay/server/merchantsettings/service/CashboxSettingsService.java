@@ -200,4 +200,16 @@ public class CashboxSettingsService {
             return new ResultDTO(false, e.getMessage(), -1);
         }
     }
+
+    public Map<String, String> getMerchantResultUrls(Long cashBoxId) {
+        Cashbox cashbox = cashboxRepository.findById(cashBoxId).orElse(null);
+        if (Objects.isNull(cashbox)) {
+            return null;
+        }
+        Map<String, String> result = new HashMap<>();
+        result.put(REDIRECT_SUCCESS_URL, getField(cashBoxId, REDIRECT_SUCCESS_URL));
+        result.put(REDIRECT_FAILED_URL, getField(cashBoxId, REDIRECT_FAILED_URL));
+        result.put(REDIRECT_PENDING_URL, getField(cashBoxId, REDIRECT_PENDING_URL));
+        return result;
+    }
 }

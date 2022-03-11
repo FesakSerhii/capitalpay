@@ -7,12 +7,10 @@ import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.constants.ErrorDictionary;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
-import kz.capitalpay.server.merchantsettings.service.MerchantKycService;
 import kz.capitalpay.server.p2p.dto.AnonymousP2pPaymentResponseDto;
 import kz.capitalpay.server.p2p.dto.SendP2pToClientDto;
 import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
 import kz.capitalpay.server.payments.model.Payment;
-import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykOrderRepository;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import kz.capitalpay.server.usercard.dto.CardDataResponseDto;
 import kz.capitalpay.server.usercard.model.UserCard;
@@ -22,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -42,9 +41,9 @@ public class P2pService {
     private final P2pPaymentService p2pPaymentService;
     private final CashboxCurrencyService cashboxCurrencyService;
     private final Gson gson;
-    private final MerchantKycService merchantKycService;
+    //    private final MerchantKycService merchantKycService;
     private final CashboxSettingsService cashboxSettingsService;
-    private final HalykOrderRepository halykOrderRepository;
+//    private final HalykOrderRepository halykOrderRepository;
 
     @Value("${halyk.soap.p2p.termurl}")
     private String termUrl;
@@ -55,7 +54,7 @@ public class P2pService {
     @Value("${halyk.soap.currency}")
     private String currency;
 
-    public P2pService(HalykSoapService halykSoapService, CashboxService cashboxService, UserCardService userCardService, P2pSettingsService p2pSettingsService, P2pPaymentService p2pPaymentService, CashboxCurrencyService cashboxCurrencyService, Gson gson, MerchantKycService merchantKycService, CashboxSettingsService cashboxSettingsService, HalykOrderRepository halykOrderRepository) {
+    public P2pService(HalykSoapService halykSoapService, CashboxService cashboxService, UserCardService userCardService, P2pSettingsService p2pSettingsService, P2pPaymentService p2pPaymentService, CashboxCurrencyService cashboxCurrencyService, Gson gson, CashboxSettingsService cashboxSettingsService) {
         this.halykSoapService = halykSoapService;
         this.cashboxService = cashboxService;
         this.userCardService = userCardService;
@@ -63,12 +62,10 @@ public class P2pService {
         this.p2pPaymentService = p2pPaymentService;
         this.cashboxCurrencyService = cashboxCurrencyService;
         this.gson = gson;
-        this.merchantKycService = merchantKycService;
         this.cashboxSettingsService = cashboxSettingsService;
-        this.halykOrderRepository = halykOrderRepository;
     }
 
-    public ResultDTO sendP2pToClient(SendP2pToClientDto dto, String userAgent, String ipAddress) {
+    public ResultDTO sendP2pToClient(SendP2pToClientDto dto, String userAgent, String ipAddress, RedirectAttributes redirectAttributes) {
         if (checkP2pSignature(dto)) {
             return new ResultDTO(false, "Invalid signature", -1);
         }
@@ -105,7 +102,7 @@ public class P2pService {
         }
     }
 
-    public ResultDTO sendP2pToMerchant(SendP2pToClientDto dto, String userAgent, String ipAddress) {
+    public ResultDTO sendP2pToMerchant(SendP2pToClientDto dto, String userAgent, String ipAddress, RedirectAttributes redirectAttributes) {
         if (checkP2pSignature(dto)) {
             return new ResultDTO(false, "Invalid signature", -1);
         }

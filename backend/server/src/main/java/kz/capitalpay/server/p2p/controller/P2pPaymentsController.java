@@ -1,14 +1,15 @@
 package kz.capitalpay.server.p2p.controller;
 
 import com.google.gson.Gson;
-import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.dto.ResultDTO;
+import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.p2p.dto.SendAnonymousP2pToMerchantDto;
 import kz.capitalpay.server.p2p.dto.SendP2pToClientDto;
 import kz.capitalpay.server.p2p.service.P2pPaymentService;
 import kz.capitalpay.server.p2p.service.P2pService;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
+import kz.capitalpay.server.simple.service.SimpleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +22,10 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.Map;
+
+import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.REDIRECT_FAILED_URL;
+import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.REDIRECT_SUCCESS_URL;
 
 @RestController
 @RequestMapping("/api/v1/p2p")
@@ -31,8 +36,8 @@ public class P2pPaymentsController {
     private final P2pService p2pService;
     private final P2pPaymentService p2pPaymentService;
     private final HalykSoapService halykSoapService;
-    private final CashboxService cashboxService;
     private final Gson gson;
+    private final CashboxSettingsService cashboxSettingsService;
 
     @Value("${payment.p2p.redirect.url}")
     private String paymentRedirectUrl;
@@ -40,12 +45,12 @@ public class P2pPaymentsController {
     @Value("${kkbsign.send.order.action.link}")
     String actionLink;
 
-    public P2pPaymentsController(P2pService p2pService, P2pPaymentService p2pPaymentService, HalykSoapService halykSoapService, CashboxService cashboxService, Gson gson) {
+    public P2pPaymentsController(P2pService p2pService, P2pPaymentService p2pPaymentService, HalykSoapService halykSoapService, Gson gson, CashboxSettingsService cashboxSettingsService) {
         this.p2pService = p2pService;
         this.p2pPaymentService = p2pPaymentService;
         this.halykSoapService = halykSoapService;
-        this.cashboxService = cashboxService;
         this.gson = gson;
+        this.cashboxSettingsService = cashboxSettingsService;
     }
 
 
@@ -63,7 +68,7 @@ public class P2pPaymentsController {
         }
         String userAgent = httpRequest.getHeader("User-Agent");
         SendP2pToClientDto dto = new SendP2pToClientDto(clientCardToken, merchantId, acceptedSum, cashBoxId, signature);
-        return p2pService.sendP2pToClient(dto, userAgent, ipAddress);
+        return p2pService.sendP2pToClient(dto, userAgent, ipAddress, redirectAttributes);
     }
 
     @PostMapping("/send-p2p-to-merchant")
@@ -80,7 +85,7 @@ public class P2pPaymentsController {
         }
         String userAgent = httpRequest.getHeader("User-Agent");
         SendP2pToClientDto dto = new SendP2pToClientDto(clientCardToken, merchantId, acceptedSum, cashBoxId, signature);
-        return p2pService.sendP2pToMerchant(dto, userAgent, ipAddress);
+        return p2pService.sendP2pToMerchant(dto, userAgent, ipAddress, redirectAttributes);
     }
 
     @PostMapping("/send-anonymous-p2p-to-merchant")
@@ -126,12 +131,10 @@ public class P2pPaymentsController {
     @PostMapping("/paysystem/listener")
     public RedirectView listener(@RequestParam String PaRes,
                                  @RequestParam String MD,
-                                 @RequestParam(required = false) String TermUrl,
-                                 RedirectAttributes redirectAttributes) {
+                                 @RequestParam(required = false) String TermUrl) {
         LOGGER.info("PaRes: {}", PaRes);
         LOGGER.info("MD: {}", MD);
         LOGGER.info("TermUrl: {}", TermUrl);
-
 
         String sessionid;
         Payment payment;
@@ -148,9 +151,9 @@ public class P2pPaymentsController {
         LOGGER.info(gson.toJson(payment));
 
         payment = halykSoapService.paymentOrderAcs(MD, PaRes, sessionid);
-
-        redirectAttributes.addAttribute("paymentId", payment.getGuid());
-        redirectAttributes.addAttribute("status", payment.getStatus());
-        return new RedirectView(paymentRedirectUrl);
+        Map<String, String> resultUrls = cashboxSettingsService.getMerchantResultUrls(payment.getCashboxId());
+        return payment.getStatus().equals(SimpleService.SUCCESS)
+                ? new RedirectView(resultUrls.get(REDIRECT_SUCCESS_URL))
+                : new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
     }
 }
