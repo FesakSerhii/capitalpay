@@ -12,14 +12,23 @@ export class CashBoxService {
   addCashBox(data){
     return this.apiService.postJwt('api','/cashbox/create',token,data).toPromise();
   }
-  getCashBoxList(){
+  getCashBoxListAll(){
     return this.apiService.postJwt('api','/cashbox/all',token).toPromise();
+  }
+  getCashBoxListByMerchantId(merchantId){
+    return this.apiService.postJwt('api','/cashbox/list',token,{merchantId}).toPromise();
   }
   deleteCashBox(cashboxId){
     return this.apiService.postJwt('api','/cashbox/delete',token,{cashboxId}).toPromise();
   }
   editCashBox(data){
     return this.apiService.postJwt('api','/cashbox/changename',token,data).toPromise();
+  }
+  getCashBoxInfo(cashBoxId){
+    return this.apiService.post('api','/cashboxsetting/get', {cashBoxId}).toPromise();
+  }
+  editCashBoxInfo(data){
+    return this.apiService.post('api','/cashboxsetting/set', data).toPromise();
   }
   getCashBoxPaymentList(cashboxId){
     return this.apiService.postJwt('api','/paysystem/cashbox/list',token, {cashboxId}).toPromise();

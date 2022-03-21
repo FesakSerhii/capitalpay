@@ -1,0 +1,6 @@
+<app-payment-form (cardDataEvent)="getCardData($event)"
+                  (cancelEvent)="redirectFailed()"
+                  [p2pEnabled]="cashBoxInfo.p2pEnabled"
+                  [validityErrorCode]="validityErrorCode"
+                  [validityError]="validityError"
+                  [queryParamEnable]="queryParamEnable"></app-payment-form>

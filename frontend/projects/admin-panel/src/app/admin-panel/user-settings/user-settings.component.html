@@ -13,7 +13,12 @@
     </li>
     <li class="nav-item">
       <a class="nav-link" [class.active]="activeTab==='tab2'" (click)="$event.preventDefault();activeTab='tab2'">
-        комиссии касс
+        Настройки касс
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab==='tab3'" (click)="$event.preventDefault();activeTab='tab3'">
+        Список карт мерчанта
       </a>
     </li>
   </ul>
@@ -280,7 +285,7 @@
                          [value]="replaceSymbols(cashBox.value.clientFee)">
                   <span class="position-absolute" style="right: 4px;top: 10px">%</span>
                 </div>
-                <div *ngIf="isP2PActive">
+                <div *ngIf="isP2PActive.value">
                   <div class="d-flex" style="margin-left: 45px">
                     <span class="card-title" style="text-align: start">P2P</span>
                     <hr class="w-100">
@@ -288,12 +293,12 @@
                   <div >
                     <div class="togglebutton ml-5">
                       <label>
-                        <input type="checkbox" formControlName="p2pAllowed" (change)="setCashBoxP2p(cashBox.value)">
+                        <input type="checkbox" formControlName="p2pAllowed" (change)="onChangeCashBoxP2p(cashBox)">
                         <span class="toggle"></span>
                         Разрешить Р2Р для {{cashBox.value.cashBoxName}}
                       </label>
                     </div>
-                    <div class="togglebutton ml-5" *ngIf="cashBox.value.p2pAllowed">
+                    <div class="togglebutton ml-5" *ngIf="cashBox.value.p2pAllowed" (change)="onUseDefaultCard(cashBox)">
                       <label>
                         <input type="checkbox" formControlName="useDefaultCard">
                         <span class="toggle"></span>
@@ -302,7 +307,7 @@
                     </div>
                     <div class="text-right mt-3" *ngIf="cashBox.value.p2pAllowed">
                       <label class="col-form-label col-8" style="margin-right: 90px;">Карта кассы : {{cashBox.value.cardNumber}}</label>
-                      <button class="btn btn-success slim btn-round btn-back" (click)="p2pOnSave='cashBoxSettings';addCashBoxPaymentCard(cashBox.value.cashBoxId)">Изменить карту
+                      <button class="btn btn-success slim btn-round btn-back" (click)="p2pOnSave='cashBoxSettings';addCashBoxPaymentCard(cashBox)">Изменить карту
                       </button>
                     </div>
                   </div>
@@ -313,7 +318,7 @@
                 <button class="btn btn-success slim btn-round btn-back ml-auto mb-1"
                         [disabled]="+cashBox.value.totalFee !== +cashBox.value.merchantFee + +cashBox.value.clientFee"
                         [class.disabled]="+cashBox.value.totalFee !== +cashBox.value.merchantFee + +cashBox.value.clientFee"
-                        (click)="$event.preventDefault();saveCashBoxFee()">Сохранить
+                        (click)="$event.preventDefault();saveCashBoxSettings(cashBox.value)">Сохранить
                 </button>
               </div>
             </div>
@@ -323,10 +328,46 @@
         </div>
       </ng-scrollbar>
     </div>
+    <div class="tab-pane card" [class.active]="activeTab==='tab3'">
+      <ng-scrollbar class="calc400" [visibility]="'always'">
+        <div class="d-flex flex-wrap ">
+            <table class="table table-striped table-no-bordered table-hover dataTable dtr-inline" cellspacing="0" width="100%" style="width: 100%;" role="grid" aria-describedby="datatables_info">
+              <thead>
+              <tr role="row">
+                <th class="sortable-th" (click)="nextSort('id')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'id'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'id'">ID пользователя</span></th>
+                <th class="sortable-th" (click)="nextSort('cardNumber')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'cardNumber'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'cardNumber'">Номер карты</span></th>
+                <th class="sortable-th" (click)="nextSort('deleted')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'deleted'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'deleted'">Статус</span></th>
+                <th class="sortable-th"></th>
+              </thead>
+              <tfoot>
+              <tr>
+                <th rowspan="1" colspan="1">ID Пользователя</th>
+                <th rowspan="1" colspan="1">Номер карты</th>
+                <th rowspan="1" colspan="1">Статус</th>
+                <th rowspan="1" colspan="1"></th>
+              </tr>
+              </tfoot>
+              <tbody>
+              <tr role="row" class="cursor-pointer" *ngFor="let card of sortedActions">
+                <td tabindex="0" class="sorting_1">{{card.id}}</td>
+                <td>{{card.cardNumber}} {{card.cardNumber===defaultPaymentCard?"Карта по умолчанию":""}}</td>
+                <td>{{card.deleted?'Удалена':'Активна'}}</td>
+                <td> <button class="btn btn-success btn-round"
+                             [class.disabled]="card.cardNumber===defaultPaymentCard"
+                             [disabled]="card.cardNumber===defaultPaymentCard"
+                             (click)="deleteCard(card)">Удалить карту</button></td>
+              </tr>
+              </tbody>
+            </table>
+          <span class="input-title text-secondary"
+                *ngIf="!cardList.length">{{"У пользователя нет добавленых карт"}}</span>
+        </div>
+      </ng-scrollbar>
+    </div>
   </div>
 </div>
 <app-massage-modal #massageModal [messageType]="modalType"></app-massage-modal>
-<app-payment-card-modal #paymentCard></app-payment-card-modal>
+<app-payment-card-modal #paymentCard [defaultPaymentCard]="defaultPaymentCard"></app-payment-card-modal>
 <!--<ng-template  #paymentCard let-modal>-->
 <!--  <div class="card mt-0 mb-0 w742">-->
 <!--    <div class="card-header card-header-success card-header-icon">-->

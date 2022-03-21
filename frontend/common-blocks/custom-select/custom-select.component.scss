@@ -115,6 +115,13 @@
     width: 665px !important;
   }
 }
+.stselect.w450px {
+  width: 450px !important;
+
+  & ul {
+    width: 450px !important;
+  }
+}
 
 .stselect.lg {
   width: 450px !important;

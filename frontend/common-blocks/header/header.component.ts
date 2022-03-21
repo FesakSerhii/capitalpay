@@ -20,8 +20,11 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     private router: Router,
     private route: ActivatedRoute
   ) { }
+  isDropdownOpen:boolean=false;
+  width = 0;
 
   ngAfterViewInit(): void {
+    this.width = document.body.clientWidth;
     this.subscription.add(
       this.route.queryParams.subscribe(
         (params) => {

@@ -38,4 +38,10 @@ export class P2pService {
   getCashBoxP2pInfo(cashBoxId) {
     return this.apiService.post('api',`/cashbox/get-p2p-settings?cashBoxId=${cashBoxId}`).toPromise();
   }
+  deleteMerchantCard(cardId,merchantId) {
+    return this.apiService.post('api',`/user-card/delete`,{cardId,merchantId}).toPromise();
+  }
+  deleteClientCard(cardId) {
+    return this.apiService.post('apiV1',`/client-card/delete`,{cardId}).toPromise();
+  }
 }

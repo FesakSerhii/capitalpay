@@ -102,18 +102,25 @@ export class UserComponent implements OnInit {
   async getUsers(isSearchAfter=false) {
     this.userService.getUserList().then(resp => {
       this.dontTouched = resp.data;
-      this.dontTouched.map((el) => {
-        let role = '';
-        for (const userRole of el.roles) {
-          role = role === '' ? role + this.roleList[userRole.authority] : role + '/' + this.roleList[userRole.authority]
-        }
-        el.roles = role;
-      })
+      // this.dontTouched.map((el) => {
+      //   let role = '';
+      //   for (const userRole of el.roles) {
+      //     role = role === '' ? role + this.roleList[userRole.authority] : role + '/' + this.roleList[userRole.authority]
+      //   }
+      //   el.roles = role;
+      // })
       this.userList = [...this.dontTouched]
       if(isSearchAfter){
         this.search()
       }
     })
+  }
+  converseUserList(role){
+      let roleStr = '';
+      for (const userRole of role) {
+        roleStr =  roleStr === '' ? roleStr + this.roleList[userRole.authority] : roleStr + '/' + this.roleList[userRole.authority]
+      }
+      return roleStr
   }
 
   addForm(form) {
@@ -197,26 +204,29 @@ export class UserComponent implements OnInit {
   search(){
     for (const control in this.filter.value) {
       let value = this.filter.value[control];
-      this.isFilterActive[control] = this.filter.value[control] !== null;
-      if (this.isFilterActive[control]) {
-        console.log(this.filter.value[control]);
-        if (this.filter.value[control] && control !== 'dateStart' && control !== 'dateEnd') {
-          this.dontTouched = this.dontTouched.filter(el => {
-              if (control === 'status') {
-                return el[control] === value
-              } else {
-                return el[control] !== null ? `${el[control]}`.toLowerCase().includes(value.trim().toLowerCase()) : false
+      if(value){
+        this.isFilterActive[control] = this.filter.value[control] !== null;
+        if (this.isFilterActive[control]) {
+          if (this.filter.value[control] && control !== 'dateStart' && control !== 'dateEnd') {
+            this.dontTouched = this.dontTouched.filter(el => {
+                if (control === 'status') {
+                  return el[control] === value
+                } else if(control === 'roles'){
+                  return el[control].filter(el=>el.id===value).length!==0
+                }else {
+                  return el[control] !== null ? `${el[control]}`.toLowerCase().includes(`${value}`.trim().toLowerCase()) : false
+                }
               }
-            }
-          )
-        } else {
-          this.dontTouched = this.dontTouched.filter(el => {
-            return this.filter.value.dateStart && this.filter.value.dateEnd ? this.compareDates(this.filter.value.dateStart, this.filter.value.dateEnd, el[control]) : false
-          })
+            )
+          } else {
+            this.dontTouched = this.dontTouched.filter(el => {
+              return this.filter.value.dateStart && this.filter.value.dateEnd ? this.compareDates(this.filter.value.dateStart, this.filter.value.dateEnd, el[control]) : false
+            })
+          }
         }
+        this.nextSort(null)
       }
     }
-    this.nextSort(null)
   }
 
   compareDates(dateValueStart, dateValueEnd, dateData) {

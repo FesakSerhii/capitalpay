@@ -17,3 +17,20 @@ export function dateCompareValidator(formGroup: FormGroup, otherField, reverse =
         return date1 < date2 ? {"dateCompare": "invalid date"} : null;
     }
 }
+export function expirationDateValidator(formGroup: FormGroup, yearControl,reverse=false) {
+  return (monthControl: AbstractControl): {[key: string]: any} | null => {
+    let month = !reverse?monthControl.value:formGroup.get(yearControl).value;
+    let year = !reverse?formGroup.get(yearControl).value:monthControl.value;
+
+    if (!month || !year) {
+      return null;
+    }
+
+    let cardExp = parseInt(moment(`${year}-${month}-01`).format("X"));
+    let today = parseInt(moment(`${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDate()}`).format("X"));
+    if (!reverse) {
+      return cardExp > today ? {"expirationDateValidator": "invalid exp date"} : null;
+    }
+    return today > cardExp ? {"expirationDateValidator": "invalid exp date"} : null;
+  }
+}

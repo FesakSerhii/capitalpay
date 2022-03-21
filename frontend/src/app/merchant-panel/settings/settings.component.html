@@ -6,22 +6,22 @@
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" [class.active]="activeTab==='tab1'" (click)="$event.preventDefault();activeTab='tab1';cashBoxEditOpened=false">
+      <a class="nav-link" [class.active]="activeTab==='tab1'" (click)="$event.preventDefault();changeTab('tab1')">
         кассы
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" [class.active]="activeTab==='tab2'" (click)="$event.preventDefault();activeTab='tab2';cashBoxEditOpened=false">
+      <a class="nav-link" [class.active]="activeTab==='tab2'" (click)="$event.preventDefault();changeTab('tab2')">
         комиссии
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" [class.active]="activeTab==='tab3'" (click)="$event.preventDefault();activeTab='tab3';cashBoxEditOpened=false">
+      <a class="nav-link" [class.active]="activeTab==='tab3'" (click)="$event.preventDefault();changeTab('tab3')">
         информация акаунта
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" [class.active]="activeTab==='tab4'" (click)="$event.preventDefault();activeTab='tab4';cashBoxEditOpened=false">
+      <a class="nav-link" [class.active]="activeTab==='tab4'" (click)="$event.preventDefault();changeTab('tab4')">
         безопасность
       </a>
     </li>
@@ -56,7 +56,7 @@
     right: 0;
     z-index: 10;">
                 <a href="#" style="color: black" (click)="$event.preventDefault();deleteCashBox()">Удалить</a>
-                <a href="#" style="color: black" (click)="$event.preventDefault();cashBoxMenuOpened=!cashBoxMenuOpened;getCurrencies()">Настройки кассы</a>
+                <a href="#" style="color: black" (click)="$event.preventDefault();cashBoxMenuOpened=!cashBoxMenuOpened;getCurrencies();cashBoxEditOpened = true">Настройки кассы</a>
                 <a href="#" style="color: black" (click)="$event.preventDefault();cashBoxMenuOpened=!cashBoxMenuOpened">Вывести баланс</a>
               </div>
             </div>
@@ -75,6 +75,32 @@
               <div class="form-group has-default bmd-form-group d-flex">
                 <label class="col-form-label label-checkbox pt-0 col-2">Название кассы *</label>
                 <input type="text" class="form-control" formControlName="name">
+              </div>
+            </form>
+            <form [formGroup]="cashBoxInfo">
+              <div class="form-group has-default bmd-form-group d-flex">
+                <label class="col-form-label label-checkbox pt-0 col-2">Ссылка для перехода в случае ошибки</label>
+                <input type="text" class="form-control" formControlName="redirectfailed">
+              </div>
+              <div class="form-group has-default bmd-form-group d-flex">
+                <label class="col-form-label label-checkbox pt-0 col-2">Ссылка для перехода в случае успеха</label>
+                <input type="text" class="form-control" formControlName="redirectsuccess">
+              </div>
+              <div class="form-group has-default bmd-form-group d-flex">
+                <label class="col-form-label label-checkbox pt-0 col-2">Ссылка для переадресации</label>
+                <input type="text" class="form-control" formControlName="redirecturl">
+              </div>
+              <div class="form-group has-default bmd-form-group d-flex">
+                <label class="col-form-label label-checkbox pt-0 col-2">Ссылка для взаимодействия (interaction url)</label>
+                <input type="text" class="form-control" formControlName="interactionurl">
+              </div>
+              <div class="form-group has-default bmd-form-group d-flex">
+                <label class="col-form-label label-checkbox pt-0 col-2">Ссылка pending</label>
+                <input type="text" class="form-control" formControlName="redirectpending">
+              </div>
+              <div class="form-group has-default bmd-form-group d-flex">
+                <label class="col-form-label label-checkbox pt-0 col-2">Secret</label>
+                <input type="text" class="form-control" readonly formControlName="secret">
               </div>
             </form>
             <div class="d-flex">
@@ -104,7 +130,7 @@
           </div>
           <hr>
           <div class="card-footer">
-            <button class="btn btn-success btn-round" (click)="editCashBoxName();editCashBoxEnabled()">Сохранить</button>
+            <button class="btn btn-success btn-round" (click)="editCashBoxName();">Сохранить</button>
           </div>
         </div>
       </div>

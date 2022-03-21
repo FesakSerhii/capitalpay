@@ -11,15 +11,15 @@ export class RegisterService {
   constructor(public apiService: ApiService) { }
   // tslint:disable-next-line:typedef
   postEmail(email: string){
-    return this.apiService.post('/signup/step1', {email}).toPromise();
+    return this.apiService.post('api','/signup/step1', {email}).toPromise();
   }
   // tslint:disable-next-line:typedef
   confirmEmail(code: string){
-    return this.apiService.post('/signup/step2', {code}).toPromise();
+    return this.apiService.post('api','/signup/step2', {code}).toPromise();
   }
   // tslint:disable-next-line:typedef
   sendPassword(code: string, password: string, phone: string){
-    return this.apiService.post('/signup/step3', {code, password, phone: phone}).toPromise();
+    return this.apiService.post('api','/signup/step3', {code, password, phone: phone}).toPromise();
   }
   // tslint:disable-next-line:typedef
   changePassword(oldPassword,newPassword){
@@ -27,14 +27,14 @@ export class RegisterService {
   }
   // tslint:disable-next-line:typedef
   twoFactorAuthAvailable(){
-    return this.apiService.postJwt('/twofactorauth/available', token).toPromise();
+    return this.apiService.postJwt('api','/twofactorauth/available', token).toPromise();
   }
   // tslint:disable-next-line:typedef
   twoFactorAuthSet(enable){
-    return this.apiService.postJwt('/twofactorauth/set', token,{enable}).toPromise();
+    return this.apiService.postJwt('api','/twofactorauth/set', token,{enable}).toPromise();
   }
   // tslint:disable-next-line:typedef
   confirmPhone(code: string){
-    return this.apiService.post('/signup/step5', {code}).toPromise();
+    return this.apiService.post('api','/signup/step5', {code}).toPromise();
   }
 }
