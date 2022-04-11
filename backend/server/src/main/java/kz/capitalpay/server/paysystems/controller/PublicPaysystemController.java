@@ -38,8 +38,11 @@ public class PublicPaysystemController {
     @Autowired
     PaymentService paymentService;
 
-    @Value("${halyk.soap.termurl}")
-    String TermUrl;
+    @Value("${halyk.soap.purchase.termurl}")
+    String purchaseTermUrl;
+
+    @Value("${halyk.soap.p2p.termurl}")
+    private String p2pTermUrl;
 
     @Value("${remote.api.addres}")
     String apiAddress;
@@ -79,10 +82,11 @@ public class PublicPaysystemController {
                           @RequestParam String PaReq,
                           @RequestParam(required = false, defaultValue = "") String bill) {
 
+        String termUrl = bill.trim().isEmpty() ? p2pTermUrl : purchaseTermUrl;
         modelMap.addAttribute("acsUrl", acsUrl);
         modelMap.addAttribute("MD", MD);
         modelMap.addAttribute("PaReq", PaReq);
-        modelMap.addAttribute("TermUrl", TermUrl);
+        modelMap.addAttribute("TermUrl", termUrl);
         modelMap.addAttribute("bill", gson.fromJson(bill, BillPaymentDto.class));
 
         return "paysystems/secureredirect";

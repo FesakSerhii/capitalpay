@@ -56,12 +56,12 @@ public class P2pPaymentsController {
 
     @PostMapping("/send-p2p-to-client")
     public RedirectView sendP2pToClient(@RequestParam @NotNull(message = "clientCardId must not be null") String clientCardToken,
-                                     @RequestParam @NotNull(message = "merchantId must not be null") Long merchantId,
-                                     @RequestParam @NotNull(message = "acceptedSum must not be null") BigDecimal acceptedSum,
-                                     @RequestParam @NotNull(message = "cashBoxId must not be null") Long cashBoxId,
-                                     @RequestParam @NotBlank(message = "sign must not be blank") String signature,
-                                     HttpServletRequest httpRequest,
-                                     RedirectAttributes redirectAttributes) {
+                                        @RequestParam @NotNull(message = "merchantId must not be null") Long merchantId,
+                                        @RequestParam @NotNull(message = "acceptedSum must not be null") BigDecimal acceptedSum,
+                                        @RequestParam @NotNull(message = "cashBoxId must not be null") Long cashBoxId,
+                                        @RequestParam @NotBlank(message = "sign must not be blank") String signature,
+                                        HttpServletRequest httpRequest,
+                                        RedirectAttributes redirectAttributes) {
         String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
         if (ipAddress == null) {
             ipAddress = httpRequest.getRemoteAddr();
@@ -73,12 +73,12 @@ public class P2pPaymentsController {
 
     @PostMapping("/send-p2p-to-merchant")
     public RedirectView sendP2pToMerchant(@RequestParam @NotNull(message = "clientCardId must not be null") String clientCardToken,
-                                       @RequestParam @NotNull(message = "merchantId must not be null") Long merchantId,
-                                       @RequestParam @NotNull(message = "acceptedSum must not be null") BigDecimal acceptedSum,
-                                       @RequestParam @NotNull(message = "cashBoxId must not be null") Long cashBoxId,
-                                       @RequestParam @NotBlank(message = "sign must not be blank") String signature,
-                                       HttpServletRequest httpRequest,
-                                       RedirectAttributes redirectAttributes) {
+                                          @RequestParam @NotNull(message = "merchantId must not be null") Long merchantId,
+                                          @RequestParam @NotNull(message = "acceptedSum must not be null") BigDecimal acceptedSum,
+                                          @RequestParam @NotNull(message = "cashBoxId must not be null") Long cashBoxId,
+                                          @RequestParam @NotBlank(message = "sign must not be blank") String signature,
+                                          HttpServletRequest httpRequest,
+                                          RedirectAttributes redirectAttributes) {
         String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
         if (ipAddress == null) {
             ipAddress = httpRequest.getRemoteAddr();
