@@ -160,12 +160,12 @@ public class PaymentService {
         paymentDetail.setParam(payment.getParam());
         paymentDetail.setStatus(payment.getStatus());
         //    SHA256(cashboxId + billId + status + secret)
-        String sha256hex = DigestUtils.sha256Hex(payment.getCashboxId().toString()
-                + payment.getBillId() + payment.getStatus() + secret);
+        String unsignedString = payment.getCashboxId().toString()
+                + payment.getBillId() + payment.getStatus() + secret;
+        String sha256hex = DigestUtils.sha256Hex(unsignedString);
 
-        logger.info("Sign data: {}", payment.getCashboxId().toString()
-                + payment.getBillId() + payment.getStatus() + secret);
-        paymentDetail.setSignature(sha256hex);
+        logger.info("Unsigned data: {}", unsignedString);
+        paymentDetail.setSignature(unsignedString);
         return paymentDetail;
     }
 
