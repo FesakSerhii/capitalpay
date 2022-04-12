@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -148,22 +149,39 @@ public class PaymentService {
         return paymentRepository.findTopByCashboxIdAndAndBillId(cashboxid, billid);
     }
 
-    public PaymentDetailDTO signDetail(Payment payment) {
+//    public PaymentDetailDTO signDetail(Payment payment) {
+//        String secret = cashboxService.getSecret(payment.getCashboxId());
+//        PaymentDetailDTO paymentDetail = new PaymentDetailDTO();
+//        paymentDetail.setTimestamp(payment.getTimestamp());
+//        paymentDetail.setLocalDateTime(payment.getLocalDateTime());
+//        paymentDetail.setBillId(payment.getBillId());
+//        paymentDetail.setTotalAmount(payment.getTotalAmount());
+//        paymentDetail.setCurrency(payment.getCurrency());
+//        paymentDetail.setDescription(payment.getDescription());
+//        paymentDetail.setParam(payment.getParam());
+//        paymentDetail.setStatus(payment.getStatus());
+//        //    SHA256(cashboxId + billId + status + )
+//        String unsignedString = payment.getCashboxId().toString()
+//                + payment.getBillId() + payment.getStatus() + secret;
+//        String sha256hex = DigestUtils.sha256Hex(unsignedString);
+//
+//        logger.info("Unsigned data: {}", unsignedString);
+//        paymentDetail.setSignature(unsignedString);
+//        return paymentDetail;
+//    }
+
+    private PaymentDetailDTO signDetail(Payment payment) {
         String secret = cashboxService.getSecret(payment.getCashboxId());
         PaymentDetailDTO paymentDetail = new PaymentDetailDTO();
         paymentDetail.setTimestamp(payment.getTimestamp());
         paymentDetail.setLocalDateTime(payment.getLocalDateTime());
-        paymentDetail.setBillId(payment.getBillId());
         paymentDetail.setTotalAmount(payment.getTotalAmount());
         paymentDetail.setCurrency(payment.getCurrency());
-        paymentDetail.setDescription(payment.getDescription());
         paymentDetail.setParam(payment.getParam());
         paymentDetail.setStatus(payment.getStatus());
-        //    SHA256(cashboxId + billId + status + secret)
-        String unsignedString = payment.getCashboxId().toString()
-                + payment.getBillId() + payment.getStatus() + secret;
+        BigDecimal amount = payment.getTotalAmount().setScale(2, RoundingMode.HALF_UP);
+        String unsignedString = payment.getCashboxId().toString() + payment.getStatus() + amount.toString() + secret;
         String sha256hex = DigestUtils.sha256Hex(unsignedString);
-
         logger.info("Unsigned data: {}", unsignedString);
         paymentDetail.setSignature(unsignedString);
         return paymentDetail;
