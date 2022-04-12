@@ -128,7 +128,7 @@ public class PaymentService {
             requestJson.put("type", "paymentStatus");
             requestJson.put("data", detailsJson);
             String response = restTemplate.postForObject(interactionUrl,
-                    requestJson, String.class, java.util.Optional.ofNullable(null));
+                    requestJson, String.class);
             logger.info(response);
         } catch (Exception e) {
             e.printStackTrace();
