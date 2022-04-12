@@ -79,7 +79,7 @@ public class PaymentService {
     }
 
     public Payment getPaymentByOrderId(String orderId) {
-        return paymentRepository.findTopByBillId(orderId);
+        return paymentRepository.findTopByPaySysPayId(orderId);
     }
 
     public void success(Payment paymentFromBd) {
@@ -94,8 +94,8 @@ public class PaymentService {
     public Payment setStatusByPaySysPayId(String paySysPayId, String status) {
         logger.info("PaySysPay ID: {}", paySysPayId);
         Payment payment = paymentRepository.findTopByPaySysPayId(paySysPayId);
-        logger.info("Payment pspid: {}", payment.getPaySysPayId());
         if (payment != null) {
+            logger.info("Payment pspid: {}", payment.getPaySysPayId());
             payment.setStatus(status);
             paymentRepository.save(payment);
             paymentLogService.newEvent(payment.getGuid(), payment.getIpAddress(), CHANGE_STATUS_PAYMENT,
@@ -161,6 +161,9 @@ public class PaymentService {
         paymentDetail.setStatus(payment.getStatus());
         //    SHA256(cashboxId + billId + status + secret)
         String sha256hex = DigestUtils.sha256Hex(payment.getCashboxId().toString()
+                + payment.getBillId() + payment.getStatus() + secret);
+
+        logger.info("Sign data: {}", payment.getCashboxId().toString()
                 + payment.getBillId() + payment.getStatus() + secret);
         paymentDetail.setSignature(sha256hex);
         return paymentDetail;
