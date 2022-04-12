@@ -175,7 +175,7 @@ public class P2pService {
 
     public ResultDTO createAnonymousP2pPayment(String userAgent, String ipAddress, Long cashBoxId, Long merchantId,
                                                BigDecimal totalAmount, String currency, String param, String signature) {
-        if (checkAnonymousP2pSignature(cashBoxId, merchantId, totalAmount, signature)) {
+        if (!checkAnonymousP2pSignature(cashBoxId, merchantId, totalAmount, signature)) {
             return new ResultDTO(false, "Invalid signature", -1);
         }
 
