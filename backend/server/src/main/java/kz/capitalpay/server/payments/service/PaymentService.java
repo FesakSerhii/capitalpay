@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -120,7 +119,7 @@ public class PaymentService {
             String interactionUrl = cashboxService.getInteractUrl(payment);
             PaymentDetailDTO detailsJson;
             if (payment.isP2p()) {
-                detailsJson =  p2pPaymentService.signDetail(payment);
+                detailsJson = p2pPaymentService.signDetail(payment);
             } else {
                 detailsJson = signDetail(payment);
             }
@@ -176,7 +175,7 @@ public class PaymentService {
         String sha256hex = DigestUtils.sha256Hex(unsignedString);
 
         logger.info("Unsigned data: {}", unsignedString);
-        paymentDetail.setSignature(unsignedString);
+        paymentDetail.setSignature(sha256hex);
         return paymentDetail;
     }
 

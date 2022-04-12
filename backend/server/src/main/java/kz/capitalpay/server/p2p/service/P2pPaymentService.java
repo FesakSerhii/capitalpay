@@ -156,7 +156,7 @@ public class P2pPaymentService {
         String unsignedString = payment.getCashboxId().toString() + payment.getStatus() + amount.toString() + secret;
         String sha256hex = DigestUtils.sha256Hex(unsignedString);
         LOGGER.info("Unsigned data: {}", unsignedString);
-        paymentDetail.setSignature(unsignedString);
+        paymentDetail.setSignature(sha256hex);
         return paymentDetail;
     }
 }
