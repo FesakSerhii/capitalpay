@@ -118,9 +118,9 @@ public class PaymentService {
     public void notifyMerchant(Payment payment) {
         try {
             String interactionUrl = cashboxService.getInteractUrl(payment);
-            PaymentDetailDTO detailsJson = null;
+            PaymentDetailDTO detailsJson;
             if (payment.isP2p()) {
-                p2pPaymentService.signDetail(payment);
+                detailsJson =  p2pPaymentService.signDetail(payment);
             } else {
                 detailsJson = signDetail(payment);
             }
