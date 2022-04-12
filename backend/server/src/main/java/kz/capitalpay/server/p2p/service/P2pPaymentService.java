@@ -143,7 +143,7 @@ public class P2pPaymentService {
         }
     }
 
-    private PaymentDetailDTO signDetail(Payment payment) {
+    public PaymentDetailDTO signDetail(Payment payment) {
         String secret = cashboxService.getSecret(payment.getCashboxId());
         PaymentDetailDTO paymentDetail = new PaymentDetailDTO();
         paymentDetail.setTimestamp(payment.getTimestamp());
@@ -153,8 +153,10 @@ public class P2pPaymentService {
         paymentDetail.setParam(payment.getParam());
         paymentDetail.setStatus(payment.getStatus());
         BigDecimal amount = payment.getTotalAmount().setScale(2, RoundingMode.HALF_UP);
-        String sha256hex = DigestUtils.sha256Hex(payment.getCashboxId().toString() + payment.getStatus() + amount.toString() + secret);
-        paymentDetail.setSignature(sha256hex);
+        String unsignedString = payment.getCashboxId().toString() + payment.getStatus() + amount.toString() + secret;
+        String sha256hex = DigestUtils.sha256Hex(unsignedString);
+        LOGGER.info("Unsigned data: {}", unsignedString);
+        paymentDetail.setSignature(unsignedString);
         return paymentDetail;
     }
 }

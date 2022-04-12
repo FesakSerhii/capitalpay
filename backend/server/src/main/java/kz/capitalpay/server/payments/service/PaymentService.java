@@ -8,6 +8,7 @@ import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.service.ApplicationRoleService;
 import kz.capitalpay.server.login.service.ApplicationUserService;
+import kz.capitalpay.server.p2p.service.P2pPaymentService;
 import kz.capitalpay.server.payments.dto.OnePaymentDetailsRequestDTO;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.repository.PaymentRepository;
@@ -60,6 +61,9 @@ public class PaymentService {
 
     @Autowired
     ApplicationRoleService applicationRoleService;
+
+    @Autowired
+    P2pPaymentService p2pPaymentService;
 
     public boolean checkUnic(Cashbox cashbox, String billid) {
         List<Payment> paymentList = paymentRepository.findByCashboxIdAndAndBillId(cashbox.getId(), billid);
@@ -114,7 +118,13 @@ public class PaymentService {
     public void notifyMerchant(Payment payment) {
         try {
             String interactionUrl = cashboxService.getInteractUrl(payment);
-            PaymentDetailDTO detailsJson = signDetail(payment);
+            PaymentDetailDTO detailsJson = null;
+            if (payment.isP2p()) {
+                p2pPaymentService.signDetail(payment);
+            } else {
+                detailsJson = signDetail(payment);
+            }
+
             Map<String, Object> requestJson = new HashMap<>();
             requestJson.put("type", "paymentStatus");
             requestJson.put("data", detailsJson);
@@ -149,39 +159,22 @@ public class PaymentService {
         return paymentRepository.findTopByCashboxIdAndAndBillId(cashboxid, billid);
     }
 
-//    public PaymentDetailDTO signDetail(Payment payment) {
-//        String secret = cashboxService.getSecret(payment.getCashboxId());
-//        PaymentDetailDTO paymentDetail = new PaymentDetailDTO();
-//        paymentDetail.setTimestamp(payment.getTimestamp());
-//        paymentDetail.setLocalDateTime(payment.getLocalDateTime());
-//        paymentDetail.setBillId(payment.getBillId());
-//        paymentDetail.setTotalAmount(payment.getTotalAmount());
-//        paymentDetail.setCurrency(payment.getCurrency());
-//        paymentDetail.setDescription(payment.getDescription());
-//        paymentDetail.setParam(payment.getParam());
-//        paymentDetail.setStatus(payment.getStatus());
-//        //    SHA256(cashboxId + billId + status + )
-//        String unsignedString = payment.getCashboxId().toString()
-//                + payment.getBillId() + payment.getStatus() + secret;
-//        String sha256hex = DigestUtils.sha256Hex(unsignedString);
-//
-//        logger.info("Unsigned data: {}", unsignedString);
-//        paymentDetail.setSignature(unsignedString);
-//        return paymentDetail;
-//    }
-
-    private PaymentDetailDTO signDetail(Payment payment) {
+    public PaymentDetailDTO signDetail(Payment payment) {
         String secret = cashboxService.getSecret(payment.getCashboxId());
         PaymentDetailDTO paymentDetail = new PaymentDetailDTO();
         paymentDetail.setTimestamp(payment.getTimestamp());
         paymentDetail.setLocalDateTime(payment.getLocalDateTime());
+        paymentDetail.setBillId(payment.getBillId());
         paymentDetail.setTotalAmount(payment.getTotalAmount());
         paymentDetail.setCurrency(payment.getCurrency());
+        paymentDetail.setDescription(payment.getDescription());
         paymentDetail.setParam(payment.getParam());
         paymentDetail.setStatus(payment.getStatus());
-        BigDecimal amount = payment.getTotalAmount().setScale(2, RoundingMode.HALF_UP);
-        String unsignedString = payment.getCashboxId().toString() + payment.getStatus() + amount.toString() + secret;
+        //    SHA256(cashboxId + billId + status + )
+        String unsignedString = payment.getCashboxId().toString()
+                + payment.getBillId() + payment.getStatus() + secret;
         String sha256hex = DigestUtils.sha256Hex(unsignedString);
+
         logger.info("Unsigned data: {}", unsignedString);
         paymentDetail.setSignature(unsignedString);
         return paymentDetail;
