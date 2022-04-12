@@ -21,6 +21,11 @@ const db = createDBConnection();
 function hash256(str) {
     return  crypto.createHash("sha256").update(str).digest('hex');
 }
+app.get("/signature",  async function(req, res) {
+    const card = (await db.query("select * from cards where card_id=$1", [req.body.cardId])).rows[0];
+    const signature = hash256(13978 + 663 + card.card_token + req.body.sum + secret);
+    res.send(signature)
+});
 
 app.get("/", async function (req, res) {
     const cards = (await db.query("select * from cards")).rows;
@@ -92,8 +97,13 @@ app.post("/pay", jsonParser, async function (req, resp) {
         "cashBoxId": 13978
     };
     sendMoneyObj.signature = hash256(sendMoneyObj.cashBoxId + sendMoneyObj.merchantId + card.card_token + sendMoneyObj.acceptedSum + secret);
+
     console.log("send money obj", sendMoneyObj);
-    const cpResp = await axios.default.post("https://api.capitalpay.kz/api/v1/p2p/send-p2p-to-client", sendMoneyObj);
+    const cpResp = await axios.default.post("https://api.capitalpay.kz/api/v1/p2p/send-p2p-to-client", formData, {
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+    });
     await db.query("insert into payments (card_id, sum, result) values ($1, $2, $3)", [
         req.body.cardId,
         req.body.sum,
@@ -114,7 +124,15 @@ app.post("/pay-from-client", jsonParser, async function (req, resp) {
     };
     sendMoneyObj.signature = hash256(sendMoneyObj.cashBoxId + sendMoneyObj.merchantId + sendMoneyObj.clientCardToken + sendMoneyObj.acceptedSum + secret);
     console.log("client send money obj", sendMoneyObj);
-    const cpResp = await axios.default.post("https://api.capitalpay.kz/api/v1/p2p/send-p2p-to-merchant", sendMoneyObj);
+    const formData = new FormData();
+    for(let key in sendMoneyObj) {
+        formData.append(key, sendMoneyObj[key]);
+    }
+    const cpResp = await axios.default.post("https://api.capitalpay.kz/api/v1/p2p/send-p2p-to-merchant", formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
     await db.query("insert into client_payments (card_id, sum, result) values ($1, $2, $3)", [
         req.body.cardId,
         req.body.sum,
