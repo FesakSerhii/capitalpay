@@ -225,6 +225,7 @@ public class P2pService {
         String secret = cashboxService.getSecret(dto.getCashBoxId());
         BigDecimal amount = dto.getAcceptedSum().setScale(2, RoundingMode.HALF_UP);
         String sha256hex = DigestUtils.sha256Hex(dto.getCashBoxId() + dto.getMerchantId() + dto.getClientCardToken() + amount.toString() + secret);
+        LOGGER.info("Sign data: {}", dto.getCashBoxId() + dto.getMerchantId() + dto.getClientCardToken() + amount.toString() + secret);
         LOGGER.info("Cashbox ID: {}", dto.getCashBoxId());
         LOGGER.info("Merchant ID: {}", dto.getMerchantId());
         LOGGER.info("Client card ID: {}", dto.getClientCardToken());
