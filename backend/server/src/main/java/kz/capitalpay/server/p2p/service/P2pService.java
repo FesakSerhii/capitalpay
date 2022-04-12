@@ -224,7 +224,7 @@ public class P2pService {
     private boolean checkP2pSignature(SendP2pToClientDto dto) {
         String secret = cashboxService.getSecret(dto.getCashBoxId());
         BigDecimal amount = dto.getAcceptedSum().setScale(2, RoundingMode.HALF_UP);
-        String sha256hex = DigestUtils.sha256Hex(dto.getCashBoxId() + dto.getMerchantId() + dto.getClientCardToken() + amount.toString() + secret);
+        String sha256hex = DigestUtils.sha256Hex(dto.getCashBoxId().toString() + dto.getMerchantId().toString() + dto.getClientCardToken() + amount.toString() + secret);
         LOGGER.info("Sign data: {}", dto.getCashBoxId() + dto.getMerchantId() + dto.getClientCardToken() + amount.toString() + secret);
         LOGGER.info("Cashbox ID: {}", dto.getCashBoxId());
         LOGGER.info("Merchant ID: {}", dto.getMerchantId());
@@ -238,7 +238,7 @@ public class P2pService {
     private boolean checkAnonymousP2pSignature(Long cashBoxId, Long merchantId, BigDecimal totalAmount, String signature) {
         String secret = cashboxService.getSecret(cashBoxId);
         BigDecimal amount = totalAmount.setScale(2, RoundingMode.HALF_UP);
-        String sha256hex = DigestUtils.sha256Hex(cashBoxId + merchantId + amount.toString() + secret);
+        String sha256hex = DigestUtils.sha256Hex(cashBoxId.toString() + merchantId.toString() + amount.toString() + secret);
         LOGGER.info("Cashbox ID: {}", cashBoxId);
         LOGGER.info("Merchant ID: {}", merchantId);
         LOGGER.info("amount.toString(): {}", amount.toString());
