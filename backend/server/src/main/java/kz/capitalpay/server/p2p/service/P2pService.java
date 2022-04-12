@@ -75,7 +75,7 @@ public class P2pService {
 
     public RedirectView sendP2pToClient(SendP2pToClientDto dto, String userAgent, String ipAddress, RedirectAttributes redirectAttributes) {
         Map<String, String> resultUrls = cashboxSettingsService.getMerchantResultUrls(dto.getCashBoxId());
-        if (checkP2pSignature(dto)) {
+        if (!checkP2pSignature(dto)) {
 //            return new ResultDTO(false, "Invalid signature", -1);
             LOGGER.info(new ResultDTO(false, "Invalid signature", -1).toString());
             return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
@@ -125,7 +125,7 @@ public class P2pService {
 
     public RedirectView sendP2pToMerchant(SendP2pToClientDto dto, String userAgent, String ipAddress, RedirectAttributes redirectAttributes) {
         Map<String, String> resultUrls = cashboxSettingsService.getMerchantResultUrls(dto.getCashBoxId());
-        if (checkP2pSignature(dto)) {
+        if (!checkP2pSignature(dto)) {
 //            return new ResultDTO(false, "Invalid signature", -1);
             LOGGER.info(new ResultDTO(false, "Invalid signature", -1).toString());
             return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));

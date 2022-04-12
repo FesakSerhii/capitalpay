@@ -341,7 +341,9 @@ public class HalykSoapService {
         logger.info("Md: " + result.getMd());
         logger.info("AcsUrl: " + result.getAcsUrl());
 
-        if ((result.getReturnCode() == null || result.getReturnCode().equals("null")) && result.getAcsUrl() != null && result.getPareq() != null) {
+        if ((result.getReturnCode() == null || result.getReturnCode().equals("null"))
+                && (result.getAcsUrl() != null || !result.getAcsUrl().equals("null"))
+                && (result.getPareq() != null || !result.getPareq().equals("null"))) {
             return new CheckCardValidityResponse(true, result.getReturnCode());
         }
         if (result.getReturnCode().equals("00")) {
