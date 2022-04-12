@@ -139,11 +139,11 @@ public class P2pPaymentsController {
         String sessionid = halykSoapService.getSessionByMD(MD);
         Payment payment = halykSoapService.getPaymentByMd(MD);
 
+        Map<String, String> resultUrls = cashboxSettingsService.getMerchantResultUrls(payment.getCashboxId());
         LOGGER.info(sessionid);
         LOGGER.info(gson.toJson(payment));
 
         payment = halykSoapService.paymentOrderAcs(MD, PaRes, sessionid);
-        Map<String, String> resultUrls = cashboxSettingsService.getMerchantResultUrls(payment.getCashboxId());
         return payment.getStatus().equals(SimpleService.SUCCESS)
                 ? new RedirectView(resultUrls.get(REDIRECT_SUCCESS_URL))
                 : new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
