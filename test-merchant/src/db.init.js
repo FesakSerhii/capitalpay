@@ -4,7 +4,8 @@ function createDBConnection() {
         user: "payserver",
         password: "UuDB2GfTd42RXJjk",
         host: "185.111.106.6",
-        database: "merchant_test"
+        database: "merchant_test",
+        connectionTimeoutMillis: 10000
     });
     createTables(pool);
     return pool;

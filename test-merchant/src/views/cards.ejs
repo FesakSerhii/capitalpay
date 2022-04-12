@@ -67,27 +67,62 @@
         document.querySelectorAll(".pay").forEach((b) => {
             b.addEventListener("click", function () {
                 const sum = prompt("Input sum");
-                axios.post("/pay", {
-                    cardId: parseInt(this.dataset.cardId),
-                    sum: parseFloat(sum)
-                }).then(
-                    () => {
-                        location.reload();
-                    }
-                )
+                // запрос на сервер получить подпись
+                // свормировать скрытую js форму и заполнить все поля с подписью
+                // в поле action формы должно быть то что скажет сергей
+
+                // отправить форму на сервер
+                axios.get('/signature').then(function (response) {
+                    const form = document.createElement("form");
+                    form.method = "POST";
+                    form.action = "https://card.capitalpay.kz/api/v1/payments/pay-to-client";
+                    form.style.display = "none";
+                    form.innerHTML = `
+                        <input type="hidden" name="merchantId" value="663">
+                        <input type="hidden" name="cashBoxId" value="13978">
+                        <input type="hidden" name="cardId" value="${b.dataset.cardId}">
+                        <input type="hidden" name="sum" value="${sum}">
+                        <input type="hidden" name="signature" value="${response.data.signature}">
+                    `;
+                    document.body.appendChild(form);
+                    form.submit();
+                });
+                // axios.post("/pay", {
+                //     cardId: parseInt(this.dataset.cardId),
+                //     sum: parseFloat(sum)
+                // }).then(
+                //     () => {
+                //         location.reload();
+                //     }
+                // )
             });
         });
         document.querySelectorAll(".pay-client").forEach((b) => {
             b.addEventListener("click", function () {
                 const sum = prompt("Input sum");
-                axios.post("/pay-from-client", {
-                    cardId: parseInt(this.dataset.cardId),
-                    sum: parseFloat(sum)
-                }).then(
-                    () => {
-                        alert("Done!");
-                    }
-                );
+                axios.get('/signature').then(function (response) {
+                    const form = document.createElement("form");
+                    form.method = "POST";
+                    form.action = "https://card.capitalpay.kz/api/v1/payments/pay-to-merchant";
+                    form.style.display = "none";
+                    form.innerHTML = `
+                        <input type="hidden" name="merchantId" value="663">
+                        <input type="hidden" name="cashBoxId" value="13978">
+                        <input type="hidden" name="cardId" value="${b.dataset.cardId}">
+                        <input type="hidden" name="sum" value="${sum}">
+                        <input type="hidden" name="signature" value="${response.data.signature}">
+                    `;
+                    document.body.appendChild(form);
+                    form.submit();
+                });
+                // axios.post("/pay-from-client", {
+                //     cardId: parseInt(this.dataset.cardId),
+                //     sum: parseFloat(sum)
+                // }).then(
+                //     () => {
+                //         alert("Done!");
+                //     }
+                // );
             })
         })
         addCard.addEventListener("click", function (e) {
