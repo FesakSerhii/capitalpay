@@ -295,12 +295,7 @@ public class HalykSoapService {
                 logger.info("PaReq: " + controlOrderForCommerceResponse.get_return().getPareq());
                 logger.info("Md: " + controlOrderForCommerceResponse.get_return().getMd());
                 logger.info("AcsUrl: " + controlOrderForCommerceResponse.get_return().getAcsUrl());
-
-//                if (p2p) {
-//                    p2pPaymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), SUCCESS);
-//                } else {
                 paymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), SUCCESS);
-//                }
             } else {
                 return check3ds(result, paymentOrder.getOrderid());
             }
