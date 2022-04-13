@@ -51,9 +51,6 @@ public class HalykSoapService {
     @Value("${halyk.soap.merchant.id}")
     String merchantid;
 
-    @Value("${halyk.soap.merchant.id.acs}")
-    String merchantidAcs;
-
     @Value("${halyk.soap.currency}")
     String currency;
 
@@ -269,7 +266,7 @@ public class HalykSoapService {
     public String getPaymentOrderResult(BigDecimal amount, String cardholderName, String cvc, String desc,
                                         String month, String orderId, String pan, String year) {
         try {
-            HalykOrder paymentOrder = generateHalykOrder(amount, cardholderName, desc, orderId, 1);
+            HalykOrder paymentOrder = generateHalykOrder(amount, cardholderName, desc, orderId, 1, "paymentOrder");
             year = year.substring(2);
 
             EpayServiceStub.PaymentOrderResponse paymentOrderResponse = sendPaymentOrderRequest(
@@ -321,7 +318,8 @@ public class HalykSoapService {
         String amount = "10";
 
         HalykOrder halykOrder = generateHalykOrder(new BigDecimal(amount),
-                "", "Check card validity payment", payment.getOrderId(), 0);
+                "", "Check card validity payment", payment.getOrderId(), 0,
+                "paymentOrder");
 
         EpayServiceStub.PaymentOrderResponse paymentOrderResponse = sendPaymentOrderRequest(amount, currency,
                 cvv2, merchantid, month, year, orderId, pan, trType);
@@ -371,7 +369,7 @@ public class HalykSoapService {
                 dto.getAcceptedSum(), dto.getCashBoxId(), toClient, currency, null);
 
         HalykOrder transferOrder = generateHalykOrder(dto.getAcceptedSum(),
-                "", "p2p", payment.getPaySysPayId(), 8);
+                "", "p2p", payment.getPaySysPayId(), 8, "transferOrder");
 
         String orderId = payment.getPaySysPayId();
         String pan = payerCardData.getCardNumber();
@@ -583,7 +581,7 @@ public class HalykSoapService {
         paymentOrderAcs.setOrder(order);
         EpayServiceStub.RequestSignature signature = new EpayServiceStub.RequestSignature();
         signature.setMerchantCertificate(merchantCertificate);
-        signature.setMerchantId(merchantidAcs);
+        signature.setMerchantId(merchantid);
         signature.setSignatureValue(signatureValue);
         paymentOrderAcs.setRequestSignature(signature);
         EpayServiceStub.PaymentOrderAcsResponse response = null;
@@ -640,7 +638,8 @@ public class HalykSoapService {
         return "FAIL";
     }
 
-    private HalykOrder generateHalykOrder(BigDecimal amount, String cardholderName, String desc, String orderId, int trType) {
+    private HalykOrder generateHalykOrder(BigDecimal amount, String cardholderName, String desc, String orderId, int trType,
+                                          String requestType) {
         HalykOrder paymentOrder = new HalykOrder();
         paymentOrder.setTimestamp(System.currentTimeMillis());
         paymentOrder.setLocalDateTime(LocalDateTime.now());
@@ -649,6 +648,7 @@ public class HalykSoapService {
         paymentOrder.setCurrency(currency);
         paymentOrder.setDesc(desc);
         paymentOrder.setMerchantid(merchantid);
+        paymentOrder.setRequeestType(requestType);
         paymentOrder.setOrderid(orderId);
         paymentOrder.setTrtype(trType);
         return halykOrderRepository.save(paymentOrder);

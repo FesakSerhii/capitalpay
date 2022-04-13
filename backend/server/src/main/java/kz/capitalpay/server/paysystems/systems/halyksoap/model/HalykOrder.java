@@ -36,6 +36,7 @@ public class HalykOrder {
     String returnCode;
     String sessionid;
     String termUrl;
+    String requeestType;
 
     //===Signature=======
     boolean signatureValid;
@@ -214,5 +215,13 @@ public class HalykOrder {
 
     public void setSignatureValid(boolean signatureValid) {
         this.signatureValid = signatureValid;
+    }
+
+    public String getRequeestType() {
+        return requeestType;
+    }
+
+    public void setRequeestType(String requeestType) {
+        this.requeestType = requeestType;
     }
 }
