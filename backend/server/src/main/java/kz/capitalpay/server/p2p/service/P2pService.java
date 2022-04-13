@@ -52,9 +52,6 @@ public class P2pService {
     @Value("${halyk.soap.p2p.termurl}")
     private String termUrl;
 
-    @Value("${halyk.soap.merchant.id}")
-    private String merchantid;
-
     @Value("${halyk.soap.currency}")
     private String currency;
 

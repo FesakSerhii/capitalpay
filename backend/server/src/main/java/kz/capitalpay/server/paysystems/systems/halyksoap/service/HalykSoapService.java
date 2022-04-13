@@ -51,6 +51,9 @@ public class HalykSoapService {
     @Value("${halyk.soap.merchant.id}")
     String merchantid;
 
+    @Value("${halyk.soap.merchant.id.acs}")
+    String merchantidAcs;
+
     @Value("${halyk.soap.currency}")
     String currency;
 
@@ -580,7 +583,7 @@ public class HalykSoapService {
         paymentOrderAcs.setOrder(order);
         EpayServiceStub.RequestSignature signature = new EpayServiceStub.RequestSignature();
         signature.setMerchantCertificate(merchantCertificate);
-        signature.setMerchantId(merchantid);
+        signature.setMerchantId(merchantidAcs);
         signature.setSignatureValue(signatureValue);
         paymentOrderAcs.setRequestSignature(signature);
         EpayServiceStub.PaymentOrderAcsResponse response = null;
