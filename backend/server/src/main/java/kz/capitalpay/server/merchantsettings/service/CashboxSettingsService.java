@@ -46,6 +46,8 @@ public class CashboxSettingsService {
     public static final String REDIRECT_PENDING_URL = "redirectpending";
     public static final String SECRET = "secret";
     public static final String CLIENT_FEE = "client_fee";
+    public static final String MERCHANT_ID = "merchantId";
+    public static final String CASHBOX_ID = "cashboxId";
 
     public CashboxSettingsService(CashboxSettingsRepository cashboxSettingsRepository, MerchantKycService merchantKycService, ApplicationUserService applicationUserService, ApplicationRoleService applicationRoleService, CashboxRepository cashboxRepository, P2pSettingsService p2pSettingsService, PaymentService paymentService) {
         this.cashboxSettingsRepository = cashboxSettingsRepository;
@@ -100,6 +102,8 @@ public class CashboxSettingsService {
                 result.put(REDIRECT_PENDING_URL, getField(cashBoxDTO.getCashBoxId(), REDIRECT_PENDING_URL));
                 result.put(SECRET, getField(cashBoxDTO.getCashBoxId(), SECRET));
                 result.put(CLIENT_FEE, getField(cashBoxDTO.getCashBoxId(), CLIENT_FEE));
+                result.put(MERCHANT_ID, admin.getId().toString());
+                result.put(CASHBOX_ID, String.valueOf(cashBoxDTO.getCashBoxId()));
                 return new ResultDTO(true, result, 0);
             } else {
                 return error121;
