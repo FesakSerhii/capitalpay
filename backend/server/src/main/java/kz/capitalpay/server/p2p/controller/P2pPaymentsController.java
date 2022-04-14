@@ -8,6 +8,7 @@ import kz.capitalpay.server.p2p.dto.SendP2pToClientDto;
 import kz.capitalpay.server.p2p.service.P2pPaymentService;
 import kz.capitalpay.server.p2p.service.P2pService;
 import kz.capitalpay.server.payments.model.Payment;
+import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykOrder;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import kz.capitalpay.server.simple.service.SimpleService;
 import org.slf4j.Logger;
@@ -137,14 +138,14 @@ public class P2pPaymentsController {
         LOGGER.info("MD: {}", MD);
         LOGGER.info("TermUrl: {}", TermUrl);
 
-        String sessionid = halykSoapService.getSessionByMD(MD);
+        HalykOrder order = halykSoapService.getHalykOrderByMd(MD);
         Payment payment = halykSoapService.getPaymentByMd(MD);
 
         Map<String, String> resultUrls = cashboxSettingsService.getMerchantResultUrls(payment.getCashboxId());
-        LOGGER.info(sessionid);
+        LOGGER.info(order.getSessionid());
         LOGGER.info(gson.toJson(payment));
 
-        payment = halykSoapService.paymentOrderAcs(MD, PaRes, sessionid);
+        payment = halykSoapService.paymentOrderAcs(MD, PaRes, order.getSessionid(), order.getRequestType());
         if (Objects.isNull(payment)) {
             return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
         }

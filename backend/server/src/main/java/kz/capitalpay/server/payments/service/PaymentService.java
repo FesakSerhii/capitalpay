@@ -82,10 +82,6 @@ public class PaymentService {
         return paymentRepository.findByGuid(paymentId);
     }
 
-    public Payment getPaymentByOrderId(String orderId) {
-        return paymentRepository.findTopByPaySysPayId(orderId);
-    }
-
     public void success(Payment paymentFromBd) {
         paymentFromBd.setStatus(SUCCESS);
         paymentRepository.save(paymentFromBd);
