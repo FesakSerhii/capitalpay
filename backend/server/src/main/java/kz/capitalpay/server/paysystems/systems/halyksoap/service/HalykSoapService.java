@@ -339,8 +339,8 @@ public class HalykSoapService {
         logger.info("AcsUrl: " + result.getAcsUrl());
 
         if ((result.getReturnCode() == null || result.getReturnCode().equals("null"))
-                && (result.getAcsUrl() != null || !result.getAcsUrl().equals("null"))
-                && (result.getPareq() != null || !result.getPareq().equals("null"))) {
+                && (result.getAcsUrl() != null && !result.getAcsUrl().equals("null"))
+                && (result.getPareq() != null && !result.getPareq().equals("null"))) {
             return new CheckCardValidityResponse(true, result.getReturnCode());
         }
         if (result.getReturnCode().equals("00")) {
@@ -618,24 +618,17 @@ public class HalykSoapService {
     }
 
     private String check3ds(EpayServiceStub.Result response, String orderId) {
-        if (response.getPareq() != null && response.getMd() != null) {
+        if (response.getPareq() != null && !response.getPareq().equals("null")
+                && response.getMd() != null && !response.getMd().equals("null")) {
             Map<String, String> param = new HashMap<>();
             param.put("acsUrl", response.getAcsUrl());
             param.put("MD", response.getMd());
             param.put("PaReq", response.getPareq());
             logger.info("Code 00, order: {}", gson.toJson(response));
-//            if (p2p) {
-//                p2pPaymentService.setStatusByPaySysPayId(orderId, PENDING);
-//            } else {
             paymentService.setStatusByPaySysPayId(orderId, PENDING);
-//            }
             return gson.toJson(param);
         }
-//        if (p2p) {
-//            p2pPaymentService.setStatusByPaySysPayId(orderId, FAILED);
-//        } else {
         paymentService.setStatusByPaySysPayId(orderId, FAILED);
-//        }
         return "FAIL";
     }
 
