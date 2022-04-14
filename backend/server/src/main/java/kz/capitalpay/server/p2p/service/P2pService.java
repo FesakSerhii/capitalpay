@@ -212,10 +212,40 @@ public class P2pService {
 
         Payment p2pPayment = p2pPaymentService.findById(paymentId);
 
-        String result = halykSoapService.getPaymentOrderResult(p2pPayment.getTotalAmount(),
-                cardHolderName, cvv, "P2p payment to merchant", month, p2pPayment.getPaySysPayId(), pan, year);
-//        BillPaymentDto bill = createBill(p2pPayment, httpRequest, cardHolderName, pan, result);
-        return checkReturnCode(result);
+//        String result = halykSoapService.getPaymentOrderResult(p2pPayment.getTotalAmount(),
+//                cardHolderName, cvv, "P2p payment to merchant", month, p2pPayment.getPaySysPayId(), pan, year);
+
+        try {
+            Cashbox cashbox = cashboxService.findById(p2pPayment.getCashboxId());
+            if (!cashbox.getMerchantId().equals(p2pPayment.getMerchantId())) {
+                return ErrorDictionary.error122;
+            }
+
+            Long merchantCardId = cashboxService.findUserCardIdByCashBoxId(p2pPayment.getCashboxId());
+            if (merchantCardId.equals(0L)) {
+                return ErrorDictionary.error130;
+            }
+
+            MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(p2pPayment.getMerchantId());
+            if (Objects.isNull(merchantP2pSettings) || !merchantP2pSettings.isP2pAllowed()) {
+                return ErrorDictionary.error134;
+            }
+
+            if (!cashbox.isP2pAllowed()) {
+                return ErrorDictionary.error134;
+            }
+
+            UserCard merchantCard = userCardService.findUserCardById(merchantCardId);
+            CardDataResponseDto merchantCardData = userCardService.getCardDataFromTokenServer(merchantCard.getToken());
+            CardDataResponseDto clientCardData = new CardDataResponseDto(pan, year, month, cvv);
+            SendP2pToClientDto dto = new SendP2pToClientDto(p2pPayment.getMerchantId(), p2pPayment.getTotalAmount(), p2pPayment.getCashboxId());
+
+            return checkReturnCode(halykSoapService.sendP2p(ipAddress, p2pPayment.getUserAgent(), clientCardData,
+                    dto, merchantCardData.getCardNumber(), false));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ErrorDictionary.error130;
+        }
     }
 
     private boolean checkP2pSignature(SendP2pToClientDto dto) {

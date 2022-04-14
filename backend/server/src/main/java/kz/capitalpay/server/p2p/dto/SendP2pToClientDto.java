@@ -25,6 +25,12 @@ public class SendP2pToClientDto {
         this.signature = signature;
     }
 
+    public SendP2pToClientDto(Long merchantId, BigDecimal acceptedSum, Long cashBoxId) {
+        this.merchantId = merchantId;
+        this.acceptedSum = acceptedSum;
+        this.cashBoxId = cashBoxId;
+    }
+
     public String getClientCardToken() {
         return clientCardToken;
     }

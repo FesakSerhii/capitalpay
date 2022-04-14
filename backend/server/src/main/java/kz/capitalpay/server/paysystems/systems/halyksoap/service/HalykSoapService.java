@@ -275,7 +275,7 @@ public class HalykSoapService {
 
             EpayServiceStub.Result result = paymentOrderResponse.get_return();
 
-            parsePaymentOrderResponse(paymentOrder, result);
+            parseHalykOrderResponse(paymentOrder, result);
             logger.info(gson.toJson(paymentOrder));
             logger.info("result.getReturnCode(): {}", result.getReturnCode());
 
@@ -326,7 +326,7 @@ public class HalykSoapService {
                 cvv2, merchantIdEpay, month, year, orderId, pan, trType);
 
         EpayServiceStub.Result result = paymentOrderResponse.get_return();
-        parsePaymentOrderResponse(halykOrder, result);
+        parseHalykOrderResponse(halykOrder, result);
 
         logger.info("paymentOrderResponse");
         logger.info("Message: " + result.getMessage());
@@ -394,7 +394,7 @@ public class HalykSoapService {
 
         EpayServiceStub.Result result = transferOrderResponse.get_return();
 
-        parseTransferOrderResponse(transferOrder, result);
+        parseHalykOrderResponse(transferOrder, result);
         logger.info(gson.toJson(transferOrder));
 
         if (transferOrderResponse.get_return().getReturnCode().equals("00")) {
@@ -626,6 +626,7 @@ public class HalykSoapService {
             param.put("PaReq", response.getPareq());
             logger.info("Code 00, order: {}", gson.toJson(response));
             paymentService.setStatusByPaySysPayId(orderId, PENDING);
+            logger.info("param: {}", param);
             return gson.toJson(param);
         }
         paymentService.setStatusByPaySysPayId(orderId, FAILED);
@@ -823,7 +824,7 @@ public class HalykSoapService {
 //
 //    }
 
-    private HalykOrder parsePaymentOrderResponse(HalykOrder paymentOrder, EpayServiceStub.Result response) {
+    private void parseHalykOrderResponse(HalykOrder paymentOrder, EpayServiceStub.Result response) {
         try {
             paymentOrder.setAcsUrl(response.getAcsUrl());
             paymentOrder.setApprovalcode(response.getApprovalcode());
@@ -848,35 +849,6 @@ public class HalykSoapService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return paymentOrder;
-    }
-
-    private HalykOrder parseTransferOrderResponse(HalykOrder transferOrder, EpayServiceStub.Result response) {
-        try {
-            transferOrder.setAcsUrl(response.getAcsUrl());
-            transferOrder.setApprovalcode(response.getApprovalcode());
-            transferOrder.setIntreference(response.getIntreference());
-            transferOrder.setIs3ds(response.getIs3Ds());
-            transferOrder.setMd(response.getMd());
-            transferOrder.setMessage(response.getMessage());
-            transferOrder.setPareq(response.getPareq());
-            transferOrder.setReference(response.getReference());
-            transferOrder.setReturnCode(response.getReturnCode());
-            transferOrder.setSessionid(response.getSessionid());
-            transferOrder.setTermUrl(response.getTermUrl());
-
-            String signatureValue = response.getResponseSignature().getSignatureValue();
-            String signedString = response.getResponseSignature().getSignedString();
-            logger.info("SignedString: {}", signedString);
-            KKBSign kkbSign = new KKBSign();
-            boolean signatureValid = kkbSign.verify(signedString, signatureValue, keystore, bankAlias, storepass); /// keypass???
-            logger.info("Verify: {}", signatureValid);
-            transferOrder.setSignatureValid(signatureValid);
-            halykOrderRepository.save(transferOrder);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return transferOrder;
     }
 
     public Payment paymentOrderAcs(String md, String pares, String sessionId, String requestType) {
@@ -970,7 +942,7 @@ public class HalykSoapService {
 //        return paymentOrderAcs;
 //    }
 
-    private HalykPaymentOrderAcs parsePaymentOrderAcsResponse(HalykPaymentOrderAcs paymentOrderAcs, EpayServiceStub.Result response) {
+    private void parsePaymentOrderAcsResponse(HalykPaymentOrderAcs paymentOrderAcs, EpayServiceStub.Result response) {
         try {
             paymentOrderAcs.setAcsUrl(response.getAcsUrl());
             paymentOrderAcs.setApprovalcode(response.getApprovalcode());
@@ -994,7 +966,6 @@ public class HalykSoapService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return paymentOrderAcs;
     }
 
 //    private String createPaymentOrderAcsXML(HalykPaymentOrderAcs paymentOrderAcs) {
@@ -1066,8 +1037,7 @@ public class HalykSoapService {
 
     public Cashbox getCashboxByMD(String md) {
         HalykOrder paymentOrder = halykOrderRepository.findTopByMd(md);
-        Cashbox cashbox = paymentService.getCashboxByOrderId(paymentOrder.getOrderid());
-        return cashbox;
+        return paymentService.getCashboxByOrderId(paymentOrder.getOrderid());
     }
 
     public Payment getPaymentByMd(String md) {
