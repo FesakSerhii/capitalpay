@@ -64,7 +64,8 @@ export class SettingsComponent implements OnInit {
     interactionurl: new FormControl(''),
     redirectpending: new FormControl(''),
     client_fee: new FormControl(''),
-    secret: new FormControl('')
+    secret: new FormControl(''),
+    merchantId: new FormControl('')
   });
   currenciesForm = new FormGroup({})
   casBoxSettingsForm = new FormGroup({
