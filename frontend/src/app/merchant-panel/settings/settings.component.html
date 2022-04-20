@@ -71,6 +71,16 @@
             <h4 class="card-title">Настройки кассы</h4>
           </div>
           <div class="card-body mt-4 mb-4">
+            <form [formGroup]="cashBoxInfo">
+              <div class="form-group has-default bmd-form-group d-flex">
+                <label class="col-form-label label-checkbox pt-0 col-2">Id мерчанта</label>
+                <input type="text" class="form-control" readonly formControlName="merchantId">
+              </div>
+              <div class="form-group has-default bmd-form-group d-flex">
+                <label class="col-form-label label-checkbox pt-0 col-2">Id кассы</label>
+                <input type="text" class="form-control" readonly formControlName="cashboxId">
+              </div>
+            </form>
             <form [formGroup]="casBoxSettingsForm">
               <div class="form-group has-default bmd-form-group d-flex">
                 <label class="col-form-label label-checkbox pt-0 col-2">Название кассы *</label>
@@ -101,14 +111,6 @@
               <div class="form-group has-default bmd-form-group d-flex">
                 <label class="col-form-label label-checkbox pt-0 col-2">Secret</label>
                 <input type="text" class="form-control" readonly formControlName="secret">
-              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label label-checkbox pt-0 col-2">Id мерчанта</label>
-                <input type="text" class="form-control" readonly formControlName="merchantId">
-              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label label-checkbox pt-0 col-2">Id кассы</label>
-                <input type="text" class="form-control" readonly formControlName="cashboxId">
               </div>
             </form>
             <div class="d-flex">
