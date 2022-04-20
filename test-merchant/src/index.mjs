@@ -21,10 +21,12 @@ const db = createDBConnection();
 function hash256(str) {
     return  crypto.createHash("sha256").update(str).digest('hex');
 }
-app.get("/signature",  async function(req, res) {
+app.post("/signature", jsonParser, async function(req, res) {
     const card = (await db.query("select * from cards where card_id=$1", [req.body.cardId])).rows[0];
-    const signature = hash256(13978 + 663 + card.card_token + req.body.sum + secret);
-    res.send(signature)
+    let signedStr = "13978" + "663" + card.card_token + parseFloat(req.body.sum).toFixed(2) + secret;
+    console.log(signedStr);
+    const signature = hash256(signedStr);
+    res.json({signature})
 });
 
 app.get("/", async function (req, res) {
@@ -62,6 +64,7 @@ app.post("/inter", jsonParser, async function (req, res) {
             await db.query("insert into cards (card_number, card_id, card_token, param) values ($1, $2, $3, $4)", [
                 cardData.cardNumber, cardData.cardId, cardData.token, cardData.params
             ]);
+            res.send("OK");
         },
         'paymentStatus': async () => {
             console.log("Register user payment");
@@ -72,45 +75,23 @@ app.post("/inter", jsonParser, async function (req, res) {
                 console.log("Invalid signature", data.signature, recalculatedSignature)
                 return;
             }
-            await db.query("insert into client_payments (card_id, sum, result) values ($1, $2, $3)", [
-                0,
-                data.totalAmount,
-                JSON.stringify(data, null, 2)
-            ])
+            if (data.status === "SUCCESS") {
+                await db.query("insert into client_payments (card_id, sum, result) values ($1, $2, $3)", [
+                    0,
+                    data.totalAmount,
+                    JSON.stringify(data, null, 2)
+                ]);
+            }
+            res.send("OK");
         }
     }
     if (handlers[req.body.type]) {
         handlers[req.body.type]();
     } else {
         console.log(`Undefined type ${req.body.type}`)
+        res.send("Fail");
     }
-    res.send("OK");
-});
 
-app.post("/pay", jsonParser, async function (req, resp) {
-    console.log("try to pay");
-    const card = (await db.query("select * from cards where card_id=$1", [req.body.cardId])).rows[0];
-    let sendMoneyObj = {
-        "clientCardToken": card.card_token,
-        "merchantId": 663,
-        "acceptedSum": req.body.sum,
-        "cashBoxId": 13978
-    };
-    sendMoneyObj.signature = hash256(sendMoneyObj.cashBoxId + sendMoneyObj.merchantId + card.card_token + sendMoneyObj.acceptedSum + secret);
-
-    console.log("send money obj", sendMoneyObj);
-    const cpResp = await axios.default.post("https://api.capitalpay.kz/api/v1/p2p/send-p2p-to-client", formData, {
-        headers: {
-            "Content-Type": "multipart/form-data"
-        }
-    });
-    await db.query("insert into payments (card_id, sum, result) values ($1, $2, $3)", [
-        req.body.cardId,
-        req.body.sum,
-        JSON.stringify(cpResp.data, null, 2)
-    ]);
-    console.log(cpResp.data);
-    resp.send("OK");
 });
 
 app.post("/pay-from-client", jsonParser, async function (req, resp) {
