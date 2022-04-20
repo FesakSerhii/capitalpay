@@ -52,9 +52,6 @@ public class P2pService {
     @Value("${halyk.soap.p2p.termurl}")
     private String termUrl;
 
-    @Value("${halyk.soap.merchant.id}")
-    private String merchantid;
-
     @Value("${halyk.soap.currency}")
     private String currency;
 
@@ -75,7 +72,7 @@ public class P2pService {
 
     public RedirectView sendP2pToClient(SendP2pToClientDto dto, String userAgent, String ipAddress, RedirectAttributes redirectAttributes) {
         Map<String, String> resultUrls = cashboxSettingsService.getMerchantResultUrls(dto.getCashBoxId());
-        if (checkP2pSignature(dto)) {
+        if (!checkP2pSignature(dto)) {
 //            return new ResultDTO(false, "Invalid signature", -1);
             LOGGER.info(new ResultDTO(false, "Invalid signature", -1).toString());
             return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
@@ -125,7 +122,7 @@ public class P2pService {
 
     public RedirectView sendP2pToMerchant(SendP2pToClientDto dto, String userAgent, String ipAddress, RedirectAttributes redirectAttributes) {
         Map<String, String> resultUrls = cashboxSettingsService.getMerchantResultUrls(dto.getCashBoxId());
-        if (checkP2pSignature(dto)) {
+        if (!checkP2pSignature(dto)) {
 //            return new ResultDTO(false, "Invalid signature", -1);
             LOGGER.info(new ResultDTO(false, "Invalid signature", -1).toString());
             return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
@@ -175,7 +172,7 @@ public class P2pService {
 
     public ResultDTO createAnonymousP2pPayment(String userAgent, String ipAddress, Long cashBoxId, Long merchantId,
                                                BigDecimal totalAmount, String currency, String param, String signature) {
-        if (checkAnonymousP2pSignature(cashBoxId, merchantId, totalAmount, signature)) {
+        if (!checkAnonymousP2pSignature(cashBoxId, merchantId, totalAmount, signature)) {
             return new ResultDTO(false, "Invalid signature", -1);
         }
 
@@ -215,16 +212,47 @@ public class P2pService {
 
         Payment p2pPayment = p2pPaymentService.findById(paymentId);
 
-        String result = halykSoapService.getPaymentOrderResult(p2pPayment.getTotalAmount(),
-                cardHolderName, cvv, "P2p payment to merchant", month, p2pPayment.getPaySysPayId(), pan, year);
-//        BillPaymentDto bill = createBill(p2pPayment, httpRequest, cardHolderName, pan, result);
-        return checkReturnCode(result);
+//        String result = halykSoapService.getPaymentOrderResult(p2pPayment.getTotalAmount(),
+//                cardHolderName, cvv, "P2p payment to merchant", month, p2pPayment.getPaySysPayId(), pan, year);
+
+        try {
+            Cashbox cashbox = cashboxService.findById(p2pPayment.getCashboxId());
+            if (!cashbox.getMerchantId().equals(p2pPayment.getMerchantId())) {
+                return ErrorDictionary.error122;
+            }
+
+            Long merchantCardId = cashboxService.findUserCardIdByCashBoxId(p2pPayment.getCashboxId());
+            if (merchantCardId.equals(0L)) {
+                return ErrorDictionary.error130;
+            }
+
+            MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(p2pPayment.getMerchantId());
+            if (Objects.isNull(merchantP2pSettings) || !merchantP2pSettings.isP2pAllowed()) {
+                return ErrorDictionary.error134;
+            }
+
+            if (!cashbox.isP2pAllowed()) {
+                return ErrorDictionary.error134;
+            }
+
+            UserCard merchantCard = userCardService.findUserCardById(merchantCardId);
+            CardDataResponseDto merchantCardData = userCardService.getCardDataFromTokenServer(merchantCard.getToken());
+            CardDataResponseDto clientCardData = new CardDataResponseDto(pan, year, month, cvv);
+            SendP2pToClientDto dto = new SendP2pToClientDto(p2pPayment.getMerchantId(), p2pPayment.getTotalAmount(), p2pPayment.getCashboxId());
+
+            return checkReturnCode(halykSoapService.sendP2p(ipAddress, p2pPayment.getUserAgent(), clientCardData,
+                    dto, merchantCardData.getCardNumber(), false));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ErrorDictionary.error130;
+        }
     }
 
     private boolean checkP2pSignature(SendP2pToClientDto dto) {
         String secret = cashboxService.getSecret(dto.getCashBoxId());
         BigDecimal amount = dto.getAcceptedSum().setScale(2, RoundingMode.HALF_UP);
-        String sha256hex = DigestUtils.sha256Hex(dto.getCashBoxId() + dto.getMerchantId() + dto.getClientCardToken() + amount.toString() + secret);
+        String sha256hex = DigestUtils.sha256Hex(dto.getCashBoxId().toString() + dto.getMerchantId().toString() + dto.getClientCardToken() + amount.toString() + secret);
+        LOGGER.info("Sign data: {}", dto.getCashBoxId() + dto.getMerchantId() + dto.getClientCardToken() + amount.toString() + secret);
         LOGGER.info("Cashbox ID: {}", dto.getCashBoxId());
         LOGGER.info("Merchant ID: {}", dto.getMerchantId());
         LOGGER.info("Client card ID: {}", dto.getClientCardToken());
@@ -237,7 +265,7 @@ public class P2pService {
     private boolean checkAnonymousP2pSignature(Long cashBoxId, Long merchantId, BigDecimal totalAmount, String signature) {
         String secret = cashboxService.getSecret(cashBoxId);
         BigDecimal amount = totalAmount.setScale(2, RoundingMode.HALF_UP);
-        String sha256hex = DigestUtils.sha256Hex(cashBoxId + merchantId + amount.toString() + secret);
+        String sha256hex = DigestUtils.sha256Hex(cashBoxId.toString() + merchantId.toString() + amount.toString() + secret);
         LOGGER.info("Cashbox ID: {}", cashBoxId);
         LOGGER.info("Merchant ID: {}", merchantId);
         LOGGER.info("amount.toString(): {}", amount.toString());

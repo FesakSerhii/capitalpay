@@ -8,6 +8,7 @@ import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.service.ApplicationRoleService;
 import kz.capitalpay.server.login.service.ApplicationUserService;
+import kz.capitalpay.server.p2p.service.P2pPaymentService;
 import kz.capitalpay.server.payments.dto.OnePaymentDetailsRequestDTO;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.repository.PaymentRepository;
@@ -60,6 +61,9 @@ public class PaymentService {
     @Autowired
     ApplicationRoleService applicationRoleService;
 
+    @Autowired
+    P2pPaymentService p2pPaymentService;
+
     public boolean checkUnic(Cashbox cashbox, String billid) {
         List<Payment> paymentList = paymentRepository.findByCashboxIdAndAndBillId(cashbox.getId(), billid);
         return (paymentList == null || paymentList.size() == 0);
@@ -78,10 +82,6 @@ public class PaymentService {
         return paymentRepository.findByGuid(paymentId);
     }
 
-    public Payment getPaymentByOrderId(String orderId) {
-        return paymentRepository.findTopByBillId(orderId);
-    }
-
     public void success(Payment paymentFromBd) {
         paymentFromBd.setStatus(SUCCESS);
         paymentRepository.save(paymentFromBd);
@@ -94,8 +94,8 @@ public class PaymentService {
     public Payment setStatusByPaySysPayId(String paySysPayId, String status) {
         logger.info("PaySysPay ID: {}", paySysPayId);
         Payment payment = paymentRepository.findTopByPaySysPayId(paySysPayId);
-        logger.info("Payment pspid: {}", payment.getPaySysPayId());
         if (payment != null) {
+            logger.info("Payment pspid: {}", payment.getPaySysPayId());
             payment.setStatus(status);
             paymentRepository.save(payment);
             paymentLogService.newEvent(payment.getGuid(), payment.getIpAddress(), CHANGE_STATUS_PAYMENT,
@@ -113,12 +113,18 @@ public class PaymentService {
     public void notifyMerchant(Payment payment) {
         try {
             String interactionUrl = cashboxService.getInteractUrl(payment);
-            PaymentDetailDTO detailsJson = signDetail(payment);
+            PaymentDetailDTO detailsJson;
+            if (payment.isP2p()) {
+                detailsJson = p2pPaymentService.signDetail(payment);
+            } else {
+                detailsJson = signDetail(payment);
+            }
+
             Map<String, Object> requestJson = new HashMap<>();
             requestJson.put("type", "paymentStatus");
             requestJson.put("data", detailsJson);
             String response = restTemplate.postForObject(interactionUrl,
-                    requestJson, String.class, java.util.Optional.ofNullable(null));
+                    requestJson, String.class);
             logger.info(response);
         } catch (Exception e) {
             e.printStackTrace();
@@ -159,9 +165,12 @@ public class PaymentService {
         paymentDetail.setDescription(payment.getDescription());
         paymentDetail.setParam(payment.getParam());
         paymentDetail.setStatus(payment.getStatus());
-        //    SHA256(cashboxId + billId + status + secret)
-        String sha256hex = DigestUtils.sha256Hex(payment.getCashboxId().toString()
-                + payment.getBillId() + payment.getStatus() + secret);
+        //    SHA256(cashboxId + billId + status + )
+        String unsignedString = payment.getCashboxId().toString()
+                + payment.getBillId() + payment.getStatus() + secret;
+        String sha256hex = DigestUtils.sha256Hex(unsignedString);
+
+        logger.info("Unsigned data: {}", unsignedString);
         paymentDetail.setSignature(sha256hex);
         return paymentDetail;
     }

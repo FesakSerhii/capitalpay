@@ -8,6 +8,13 @@ public class CardDataResponseDto {
     private String cvv2Code;
     private String token;
 
+    public CardDataResponseDto(String cardNumber, String expireYear, String expireMonth, String cvv2Code) {
+        this.cardNumber = cardNumber;
+        this.expireYear = expireYear;
+        this.expireMonth = expireMonth;
+        this.cvv2Code = cvv2Code;
+    }
+
     public String getCardNumber() {
         return cardNumber;
     }

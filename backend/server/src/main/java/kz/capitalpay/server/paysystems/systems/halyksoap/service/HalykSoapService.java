@@ -1,7 +1,7 @@
 package kz.capitalpay.server.paysystems.systems.halyksoap.service;
 
 import com.google.gson.Gson;
-import kz.capitalpay.server.cashbox.model.Cashbox;
+import kz.capitalpay.server.constants.HalykOrderDictionary;
 import kz.capitalpay.server.p2p.dto.SendP2pToClientDto;
 import kz.capitalpay.server.p2p.service.P2pPaymentService;
 import kz.capitalpay.server.payments.model.CheckCardValidityPayment;
@@ -11,7 +11,6 @@ import kz.capitalpay.server.payments.repository.PaymentRepository;
 import kz.capitalpay.server.payments.service.PaymentLogService;
 import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.paysystems.systems.halyksoap.kkbsign.KKBSign;
-import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykCheckOrder;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykOrder;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykPaymentOrderAcs;
 import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykCheckOrderRepository;
@@ -21,9 +20,6 @@ import kz.capitalpay.server.usercard.dto.CardDataResponseDto;
 import kz.capitalpay.server.usercard.dto.CheckCardValidityResponse;
 import kz.capitalpay.server.wsdl.*;
 import org.apache.axis2.AxisFault;
-import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,8 +44,11 @@ public class HalykSoapService {
     @Autowired
     Gson gson;
 
-    @Value("${halyk.soap.merchant.id}")
-    String merchantid;
+    @Value("${halyk.soap.merchant.id.epay}")
+    String merchantIdEpay;
+
+    @Value("${halyk.soap.merchant.id.p2p}")
+    String merchantIdP2p;
 
     @Value("${halyk.soap.currency}")
     String currency;
@@ -266,15 +265,16 @@ public class HalykSoapService {
     public String getPaymentOrderResult(BigDecimal amount, String cardholderName, String cvc, String desc,
                                         String month, String orderId, String pan, String year) {
         try {
-            HalykOrder paymentOrder = generateHalykOrder(amount, cardholderName, desc, orderId, 1);
+            HalykOrder paymentOrder = generateHalykOrder(amount, cardholderName, desc, orderId, 1,
+                    HalykOrderDictionary.PAYMENT_ORDER, merchantIdEpay);
             year = year.substring(2);
 
             EpayServiceStub.PaymentOrderResponse paymentOrderResponse = sendPaymentOrderRequest(
-                    amount.toString(), currency, cvc, merchantid, month, year, orderId, pan, "1");
+                    amount.toString(), currency, cvc, merchantIdEpay, month, year, orderId, pan, "1");
 
             EpayServiceStub.Result result = paymentOrderResponse.get_return();
 
-            parsePaymentOrderResponse(paymentOrder, result);
+            parseHalykOrderResponse(paymentOrder, result);
             logger.info(gson.toJson(paymentOrder));
             logger.info("result.getReturnCode(): {}", result.getReturnCode());
 
@@ -286,7 +286,7 @@ public class HalykSoapService {
                 logger.info("Code 00, order: {}", gson.toJson(paymentOrder));
                 String reference = result.getReference();
                 EpayServiceStub.ControlOrderForCommerceResponse controlOrderForCommerceResponse = sendControlOrderForCommerceRequest(amount.toString(),
-                        currency, merchantid, orderId, reference, "22");
+                        currency, merchantIdEpay, orderId, reference, "22");
                 logger.info("controlOrderForCommerceResponse");
                 logger.info("Message: " + controlOrderForCommerceResponse.get_return().getMessage());
                 logger.info("Approval code: " + controlOrderForCommerceResponse.get_return().getApprovalcode());
@@ -295,12 +295,7 @@ public class HalykSoapService {
                 logger.info("PaReq: " + controlOrderForCommerceResponse.get_return().getPareq());
                 logger.info("Md: " + controlOrderForCommerceResponse.get_return().getMd());
                 logger.info("AcsUrl: " + controlOrderForCommerceResponse.get_return().getAcsUrl());
-
-//                if (p2p) {
-//                    p2pPaymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), SUCCESS);
-//                } else {
                 paymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), SUCCESS);
-//                }
             } else {
                 return check3ds(result, paymentOrder.getOrderid());
             }
@@ -312,7 +307,7 @@ public class HalykSoapService {
     }
 
     public CheckCardValidityResponse checkCardValidity(String ipAddress, String userAgent, CardDataResponseDto cardData) {
-        CheckCardValidityPayment payment = generateCardCheckPayment(ipAddress, userAgent, Long.parseLong(merchantid),
+        CheckCardValidityPayment payment = generateCardCheckPayment(ipAddress, userAgent, Long.parseLong(merchantIdEpay),
                 new BigDecimal(10));
         String orderId = payment.getOrderId();
         String pan = cardData.getCardNumber();
@@ -323,13 +318,14 @@ public class HalykSoapService {
         String amount = "10";
 
         HalykOrder halykOrder = generateHalykOrder(new BigDecimal(amount),
-                "", "Check card validity payment", payment.getOrderId(), 0);
+                "", "Check card validity payment", payment.getOrderId(), 0,
+                HalykOrderDictionary.PAYMENT_ORDER, merchantIdEpay);
 
         EpayServiceStub.PaymentOrderResponse paymentOrderResponse = sendPaymentOrderRequest(amount, currency,
-                cvv2, merchantid, month, year, orderId, pan, trType);
+                cvv2, merchantIdEpay, month, year, orderId, pan, trType);
 
         EpayServiceStub.Result result = paymentOrderResponse.get_return();
-        parsePaymentOrderResponse(halykOrder, result);
+        parseHalykOrderResponse(halykOrder, result);
 
         logger.info("paymentOrderResponse");
         logger.info("Message: " + result.getMessage());
@@ -341,13 +337,15 @@ public class HalykSoapService {
         logger.info("Md: " + result.getMd());
         logger.info("AcsUrl: " + result.getAcsUrl());
 
-        if ((result.getReturnCode() == null || result.getReturnCode().equals("null")) && result.getAcsUrl() != null && result.getPareq() != null) {
+        if ((result.getReturnCode() == null || result.getReturnCode().equals("null"))
+                && (result.getAcsUrl() != null && !result.getAcsUrl().equals("null"))
+                && (result.getPareq() != null && !result.getPareq().equals("null"))) {
             return new CheckCardValidityResponse(true, result.getReturnCode());
         }
         if (result.getReturnCode().equals("00")) {
             String reference = result.getReference();
             EpayServiceStub.ControlOrderForCommerceResponse controlOrderForCommerceResponse = sendControlOrderForCommerceRequest(amount,
-                    currency, merchantid, orderId, reference, "22");
+                    currency, merchantIdEpay, orderId, reference, "22");
             logger.info("controlOrderForCommerceResponse");
             logger.info("Message: " + controlOrderForCommerceResponse.get_return().getMessage());
             logger.info("Approval code: " + controlOrderForCommerceResponse.get_return().getApprovalcode());
@@ -370,8 +368,8 @@ public class HalykSoapService {
         Payment payment = p2pPaymentService.generateP2pPayment(ipAddress, userAgent, dto.getMerchantId(),
                 dto.getAcceptedSum(), dto.getCashBoxId(), toClient, currency, null);
 
-        HalykOrder transferOrder = generateHalykOrder(dto.getAcceptedSum(),
-                "", "p2p", payment.getPaySysPayId(), 8);
+        HalykOrder transferOrder = generateHalykOrder(dto.getAcceptedSum(), "", "p2p",
+                payment.getPaySysPayId(), 8, HalykOrderDictionary.TRANSFER_ORDER, merchantIdP2p);
 
         String orderId = payment.getPaySysPayId();
         String pan = payerCardData.getCardNumber();
@@ -381,7 +379,7 @@ public class HalykSoapService {
         String amount = dto.getAcceptedSum().toString().replace(".", ",");
 
         EpayServiceStub.TransferOrderResponse transferOrderResponse = sendTransferOrderRequest(amount, currency, cvv2,
-                merchantid, month, year, orderId, pan, paymentToPan);
+                merchantIdP2p, month, year, orderId, pan, paymentToPan);
 
         logger.info("transferOrderResponse");
         logger.info("Message: " + transferOrderResponse.get_return().getMessage());
@@ -395,7 +393,7 @@ public class HalykSoapService {
 
         EpayServiceStub.Result result = transferOrderResponse.get_return();
 
-        parseTransferOrderResponse(transferOrder, result);
+        parseHalykOrderResponse(transferOrder, result);
         logger.info(gson.toJson(transferOrder));
 
         if (transferOrderResponse.get_return().getReturnCode().equals("00")) {
@@ -526,7 +524,7 @@ public class HalykSoapService {
         transferOrder.setCurrency(currency);
         transferOrder.setCvc(cvv2);
         transferOrder.setDesc(" ");
-        transferOrder.setMerchantid(merchantid);
+        transferOrder.setMerchantid(merchantIdP2p);
         transferOrder.setMonth(month);
         transferOrder.setTrtype(trType);
         transferOrder.setOrderid(orderId);
@@ -555,7 +553,7 @@ public class HalykSoapService {
         return response;
     }
 
-    private EpayServiceStub.PaymentOrderAcsResponse sendPaymentOrderAcsRequest(String pares, String MD, String sessionId) {
+    private EpayServiceStub.PaymentOrderAcsResponse sendPaymentOrderAcsRequest(String pares, String MD, String sessionId, boolean isP2p) {
         EpayServiceStub stub = null;
         try {
             stub = new EpayServiceStub();
@@ -583,7 +581,7 @@ public class HalykSoapService {
         paymentOrderAcs.setOrder(order);
         EpayServiceStub.RequestSignature signature = new EpayServiceStub.RequestSignature();
         signature.setMerchantCertificate(merchantCertificate);
-        signature.setMerchantId(merchantid);
+        signature.setMerchantId(isP2p ? merchantIdP2p : merchantIdEpay);
         signature.setSignatureValue(signatureValue);
         paymentOrderAcs.setRequestSignature(signature);
         EpayServiceStub.PaymentOrderAcsResponse response = null;
@@ -619,28 +617,23 @@ public class HalykSoapService {
     }
 
     private String check3ds(EpayServiceStub.Result response, String orderId) {
-        if (response.getPareq() != null && response.getMd() != null) {
+        if (response.getPareq() != null && !response.getPareq().equals("null")
+                && response.getMd() != null && !response.getMd().equals("null")) {
             Map<String, String> param = new HashMap<>();
             param.put("acsUrl", response.getAcsUrl());
             param.put("MD", response.getMd());
             param.put("PaReq", response.getPareq());
             logger.info("Code 00, order: {}", gson.toJson(response));
-//            if (p2p) {
-//                p2pPaymentService.setStatusByPaySysPayId(orderId, PENDING);
-//            } else {
             paymentService.setStatusByPaySysPayId(orderId, PENDING);
-//            }
+            logger.info("param: {}", param);
             return gson.toJson(param);
         }
-//        if (p2p) {
-//            p2pPaymentService.setStatusByPaySysPayId(orderId, FAILED);
-//        } else {
         paymentService.setStatusByPaySysPayId(orderId, FAILED);
-//        }
         return "FAIL";
     }
 
-    private HalykOrder generateHalykOrder(BigDecimal amount, String cardholderName, String desc, String orderId, int trType) {
+    private HalykOrder generateHalykOrder(BigDecimal amount, String cardholderName, String desc, String orderId, int trType,
+                                          String requestType, String merchantId) {
         HalykOrder paymentOrder = new HalykOrder();
         paymentOrder.setTimestamp(System.currentTimeMillis());
         paymentOrder.setLocalDateTime(LocalDateTime.now());
@@ -648,135 +641,136 @@ public class HalykSoapService {
         paymentOrder.setCardholderName(cardholderName);
         paymentOrder.setCurrency(currency);
         paymentOrder.setDesc(desc);
-        paymentOrder.setMerchantid(merchantid);
+        paymentOrder.setMerchantid(merchantId);
+        paymentOrder.setRequestType(requestType);
         paymentOrder.setOrderid(orderId);
         paymentOrder.setTrtype(trType);
         return halykOrderRepository.save(paymentOrder);
     }
 
-    public String checkOrder(String orderid) {
-        try {
-            HalykCheckOrder checkOrder = new HalykCheckOrder();
-            checkOrder.setTimestamp(System.currentTimeMillis());
-            checkOrder.setLocalDateTime(LocalDateTime.now());
-            checkOrder.setMerchantid(merchantid);
-            checkOrder.setOrderid(orderid);
+//    public String checkOrder(String orderid) {
+//        try {
+//            HalykCheckOrder checkOrder = new HalykCheckOrder();
+//            checkOrder.setTimestamp(System.currentTimeMillis());
+//            checkOrder.setLocalDateTime(LocalDateTime.now());
+//            checkOrder.setMerchantid(merchantIdEpay);
+//            checkOrder.setOrderid(orderid);
+//
+//            halykCheckOrderRepository.save(checkOrder);
+//
+//            String signedXML = createCheckOrderXML(checkOrder);
+//            Map<String, String> vars = new HashMap<>();
+//            vars.put("signedXML", signedXML);
+//
+//            String response = restTemplate.postForObject(sendOrderActionLink + "/axis2/services/EpayService.EpayServiceHttpSoap12Endpoint/",
+//                    signedXML, String.class, java.util.Optional.ofNullable(null));
+//            logger.info("response: {}", response);
+//
+//            parseCheckOrderResponse(checkOrder, response);
+//            logger.info(gson.toJson(checkOrder));
+//            return checkOrder.getStatus();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 
-            halykCheckOrderRepository.save(checkOrder);
+//    private HalykCheckOrder parseCheckOrderResponse(HalykCheckOrder checkOrder, String response) {
+//        try {
+//            Document xmlDoc = DocumentHelper.createDocument();
+//
+//            xmlDoc = DocumentHelper.parseText(response);
+//            logger.info("Full Document {}", xmlDoc.asXML());
+//
+//            xmlDoc.getRootElement().addNamespace("ns", "http://ws.epay.kkb.kz/xsd");
+//            Element AcceptReversalDate = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/acceptReversalDate");
+//            if (!AcceptReversalDate.getText().equals("null"))
+//                checkOrder.setAcceptReversalDate(AcceptReversalDate.getText());
+//            Element Approvalcode = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/approvalcode");
+//            if (!Approvalcode.getText().equals("null")) checkOrder.setApprovalcode(Approvalcode.getText());
+//            Element Cardhash = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/cardhash");
+//            if (!Cardhash.getText().equals("null")) checkOrder.setCardhash(Cardhash.getText());
+//            Element Intreference = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/intreference");
+//            if (!Intreference.getText().equals("null")) checkOrder.setIntreference(Intreference.getText());
+//            Element Message = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/message");
+//            if (!Message.getText().equals("null")) checkOrder.setMessage(Message.getText());
+//            Element Orderal = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/orderal");
+//            if (!Orderal.getText().equals("null")) checkOrder.setOrderal(Orderal.getText());
+//            Element PaidAmount = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/paidAmount");
+//            if (!PaidAmount.getText().equals("null")) checkOrder.setPaidAmount(PaidAmount.getText());
+//            Element PaidCurrency = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/paidCurrency");
+//            if (!PaidCurrency.getText().equals("null")) checkOrder.setPaidCurrency(PaidCurrency.getText());
+//            Element Payerip = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/payerip");
+//            if (!Payerip.getText().equals("null")) checkOrder.setPayerip(Payerip.getText());
+//            Element Payermail = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/payermail");
+//            if (!Payermail.getText().equals("null")) checkOrder.setPayermail(Payermail.getText());
+//            Element Payername = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/payername");
+//            if (!Payername.getText().equals("null")) checkOrder.setPayername(Payername.getText());
+//            Element Payerphone = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/payerphone");
+//            if (!Payerphone.getText().equals("null")) checkOrder.setPayerphone(Payerphone.getText());
+//            Element Reference = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/reference");
+//            if (!Reference.getText().equals("null")) checkOrder.setReference(Reference.getText());
+//            Element RefundTotalAmount = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/refundTotalAmount");
+//            if (!RefundTotalAmount.getText().equals("null"))
+//                checkOrder.setRefundTotalAmount(RefundTotalAmount.getText());
+//            Element Resultcode = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/resultcode");
+//            if (!Resultcode.getText().equals("null")) checkOrder.setResultcode(Resultcode.getText());
+//            Element Secure = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/secure");
+//            if (!Secure.getText().equals("null")) checkOrder.setSecure(Secure.getText());
+//            Element SessionDate = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/sessionDate");
+//            if (!SessionDate.getText().equals("null")) checkOrder.setSessionDate(SessionDate.getText());
+//            Element SessionId = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/sessionId");
+//            if (!SessionId.getText().equals("null")) checkOrder.setSessionId(SessionId.getText());
+//            Element Status = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/status");
+//            if (!Status.getText().equals("null")) checkOrder.setStatus(Status.getText());
+//            Element TransactionDate = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/transactionDate");
+//            if (!TransactionDate.getText().equals("null")) checkOrder.setTransactionDate(TransactionDate.getText());
+//
+//            Element SignatureValue = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/responseSignature/signatureValue");
+//            String signatureValue = SignatureValue.getText() + "";
+//
+//            Element SignedString = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/responseSignature/signedString");
+//            String signedString = SignedString.getText() + "";
+//            logger.info("SignedString: {}", signedString);
+//            KKBSign kkbSign = new KKBSign();
+//            boolean signatureValid = kkbSign.verify(signedString, signatureValue, keystore, bankAlias, storepass); /// keypass???
+//            logger.info("Verify: {}", signatureValid);
+//            checkOrder.setSignatureValid(signatureValid);
+//
+//            halykCheckOrderRepository.save(checkOrder);
+//
+//            return checkOrder;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 
-            String signedXML = createCheckOrderXML(checkOrder);
-            Map<String, String> vars = new HashMap<>();
-            vars.put("signedXML", signedXML);
-
-            String response = restTemplate.postForObject(sendOrderActionLink + "/axis2/services/EpayService.EpayServiceHttpSoap12Endpoint/",
-                    signedXML, String.class, java.util.Optional.ofNullable(null));
-            logger.info("response: {}", response);
-
-            parseCheckOrderResponse(checkOrder, response);
-            logger.info(gson.toJson(checkOrder));
-            return checkOrder.getStatus();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private HalykCheckOrder parseCheckOrderResponse(HalykCheckOrder checkOrder, String response) {
-        try {
-            Document xmlDoc = DocumentHelper.createDocument();
-
-            xmlDoc = DocumentHelper.parseText(response);
-            logger.info("Full Document {}", xmlDoc.asXML());
-
-            xmlDoc.getRootElement().addNamespace("ns", "http://ws.epay.kkb.kz/xsd");
-            Element AcceptReversalDate = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/acceptReversalDate");
-            if (!AcceptReversalDate.getText().equals("null"))
-                checkOrder.setAcceptReversalDate(AcceptReversalDate.getText());
-            Element Approvalcode = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/approvalcode");
-            if (!Approvalcode.getText().equals("null")) checkOrder.setApprovalcode(Approvalcode.getText());
-            Element Cardhash = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/cardhash");
-            if (!Cardhash.getText().equals("null")) checkOrder.setCardhash(Cardhash.getText());
-            Element Intreference = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/intreference");
-            if (!Intreference.getText().equals("null")) checkOrder.setIntreference(Intreference.getText());
-            Element Message = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/message");
-            if (!Message.getText().equals("null")) checkOrder.setMessage(Message.getText());
-            Element Orderal = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/orderal");
-            if (!Orderal.getText().equals("null")) checkOrder.setOrderal(Orderal.getText());
-            Element PaidAmount = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/paidAmount");
-            if (!PaidAmount.getText().equals("null")) checkOrder.setPaidAmount(PaidAmount.getText());
-            Element PaidCurrency = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/paidCurrency");
-            if (!PaidCurrency.getText().equals("null")) checkOrder.setPaidCurrency(PaidCurrency.getText());
-            Element Payerip = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/payerip");
-            if (!Payerip.getText().equals("null")) checkOrder.setPayerip(Payerip.getText());
-            Element Payermail = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/payermail");
-            if (!Payermail.getText().equals("null")) checkOrder.setPayermail(Payermail.getText());
-            Element Payername = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/payername");
-            if (!Payername.getText().equals("null")) checkOrder.setPayername(Payername.getText());
-            Element Payerphone = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/payerphone");
-            if (!Payerphone.getText().equals("null")) checkOrder.setPayerphone(Payerphone.getText());
-            Element Reference = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/reference");
-            if (!Reference.getText().equals("null")) checkOrder.setReference(Reference.getText());
-            Element RefundTotalAmount = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/refundTotalAmount");
-            if (!RefundTotalAmount.getText().equals("null"))
-                checkOrder.setRefundTotalAmount(RefundTotalAmount.getText());
-            Element Resultcode = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/resultcode");
-            if (!Resultcode.getText().equals("null")) checkOrder.setResultcode(Resultcode.getText());
-            Element Secure = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/secure");
-            if (!Secure.getText().equals("null")) checkOrder.setSecure(Secure.getText());
-            Element SessionDate = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/sessionDate");
-            if (!SessionDate.getText().equals("null")) checkOrder.setSessionDate(SessionDate.getText());
-            Element SessionId = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/sessionId");
-            if (!SessionId.getText().equals("null")) checkOrder.setSessionId(SessionId.getText());
-            Element Status = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/status");
-            if (!Status.getText().equals("null")) checkOrder.setStatus(Status.getText());
-            Element TransactionDate = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/transactionDate");
-            if (!TransactionDate.getText().equals("null")) checkOrder.setTransactionDate(TransactionDate.getText());
-
-            Element SignatureValue = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/responseSignature/signatureValue");
-            String signatureValue = SignatureValue.getText() + "";
-
-            Element SignedString = (Element) xmlDoc.getRootElement().selectSingleNode("//soapenv:Envelope/soapenv:Body/ns:checkOrderResponse/return/responseSignature/signedString");
-            String signedString = SignedString.getText() + "";
-            logger.info("SignedString: {}", signedString);
-            KKBSign kkbSign = new KKBSign();
-            boolean signatureValid = kkbSign.verify(signedString, signatureValue, keystore, bankAlias, storepass); /// keypass???
-            logger.info("Verify: {}", signatureValid);
-            checkOrder.setSignatureValid(signatureValid);
-
-            halykCheckOrderRepository.save(checkOrder);
-
-            return checkOrder;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private String createCheckOrderXML(HalykCheckOrder checkOrder) {
-
-        String concatString = checkOrder.getMerchantid() + checkOrder.getOrderid();
-        KKBSign kkbSign = new KKBSign();
-        String signatureValue = kkbSign.sign64(concatString, keystore, clientAlias, keypass, storepass);
-        String xml = String.format("<soapenv:Envelope xmlns:soapenv=\"http://www.w3.org/2003/05/soap-envelope\">" +
-                        "<soapenv:Body>" +
-                        "<ns4:checkOrder xmlns:ns4=\"http://ws.epay.kkb.kz/xsd\">" +
-                        "<order>" +
-                        "<merchantid>%s</merchantid>" +
-                        "<orderid>%s</orderid>" +
-                        "</order>" +
-                        "<requestSignature>" +
-                        "<merchantCertificate>%s</merchantCertificate>" +
-                        "<merchantId>%s</merchantId>" +
-                        "<signatureValue>%s</signatureValue>" +
-                        "</requestSignature>" +
-                        "</ns4:checkOrder>" +
-                        "</soapenv:Body>" +
-                        "</soapenv:Envelope>",
-                checkOrder.getMerchantid(), checkOrder.getOrderid(),
-                merchantCertificate, merchantid, signatureValue);
-        return xml;
-
-    }
+//    private String createCheckOrderXML(HalykCheckOrder checkOrder) {
+//
+//        String concatString = checkOrder.getMerchantid() + checkOrder.getOrderid();
+//        KKBSign kkbSign = new KKBSign();
+//        String signatureValue = kkbSign.sign64(concatString, keystore, clientAlias, keypass, storepass);
+//        String xml = String.format("<soapenv:Envelope xmlns:soapenv=\"http://www.w3.org/2003/05/soap-envelope\">" +
+//                        "<soapenv:Body>" +
+//                        "<ns4:checkOrder xmlns:ns4=\"http://ws.epay.kkb.kz/xsd\">" +
+//                        "<order>" +
+//                        "<merchantid>%s</merchantid>" +
+//                        "<orderid>%s</orderid>" +
+//                        "</order>" +
+//                        "<requestSignature>" +
+//                        "<merchantCertificate>%s</merchantCertificate>" +
+//                        "<merchantId>%s</merchantId>" +
+//                        "<signatureValue>%s</signatureValue>" +
+//                        "</requestSignature>" +
+//                        "</ns4:checkOrder>" +
+//                        "</soapenv:Body>" +
+//                        "</soapenv:Envelope>",
+//                checkOrder.getMerchantid(), checkOrder.getOrderid(),
+//                merchantCertificate, merchantIdEpay, signatureValue);
+//        return xml;
+//
+//    }
 
 //    private HalykPaymentOrder parsePaymentOrderResponse(HalykPaymentOrder paymentOrder, String response) {
 //        try {
@@ -829,7 +823,7 @@ public class HalykSoapService {
 //
 //    }
 
-    private HalykOrder parsePaymentOrderResponse(HalykOrder paymentOrder, EpayServiceStub.Result response) {
+    private void parseHalykOrderResponse(HalykOrder paymentOrder, EpayServiceStub.Result response) {
         try {
             paymentOrder.setAcsUrl(response.getAcsUrl());
             paymentOrder.setApprovalcode(response.getApprovalcode());
@@ -854,47 +848,18 @@ public class HalykSoapService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return paymentOrder;
     }
 
-    private HalykOrder parseTransferOrderResponse(HalykOrder transferOrder, EpayServiceStub.Result response) {
-        try {
-            transferOrder.setAcsUrl(response.getAcsUrl());
-            transferOrder.setApprovalcode(response.getApprovalcode());
-            transferOrder.setIntreference(response.getIntreference());
-            transferOrder.setIs3ds(response.getIs3Ds());
-            transferOrder.setMd(response.getMd());
-            transferOrder.setMessage(response.getMessage());
-            transferOrder.setPareq(response.getPareq());
-            transferOrder.setReference(response.getReference());
-            transferOrder.setReturnCode(response.getReturnCode());
-            transferOrder.setSessionid(response.getSessionid());
-            transferOrder.setTermUrl(response.getTermUrl());
-
-            String signatureValue = response.getResponseSignature().getSignatureValue();
-            String signedString = response.getResponseSignature().getSignedString();
-            logger.info("SignedString: {}", signedString);
-            KKBSign kkbSign = new KKBSign();
-            boolean signatureValid = kkbSign.verify(signedString, signatureValue, keystore, bankAlias, storepass); /// keypass???
-            logger.info("Verify: {}", signatureValid);
-            transferOrder.setSignatureValid(signatureValid);
-            halykOrderRepository.save(transferOrder);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return transferOrder;
-    }
-
-    public Payment paymentOrderAcs(String md, String pares, String sessionid) {
+    public Payment paymentOrderAcs(String md, String pares, String sessionId, boolean isP2p) {
         try {
             HalykPaymentOrderAcs paymentOrderAcs = new HalykPaymentOrderAcs();
             paymentOrderAcs.setTimestamp(System.currentTimeMillis());
             paymentOrderAcs.setLocalDateTime(LocalDateTime.now());
             paymentOrderAcs.setMd(md);
             paymentOrderAcs.setPares(pares);
-            paymentOrderAcs.setSessionid(sessionid);
+            paymentOrderAcs.setSessionid(sessionId);
 
-            HalykOrder paymentOrder = getPaymentOrderBySession(sessionid);
+            HalykOrder paymentOrder = getPaymentOrderBySession(sessionId);
 
             paymentOrderAcs.setOrderid(paymentOrder.getOrderid());
             paymentOrderAcs.setPareq(paymentOrder.getPareq());
@@ -902,17 +867,14 @@ public class HalykSoapService {
 
             halykPaymentOrderAcsRepository.save(paymentOrderAcs);
 
-            EpayServiceStub.PaymentOrderAcsResponse paymentOrderAcsResponse = sendPaymentOrderAcsRequest(pares, md, sessionid);
+            EpayServiceStub.PaymentOrderAcsResponse paymentOrderAcsResponse = sendPaymentOrderAcsRequest(pares, md, sessionId,
+                    isP2p);
             parsePaymentOrderAcsResponse(paymentOrderAcs, paymentOrderAcsResponse.get_return());
 
             logger.info(gson.toJson(paymentOrderAcs));
             if (paymentOrderAcs.getReturnCode() != null && paymentOrderAcs.getReturnCode().equals("00")) {
                 logger.info("Return code: {}", paymentOrderAcs.getReturnCode());
-//                if (p2p) {
-//                    return p2pPaymentService.setStatusByPaySysPayId(paymentOrderAcs.getOrderid(), SUCCESS);
-//                } else {
                 return paymentService.setStatusByPaySysPayId(paymentOrderAcs.getOrderid(), SUCCESS);
-//                }
             }
             return null;
 
@@ -979,7 +941,7 @@ public class HalykSoapService {
 //        return paymentOrderAcs;
 //    }
 
-    private HalykPaymentOrderAcs parsePaymentOrderAcsResponse(HalykPaymentOrderAcs paymentOrderAcs, EpayServiceStub.Result response) {
+    private void parsePaymentOrderAcsResponse(HalykPaymentOrderAcs paymentOrderAcs, EpayServiceStub.Result response) {
         try {
             paymentOrderAcs.setAcsUrl(response.getAcsUrl());
             paymentOrderAcs.setApprovalcode(response.getApprovalcode());
@@ -1003,7 +965,6 @@ public class HalykSoapService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return paymentOrderAcs;
     }
 
 //    private String createPaymentOrderAcsXML(HalykPaymentOrderAcs paymentOrderAcs) {
@@ -1069,18 +1030,13 @@ public class HalykSoapService {
         return paymentOrder.getSessionid();
     }
 
-    public Cashbox getCashboxByMD(String md) {
-        HalykOrder paymentOrder = halykOrderRepository.findTopByMd(md);
-        Cashbox cashbox = paymentService.getCashboxByOrderId(paymentOrder.getOrderid());
-        return cashbox;
-    }
+//    public Cashbox getCashboxByMD(String md) {
+//        HalykOrder paymentOrder = halykOrderRepository.findTopByMd(md);
+//        return paymentService.getCashboxByOrderId(paymentOrder.getOrderid());
+//    }
 
     public Payment getPaymentByMd(String md) {
         HalykOrder paymentOrder = halykOrderRepository.findTopByMd(md);
-        Payment payment = paymentService.getPaymentByOrderId(paymentOrder.getOrderid());
-        if (Objects.nonNull(payment)) {
-            return payment;
-        }
         return paymentService.findByPaySysPayId(paymentOrder.getOrderid());
     }
 

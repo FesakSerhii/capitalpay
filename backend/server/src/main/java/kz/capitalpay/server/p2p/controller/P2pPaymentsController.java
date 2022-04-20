@@ -23,6 +23,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.Objects;
 
 import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.REDIRECT_FAILED_URL;
 import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.REDIRECT_SUCCESS_URL;
@@ -136,14 +137,18 @@ public class P2pPaymentsController {
         LOGGER.info("MD: {}", MD);
         LOGGER.info("TermUrl: {}", TermUrl);
 
-        String sessionid = halykSoapService.getSessionByMD(MD);
+        String sessionId = halykSoapService.getSessionByMD(MD);
         Payment payment = halykSoapService.getPaymentByMd(MD);
 
-        LOGGER.info(sessionid);
+        Map<String, String> resultUrls = cashboxSettingsService.getMerchantResultUrls(payment.getCashboxId());
+        LOGGER.info(sessionId);
         LOGGER.info(gson.toJson(payment));
 
-        payment = halykSoapService.paymentOrderAcs(MD, PaRes, sessionid);
-        Map<String, String> resultUrls = cashboxSettingsService.getMerchantResultUrls(payment.getCashboxId());
+        payment = halykSoapService.paymentOrderAcs(MD, PaRes, sessionId, payment.isP2p());
+        if (Objects.isNull(payment)) {
+            return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
+        }
+
         return payment.getStatus().equals(SimpleService.SUCCESS)
                 ? new RedirectView(resultUrls.get(REDIRECT_SUCCESS_URL))
                 : new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
