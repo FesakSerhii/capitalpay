@@ -1,7 +1,6 @@
 package kz.capitalpay.server.paysystems.systems.halyksoap.service;
 
 import com.google.gson.Gson;
-import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.constants.HalykOrderDictionary;
 import kz.capitalpay.server.p2p.dto.SendP2pToClientDto;
 import kz.capitalpay.server.p2p.service.P2pPaymentService;
@@ -554,7 +553,7 @@ public class HalykSoapService {
         return response;
     }
 
-    private EpayServiceStub.PaymentOrderAcsResponse sendPaymentOrderAcsRequest(String pares, String MD, String sessionId, boolean isTransferOrder) {
+    private EpayServiceStub.PaymentOrderAcsResponse sendPaymentOrderAcsRequest(String pares, String MD, String sessionId, boolean isP2p) {
         EpayServiceStub stub = null;
         try {
             stub = new EpayServiceStub();
@@ -582,7 +581,7 @@ public class HalykSoapService {
         paymentOrderAcs.setOrder(order);
         EpayServiceStub.RequestSignature signature = new EpayServiceStub.RequestSignature();
         signature.setMerchantCertificate(merchantCertificate);
-        signature.setMerchantId(isTransferOrder ? merchantIdP2p : merchantIdEpay);
+        signature.setMerchantId(isP2p ? merchantIdP2p : merchantIdEpay);
         signature.setSignatureValue(signatureValue);
         paymentOrderAcs.setRequestSignature(signature);
         EpayServiceStub.PaymentOrderAcsResponse response = null;
@@ -851,7 +850,7 @@ public class HalykSoapService {
         }
     }
 
-    public Payment paymentOrderAcs(String md, String pares, String sessionId, String requestType) {
+    public Payment paymentOrderAcs(String md, String pares, String sessionId, boolean isP2p) {
         try {
             HalykPaymentOrderAcs paymentOrderAcs = new HalykPaymentOrderAcs();
             paymentOrderAcs.setTimestamp(System.currentTimeMillis());
@@ -869,7 +868,7 @@ public class HalykSoapService {
             halykPaymentOrderAcsRepository.save(paymentOrderAcs);
 
             EpayServiceStub.PaymentOrderAcsResponse paymentOrderAcsResponse = sendPaymentOrderAcsRequest(pares, md, sessionId,
-                    requestType.equals(HalykOrderDictionary.TRANSFER_ORDER));
+                    isP2p);
             parsePaymentOrderAcsResponse(paymentOrderAcs, paymentOrderAcsResponse.get_return());
 
             logger.info(gson.toJson(paymentOrderAcs));
@@ -1031,14 +1030,10 @@ public class HalykSoapService {
         return paymentOrder.getSessionid();
     }
 
-    public HalykOrder getHalykOrderByMd(String md) {
-        return halykOrderRepository.findTopByMd(md);
-    }
-
-    public Cashbox getCashboxByMD(String md) {
-        HalykOrder paymentOrder = halykOrderRepository.findTopByMd(md);
-        return paymentService.getCashboxByOrderId(paymentOrder.getOrderid());
-    }
+//    public Cashbox getCashboxByMD(String md) {
+//        HalykOrder paymentOrder = halykOrderRepository.findTopByMd(md);
+//        return paymentService.getCashboxByOrderId(paymentOrder.getOrderid());
+//    }
 
     public Payment getPaymentByMd(String md) {
         HalykOrder paymentOrder = halykOrderRepository.findTopByMd(md);
