@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.nio.file.LinkOption;
 import java.rmi.RemoteException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -377,6 +378,16 @@ public class HalykSoapService {
         String month = payerCardData.getExpireMonth();
         String cvv2 = payerCardData.getCvv2Code();
         String amount = dto.getAcceptedSum().toString().replace(".", ",");
+
+        logger.info("amount {}", amount);
+        logger.info("currency {}", currency);
+        logger.info("cvv2 {}", cvv2);
+        logger.info("merchantIdP2p {}", merchantIdP2p);
+        logger.info("month {}", month);
+        logger.info("year {}", year);
+        logger.info("orderId {}", orderId);
+        logger.info("pan {}", pan);
+        logger.info("paymentToPan {}", paymentToPan);
 
         EpayServiceStub.TransferOrderResponse transferOrderResponse = sendTransferOrderRequest(amount, currency, cvv2,
                 merchantIdP2p, month, year, orderId, pan, paymentToPan);
