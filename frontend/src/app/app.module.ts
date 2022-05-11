@@ -19,6 +19,7 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { FeedbackComponent } from './feedback/feedback.component';
 import { JwtModule } from "@auth0/angular-jwt";
 import { httpInterceptorProviders } from './http-interceptors';
+import {SlickCarouselModule} from 'ngx-slick-carousel';
 
 export function tokenGetter() {
   return sessionStorage.getItem("token");
@@ -43,6 +44,7 @@ const maskConfigFunction: () => Partial<IConfig> = () => {
     BrowserModule,
     AppRoutingModule,
     NgbModule,
+    SlickCarouselModule,
     HttpClientModule,
     CommonBlocksModule,
     IvyCarouselModule,

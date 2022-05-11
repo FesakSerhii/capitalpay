@@ -75,27 +75,29 @@ export class SupportComponent implements OnInit {
   }
 
   send() {
+    let promises = []
     if (this.chosenFile) {
-      let promises = []
       for (let file of this.chosenFile) {
         promises.push(this.fileService.sendFile(file))
       }
-      Promise.all(promises).then(resp => {
-        resp.map(el => {
-          console.log(el);
-          this.fileList.push(el.data.id)
-        })
+    }
+    Promise.all(promises).then(resp => {
+      resp.map(el => {
+        console.log(el);
+        this.fileList.push(el.data.id)
       })
-    }
-    let request = {
-      'fileList': this.fileList
-    }
-    Object.assign(request, this.questionForm.value)
-    this.supportService.sendSupportRequest(request).then(resp => {
-      this.massageModal.open();
-      this.chosenFile = [];
-      this.questionForm.reset();
+      let request = {
+        'fileList': this.fileList
+      }
+      Object.assign(request, this.questionForm.value)
+      this.supportService.sendSupportRequest(request).then(resp => {
+        this.massageModal.open();
+        this.chosenFile = [];
+        this.fileList = [];
+        this.questionForm.reset();
+      })
     })
+
   }
 
   sendFiles() {
@@ -106,7 +108,6 @@ export class SupportComponent implements OnInit {
     if (files.length > 0) {
       this.chosenFile.push(files[0]);
     }
-    console.log(this.chosenFile);
   }
 
   deleteFile(index) {

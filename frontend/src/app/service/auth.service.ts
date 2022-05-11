@@ -15,7 +15,7 @@ export class AuthService {
   ) { }
 
   login(username: string, password: string, sms: string = null) {
-    return this.apiService.log('/login', { username, password, sms }).toPromise();
+    return this.apiService.log('login','/login', { username, password, sms }).toPromise();
   }
 
   logout() {
@@ -23,7 +23,7 @@ export class AuthService {
   }
 
   checkSessions() {
-    return this.apiService.post('/userlist/numbersSession').toPromise();
+    return this.apiService.post('api','/userlist/numbersSession').toPromise();
   }
 
   checkToken() {

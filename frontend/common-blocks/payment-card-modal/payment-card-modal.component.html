@@ -4,37 +4,43 @@
       <div class="card-icon">
         <i class="material-icons-outlined">credit_card</i>
       </div>
-      <h4 class="card-title ">Добаление карты</h4>
-      <button type="button" class="close position-absolute" style="top: 10px;right: 0" data-dismiss="modal" aria-label="Close" (click)="modalService.dismissAll(false)">
+      <h4 class="card-title ">Добавление карты</h4>
+      <button type="button" class="close position-absolute" style="top: 10px;right: 0" data-dismiss="modal" aria-label="Close" (click)="close()">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
     <div class="card-body">
-      <ng-container *ngIf="!isAddNew">
-        <app-custom-select [values]="cardListTitles" [formControl]="selectedCard"></app-custom-select>
+      <div class="d-flex justify-content-around" *ngIf="!isAddNew">
+        <app-custom-select classes="w450px" [values]="cardListTitles" [formControl]="selectedCard"></app-custom-select>
         <button class="btn btn-success btn-round" (click)="isAddNew=true">Добавить новую</button>
-      </ng-container>
+      </div>
       <form [formGroup]="cardForm" *ngIf="isAddNew">
         <div class="form-group has-default bmd-form-group d-flex">
           <label class="col-form-label w160">Card number  *</label>
-          <input type="text" class="form-control w500" placeholder="card number" formControlName="cardNumber">
+          <input type="text" class="form-control w500"
+                 placeholder="card number" formControlName="cardNumber" mask="0000 0000 0000 0000">
+          <span class="error" *ngIf="cardForm.controls.cardNumber.invalid">card invalid</span>
         </div>
         <div class="form-group has-default bmd-form-group d-flex">
           <label class="col-form-label w160">Expiration Date *</label>
+          <span class="error" style="left: 59px;bottom: -11px;"
+                *ngIf="expInvalid">invalid exp date</span>
           <app-custom-select classes="mr-5" placeholder="month" formControlName="expirationMonth"
-                             [values]="['01','02','03','04','05','06','07','08','09','10','11','12']"></app-custom-select>
+                             [values]="['01','02','03','04','05','06','07','08','09','10','11','12']" (click)="dateInvalid()"></app-custom-select>
           <app-custom-select placeholder="year"  formControlName="expirationYear"
+                             (click)="dateInvalid()"
                              [values]="[2021,2022,2023,2024,2025,2026]"></app-custom-select>
         </div>
         <div class="form-group has-default bmd-form-group d-flex">
           <label class="col-form-label w160">CVV*</label>
-          <input type="tex" class="form-control w500" formControlName="cvv2Code" placeholder="cvv">
+          <input type="tex" class="form-control w500" formControlName="cvv2Code" placeholder="cvv" minlength="3" maxlength="3">
+          <span class="error" *ngIf="cardForm.controls.cvv2Code.invalid">invalid cvv length</span>
         </div>
       </form>
     </div>
     <div class="card-footer d-flex justify-content-end">
-      <button class="btn btn-default btn-round" (click)="modalService.dismissAll(false)">Отменить</button>
-      <button class="btn btn-success btn-round" (click)="sendResult()">Сохранить</button>
+      <button class="btn btn-default btn-round" (click)="close()">Отменить</button>
+      <button class="btn btn-success btn-round" [disabled]="cardForm.invalid" [class.disabled]="cardForm.invalid" (click)="sendResult()">Сохранить</button>
     </div>
   </div>
 </ng-template>

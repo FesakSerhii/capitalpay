@@ -1,9 +1,8 @@
 <div class="header">
-  <div class="container-fluid" style="width: 1111px; height: 50px;margin:0 auto; margin-top: 16px;
-    margin-bottom: 17px; display:flex;justify-content: space-between;align-items: center;">
+  <div class="container-fluid header-menu">
     <a href="#">
-      <img src="../../../assets/shapes/Logo_header.svg" alt="logo" *ngIf="theme==='white'">
-      <img src="../../../assets/shapes/logo_footer.svg" alt="logo" *ngIf="theme!=='white'">
+      <img src="../../../assets/shapes/Logo_header.svg" alt="logo" *ngIf="width>1000&&theme==='white'">
+      <img src="../../../assets/shapes/logo_footer.svg" alt="logo" *ngIf="width<1000||theme!=='white'">
     </a>
     <div>
       <a href="#" class="header-link ml-0" [class.white]="theme!=='white'" >Get started</a>
@@ -14,13 +13,26 @@
     </div>
     <div>
       <a href="#" class="header-link ml-0" [class.white]="theme!=='white'" (click)="$event.preventDefault();open(loginModal)">Login</a>
-      <a style="margin-left: 20px;padding: 11px 17px; background: #177960; color: white;border-radius: 20px"
+      <a class="sign-up--button"
          *ngIf="theme==='white'"
          (click)="$event.preventDefault();open(registerModal)">Sign up</a>
-      <a style="margin-left: 20px;padding: 11px 17px; background: white; color: #177960;border-radius: 20px"
+      <a class="sign-up--button"
          *ngIf="theme!=='white'"
          (click)="$event.preventDefault();open(registerModal)">Sign up</a>
       <a href="#" class="header-link" [class.white]="theme!=='white'">EN</a>
+    </div>
+    <div class="position-relative hamburger" (click)="isDropdownOpen=!isDropdownOpen">
+      <svg xmlns="http://www.w3.org/2000/svg" *ngIf="theme=='white'" fill="white" width="24" height="24" viewBox="0 0 24 24"><path d="M13 6h-13v-4h13v4zm0 4h-13v4h13v-4zm0 8h-13v4h13v-4zm3-8l4 5.075 4-5.075h-8z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" *ngIf="theme!=='white'" fill="black" width="24" height="24" viewBox="0 0 24 24"><path d="M13 6h-13v-4h13v4zm0 4h-13v4h13v-4zm0 8h-13v4h13v-4zm3-8l4 5.075 4-5.075h-8z"/></svg>
+    </div>
+    <div class="dropdown" *ngIf="isDropdownOpen">
+      <a href="#" class="dropdown-link"  (click)="isDropdownOpen=false;">Get started</a>
+      <a href="#" class="dropdown-link"  (click)="isDropdownOpen=false;">Modules</a>
+      <a href="#" class="dropdown-link"  (click)="isDropdownOpen=false;">Pricing</a>
+      <a href="#" class="dropdown-link"  (click)="isDropdownOpen=false;">API</a>
+      <a class="dropdown-link" [routerLink]="'/feedback'" (click)="isDropdownOpen=false;">Contact</a>
+      <a href="#" class="dropdown-link" (click)="$event.preventDefault();open(loginModal);isDropdownOpen=false">Login</a>
+      <a href="#" class="dropdown-link" (click)="$event.preventDefault();open(registerModal);isDropdownOpen=false">Sign up</a>
     </div>
   </div>
 </div>

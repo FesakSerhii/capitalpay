@@ -49,7 +49,7 @@
 <!--                    <input type="text" class="form-control">-->
 <!--                  </div>-->
 <!--                </div>-->
-              
+
 <!--                <div class="d-flex">-->
 <!--                  <label class="col-form-label">Статус</label>-->
 <!--                  <div class="form-group has-default bmd-form-group">-->
@@ -121,7 +121,7 @@
               </div>
               <div class="row">
                 <div class="col-sm-12">
-                  <ng-scrollbar class="calc400" [visibility]="'always'">
+                  <ng-scrollbar class="transactions-scroll" [visibility]="'always'">
                     <table class="table table-striped table-no-bordered table-hover dataTable dtr-inline" cellspacing="0" width="100%" style="width: 100%;" role="grid" aria-describedby="datatables_info">
                       <thead>
                       <tr role="row">
@@ -151,7 +151,8 @@
                         <td>{{user.username}}</td>
                         <td>{{user.email}}</td>
                         <td>{{user.realname}}</td>
-                        <td>{{user.roles}}</td>
+<!--                        <td>{{user.roles}}</td>-->
+                        <td>{{converseUserList(user.roles)}}</td>
                         <td>{{statuses[user.status]}}</td>
                       </tr>
                       </tbody>

@@ -33,8 +33,8 @@
             <td><a href="/client-payments/<%= card.card_id %>"><%= card.card_id %></a></td>
             <td><%= card.param %></td>
             <td>
-                <button class="pay" data-card-id="<%= card.card_id %>">Pay <b>to</b> client card</button>
-                <button class="pay-client" data-card-id="<%= card.card_id %>">Pay <b>from</b> client card</button>
+                <button class="pay" data-card-id="<%= card.card_id %>" data-card-token="<%= card.card_token %>">Pay <b>to</b> client card</button>
+                <button class="pay-client" data-card-id="<%= card.card_id %>"  data-card-token="<%= card.card_token %>">Pay <b>from</b> client card</button>
             </td>
         </tr>
     <% }) %>
@@ -72,16 +72,16 @@
                 // в поле action формы должно быть то что скажет сергей
 
                 // отправить форму на сервер
-                axios.get('/signature').then(function (response) {
+                axios.post('/signature', {sum, cardId: b.dataset.cardId}).then(function (response) {
                     const form = document.createElement("form");
                     form.method = "POST";
-                    form.action = "https://card.capitalpay.kz/api/v1/payments/pay-to-client";
+                    form.action = "https://api.capitalpay.kz/api/v1/p2p/send-p2p-to-client";
                     form.style.display = "none";
                     form.innerHTML = `
                         <input type="hidden" name="merchantId" value="663">
                         <input type="hidden" name="cashBoxId" value="13978">
-                        <input type="hidden" name="cardId" value="${b.dataset.cardId}">
-                        <input type="hidden" name="sum" value="${sum}">
+                        <input type="hidden" name="clientCardToken" value="${b.dataset.cardToken}">
+                        <input type="hidden" name="acceptedSum" value="${parseFloat(sum).toFixed(2)}">
                         <input type="hidden" name="signature" value="${response.data.signature}">
                     `;
                     document.body.appendChild(form);
@@ -100,16 +100,16 @@
         document.querySelectorAll(".pay-client").forEach((b) => {
             b.addEventListener("click", function () {
                 const sum = prompt("Input sum");
-                axios.get('/signature').then(function (response) {
+                axios.post('/signature', {sum, cardId: b.dataset.cardId}).then(function (response) {
                     const form = document.createElement("form");
                     form.method = "POST";
-                    form.action = "https://card.capitalpay.kz/api/v1/payments/pay-to-merchant";
+                    form.action = "https://api.capitalpay.kz/api/v1/p2p/send-p2p-to-merchant";
                     form.style.display = "none";
                     form.innerHTML = `
                         <input type="hidden" name="merchantId" value="663">
                         <input type="hidden" name="cashBoxId" value="13978">
-                        <input type="hidden" name="cardId" value="${b.dataset.cardId}">
-                        <input type="hidden" name="sum" value="${sum}">
+                        <input type="hidden" name="clientCardToken" value="${b.dataset.cardToken}">
+                        <input type="hidden" name="acceptedSum" value="${parseFloat(sum).toFixed(2)}">
                         <input type="hidden" name="signature" value="${response.data.signature}">
                     `;
                     document.body.appendChild(form);

@@ -1,8 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import {FormControl, FormGroup} from '@angular/forms';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {UserCardService} from '../service/user-card.service';
 import {ActivatedRoute} from '@angular/router';
-const valid = require("card-validator");
+import {validateCard} from '../../../../../common-blocks/validators/paymentCardNumberValidator';
+import {expirationDateValidator} from '../../../../../common-blocks/validators/dateCompareValidator';
+import {filter} from 'rxjs/operators';
+import {BankErrorCodesService} from '../service/bank-error-codes.service';
+import {RedirectService} from '../service/redirect.service';
 
 @Component({
   selector: 'app-payment-form',
@@ -10,52 +14,87 @@ const valid = require("card-validator");
   styleUrls: ['./payment-form.component.scss']
 })
 export class PaymentFormComponent implements OnInit {
+
+  @Output() cardDataEvent = new EventEmitter();
+  @Output() cancelEvent = new EventEmitter();
+  @Input() validityErrorCode: string = null;
+  @Input() validityError: boolean = false;
+  @Input() queryParamEnable: boolean = true;
+  @Input() p2pEnabled: boolean = true;
+  @Input() redirect: boolean = false;
+
   cardForm = new FormGroup({
-    // cardHolderName: new FormControl(),
-    cardNumber: new FormControl(),
+    cardNumber: new FormControl('', [validateCard()]),
+    cardHolderName: new FormControl(),
     expirationMonth: new FormControl(),
     expirationYear: new FormControl(),
-    cvv2Code: new FormControl(),
+    phone: new FormControl(),
+    email: new FormControl(),
+    cvv2Code: new FormControl('',[Validators.min(100),Validators.max(999)]),
   });
   token: string = null;
   id: number = null;
   merchantId: number = null;
   cashBoxId: number = null;
-  isCardValid: boolean = null;
+  cashBoxInfo: any = null;
+  limitedInterval: any = null;
+  // isCardValid: boolean = false;
+  expInvalid: boolean = false;
+
+  // validityError: boolean = false;
+  // validityErrorCode: boolean = false;
+  redirectTimer: number = 5;
+  // parameters: string = null;
+  acceptTerms = new FormControl();
 
 
-  constructor(private userCardService:UserCardService,private activatedRoute: ActivatedRoute) { }
+  constructor(private userCardService: UserCardService,
+              private activatedRoute: ActivatedRoute,
+              public bankErrorCodesService:BankErrorCodesService,
+              private redirectService: RedirectService) {
+  }
 
   ngOnInit(): void {
-    this.activatedRoute.queryParamMap.subscribe((param) => {
-      this.merchantId = +param.get("merchantId");
-      this.cashBoxId = +param.get("cashBoxId");
+    this.cardHolderNameEnabled()
+    let dateFields = {
+      expirationMonth: 'expirationYear',
+    };
+    for (let v in dateFields) {
+      this.cardForm.get(v).setValidators([Validators.required, expirationDateValidator(this.cardForm, dateFields[v])]);
+      this.cardForm.get(dateFields[v]).setValidators([Validators.required, expirationDateValidator(this.cardForm, v, true)]);
+    }
+    this.redirectService.redirectTimerEvent.subscribe(value => {
+      console.log(value);
+      this.redirectTimer = value;
+      if(value<5) this.redirect=true;
     })
-    this.cardForm.controls.cardNumber.valueChanges.subscribe(cardNumber=>{
-      const isCardValid = valid.number(cardNumber)
-      console.log(isCardValid);
-      if(!isCardValid.isPotentiallyValid){
-        this.cardForm.controls.cardNumber.setErrors({'invalid card number': true},{emitEvent:false})
-      }
-    })
-    // this.cardForm.controls.expirationMonth.valueChanges.subscribe(expirationMonth=>{
-    //   console.log(expirationMonth);
-    //   const isCardValid = valid.expirationMonth('03/24')
-    //   console.log(isCardValid);
-    //   if(!isCardValid.isPotentiallyValid){
-    //     this.cardForm.controls.expirationMonth.setErrors({'invalid expirationMonth': true},{emitEvent:false})
-    //   }
-    // })
   }
-  saveCard(){
-    this.userCardService.registerCard(this.cardForm.value.cardNumber,this.cardForm.value.expirationYear,this.cardForm.value.expirationMonth,this.cardForm.value.cvv2Code,this.merchantId,this.cashBoxId)
-      .then(resp=>{
-        this.token = resp.data.token;
-        this.id = resp.data.id;
-        this.userCardService.cardCheckValidity(this.id).then(response=>{
-          this.isCardValid = response.result
-        })
-      }
-    )
+
+
+  saveCard() {
+    console.log('start interval in payment-form:',new Date());
+    this.cardDataEvent.emit(this.cardForm.value)
+  }
+  cancel() {
+    this.cancelEvent.emit(null)
+  }
+
+  dateInvalid() {
+    this.expInvalid = false;
+    if (this.cardForm.get('expirationMonth').value !== null && this.cardForm.get('expirationYear').value !== null) {
+      setTimeout(() => {
+        if (this.cardForm.get('expirationMonth').invalid || this.cardForm.get('expirationYear').invalid) {
+          this.expInvalid = true;
+          this.cardForm.get('expirationMonth').reset();
+          this.cardForm.get('expirationYear').reset();
+        }
+      }, 200);
+    }
+  }
+  getErrMassage(){
+    return this.bankErrorCodesService.getErrMassage(this.validityErrorCode)
+  }
+  cardHolderNameEnabled(){
+   return window.location.pathname==='/payment'
   }
 }
