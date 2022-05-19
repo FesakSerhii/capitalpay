@@ -40,6 +40,7 @@ public class ErrorDictionary {
     public static final ResultDTO error134 = new ResultDTO(false, "P2p is not allowed!", 134);
     public static final ResultDTO error135 = new ResultDTO(false, "Bank error", 135);
     public static final ResultDTO error136 = new ResultDTO(false, "Card already exists!", 136);
+    public static final ResultDTO error137 = new ResultDTO(false, "File is empty!", 137);
 
 
 }

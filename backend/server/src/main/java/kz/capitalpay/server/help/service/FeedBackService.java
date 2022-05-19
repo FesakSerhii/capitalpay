@@ -36,9 +36,7 @@ public class FeedBackService {
                     request.getText());
 
             logger.info(text);
-
             sendEmailService.sendMail(email, "CapitalPay: feedback", text);
-
             return new ResultDTO(true, "Mail sent", 0);
         } catch (Exception e) {
             e.printStackTrace();

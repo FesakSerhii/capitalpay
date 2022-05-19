@@ -1,5 +1,6 @@
 package kz.capitalpay.server.files.service;
 
+import kz.capitalpay.server.constants.ErrorDictionary;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.files.model.FileStorage;
 import kz.capitalpay.server.files.repository.FileStorageRepository;
@@ -24,6 +25,7 @@ import java.security.MessageDigest;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -43,6 +45,9 @@ public class FileStorageService {
     public ResultDTO uploadFile(MultipartFile multipartFile, Principal principal) {
         try {
             ApplicationUser user = applicationUserService.getUserByLogin(principal.getName());
+            if (Objects.isNull(multipartFile)) {
+                return ErrorDictionary.error137;
+            }
 
             String originalFilename = StringUtils.cleanPath(multipartFile.getOriginalFilename());
             String contentType = multipartFile.getContentType();

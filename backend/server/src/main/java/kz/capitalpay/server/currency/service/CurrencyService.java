@@ -6,7 +6,6 @@ import kz.capitalpay.server.currency.dto.EditCurrencyDTO;
 import kz.capitalpay.server.currency.model.SystemCurrency;
 import kz.capitalpay.server.currency.repository.CurrencyRepository;
 import kz.capitalpay.server.dto.ResultDTO;
-import kz.capitalpay.server.eventlog.model.OperatorsAction;
 import kz.capitalpay.server.eventlog.service.SystemEventsLogsService;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.service.ApplicationUserService;
@@ -52,7 +51,7 @@ public class CurrencyService {
 
     public List<SystemCurrency> currencyList() {
         List<SystemCurrency> currencyList = currencyRepository.findAll();
-        if (currencyList == null || currencyList.size() == 0) {
+        if (currencyList.isEmpty()) {
             SystemCurrency currency = new SystemCurrency();
             currency.setAlpha("USD");
             currency.setName("US Dollar");
@@ -78,12 +77,9 @@ public class CurrencyService {
                 currency.setUnicode(request.getUnicode());
             }
             currency.setEnabled(request.getEnabled());
-
             ApplicationUser operator = applicationUserService.getUserByLogin(principal.getName());
-
             systemEventsLogsService.addNewOperatorAction(operator.getUsername(), EDIT_ONE_CURRENCY,
                     gson.toJson(request), "all");
-
             currencyRepository.save(currency);
             return new ResultDTO(true, currency, 0);
         } catch (Exception e) {
@@ -101,17 +97,11 @@ public class CurrencyService {
                 currency = new SystemCurrency();
             }
             currency.setAlpha(request.getAlpha());
-
             currency.setName(request.getName());
-
             currency.setNumber(request.getNumber());
-
             currency.setUnicode(request.getUnicode());
-
             currency.setEnabled(request.getEnabled());
-
             ApplicationUser operator = applicationUserService.getUserByLogin(principal.getName());
-
             systemEventsLogsService.addNewOperatorAction(operator.getUsername(), ADD_CURRENCY,
                     gson.toJson(request), "all");
 
@@ -125,7 +115,7 @@ public class CurrencyService {
 
     public boolean checkEnable(String alpha) {
         SystemCurrency currency = currencyRepository.findByAlpha(alpha);
-        if(currency==null){
+        if (currency == null) {
             return false;
         }
         return currency.isEnabled();

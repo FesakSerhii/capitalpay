@@ -63,7 +63,6 @@ public class ApplicationUserService {
     public void signUp(ApplicationUser applicationUser) {
         if (!existsUser(applicationUser)) {
             applicationUser.setPassword(bCryptPasswordEncoder.encode(applicationUser.getPassword()));
-
             Set<ApplicationRole> roles = new HashSet<>();
             if (applicationRoleService.isEmpty()) {
                 logger.info("Add admin");
@@ -82,10 +81,7 @@ public class ApplicationUserService {
 
     private boolean existsUser(ApplicationUser applicationUser) {
         ApplicationUser user = applicationUserRepository.findByUsername(applicationUser.getUsername());
-        if (user != null && user.getUsername().equals(applicationUser.getUsername())) {
-            return true;
-        }
-        return false;
+        return user != null && user.getUsername().equals(applicationUser.getUsername());
     }
 
     public ResultDTO createNewUser(String username, String passwordHash) {
@@ -96,7 +92,6 @@ public class ApplicationUserService {
         ApplicationUser applicationUser = new ApplicationUser();
         applicationUser.setUsername(username);
         applicationUser.setPassword(passwordHash);
-
 
         Set<ApplicationRole> roles = new HashSet<>();
         if (applicationRoleService.isEmpty()) {
@@ -111,7 +106,6 @@ public class ApplicationUserService {
     }
 
     public ResultDTO setNewPassword(String userLogin, String oldPassword, String newPassword) {
-
         ApplicationUser user = applicationUserRepository.findByUsername(userLogin);
         if (bCryptPasswordEncoder.matches(oldPassword, user.getPassword())) {
             user.setPassword(bCryptPasswordEncoder.encode(newPassword));
@@ -141,7 +135,6 @@ public class ApplicationUserService {
 
     public void checkTwoFactorSms(ApplicationUserDTO cred) {
         ApplicationUser applicationUser = applicationUserRepository.findByUsername(cred.getUsername());
-
         twoFactorService.checkCode(applicationUser.getId(), cred.getSms());
     }
 
@@ -172,8 +165,7 @@ public class ApplicationUserService {
     }
 
     public ApplicationUser getUserById(Long userId) {
-        ApplicationUser applicationUser = applicationUserRepository.findById(userId).orElse(null);
-        return applicationUser;
+        return applicationUserRepository.findById(userId).orElse(null);
     }
 
     public ApplicationUser getUserByLogin(String name) {

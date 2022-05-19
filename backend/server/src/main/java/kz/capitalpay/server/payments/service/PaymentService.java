@@ -70,11 +70,9 @@ public class PaymentService {
     }
 
     public ResultDTO newPayment(Payment payment) {
-
         paymentRepository.save(payment);
         paymentLogService.newEvent(payment.getGuid(), payment.getIpAddress(), CREATE_NEW_PAYMENT,
                 gson.toJson(payment));
-
         return new ResultDTO(true, payment, 0);
     }
 
@@ -119,7 +117,6 @@ public class PaymentService {
             } else {
                 detailsJson = signDetail(payment);
             }
-
             Map<String, Object> requestJson = new HashMap<>();
             requestJson.put("type", "paymentStatus");
             requestJson.put("data", detailsJson);
@@ -133,9 +130,7 @@ public class PaymentService {
 
     public Cashbox getCashboxByOrderId(String orderid) {
         Payment payment = paymentRepository.findTopByPaySysPayId(orderid);
-        Cashbox cashbox = cashboxService.findById(payment.getCashboxId());
-        return cashbox;
-
+        return cashboxService.findById(payment.getCashboxId());
     }
 
     public Payment findByPaySysPayId(String paySysPayId) {
@@ -188,16 +183,12 @@ public class PaymentService {
             } else {
                 paymentList = paymentRepository.findByMerchantId(applicationUser.getId());
             }
-
             paymentList.sort((o1, o2) -> o2.getTimestamp().compareTo(o1.getTimestamp()));
-
             return new ResultDTO(true, paymentList, 0);
-
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }
-
     }
 
     public ResultDTO onePayment(Principal principal, OnePaymentDetailsRequestDTO request) {
@@ -206,14 +197,12 @@ public class PaymentService {
             if (applicationUser == null) {
                 return error106;
             }
-
             Payment payment = paymentRepository.findByGuid(request.getGuid());
             if (payment == null) {
                 logger.error("GUID: {}", request.getGuid());
                 logger.error("Payment: {}", payment);
                 return error118;
             }
-
             if (!applicationUser.getRoles().contains(applicationRoleService.getRole(OPERATOR))
                     && !applicationUser.getRoles().contains(applicationRoleService.getRole(ADMIN))) {
                 if (!payment.getMerchantId().equals(applicationUser.getId())) {
@@ -222,9 +211,7 @@ public class PaymentService {
                     return error110;
                 }
             }
-
             return new ResultDTO(true, payment, 0);
-
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
@@ -245,7 +232,6 @@ public class PaymentService {
             result.put(payment.getCurrency(), amount);
         }
         logger.info("result " + result.toString());
-
         return result.entrySet().stream()
                 .map(o -> new CashboxBalanceDTO(o.getKey(), o.getValue()))
                 .collect(Collectors.toList());

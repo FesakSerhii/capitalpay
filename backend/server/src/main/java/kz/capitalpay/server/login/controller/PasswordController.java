@@ -3,7 +3,6 @@ package kz.capitalpay.server.login.controller;
 import com.google.gson.Gson;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.login.dto.NewPasswordRequestDTO;
-import kz.capitalpay.server.login.dto.SignUpEmailRequestDTO;
 import kz.capitalpay.server.login.service.PasswordService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +46,6 @@ public class PasswordController {
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-        return new ResultDTO(false, errors,-2);
+        return new ResultDTO(false, errors, -2);
     }
 }

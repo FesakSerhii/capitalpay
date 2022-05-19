@@ -101,11 +101,8 @@ public class CashboxService {
                 return error110;
             }
             cashbox.setName(request.getName());
-
             cashboxRepository.save(cashbox);
-
             return new ResultDTO(true, cashbox, 0);
-
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
@@ -123,12 +120,9 @@ public class CashboxService {
                 return error110;
             }
             cashbox.setDeleted(true);
-
             cashboxRepository.save(cashbox);
             List<Cashbox> cashboxList = cashboxRepository.findByMerchantIdAndDeletedFalse(owner.getId());
-
             return new ResultDTO(true, cashboxList, 0);
-
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
@@ -136,14 +130,10 @@ public class CashboxService {
     }
 
     public ResultDTO list(Principal principal, MerchantRequestDTO request) {
-
         try {
             ApplicationUser owner = applicationUserService.getUserByLogin(principal.getName());
-
             List<Cashbox> cashboxList = cashboxRepository.findByMerchantIdAndDeletedFalse(owner.getId());
-
             return new ResultDTO(true, cashboxList, 0);
-
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
@@ -162,7 +152,6 @@ public class CashboxService {
         if (!cashbox.isUseDefaultCard()) {
             return cashboxRepository.findCardById(cashBoxId);
         }
-
         MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(cashbox.getMerchantId());
         if (Objects.isNull(merchantP2pSettings)) {
             return 0L;
@@ -202,7 +191,6 @@ public class CashboxService {
     }
 
     public String getRedirectForPayment(Payment payment) {
-
         Cashbox cashbox = cashboxRepository.findById(payment.getCashboxId()).orElse(null);
         if (cashbox == null) {
             logger.error("Cashbox: {}", cashbox);
@@ -215,7 +203,6 @@ public class CashboxService {
         if (payment.getParam() != null && payment.getParam().length() > 0) {
             location = location + "&param=" + URLEncoder.encode(payment.getParam(), Charset.defaultCharset());
         }
-
         return location;
     }
 
@@ -230,16 +217,12 @@ public class CashboxService {
 
     public ResultDTO all() {
         try {
-
             List<Cashbox> cashboxList = cashboxRepository.findByDeleted(false);
-
             return new ResultDTO(true, addBalance(cashboxList), 0);
-
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }
-
     }
 
     public ResultDTO setCashBoxCard(SetCashBoxCardDto dto) {
@@ -251,7 +234,6 @@ public class CashboxService {
         if (!cashbox.getMerchantId().equals(dto.getMerchantId())) {
             return ErrorDictionary.error122;
         }
-
         UserCard userCard = userCardRepository.findById(dto.getCardId()).orElse(null);
         if (Objects.isNull(userCard)) {
             return ErrorDictionary.error130;
@@ -345,13 +327,11 @@ public class CashboxService {
     }
 
     private CashboxDTO addBalance(Cashbox cashbox) {
-
         CashboxDTO cashboxDTO = new CashboxDTO();
         cashboxDTO.setId(cashbox.getId());
         cashboxDTO.setName(cashbox.getName());
         cashboxDTO.setMerchantId(cashbox.getMerchantId());
         cashboxDTO.setDeleted(cashbox.isDeleted());
-
         cashboxDTO.setBalance(paymentService.getBalance(cashbox.getId()));
         return cashboxDTO;
     }

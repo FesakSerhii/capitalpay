@@ -84,45 +84,33 @@ public class UserListService {
 //            }
 
             ApplicationUser admin = applicationUserRepository.findByUsername(principal.getName());
-
             systemEventsLogsService.addNewOperatorAction(principal.getName(),
                     CHANGE_ROLE, gson.toJson(request), applicationUser.getId().toString());
 
             if (admin.getRoles().contains(applicationRoleService.getRole(ADMIN))) {
                 logger.info("Admin!");
-
-
                 applicationUser.setRoles(roleListFromStringList(request.getRoleList()));
                 applicationUserRepository.save(applicationUser);
-
             } else if (admin.getRoles().contains(applicationRoleService.getRole(OPERATOR))) {
                 logger.info("Operator!");
-
 //                if (request.getRoleList().contains(OPERATOR) || request.getRoleList().contains(ADMIN)) {
 //                    return error107;
 //                }
-
                 Set<ApplicationRole> newRoles = roleListFromStringList(request.getRoleList());
-
                 Set<ApplicationRole> needToRemove = applicationUser.getRoles();
                 needToRemove.removeAll(newRoles);
-
 //                if (needToRemove.contains(applicationRoleService.getRole(OPERATOR)) ||
 //                        needToRemove.contains(applicationRoleService.getRole(ADMIN))) {
 //                    return error107;
 //                }
-
                 applicationUser.setRoles(newRoles);
                 applicationUserRepository.save(applicationUser);
             }
-
-
             return new ResultDTO(true, request.getRoleList(), 0);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }
-
     }
 
     private Set<ApplicationRole> roleListFromStringList(List<String> roleList) {
@@ -134,7 +122,6 @@ public class UserListService {
     }
 
     public ResultDTO roleList(Principal principal) {
-
         ApplicationUser admin = applicationUserRepository.findByUsername(principal.getName());
         if (admin == null) {
             logger.error(gson.toJson(principal));
@@ -144,17 +131,13 @@ public class UserListService {
         Set<ApplicationRole> applicationRoles = new HashSet<>();
         if (admin.getRoles() == null) {
             logger.error("Admin role list: {}", admin.getRoles());
-
         } else {
             if (admin.getRoles().contains(applicationRoleService.getRole(ADMIN))) {
-
                 applicationRoles.add(applicationRoleService.getRole(USER));
                 applicationRoles.add(applicationRoleService.getRole(MERCHANT));
                 applicationRoles.add(applicationRoleService.getRole(OPERATOR));
                 applicationRoles.add(applicationRoleService.getRole(ADMIN));
-
             } else if (admin.getRoles().contains(applicationRoleService.getRole(OPERATOR))) {
-
                 applicationRoles.add(applicationRoleService.getRole(USER));
                 applicationRoles.add(applicationRoleService.getRole(MERCHANT));
                 applicationRoles.add(applicationRoleService.getRole(OPERATOR));
@@ -189,7 +172,6 @@ public class UserListService {
             request.setPassword(null);
             systemEventsLogsService.addNewOperatorAction(principal.getName(),
                     CREATE_USER, gson.toJson(request), applicationUser.getId().toString());
-
             return new ResultDTO(true, resultUser, 0);
         } catch (Exception e) {
             e.printStackTrace();
@@ -216,11 +198,8 @@ public class UserListService {
             if (applicationUser == null) {
                 return error106;
             }
-
             ApplicationUser admin = applicationUserRepository.findByUsername(principal.getName());
-
             if (!admin.getRoles().contains(applicationRoleService.getRole(ADMIN))) {
-
                 Set<ApplicationRole> roleSet = applicationUser.getRoles();
                 if (roleSet.contains(applicationRoleService.getRole(OPERATOR)) ||
                         roleSet.contains(applicationRoleService.getRole(OPERATOR))) {
@@ -250,11 +229,8 @@ public class UserListService {
             if (applicationUser == null) {
                 return error106;
             }
-
             ApplicationUser admin = applicationUserRepository.findByUsername(principal.getName());
-
             if (!admin.getRoles().contains(applicationRoleService.getRole(ADMIN))) {
-
                 Set<ApplicationRole> roleSet = applicationUser.getRoles();
                 if (roleSet.contains(applicationRoleService.getRole(OPERATOR)) ||
                         roleSet.contains(applicationRoleService.getRole(OPERATOR))) {
@@ -266,11 +242,9 @@ public class UserListService {
             applicationUser.setUsername(request.getPhone());
             applicationUser.setActive(request.isActive());
             applicationUser.setBlocked(request.isBlocked());
-
             if (request.getRealname() != null) {
                 applicationUser.setRealname(request.getRealname());
             }
-
             if (request.getPassword() != null) {
                 applicationUser.setPassword(bCryptPasswordEncoder.encode(request.getPassword()));
             }
@@ -281,13 +255,11 @@ public class UserListService {
             request.setPassword(null);
             systemEventsLogsService.addNewOperatorAction(principal.getName(),
                     EDIT_USER, gson.toJson(request), applicationUser.getId().toString());
-
             return new ResultDTO(true, resultUser, 0);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }
-
     }
 
     public ResultDTO oneUser(Principal principal, OneUserDTO request) {
@@ -296,19 +268,14 @@ public class UserListService {
             if (applicationUser == null) {
                 return error106;
             }
-
             ApplicationUser resultUser = maskPassword(applicationUser);
-
             systemEventsLogsService.addNewOperatorAction(principal.getName(),
                     EDIT_USER, gson.toJson(request), applicationUser.getId().toString());
-
             return new ResultDTO(true, resultUser, 0);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }
-
-
     }
 
     public ResultDTO activateUser(Long id) {
@@ -316,7 +283,6 @@ public class UserListService {
         if (Objects.isNull(user)) {
             return error106;
         }
-
         user.setActive(true);
         user.setBlocked(false);
         applicationUserRepository.save(user);
@@ -328,7 +294,6 @@ public class UserListService {
         if (Objects.isNull(user)) {
             return error106;
         }
-
         user.setActive(false);
         user.setBlocked(true);
         applicationUserRepository.save(user);

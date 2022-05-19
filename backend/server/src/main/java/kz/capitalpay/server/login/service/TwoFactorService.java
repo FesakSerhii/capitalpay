@@ -37,16 +37,14 @@ public class TwoFactorService {
         return twoFactorAuth == null ? "" : twoFactorAuth.getSmscode();
     }
 
-    boolean setTwoFactor(Long userId) {
+    void setTwoFactor(Long userId) {
         TwoFactorAuth twoFactorAuth = new TwoFactorAuth();
         twoFactorAuth.setUserId(userId);
         twoFactorAuthRepository.save(twoFactorAuth);
-        return true;
     }
 
-    boolean removeTwoFactorAuth(Long userId) {
+    void removeTwoFactorAuth(Long userId) {
         twoFactorAuthRepository.deleteById(userId);
-        return true;
     }
 
 

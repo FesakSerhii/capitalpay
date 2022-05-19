@@ -73,12 +73,10 @@ public class SupportService {
             supportRequest.setTimestamp(System.currentTimeMillis());
             supportRequestRepository.save(supportRequest);
             return new ResultDTO(true, supportRequest.getId(), 0);
-
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }
-
     }
 
 
@@ -90,11 +88,10 @@ public class SupportService {
                     .collect(Collectors.toList());
 
             Collections.reverse(requestList);
-
-            if (requestList == null) requestList = new ArrayList<>();
-
+            if (requestList.isEmpty()) {
+                requestList = new ArrayList<>();
+            }
             return new ResultDTO(true, requestList, 0);
-
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
@@ -109,11 +106,10 @@ public class SupportService {
                     .collect(Collectors.toList());
 
             Collections.reverse(requestList);
-
-            if (requestList == null) requestList = new ArrayList<>();
-
+            if (requestList.isEmpty()) {
+                requestList = new ArrayList<>();
+            }
             return new ResultDTO(true, requestList, 0);
-
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
@@ -144,7 +140,6 @@ public class SupportService {
             if (supportRequest == null) {
                 return error109;
             }
-
             ApplicationUser applicationUser = applicationUserService.getUserById(supportRequest.getAuthorId());
             applicationUser.setPassword(null);
 
@@ -157,8 +152,6 @@ public class SupportService {
             responceDTO.setTheme(supportRequest.getTheme());
             responceDTO.setFileList(new ArrayList<>());
             if (supportRequest.getFileIdList() != null || supportRequest.getFileIdList().length() != 0) {
-
-
                 List<Double> doubleList = gson.fromJson(supportRequest.getFileIdList(), List.class);
                 logger.info(gson.toJson(doubleList));
                 List<Long> filesIdList = new ArrayList<>();
@@ -167,9 +160,7 @@ public class SupportService {
                         filesIdList.add(aDouble.longValue());
                     }
                 });
-
                 responceDTO.setFileList(fileStorageService.getFilListById(filesIdList));
-
             }
 
             List<SupportAnswer> supportAnswerList = supportAnswerRepository.findByRequestId(supportRequest.getId());
@@ -193,13 +184,9 @@ public class SupportService {
                     }
                     supportAnswerDTOS.add(supportAnswer);
                 }
-
-
                 responceDTO.setSupportAnswer(supportAnswerDTOS);
             }
-
             return new ResultDTO(true, responceDTO, 0);
-
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
@@ -213,9 +200,7 @@ public class SupportService {
             if (supportRequest == null) {
                 return error109;
             }
-
             ApplicationUser merchant = applicationUserService.getUserById(supportRequest.getAuthorId());
-
             if (request.getStatus() == 1) {
                 supportRequest.setStatus(PROCESSED);
             } else if (request.getStatus() == 2) {
@@ -223,14 +208,10 @@ public class SupportService {
             } else {
                 supportRequest.setStatus(NEW_SUPPORT_REQUEST);
             }
-
             supportRequest.setImportant(request.isImportant());
-
             systemEventsLogsService.addNewOperatorAction(operator.getUsername(), CHANGE_STATUS_SUPPORT_REQUEST,
                     gson.toJson(request), merchant.getId().toString());
-
             supportRequestRepository.save(supportRequest);
-
             return new ResultDTO(true, supportRequest, 0);
         } catch (Exception e) {
             e.printStackTrace();
@@ -247,7 +228,6 @@ public class SupportService {
             }
 
             ApplicationUser merchant = applicationUserService.getUserById(supportRequest.getAuthorId());
-
             SupportAnswer supportAnswer = new SupportAnswer();
             supportAnswer.setRequestId(supportRequest.getId());
             supportAnswer.setOperatorId(operator.getId());
@@ -266,15 +246,11 @@ public class SupportService {
 
             sendEmailService.sendMail(merchant.getEmail(), "CapitalPay: " + supportRequest.getSubject(),
                     sb.toString());
-
             systemEventsLogsService.addNewOperatorAction(operator.getUsername(), ANSWER_SUPPORT_REQUEST,
                     gson.toJson(request), merchant.getId().toString());
-
             supportRequest.setStatus(CLOSED);
             supportRequestRepository.save(supportRequest);
-
             return new ResultDTO(true, supportAnswer, 0);
-
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);

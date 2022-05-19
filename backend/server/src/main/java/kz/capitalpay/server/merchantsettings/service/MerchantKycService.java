@@ -61,16 +61,13 @@ public class MerchantKycService {
 
     public ResultDTO setKyc(Principal principal, MerchantKycDTO request) {
         try {
-
             ApplicationUser applicationUser = applicationUserService.getUserById(request.getMerchantId());
             if (applicationUser == null) {
                 return error106;
             }
-
             if (!applicationUser.getRoles().contains(applicationRoleService.getRole(MERCHANT))) {
                 return error108;
             }
-
             for (MerchantKycFieldDTO field : request.getFields()) {
                 if (field.getFieldName().equalsIgnoreCase(IINBIN)) {
                     ResultDTO resultCheck = binIinValidatorService.checkBinIin(field.getFieldValue());
@@ -80,14 +77,10 @@ public class MerchantKycService {
                 }
                 setField(applicationUser.getId(), field);
             }
-
             ApplicationUser admin = applicationUserService.getUserByLogin(principal.getName());
-
             systemEventsLogsService.addNewOperatorAction(admin.getUsername(), EDIT_MERCHANT_KYC,
                     gson.toJson(request), applicationUser.getId().toString());
-
             return new ResultDTO(true, request.getFields(), 0);
-
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
@@ -112,18 +105,15 @@ public class MerchantKycService {
             if (merchant == null) {
                 return error106;
             }
-
             ApplicationUser operator = applicationUserService.getUserByLogin(principal.getName());
             if (!operator.getRoles().contains(applicationRoleService.getRole(ADMIN)) &&
                     !operator.getRoles().contains(applicationRoleService.getRole(OPERATOR)) &&
                     !operator.getId().equals(merchant.getId())) {
                 return error110;
             }
-
             if (!merchant.getRoles().contains(applicationRoleService.getRole(MERCHANT))) {
                 return error108;
             }
-
             Map<String, String> result = new HashMap<>();
             result.put(IINBIN, getField(merchant.getId(), IINBIN));
             result.put(MNAME, getField(merchant.getId(), MNAME));
@@ -138,7 +128,6 @@ public class MerchantKycService {
             result.put(TOTAL_FEE, getField(merchant.getId(), TOTAL_FEE));
             logger.info(gson.toJson(result));
             return new ResultDTO(true, result, 0);
-
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);

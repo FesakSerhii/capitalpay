@@ -48,7 +48,6 @@ public class StaticPageService {
             if (staticPageList == null) {
                 staticPageList = new ArrayList<>();
             }
-
             return new ResultDTO(true, staticPageList, 0);
         } catch (Exception e) {
             e.printStackTrace();
@@ -60,9 +59,7 @@ public class StaticPageService {
         try {
             StaticPage staticPage = staticPageRepository.findTopByTagAndLanguage(request.getTag(), request.getLanguage());
             if (staticPage == null) {
-
                 ApplicationUser applicationUser = applicationUserService.getUserByLogin(principal.getName());
-
                 staticPage = new StaticPage();
                 staticPage.setTag(request.getTag());
                 staticPage.setLanguage(request.getLanguage());
@@ -70,7 +67,6 @@ public class StaticPageService {
                 staticPage.setTimestamp(System.currentTimeMillis());
                 staticPage.setName("");
                 staticPage.setContent("");
-
                 systemEventsLogsService.addNewOperatorAction(applicationUser.getUsername(), CREATE_STATIC_PAGE,
                         gson.toJson(request), "all");
                 staticPageRepository.save(staticPage);
@@ -96,10 +92,8 @@ public class StaticPageService {
             }
             staticPage.setContent(request.getContent());
             staticPage.setName(request.getName());
-
             systemEventsLogsService.addNewOperatorAction(applicationUser.getUsername(), EDIT_STATIC_PAGE,
                     gson.toJson(request), "all");
-
             staticPageRepository.save(staticPage);
             return new ResultDTO(true, staticPage, 0);
         } catch (Exception e) {
@@ -119,7 +113,6 @@ public class StaticPageService {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }
-
     }
 
     public ResultDTO delete(Principal principal, DeleteDTO request) {
@@ -131,14 +124,11 @@ public class StaticPageService {
             }
             systemEventsLogsService.addNewOperatorAction(applicationUser.getUsername(), DELETE_STATIC_PAGE,
                     gson.toJson(request), "all");
-
             staticPageRepository.deleteAll(staticPageList);
-
             return new ResultDTO(true, staticPageList, 0);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }
-
     }
 }
