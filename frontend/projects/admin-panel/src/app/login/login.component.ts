@@ -4,6 +4,7 @@ import { AuthService } from '../service/auth.service';
 import { Router } from '@angular/router';
 import { HttpResponse } from "@angular/common/http";
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import {CheckFormInvalidService} from "../../../../../src/app/service/check-form-invalid.service";
 
 @Component({
   selector: 'app-login',
@@ -14,6 +15,7 @@ export class LoginComponent implements OnInit {
 
   constructor(
     public authService: AuthService,
+    public checkFormInvalidService:CheckFormInvalidService,
     public modalService: NgbModal,
     private router: Router
   ) { }
@@ -52,5 +54,8 @@ export class LoginComponent implements OnInit {
       sessionStorage.setItem('token', resp.headers.get('Authorization').replace('Bearer', '').trim());
       this.router.navigate(['/admin-panel/dashboard']);
     })
+  }
+  isInvalid(form: FormGroup|FormControl,field: string='') {
+    return this.checkFormInvalidService.isInvalid(form,field);
   }
 }

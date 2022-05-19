@@ -10,6 +10,7 @@ import {Timestamp} from 'rxjs';
 import {dateCompareValidator} from '../../../../../../common-blocks/validators/dateCompareValidator';
 import {MassageModalComponent} from '../../../../../../common-blocks/massage-modal/massage-modal.component';
 import {HttpErrorResponse} from "@angular/common/http";
+import {CheckFormInvalidService} from "../../../../../../src/app/service/check-form-invalid.service";
 
 @Component({
   selector: 'app-user',
@@ -20,7 +21,7 @@ export class UserComponent implements OnInit {
   @ViewChild('addNewUser', {static: false}) addNewUserModal: TemplateRef<any>;
   @ViewChild('invalidDatesModalContent', {static: false}) invalidDatesModal: MassageModalComponent;
 
-  constructor(private userService: UserService, private modalService: NgbModal, private router: Router, private searchInputService: SearchInputService,) {
+  constructor(private userService: UserService, public checkFormInvalidService:CheckFormInvalidService, private modalService: NgbModal, private router: Router, private searchInputService: SearchInputService,) {
   }
 
   userList: any[] = [];
@@ -39,7 +40,7 @@ export class UserComponent implements OnInit {
   newUserForm = new FormGroup({
     phone: new FormControl("", Validators.required),
     password: new FormControl('', Validators.required),
-    email: new FormControl('', [Validators.email]),
+    email: new FormControl('', [Validators.email, Validators.required]),
     username: new FormControl(''),
     roleList: new FormArray([new FormControl(Validators.required)])
   });
@@ -274,5 +275,8 @@ export class UserComponent implements OnInit {
         }
       }, 200);
     }
+  }
+  isInvalid(form: FormGroup|FormControl,field: string='') {
+    return this.checkFormInvalidService.isInvalid(form,field);
   }
 }

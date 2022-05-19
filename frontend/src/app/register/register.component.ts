@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {FormControl, PatternValidator, Validators} from '@angular/forms';
+import {FormControl, FormGroup, PatternValidator, Validators} from '@angular/forms';
 import {RegisterService} from '../service/register.service';
 import {ActivatedRoute, Router} from '@angular/router';
+import {CheckFormInvalidService} from "../service/check-form-invalid.service";
 
 @Component({
   selector: 'app-register',
@@ -10,7 +11,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 })
 export class RegisterComponent implements OnInit {
 
-  constructor(public registerService: RegisterService,  public activatedRoute: ActivatedRoute, private router: Router) { }
+  constructor(public registerService: RegisterService, public checkFormInvalidService:CheckFormInvalidService, public activatedRoute: ActivatedRoute, private router: Router) { }
   phoneNumber = new FormControl('+45566678799');
   resendTimer: any = null;
   timerValue = 30;
@@ -86,5 +87,9 @@ export class RegisterComponent implements OnInit {
         this.startTimer();
       });
     }
+  }
+
+  isInvalid(form: FormGroup|FormControl,field: string='') {
+    return this.checkFormInvalidService.isInvalid(form,field);
   }
 }

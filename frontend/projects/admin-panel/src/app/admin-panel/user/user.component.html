@@ -199,17 +199,17 @@
         </ul>
         <div class="form-group has-default bmd-form-group">
 <!--          [class.error]="this.newUserForm.controls.phone.invalid"-->
-          <input type="tel" formControlName="phone"  class="form-control" placeholder="Телефон  *" prefix="+7" mask="(000) 000 00 00">
+          <input [class.error]="isInvalid(newUserForm,'phone')" type="tel" formControlName="phone"  class="form-control" placeholder="Телефон  *" prefix="+7" mask="(000) 000 00 00">
 <!--          ^[1-9]+\d*9-->
         </div>
         <div class="form-group has-default bmd-form-group">
-          <input type="email" formControlName="email" class="form-control" placeholder="Email  *">
+          <input [class.error]="isInvalid(newUserForm,'email')" type="email" formControlName="email" class="form-control" placeholder="Email  *">
         </div>
         <div class="form-group has-default bmd-form-group">
-          <input type="text" formControlName="password" class="form-control" placeholder="Пароль *">
+          <input [class.error]="isInvalid(newUserForm,'password')" type="text" formControlName="password" class="form-control" placeholder="Пароль *">
         </div>
         <div class="form-group has-default bmd-form-group">
-          <input type="text" [class.error]="!comparePasswords()"  class="form-control" [formControl]="confirmPassword" placeholder="Повторите пароль *">
+          <input type="text" [class.error]="!comparePasswords()||isInvalid(confirmPassword)"  class="form-control" [formControl]="confirmPassword" placeholder="Повторите пароль *">
         </div>
         <ng-container *ngFor="let role of newUserForm.controls.roleList['controls']; let i=index">
           <div class="d-flex align-items-center">

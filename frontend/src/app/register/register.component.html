@@ -10,7 +10,7 @@
       <form class="registration-form">
         <div class="form-field">
           <span class="input-title">Email*</span>
-          <input type="email" [formControl]="email">
+          <input [class.error]="isInvalid(email)"type="email" [formControl]="email">
         </div>
         <button class="section-btn" (click)="$event.preventDefault();sendEmail()">Submit email</button>
       </form>
@@ -31,7 +31,7 @@
       <form class="registration-form">
         <div class="form-field">
         <span class="input-title">Code from sms *</span>
-        <input type="text" [formControl]="confirmCodeForm">
+        <input [class.error]="isInvalid(confirmCodeForm)"type="text" [formControl]="confirmCodeForm">
         </div>
         <span class="resend-link" *ngIf="timerValue">Resend check code sms to my mobile  ({{timerValue}} sec)</span>
         <a class="resend-link__active" href="#" *ngIf="!timerValue">Resend check code sms to my mobile</a>
@@ -45,16 +45,16 @@
       <form class="registration-form">
         <div class="form-field">
           <span class="input-title">Phone number  *</span>
-          <input type="text" [formControl]="phoneNumber" readonly>
+          <input [class.error]="isInvalid(phoneNumber)" type="text" [formControl]="phoneNumber" readonly>
         </div>
        <div class="form-field">
          <span class="input-title">Password</span>
-         <input [formControl]="password" [type]="toggle['showPass']?'text':'password'">
+         <input [class.error]="isInvalid(password)" [formControl]="password" [type]="toggle['showPass']?'text':'password'">
          <img class="password-toggle" src="../../assets/shapes/eye.svg" alt="eye" (click)="toggle['showPass']=!toggle['showPass']">
        </div>
         <div class="form-field">
           <span class="input-title">Confirn password</span>
-          <input [formControl]="passwordConfirm" [type]="toggle['showConfirmPass']?'text':'password'">
+          <input [class.error]="isInvalid(passwordConfirm)"[formControl]="passwordConfirm" [type]="toggle['showConfirmPass']?'text':'password'">
           <img class="password-toggle" src="../../assets/shapes/eye.svg" alt="eye" (click)="toggle['showConfirmPass']=!toggle['showConfirmPass']">
         </div>
         <button class="section-btn" (click)="$event.preventDefault();sendPhoneAndPassword()">Register</button>
@@ -67,7 +67,7 @@
       <form class="registration-form">
         <div class="form-field">
           <span class="input-title">Mobile number*</span>
-          <input type="text" [formControl]="phoneNumber">
+          <input [class.error]="isInvalid(phoneNumber)"type="text" [formControl]="phoneNumber">
         </div>
         <button class="section-btn" (click)="sendCode()"> Send verification code</button>
       </form>

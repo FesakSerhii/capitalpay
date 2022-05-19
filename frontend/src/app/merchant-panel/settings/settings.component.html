@@ -74,43 +74,43 @@
             <form [formGroup]="cashBoxInfo">
               <div class="form-group has-default bmd-form-group d-flex">
                 <label class="col-form-label label-checkbox pt-0 col-2">Id мерчанта</label>
-                <input type="text" class="form-control" readonly formControlName="merchantId">
+                <input [class.error]="isInvalid(cashBoxInfo,'merchantId')" type="text" class="form-control" readonly formControlName="merchantId">
               </div>
               <div class="form-group has-default bmd-form-group d-flex">
                 <label class="col-form-label label-checkbox pt-0 col-2">Id кассы</label>
-                <input type="text" class="form-control" readonly formControlName="cashboxId">
+                <input [class.error]="isInvalid(cashBoxInfo,'cashboxId')" type="text" class="form-control" readonly formControlName="cashboxId">
               </div>
             </form>
             <form [formGroup]="casBoxSettingsForm">
               <div class="form-group has-default bmd-form-group d-flex">
                 <label class="col-form-label label-checkbox pt-0 col-2">Название кассы *</label>
-                <input type="text" class="form-control" formControlName="name">
+                <input [class.error]="isInvalid(cashBoxInfo,'name')" type="text" class="form-control" formControlName="name">
               </div>
             </form>
             <form [formGroup]="cashBoxInfo">
               <div class="form-group has-default bmd-form-group d-flex">
                 <label class="col-form-label label-checkbox pt-0 col-2">Ссылка для перехода в случае ошибки</label>
-                <input type="text" class="form-control" formControlName="redirectfailed">
+                <input [class.error]="isInvalid(cashBoxInfo,'redirectfailed')" type="text" class="form-control" formControlName="redirectfailed">
               </div>
               <div class="form-group has-default bmd-form-group d-flex">
                 <label class="col-form-label label-checkbox pt-0 col-2">Ссылка для перехода в случае успеха</label>
-                <input type="text" class="form-control" formControlName="redirectsuccess">
+                <input [class.error]="isInvalid(cashBoxInfo,'redirectsuccess')" type="text" class="form-control" formControlName="redirectsuccess">
               </div>
               <div class="form-group has-default bmd-form-group d-flex">
                 <label class="col-form-label label-checkbox pt-0 col-2">Ссылка для переадресации</label>
-                <input type="text" class="form-control" formControlName="redirecturl">
+                <input [class.error]="isInvalid(cashBoxInfo,'redirecturl')" type="text" class="form-control" formControlName="redirecturl">
               </div>
               <div class="form-group has-default bmd-form-group d-flex">
                 <label class="col-form-label label-checkbox pt-0 col-2">Ссылка для взаимодействия (interaction url)</label>
-                <input type="text" class="form-control" formControlName="interactionurl">
+                <input [class.error]="isInvalid(cashBoxInfo,'interactionurl')" type="text" class="form-control" formControlName="interactionurl">
               </div>
               <div class="form-group has-default bmd-form-group d-flex">
                 <label class="col-form-label label-checkbox pt-0 col-2">Ссылка pending</label>
-                <input type="text" class="form-control" formControlName="redirectpending">
+                <input [class.error]="isInvalid(cashBoxInfo,'redirectpending')" type="text" class="form-control" formControlName="redirectpending">
               </div>
               <div class="form-group has-default bmd-form-group d-flex">
                 <label class="col-form-label label-checkbox pt-0 col-2">Secret</label>
-                <input type="text" class="form-control" readonly formControlName="secret">
+                <input [class.error]="isInvalid(cashBoxInfo,'secret')" type="text" class="form-control" readonly formControlName="secret">
               </div>
             </form>
             <div class="d-flex">
@@ -118,7 +118,7 @@
               <form [formGroup]="currenciesForm">
                 <div class="togglebutton" *ngFor="let currency of currenciesList">
                   <label>
-                    <input type="checkbox" [formControlName]="currency.alpha">
+                    <input [class.error]="isInvalid(currenciesForm,currency.alpha)" type="checkbox" [formControlName]="currency.alpha">
                     <span class="toggle"></span>
                     {{currency.alpha}}
                   </label>
@@ -130,7 +130,7 @@
               <form [formGroup]="paymentMethodsForm" >
                 <div class="togglebutton" *ngFor="let paymentMethod of paymentMethods">
                   <label>
-                    <input type="checkbox" [formControlName]="paymentMethod.name">
+                    <input [class.error]="isInvalid(paymentMethodsForm,paymentMethod.name)" type="checkbox" [formControlName]="paymentMethod.name">
                     <span class="toggle"></span>
                     {{paymentMethod.name}}
                   </label>
@@ -160,59 +160,56 @@
             <form [formGroup]="merchantInfoForm">
               <div class="form-group has-default bmd-form-group d-flex">
                 <label class="col-form-label w160">Email</label>
-                <input type="email" class="form-control" placeholder="" formControlName="email" >
+                <input [class.error]="isInvalid(merchantInfoForm,'username')" type="email" class="form-control" placeholder="" formControlName="email" >
               </div>
               <div class="form-group has-default bmd-form-group d-flex">
                 <label class="col-form-label w160">Номер телефона</label>
-                <input type="phone" formControlName="username"
-                       [class.error]="merchantInfoForm.controls.username.invalid"
+                <input [class.error]="isInvalid(merchantInfoForm,'username')" type="phone" formControlName="username"
                        class="form-control" placeholder="Телефон  *" mask='+00000000000'>              </div>
               <div class="form-group has-default bmd-form-group d-flex">
                 <label class="col-form-label w160">ИИН/БИН</label>
-                <input type="text" class="form-control" placeholder="" formControlName="iinbin" >
+                <input [class.error]="isInvalid(merchantInfoForm,'iinbin')" type="text" class="form-control" placeholder="" formControlName="iinbin" >
               </div>
               <div class="form-group has-default bmd-form-group d-flex">
                 <label class="col-form-label w160">Наименование</label>
-                <input type="text" class="form-control" placeholder="" formControlName="mname" >
+                <input [class.error]="isInvalid(merchantInfoForm,'mname')" type="text" class="form-control" placeholder="" formControlName="mname" >
               </div>
               <div class="form-group has-default bmd-form-group d-flex">
                 <label class="col-form-label w160">Юридический адрес</label>
-                <input type="text" class="form-control" placeholder="" formControlName="uaddress" >
+                <input [class.error]="isInvalid(merchantInfoForm,'uaddress')" type="text" class="form-control" placeholder="" formControlName="uaddress" >
               </div>
               <div class="form-group has-default bmd-form-group d-flex">
                 <label class="col-form-label w160">Фактический адрес</label>
-                <input type="text" class="form-control" placeholder="" formControlName="faddress" >
+                <input [class.error]="isInvalid(merchantInfoForm,'faddress')" type="text" class="form-control" placeholder="" formControlName="faddress" >
               </div>
               <div class="form-group has-default bmd-form-group d-flex">
                 <label class="col-form-label w160">ФИО Руководитель</label>
-                <input type="text" class="form-control" placeholder="" formControlName="headname" >
+                <input [class.error]="isInvalid(merchantInfoForm,'headname')" type="text" class="form-control" placeholder="" formControlName="headname" >
               </div>
               <div class="form-group has-default bmd-form-group d-flex">
                 <label class="col-form-label w160">ФИО ГЛ. бухгалтер</label>
-                <input type="text" class="form-control" placeholder="" formControlName="accountant" >
+                <input [class.error]="isInvalid(merchantInfoForm,'accountant')" type="text" class="form-control" placeholder="" formControlName="accountant" >
               </div>
               <div class="form-group has-default bmd-form-group d-flex">
                 <label class="col-form-label w160">Основной номер телефона</label>
-                <input type="phone" formControlName="mainphone"
-                       [class.error]="merchantInfoForm.controls.mainphone.invalid"
-
+                <input [class.error]="isInvalid(merchantInfoForm,'mainphone')" type="phone" formControlName="mainphone"
                        class="form-control" placeholder="Основной номер телефона" mask='+00000000000'>
               </div>
               <div class="form-group has-default bmd-form-group d-flex">
                 <label class="col-form-label w160">Банк Клиента</label>
-                <input type="text" class="form-control" placeholder="" formControlName="bankname" >
+                <input [class.error]="isInvalid(merchantInfoForm,'bankname')" type="text" class="form-control" placeholder="" formControlName="bankname" >
               </div>
               <div class="form-group has-default bmd-form-group d-flex">
                 <label class="col-form-label w160">ИИК</label>
-                <input type="text" class="form-control" placeholder="" formControlName="iik" >
+                <input [class.error]="isInvalid(merchantInfoForm,'iik')" type="text" class="form-control" placeholder="" formControlName="iik" >
               </div>
               <div class="form-group has-default bmd-form-group d-flex">
                 <label class="col-form-label w160">БИК</label>
-                <input type="text" class="form-control" placeholder="" formControlName="bik" >
+                <input [class.error]="isInvalid(merchantInfoForm,'bik')" type="text" class="form-control" placeholder="" formControlName="bik" >
               </div>
               <div class="form-group has-default bmd-form-group d-flex">
                 <label class="col-form-label w160">Комиссия</label>
-                <input type="text" class="form-control" placeholder="" formControlName="commission" >
+                <input [class.error]="isInvalid(merchantInfoForm,'commission')" type="text" class="form-control" placeholder="" formControlName="commission" >
               </div>
             </form>
           </div>
@@ -238,7 +235,7 @@
                 <span>Отправим SMS код на ваш основной телефон, который был указан при регистрации, для входа в аккаунт.</span>
                 <div class="togglebutton">
                   <label>
-                    <input type="checkbox" [formControl]="isTwoFactor">
+                    <input [class.error]="isInvalid(isTwoFactor)" type="checkbox" [formControl]="isTwoFactor">
                     <span class="toggle"></span>
                     Активировано
                   </label>
@@ -266,7 +263,7 @@
     <div class="card-body">
       <form [formGroup]="cashBoxForm">
         <div class="form-group has-default bmd-form-group">
-          <input type="text" formControlName="name" class="form-control" placeholder="Название кассы *">
+          <input [class.error]="isInvalid(cashBoxForm,'name')" type="text" formControlName="name" class="form-control" placeholder="Название кассы *">
         </div>
         <div class="d-flex">
         <label class="col-form-label">Валюта</label>
@@ -294,15 +291,15 @@
       <form [formGroup]="passChangeForm">
         <div class="d-flex">
           <label class="col-form-label">Старый пароль</label>
-          <input type="password" class="form-control" formControlName="oldPassword">
+          <input [class.error]="isInvalid(passChangeForm,'oldPassword')" type="password" class="form-control" formControlName="oldPassword">
         </div>
         <div class="d-flex">
           <label class="col-form-label">Новый пароль</label>
-          <input type="password" class="form-control" formControlName="newPassword">
+          <input [class.error]="isInvalid(passChangeForm,'newPassword')" type="password" class="form-control" formControlName="newPassword">
         </div>
         <div class="d-flex">
           <label class="col-form-label">Повторите пароль</label>
-          <input type="password" class="form-control" formControlName="confirmPassword">
+          <input [class.error]="isInvalid(passChangeForm,'confirmPassword')" type="password" class="form-control" formControlName="confirmPassword">
         </div>
       </form>
       <div class="d-flex justify-content-end">

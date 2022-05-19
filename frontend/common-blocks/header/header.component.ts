@@ -4,6 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../src/app/service/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import {CheckFormInvalidService} from "../../src/app/service/check-form-invalid.service";
 
 @Component({
   selector: 'app-header',
@@ -18,6 +19,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     public modalService: NgbModal,
     public authService: AuthService,
     private router: Router,
+    public checkFormInvalidService:CheckFormInvalidService,
     private route: ActivatedRoute
   ) { }
   isDropdownOpen:boolean=false;
@@ -48,8 +50,8 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     isIpTrusted: new FormControl(false)
   });
   registerForm = new FormGroup({
-    username: new FormControl(),
-    email: new FormControl(),
+    username: new FormControl(undefined, Validators.required),
+    email: new FormControl(undefined, Validators.required),
     comment: new FormControl(),
   })
   toggle = {
@@ -88,5 +90,9 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
       this.modalService.dismissAll();
       this.router.navigate(['/merchant/transaction-log']);
     })
+  }
+
+  isInvalid(form: FormGroup|FormControl,field: string='') {
+    return this.checkFormInvalidService.isInvalid(form,field);
   }
 }

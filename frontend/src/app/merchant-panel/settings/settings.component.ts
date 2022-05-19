@@ -9,6 +9,7 @@ import {UserService} from '../../../../projects/admin-panel/src/app/service/user
 import {KycService} from '../../../../projects/admin-panel/src/app/service/kyc.service';
 import {ConfirmActionModalComponent} from '../../../../common-blocks/confirm-action-modal/confirm-action-modal.component';
 import {ActivatedRoute} from '@angular/router';
+import {CheckFormInvalidService} from "../../service/check-form-invalid.service";
 
 @Component({
   selector: 'app-settings',
@@ -26,6 +27,7 @@ export class SettingsComponent implements OnInit {
               private registerService: RegisterService,
               private userService: UserService,
               private kycService: KycService,
+              public checkFormInvalidService:CheckFormInvalidService,
               private activatedRoute: ActivatedRoute,
               private paymentsService: PaymentsService) {
   }
@@ -273,5 +275,9 @@ export class SettingsComponent implements OnInit {
     this.activeTab=tab;
     this.cashBoxEditOpened=false;
     this.selectedCashBoxId=null
+  }
+
+  isInvalid(form: FormGroup|FormControl,field: string='') {
+    return this.checkFormInvalidService.isInvalid(form,field);
   }
 }

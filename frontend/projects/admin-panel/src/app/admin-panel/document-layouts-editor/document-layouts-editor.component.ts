@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {FormControl, FormGroup} from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {StaticPageService} from '../../service/static-page.service';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import {CheckFormInvalidService} from "../../../../../../src/app/service/check-form-invalid.service";
 
 @Component({
   selector: 'app-document-layouts-editor',
@@ -13,26 +14,27 @@ export class DocumentLayoutsEditorComponent implements OnInit {
 
   constructor( private activatedRoute: ActivatedRoute,
                private router: Router,
+               public checkFormInvalidService:CheckFormInvalidService,
                private staticPageService:StaticPageService) { }
   public Editor = ClassicEditor;
   activeTab = 'RUS';
   RUSForm = new FormGroup({
     "language": new FormControl('RUS'),
-    "tag": new FormControl(),
-    "name": new FormControl(),
-    "content":new FormControl()
+    "tag": new FormControl(undefined, Validators.required),
+    "name": new FormControl(undefined, Validators.required),
+    "content":new FormControl(undefined, Validators.required)
   })
   KAZForm = new FormGroup({
     "language": new FormControl('KAZ'),
-    "tag": new FormControl(),
-    "name": new FormControl(),
-    "content":new FormControl()
+    "tag": new FormControl(undefined, Validators.required),
+    "name": new FormControl(undefined, Validators.required),
+    "content":new FormControl(undefined, Validators.required)
   })
   ENGForm = new FormGroup({
     "language": new FormControl('ENG'),
-    "tag": new FormControl(),
-    "name": new FormControl(),
-    "content":new FormControl()
+    "tag": new FormControl(undefined,[Validators.required]),
+    "name": new FormControl(undefined,[Validators.required]),
+    "content":new FormControl(undefined,[Validators.required])
   })
   activeTag:string=null
   ngOnInit(): void {
@@ -60,5 +62,8 @@ export class DocumentLayoutsEditorComponent implements OnInit {
     this.staticPageService.saveStaticPages(form.value).then(resp=>{
       this.navigate();
     })
+  }
+  isInvalid(form: FormGroup|FormControl,field: string='') {
+    return this.checkFormInvalidService.isInvalid(form,field);
   }
 }

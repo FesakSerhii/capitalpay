@@ -38,6 +38,9 @@
     &:focus{
       outline: none;
     }
+    &.error{
+      border-bottom: 1px solid #ff0000;
+    }
   }
   .resend-link{
     color: #008D68;
@@ -74,6 +77,9 @@
   border: none;
   height: 48px;
   width: 417px;
+  &.disabled{
+    background: rgba(23, 121, 96, 0.56);
+  }
 }
 .password-toggle{
   width: 29px;
