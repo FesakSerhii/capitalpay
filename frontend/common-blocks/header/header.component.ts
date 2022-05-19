@@ -43,8 +43,8 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   subscription: Subscription = new Subscription();
 
   loginForm = new FormGroup({
-    email: new FormControl(/*'+37096384345'*/undefined, Validators.required),
-    password: new FormControl(/*'blablabla'*/undefined, Validators.required),
+    email: new FormControl('+37096384345', Validators.required),
+    password: new FormControl('blablabla', Validators.required),
     isIpTrusted: new FormControl(false)
   });
   registerForm = new FormGroup({

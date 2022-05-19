@@ -13,17 +13,17 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class LoginComponent implements OnInit {
 
   constructor(
-    public authService: AuthService,
-    public modalService: NgbModal,
+    public authService: AuthService, 
+    public modalService: NgbModal, 
     private router: Router
   ) { }
 
   loginForm = new FormGroup({
-    email: new FormControl(/*'+37096384345'*/undefined, Validators.required),
-    password: new FormControl(/*'blablabla'*/undefined, Validators.required),
+    email: new FormControl('+37096384345', Validators.required),
+    password: new FormControl('blablabla', Validators.required),
     isIpTrusted: new FormControl()
   });
-
+  
   toggle = {
     showPass: false,
     showConfirmPass: false
