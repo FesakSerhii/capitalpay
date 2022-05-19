@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.nio.file.LinkOption;
 import java.rmi.RemoteException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -510,14 +511,27 @@ public class HalykSoapService {
 
     private EpayServiceStub.TransferOrderResponse sendTransferOrderRequest(String amount, String currency, String cvv2,
                                                                            String requestMerchantId, String month, String year,
-                                                                           String orderId, String senderPan, String paymenToPan) {
+                                                                           String orderId, String senderPan, String paymentToPan) {
         EpayServiceStub stub = null;
         try {
             stub = new EpayServiceStub();
         } catch (AxisFault axisFault) {
             axisFault.printStackTrace();
         }
+
         final String trType = "8";
+
+        logger.info("amount {}", amount);
+        logger.info("currency {}", currency);
+        logger.info("cvv2 {}", cvv2);
+        logger.info("merchantId {}", merchantIdP2p);
+        logger.info("month {}", month);
+        logger.info("year {}", year);
+        logger.info("orderId {}", orderId);
+        logger.info("senderPan {}", senderPan);
+        logger.info("paymentToPan {}", paymentToPan);
+        logger.info("trType {}", trType);
+
         EpayServiceStub.TransferOrderE transferOrderE = new EpayServiceStub.TransferOrderE();
         EpayServiceStub.TransferOrder transferOrder = new EpayServiceStub.TransferOrder();
         transferOrder.setAmount(amount);
@@ -530,7 +544,7 @@ public class HalykSoapService {
         transferOrder.setOrderid(orderId);
         transferOrder.setPan(senderPan);
         transferOrder.setYear(year);
-        transferOrder.setPaymentto(paymenToPan);
+        transferOrder.setPaymentto(paymentToPan);
 
         String concatString = orderId + amount + currency +
                 trType + senderPan + requestMerchantId;
