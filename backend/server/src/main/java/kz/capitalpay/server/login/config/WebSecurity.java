@@ -55,13 +55,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/auth/**").authenticated()
                 .anyRequest().permitAll()
                 .and()
-//                .formLogin()
-//                .failureHandler(new AuthenticationFailHandler())
-//                .and()
                 .addFilter(jwtAuthenticationFilter())
                 .addFilter(new JWTAuthorizationFilter(authenticationManager()))
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//                .sessionAuthenticationFailureHandler(new AuthenticationFailHandler());
         logger.info("Security Configure");
     }
 
