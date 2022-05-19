@@ -18,8 +18,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.ws.rs.core.MediaType;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
@@ -60,7 +58,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 //                .formLogin()
 //                .failureHandler(new AuthenticationFailHandler())
 //                .and()
-                .addFilter(new JWTAuthenticationFilter(authenticationManager()))
+                .addFilter(jwtAuthenticationFilter())
                 .addFilter(new JWTAuthorizationFilter(authenticationManager()))
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 //                .sessionAuthenticationFailureHandler(new AuthenticationFailHandler());
@@ -85,17 +83,23 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         return source;
     }
 
+    private JWTAuthenticationFilter jwtAuthenticationFilter() {
+        try {
+            JWTAuthenticationFilter filter = new JWTAuthenticationFilter(authenticationManager());
+            filter.setAuthenticationFailureHandler(authenticationFailureHandler());
+            return filter;
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return null;
+    }
+
     private AuthenticationFailureHandler authenticationFailureHandler() {
         return (request, response, ex) -> {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            response.setContentType(MediaType.APPLICATION_JSON.toString());
+            response.setContentType(MediaType.APPLICATION_JSON);
             response.setCharacterEncoding(StandardCharsets.UTF_8.displayName());
-            try (PrintWriter writer = response.getWriter()) {
-                writer.write("Authentication failed");
-                writer.flush();
-            } catch (IOException ie) {
-                ex.printStackTrace();
-            }
+            response.getWriter().write("Authentication failed");
         };
     }
 }
