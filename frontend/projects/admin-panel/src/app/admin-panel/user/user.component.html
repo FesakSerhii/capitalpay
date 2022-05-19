@@ -194,6 +194,9 @@
     </div>
     <div class="card-body">
       <form [formGroup]="newUserForm">
+        <ul class="text-danger my-3" *ngIf="createUserErrors.length">
+          <li *ngFor="let e of createUserErrors">{{e}}</li>
+        </ul>
         <div class="form-group has-default bmd-form-group">
 <!--          [class.error]="this.newUserForm.controls.phone.invalid"-->
           <input type="tel" formControlName="phone"  class="form-control" placeholder="Телефон  *" prefix="+7" mask="(000) 000 00 00">
@@ -223,7 +226,7 @@
         </ng-container>
       </form>
       <div class="d-flex justify-content-end">
-        <button class="btn btn-success btn-round" [disabled]="!comparePasswords()||!this.newUserForm.valid" [class.disabled]="!comparePasswords()||!this.newUserForm.valid" (click)="createUser();close()">Сохранить изменения<div class="ripple-container"></div></button>
+        <button class="btn btn-success btn-round" [disabled]="!comparePasswords()||!this.newUserForm.valid" [class.disabled]="!comparePasswords()||!this.newUserForm.valid" (click)="createUser();">Сохранить изменения<div class="ripple-container"></div></button>
       </div>
     </div>
   </div>
