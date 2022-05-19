@@ -9,6 +9,7 @@
     "build": "ng build",
     "build-paymentPage": "ng build --project paymentPage",
     "build-admin": "ng build --project adminPanel",
+    "build-all": "npm run build & npm run build-paymentPage & npm run build-admin",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",

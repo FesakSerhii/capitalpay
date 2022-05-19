@@ -9,6 +9,7 @@ import {log} from 'util';
 import {Timestamp} from 'rxjs';
 import {dateCompareValidator} from '../../../../../../common-blocks/validators/dateCompareValidator';
 import {MassageModalComponent} from '../../../../../../common-blocks/massage-modal/massage-modal.component';
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-user',
@@ -36,6 +37,7 @@ export class UserComponent implements OnInit {
     INACTIVE: 'не активирован'
   }
   newUserForm = new FormGroup({
+    phone: new FormControl("", Validators.required),
     password: new FormControl('', Validators.required),
     email: new FormControl('', [Validators.email]),
     username: new FormControl(''),
@@ -70,6 +72,7 @@ export class UserComponent implements OnInit {
   possibleRolesList: [any] = null;
   sortHelper = new SortHelper();
   tableSearch = new FormControl();
+  createUserErrors = [];
 
   ngOnInit(): void {
     let dateFields = {
@@ -99,7 +102,7 @@ export class UserComponent implements OnInit {
     })
   }
 
-  async getUsers(isSearchAfter=false) {
+  async getUsers(isSearchAfter = false) {
     this.userService.getUserList().then(resp => {
       this.dontTouched = resp.data;
       // this.dontTouched.map((el) => {
@@ -110,17 +113,18 @@ export class UserComponent implements OnInit {
       //   el.roles = role;
       // })
       this.userList = [...this.dontTouched]
-      if(isSearchAfter){
+      if (isSearchAfter) {
         this.search()
       }
     })
   }
-  converseUserList(role){
-      let roleStr = '';
-      for (const userRole of role) {
-        roleStr =  roleStr === '' ? roleStr + this.roleList[userRole.authority] : roleStr + '/' + this.roleList[userRole.authority]
-      }
-      return roleStr
+
+  converseUserList(role) {
+    let roleStr = '';
+    for (const userRole of role) {
+      roleStr = roleStr === '' ? roleStr + this.roleList[userRole.authority] : roleStr + '/' + this.roleList[userRole.authority]
+    }
+    return roleStr
   }
 
   addForm(form) {
@@ -154,8 +158,17 @@ export class UserComponent implements OnInit {
     }
     this.newUserForm.value.phone = '+7' + this.newUserForm.value.phone;
     this.userService.createUser(this.newUserForm.value).then(resp => {
-      this.getUsers();
-    })
+        this.close();
+        this.createUserErrors = [];
+        this.getUsers();
+      },
+      (e) => {
+        console.log(e);
+        if (e instanceof HttpErrorResponse && e.status == 400) {
+          const data = e.error
+          this.createUserErrors = Object.values(data.data);
+        }
+      });
   }
 
   comparePasswords() {
@@ -196,24 +209,25 @@ export class UserComponent implements OnInit {
     }
     if (isNewSearch) {
       this.getUsers(true)
-    }else{
+    } else {
       this.search()
     }
 
   }
-  search(){
+
+  search() {
     for (const control in this.filter.value) {
       let value = this.filter.value[control];
-      if(value){
+      if (value) {
         this.isFilterActive[control] = this.filter.value[control] !== null;
         if (this.isFilterActive[control]) {
           if (this.filter.value[control] && control !== 'dateStart' && control !== 'dateEnd') {
             this.dontTouched = this.dontTouched.filter(el => {
                 if (control === 'status') {
                   return el[control] === value
-                } else if(control === 'roles'){
-                  return el[control].filter(el=>el.id===value).length!==0
-                }else {
+                } else if (control === 'roles') {
+                  return el[control].filter(el => el.id === value).length !== 0
+                } else {
                   return el[control] !== null ? `${el[control]}`.toLowerCase().includes(`${value}`.trim().toLowerCase()) : false
                 }
               }
