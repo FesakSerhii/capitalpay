@@ -17,7 +17,7 @@ public class AuthenticationFailHandler implements AuthenticationFailureHandler {
         httpServletResponse.setStatus(HttpStatus.BAD_REQUEST.value());
         httpServletResponse.setContentType("application/json");
         httpServletResponse.setCharacterEncoding("UTF-8");
-        httpServletResponse.getWriter().write("Authentication failed");
+        httpServletResponse.getWriter().write("");
     }
 
 }

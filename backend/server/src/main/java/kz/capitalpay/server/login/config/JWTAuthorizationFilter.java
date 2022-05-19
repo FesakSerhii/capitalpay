@@ -24,7 +24,9 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static kz.capitalpay.server.login.config.SecurityConstants.HEADER_STRING;
@@ -69,7 +71,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                 String user = decodedJWT.getSubject();
                 String[] authorities = decodedJWT.getClaim("authorities").asArray(String.class);
                 Set<GrantedAuthority> roleSet = Arrays.stream(authorities).map(
-                        r -> new ApplicationRole(r)).collect(Collectors.toSet());
+                        ApplicationRole::new).collect(Collectors.toSet());
                 if (user != null) {
                     return new UsernamePasswordAuthenticationToken(user, authorities, roleSet);
                 }
@@ -109,9 +111,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             PKCS8EncodedKeySpec keySpecX509priv = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKeyContent));
             RSAPublicKey publicKey = (RSAPublicKey) kf.generatePublic(keySpecX509pub);
             RSAPrivateKey privateKey = (RSAPrivateKey) kf.generatePrivate(keySpecX509priv);
-
-            Algorithm algorithm = Algorithm.RSA256(publicKey, privateKey);
-            return algorithm;
+            return Algorithm.RSA256(publicKey, privateKey);
         } catch (Exception e) {
             e.printStackTrace();
         }

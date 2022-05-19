@@ -68,7 +68,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String ip = applicationUserService.validIpAddress(request, cred.getUsername());
         logger.info("ip " + ip);
         if (ip == null) {
-            throw new AuthenticationException("") {
+            throw new AuthenticationException("Authentication failed") {
             };
         }
 
