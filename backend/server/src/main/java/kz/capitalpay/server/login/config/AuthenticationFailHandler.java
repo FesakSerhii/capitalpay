@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class AuthenticationFailHandler implements AuthenticationFailureHandler {
+
     @Override
     public void onAuthenticationFailure(HttpServletRequest httpServletRequest,
                                         HttpServletResponse httpServletResponse,
@@ -17,7 +18,7 @@ public class AuthenticationFailHandler implements AuthenticationFailureHandler {
         httpServletResponse.setStatus(HttpStatus.BAD_REQUEST.value());
         httpServletResponse.setContentType("application/json");
         httpServletResponse.setCharacterEncoding("UTF-8");
-        httpServletResponse.getWriter().write("");
+        httpServletResponse.getWriter().write("Authentication failed");
     }
 
 }
