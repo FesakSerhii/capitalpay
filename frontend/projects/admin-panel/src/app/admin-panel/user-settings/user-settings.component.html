@@ -305,7 +305,7 @@
                         Использовать карту по умолчанию
                       </label>
                     </div>
-                    <div class="text-right mt-3" *ngIf="cashBox.value.p2pAllowed">
+                    <div class="text-right mt-3" *ngIf="cashBox.value.p2pAllowed&&!cashBox.value.useDefaultCard">
                       <label class="col-form-label col-8" style="margin-right: 90px;">Карта кассы : {{cashBox.value.cardNumber}}</label>
                       <button class="btn btn-success slim btn-round btn-back" (click)="p2pOnSave='cashBoxSettings';addCashBoxPaymentCard(cashBox)">Изменить карту
                       </button>
