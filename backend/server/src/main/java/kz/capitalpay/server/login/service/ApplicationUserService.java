@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 
@@ -180,15 +181,16 @@ public class ApplicationUserService {
     }
 
     public String validIpAddress(HttpServletRequest request, String username) {
-
         String ip = getIpAddress(request);
         String userAgent = getUserAgent(request);
         logger.info("IP: {}", ip);
         logger.info("User-Agent: {}", userAgent);
 
         ApplicationUser applicationUser = applicationUserRepository.findByUsername(username);
+        if (Objects.isNull(applicationUser)) {
+            return null;
+        }
         logger.info(" archer id " + applicationUser.getId() + " userName " + username);
-
         return trustIpService.validIpAddress(applicationUser.getId(), ip);
     }
 
