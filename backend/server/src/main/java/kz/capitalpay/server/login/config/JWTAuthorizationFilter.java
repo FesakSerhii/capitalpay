@@ -45,7 +45,6 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         if (header == null || !header.startsWith(TOKEN_PREFIX)) {
             chain.doFilter(request, response);
             logger.info(" step 0.91");
-
             return;
         }
         logger.info("step1");
@@ -61,7 +60,6 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         String token = request.getHeader(HEADER_STRING);
 
         logger.info("token " + token);
-
         if (token != null) {
             try {
                 DecodedJWT decodedJWT = JWT.require(getAlgorithm())

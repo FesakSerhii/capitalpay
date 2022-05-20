@@ -95,7 +95,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             response.setContentType(MediaType.APPLICATION_JSON);
             response.setCharacterEncoding(StandardCharsets.UTF_8.displayName());
-            response.getWriter().write("Authentication failed");
+            response.getWriter().write(ex.getMessage());
         };
     }
 }

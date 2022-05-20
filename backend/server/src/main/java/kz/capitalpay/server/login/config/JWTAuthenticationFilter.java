@@ -64,6 +64,12 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             e.printStackTrace();
         }
 
+        if (Objects.isNull(cred) || Objects.isNull(cred.getPassword()) || Objects.isNull(cred.getUsername())
+                || cred.getPassword().trim().isEmpty() || cred.getUsername().trim().isEmpty()) {
+            throw new AuthenticationException("Fields are empty") {
+            };
+        }
+
         logger.info("archer before " + cred.getUsername());
         String ip = applicationUserService.validIpAddress(request, cred.getUsername());
         logger.info("ip " + ip);
