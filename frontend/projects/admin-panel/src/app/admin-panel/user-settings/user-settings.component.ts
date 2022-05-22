@@ -125,6 +125,7 @@ export class UserSettingsComponent implements OnInit {
   cardListMethods: any = [];
   sortHelper = new SortHelper();
   tableSearch = new FormControl();
+  errStatusMassage: string = null;
 
 
   ngOnInit(): void {
@@ -222,16 +223,30 @@ export class UserSettingsComponent implements OnInit {
   }
 
   editUserData() {
+    if(this.merchantInfoForm.invalid||this.userInfoForm.invalid){
+      this.errStatusMassage='Заполните все необходимые поля';
+      return;
+    }
     if (this.userRoles.ROLE_MERCHANT) {
       this.merchantInfoForm.value.phone = this.merchantInfoForm.value.phone ? '+' + this.merchantInfoForm.value.phone : null;
       this.merchantInfoForm.value.mainphone = this.merchantInfoForm.value.mainphone ? '+' + this.merchantInfoForm.value.mainphone : null;
       this.kycService.setKycInfo(this.merchantInfoForm.value).then(resp => {
         this.getUserInfo()
+      }).catch(err => {
+        switch (err.status) {
+          case 500: this.errStatusMassage = 'Ошибка сервера, попробуйте позже'; break;
+          case 0: this.errStatusMassage = 'Отсутствие интернет соединения'; break;
+        }
       })
     } else {
       this.userInfoForm.value.phone = '+' + this.userInfoForm.value.phone;
       this.userService.editUserData(this.userInfoForm.value).then(resp => {
         this.getUserInfo()
+      }).catch(err => {
+        switch (err.status) {
+          case 500: this.errStatusMassage = 'Ошибка сервера, попробуйте позже'; break;
+          case 0: this.errStatusMassage = 'Отсутствие интернет соединения'; break;
+        }
       })
     }
     this.isEditMode = false;

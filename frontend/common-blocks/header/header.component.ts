@@ -60,6 +60,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   };
   isTwoFactor: boolean = false;
   sms = new FormControl();
+  errStatusMassage: string = null;
 
   ngOnInit(): void {
 
@@ -73,6 +74,10 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     this.open(modal)
   }
   loginAction() {
+    if(this.loginForm.invalid){
+      this.errStatusMassage='Заполните все необходимые поля';
+      return;
+    }
     this.authService.login(this.loginForm.value.email, this.loginForm.value.password).then(resp => {
       if (resp.body['data'] === "SMS sent") {
         this.isTwoFactor = true;
@@ -80,6 +85,12 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
         sessionStorage.setItem('token', resp.headers.get('Authorization').replace('Bearer', '').trim());
         this.modalService.dismissAll();
         this.router.navigate(['/merchant/transaction-log']);
+      }
+    }).catch(err => {
+      switch (err.status) {
+        case 400: this.errStatusMassage = 'Ошибка регистрационных данных'; break;
+        case 500: this.errStatusMassage = 'Ошибка сервера, попробуйте позже'; break;
+        case 0: this.errStatusMassage = 'Отсутствие интернет соединения'; break;
       }
     })
   }

@@ -92,6 +92,7 @@ export class SettingsComponent implements OnInit {
   merchantId: number = null;
   confirmMassage: string = null;
   isTwoFactor = new FormControl();
+  errStatusMassage: string = null;
 
 
   ngOnInit(): void {
@@ -245,9 +246,18 @@ export class SettingsComponent implements OnInit {
   }
 
   confirmPasswordChange() {
+    if(this.passChangeForm.invalid){
+      this.errStatusMassage='Заполните все необходимые поля';
+      return;
+    }
     this.confirmMassage = 'changePassword'
     this.confirmModal.open().then(resp => {
-      this.registerService.changePassword(this.passChangeForm.value.oldPassword, this.passChangeForm.value.newPassword)
+      this.registerService.changePassword(this.passChangeForm.value.oldPassword, this.passChangeForm.value.newPassword).catch(err => {
+        switch (err.status) {
+          case 500: this.errStatusMassage = 'Ошибка сервера, попробуйте позже'; break;
+          case 0: this.errStatusMassage = 'Отсутствие интернет соединения'; break;
+        }
+      })
     })
   }
 

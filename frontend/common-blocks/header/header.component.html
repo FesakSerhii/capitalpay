@@ -107,19 +107,19 @@
     <form [formGroup]="loginForm" class="registration-form" *ngIf="!isTwoFactor">
       <div class="form-field">
         <span class="input-title">Phone *</span>
-        <input [class.error]="isInvalid(loginForm,'email')" type="email" formControlName="email">
+        <input [class.error]="isInvalid(loginForm,'email')" type="email" formControlName="email" (input)="errStatusMassage=null">
       </div>
       <div class="form-field">
         <span class="input-title">Password</span>
-        <input [class.error]="isInvalid(loginForm,'password')" formControlName="password" [type]="toggle['showPass']?'text':'password'">
+        <input [class.error]="isInvalid(loginForm,'password')" formControlName="password" [type]="toggle['showPass']?'text':'password'" (input)="errStatusMassage=null">
         <img class="password-toggle" src="../../../assets/shapes/eye.svg" alt="eye" (click)="toggle['showPass']=!toggle['showPass']">
       </div>
       <div class="d-flex">
         <input formControlName="isIpTrusted" type="checkbox" style="height: 21px;width: 21px">
         <p class="ml-3">Save current IP address as trusted</p>
       </div>
-      <button [disabled]="loginForm.invalid"
-              [class.disabled]="loginForm.invalid" class="section-btn" (click)="$event.preventDefault();loginAction()">Login</button>
+      <span style="color: red" *ngIf="errStatusMassage!==null">{{errStatusMassage}}</span>
+      <button class="section-btn" (click)="$event.preventDefault();loginAction()">Login</button>
     </form>
     <form class="registration-form" *ngIf="isTwoFactor">
       <div class="form-field">

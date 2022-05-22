@@ -42,9 +42,8 @@
       </div>
     </div>
     </div>
+    <span style="color: red" *ngIf="errStatusMassage!==null">{{errStatusMassage}}</span>
     <button class="btn btn-success btn-round btn-back mt-5"
-            [class.disabled]="feedbackForm.invalid"
-            [disabled]="feedbackForm.invalid"
             style="width: 200px;margin: 0 auto;" (click)="sendFeedback()">Send message</button>
   </form>
 

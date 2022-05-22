@@ -37,6 +37,10 @@ export class DocumentLayoutsEditorComponent implements OnInit {
     "content":new FormControl(undefined,[Validators.required])
   })
   activeTag:string=null
+  RUSFormErrStatusMassage: string = null;
+  KAZFormErrStatusMassage: string = null;
+  ENGFormErrStatusMassage: string = null;
+  errStatusMassage: string = null;
   ngOnInit(): void {
     this.activatedRoute.queryParamMap.subscribe((param) => {
       this.activeTag = param.get('tag');
@@ -58,9 +62,18 @@ export class DocumentLayoutsEditorComponent implements OnInit {
     this.router.navigate(['/admin-panel/documents-layouts'])
   }
 
-  save(form) {
+  save(form,formName){
+    if(form.invalid){
+      this[formName+'ErrStatusMassage'] = 'Заполните все необходимые поля';
+      return;
+    }
     this.staticPageService.saveStaticPages(form.value).then(resp=>{
       this.navigate();
+    }).catch(err => {
+      switch (err.status) {
+        case 500: this[formName+'ErrStatusMassage'] = 'Ошибка сервера, попробуйте позже'; break;
+        case 0: this[formName+'ErrStatusMassage'] = 'Отсутствие интернет соединения'; break;
+      }
     })
   }
   isInvalid(form: FormGroup|FormControl,field: string='') {

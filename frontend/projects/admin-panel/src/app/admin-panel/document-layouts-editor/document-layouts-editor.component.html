@@ -30,7 +30,7 @@
                 <label class="col-form-label" style="padding-top: 10px;">Заголовок *</label>
                 <div class="form-input-md" style="width: 650px">
                   <div class="form-group has-default bmd-form-group mt-0">
-                    <input [class.error]="isInvalid(RUSForm,'name')" type="text" class="form-control pt-0" formControlName="name">
+                    <input [class.error]="isInvalid(RUSForm,'name')" type="text" class="form-control pt-0" formControlName="name" (input)="errStatusMassage=null">
                   </div>
                 </div>
               </div>
@@ -38,17 +38,17 @@
                 <label class="col-form-label" style="padding-top: 10px;">Тег *</label>
                 <div class="form-input-md" style="width: 650px">
                   <div class="form-group has-default bmd-form-group">
-                    <input [class.error]="isInvalid(RUSForm,'tag')"  type="text" class="form-control pt-0" formControlName="tag">
+                    <input [class.error]="isInvalid(RUSForm,'tag')"  type="text" class="form-control pt-0" formControlName="tag" (input)="errStatusMassage=null">
                   </div>
                 </div>
               </div>
+              <span style="color: red" *ngIf="RUSFormErrStatusMassage!==null">{{RUSFormErrStatusMassage}}</span>
               <div class="editor-container">
 <!--                    <textarea style="margin-top: 100px;width: 740px;min-height: 880px" formControlName="content">-->
 <!--                    </textarea>-->
-                <ckeditor [editor]="Editor" style="width: 740px;min-height: 880px" [class.error]="isInvalid(RUSForm,'content')" formControlName="content"></ckeditor>
+                <ckeditor [editor]="Editor" style="width: 740px;min-height: 880px" [class.error]="isInvalid(RUSForm,'content')" formControlName="content" (input)="errStatusMassage=null"></ckeditor>
               </div>
-              <button [class.disabled]="RUSForm.invalid"
-                       [disabled]="RUSForm.invalid" href="#" class="btn btn-success btn-round" (click)="$event.preventDefault();save(RUSForm)">Сохранить<div class="ripple-container"></div></button>
+              <button href="#" class="btn btn-success btn-round" (click)="$event.preventDefault();save(RUSForm)">Сохранить<div class="ripple-container"></div></button>
             </form>
           </div>
         </div>
@@ -59,7 +59,7 @@
                 <label class="col-form-label" style="padding-top: 10px;">Заголовок *</label>
                 <div class="form-input-md" style="width: 650px">
                   <div class="form-group has-default bmd-form-group mt-0">
-                    <input [class.error]="isInvalid(KAZForm,'name')" type="text" class="form-control pt-0" formControlName="name">
+                    <input [class.error]="isInvalid(KAZForm,'name')" type="text" class="form-control pt-0" formControlName="name" (input)="errStatusMassage=null">
                   </div>
                 </div>
               </div>
@@ -67,17 +67,17 @@
                 <label class="col-form-label" style="padding-top: 10px;">Тег *</label>
                 <div class="form-input-md" style="width: 650px">
                   <div class="form-group has-default bmd-form-group">
-                    <input [class.error]="isInvalid(KAZForm,'tag')" type="text" class="form-control pt-0" formControlName="tag">
+                    <input [class.error]="isInvalid(KAZForm,'tag')" type="text" class="form-control pt-0" formControlName="tag" (input)="errStatusMassage=null">
                   </div>
                 </div>
               </div>
+              <span style="color: red" *ngIf="KAZFormErrStatusMassage!==null">{{KAZFormErrStatusMassage}}</span>
               <div class="editor-container">
 <!--                    <textarea style="margin-top: 100px;width: 740px;min-height: 880px" formControlName="content">-->
 <!--                    </textarea>-->
-                <ckeditor [editor]="Editor" style="width: 740px;min-height: 880px" [class.error]="isInvalid(KAZForm,'content')" formControlName="content"></ckeditor>
+                <ckeditor [editor]="Editor" style="width: 740px;min-height: 880px" [class.error]="isInvalid(KAZForm,'content')" formControlName="content" (input)="errStatusMassage=null"></ckeditor>
               </div>
-              <button [class.disabled]="KAZForm.invalid"
-                       [disabled]="KAZForm.invalid" href="#" class="btn btn-success btn-round" (click)="$event.preventDefault();save(KAZForm)">Сохранить<div class="ripple-container"></div></button>
+              <button href="#" class="btn btn-success btn-round" (click)="$event.preventDefault();save(KAZForm)">Сохранить<div class="ripple-container"></div></button>
             </form>
           </div>
         </div>
@@ -88,7 +88,7 @@
                 <label class="col-form-label" style="padding-top: 10px;">Заголовок *</label>
                 <div class="form-input-md" style="width: 650px">
                   <div class="form-group has-default bmd-form-group mt-0">
-                    <input [class.error]="isInvalid(ENGForm,'name')" type="text" class="form-control pt-0" formControlName="name">
+                    <input [class.error]="isInvalid(ENGForm,'name')" type="text" class="form-control pt-0" formControlName="name" (input)="errStatusMassage=null">
                   </div>
                 </div>
               </div>
@@ -96,18 +96,17 @@
                 <label class="col-form-label" style="padding-top: 10px;">Тег *</label>
                 <div class="form-input-md" style="width: 650px">
                   <div class="form-group has-default bmd-form-group">
-                    <input [class.error]="isInvalid(ENGForm,'tag')" type="text" class="form-control pt-0" formControlName="tag">
+                    <input [class.error]="isInvalid(ENGForm,'tag')" type="text" class="form-control pt-0" formControlName="tag" (input)="errStatusMassage=null">
                   </div>
                 </div>
               </div>
+              <span style="color: red" *ngIf="KAZFormErrStatusMassage!==null">{{KAZFormErrStatusMassage}}</span>
               <div class="editor-container">
 <!--                    <textarea style="margin-top: 100px;width: 740px;min-height: 880px" formControlName="content">-->
 <!--                    </textarea>-->
-                <ckeditor [editor]="Editor" style="width: 740px;min-height: 880px" [class.error]="isInvalid(ENGForm,'content')" formControlName="content"></ckeditor>
+                <ckeditor [editor]="Editor" style="width: 740px;min-height: 880px" [class.error]="isInvalid(ENGForm,'content')" formControlName="content" (input)="errStatusMassage=null"></ckeditor>
               </div>
-              <button [class.disabled]="ENGForm.invalid"
-                      [disabled]="ENGForm.invalid"
-                      class="btn btn-success btn-round" (click)="$event.preventDefault();save(ENGForm)">Сохранить<div class="ripple-container"></div></button>
+              <button class="btn btn-success btn-round" (click)="$event.preventDefault();save(ENGForm,'ENGForm')">Сохранить<div class="ripple-container"></div></button>
             </form>
           </div>
         </div>

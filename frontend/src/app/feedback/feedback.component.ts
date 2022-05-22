@@ -19,13 +19,23 @@ feedbackForm = new FormGroup({
   email: new FormControl('',[Validators.required]),
   text: new FormControl('',[Validators.required])
 })
+  errStatusMassage: string = null;
 
   ngOnInit(): void {
   }
 
   sendFeedback() {
+    if(this.feedbackForm.invalid){
+      this.errStatusMassage='Заполните все необходимые поля';
+      return;
+    }
     this.supportService.sendSupportRequest(this.feedbackForm.value).then(()=>{
       this.router.navigate(['/page']);
+    }).catch(err => {
+      switch (err.status) {
+        case 500: this.errStatusMassage = 'Ошибка сервера, попробуйте позже'; break;
+        case 0: this.errStatusMassage = 'Отсутствие интернет соединения'; break;
+      }
     })
   }
   isInvalid(form: FormGroup|FormControl,field: string='') {

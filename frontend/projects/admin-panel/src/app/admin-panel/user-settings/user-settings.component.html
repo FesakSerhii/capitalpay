@@ -95,6 +95,7 @@
                   <label class="col-form-label w160">Номер телефона</label>
                   <input type="phone" formControlName="username"
                          [class.error]="userInfoForm.controls.username.invalid"
+                         (input)="errStatusMassage=null"
                          [readOnly]="!isEditMode" [class.disabled]="!isEditMode"
                          class="form-control" placeholder="Телефон  *" mask='+00000000000'>
                 </div>
@@ -114,12 +115,14 @@
                   <label class="col-form-label w160">Номер телефона</label>
                   <input type="phone" formControlName="mainphone"
                          [class.error]="merchantInfoForm.controls.mainphone.invalid"
+                         (input)="errStatusMassage=null"
                          [readOnly]="!isEditMode" [class.disabled]="!isEditMode"
                          class="form-control" placeholder="Телефон  *" mask='+00000000000'></div>
                 <div class="form-group has-default bmd-form-group d-flex">
                   <label class="col-form-label w160">ИИН/БИН</label>
                   <input type="text" class="form-control"
                          [class.danger]="merchantInfoForm.controls.iinbin.invalid"
+                         (input)="errStatusMassage=null"
                          placeholder="" formControlName="iinbin" [readOnly]="!isEditMode"
                          [class.disabled]="!isEditMode">
                 </div>
@@ -153,6 +156,7 @@
                   <input type="phone" formControlName="mainphone"
                          [class.error]="merchantInfoForm.controls.mainphone.invalid"
                          [readOnly]="!isEditMode" [class.disabled]="!isEditMode"
+                         (input)="errStatusMassage=null"
                          class="form-control" placeholder="Основной номер телефона" mask='+00000000000'>
                 </div>
                 <div class="form-group has-default bmd-form-group d-flex">
@@ -176,13 +180,12 @@
                          [readOnly]="!isEditMode" [class.disabled]="!isEditMode">
                 </div>
               </form>
+              <span style="color: red" *ngIf="errStatusMassage!==null">{{errStatusMassage}}</span>
               <button *ngIf="!isEditMode" class="btn slim btn-success btn-round" style="margin-left: 202px"
                       (click)="$event.preventDefault();isEditMode=true">изменить данные
                 <div class="ripple-container"></div>
               </button>
               <button *ngIf="isEditMode" class="btn slim btn-success btn-round" style="margin-left: 202px"
-                      [disabled]="merchantInfoForm.invalid"
-                      [class.disabled]="merchantInfoForm.invalid"
                       (click)="$event.preventDefault();editUserData()">Сохранить
                 <div class="ripple-container"></div>
               </button>
