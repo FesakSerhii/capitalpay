@@ -10,6 +10,7 @@ import {Timestamp} from 'rxjs';
 import {dateCompareValidator} from '../../../../../../common-blocks/validators/dateCompareValidator';
 import {MassageModalComponent} from '../../../../../../common-blocks/massage-modal/massage-modal.component';
 import {HttpErrorResponse} from "@angular/common/http";
+import {CheckFormInvalidService} from "../../../../../../src/app/service/check-form-invalid.service";
 
 @Component({
   selector: 'app-user',
@@ -20,7 +21,7 @@ export class UserComponent implements OnInit {
   @ViewChild('addNewUser', {static: false}) addNewUserModal: TemplateRef<any>;
   @ViewChild('invalidDatesModalContent', {static: false}) invalidDatesModal: MassageModalComponent;
 
-  constructor(private userService: UserService, private modalService: NgbModal, private router: Router, private searchInputService: SearchInputService,) {
+  constructor(private userService: UserService, public checkFormInvalidService:CheckFormInvalidService, private modalService: NgbModal, private router: Router, private searchInputService: SearchInputService,) {
   }
 
   userList: any[] = [];
@@ -39,7 +40,7 @@ export class UserComponent implements OnInit {
   newUserForm = new FormGroup({
     phone: new FormControl("", Validators.required),
     password: new FormControl('', Validators.required),
-    email: new FormControl('', [Validators.email]),
+    email: new FormControl('', [Validators.email, Validators.required]),
     username: new FormControl(''),
     roleList: new FormArray([new FormControl(Validators.required)])
   });
@@ -70,6 +71,7 @@ export class UserComponent implements OnInit {
     {title: 'заблокирован', value: 'BLOCKED'},
     {title: 'не активирован', value: 'INACTIVE'}];
   possibleRolesList: [any] = null;
+  errStatusMassage: string = null;
   sortHelper = new SortHelper();
   tableSearch = new FormControl();
   createUserErrors = [];
@@ -153,6 +155,13 @@ export class UserComponent implements OnInit {
   }
 
   createUser() {
+    if(this.newUserForm.invalid){
+      this.errStatusMassage='Заполните все необходимые поля';
+      return;
+    }
+    if(!this.comparePasswords()){
+      return;
+    }
     for (let role in this.newUserForm.value['roleList']) {
       this.newUserForm.value['roleList'][role] = this.possibleRolesList.filter(el => el.id === this.newUserForm.value['roleList'][role])[0].authority;
     }
@@ -162,13 +171,18 @@ export class UserComponent implements OnInit {
         this.createUserErrors = [];
         this.getUsers();
       },
-      (e) => {
-        console.log(e);
-        if (e instanceof HttpErrorResponse && e.status == 400) {
-          const data = e.error
-          this.createUserErrors = Object.values(data.data);
-        }
-      });
+      (err) => {
+          switch (err.status) {
+            case 500: this.errStatusMassage = 'Ошибка сервера, попробуйте позже'; break;
+            case 0: this.errStatusMassage = 'Отсутствие интернет соединения'; break;
+          }
+        } )
+        // console.log(e);
+        // if (e instanceof HttpErrorResponse && e.status == 400) {
+        //   const data = e.error
+        //   this.createUserErrors = Object.values(data.data);
+        // }
+      // });
   }
 
   comparePasswords() {
@@ -274,5 +288,8 @@ export class UserComponent implements OnInit {
         }
       }, 200);
     }
+  }
+  isInvalid(form: FormGroup|FormControl,field: string='') {
+    return this.checkFormInvalidService.isInvalid(form,field);
   }
 }

@@ -38,6 +38,7 @@ export class SettingsComponent implements OnInit {
   isTwoFactor = new FormControl();
   currencyEnabledToSave:any[]=[];
   paymentMethodsEnabledToSave:any[]=[];
+  errStatusMassage: string = null;
 
   ngOnInit(): void {
     this.getCurrencies();
@@ -75,9 +76,18 @@ export class SettingsComponent implements OnInit {
     return (this.passChangeForm.value.newPassword&&this.passChangeForm.value.confirmPassword)&&(this.passChangeForm.value.newPassword===this.passChangeForm.value.confirmPassword)
   }
   confirmPasswordChange() {
+    if(this.passChangeForm.invalid){
+      this.errStatusMassage='Заполните все необходимые поля';
+      return;
+    }
     this.confirmMassage = 'changePassword'
     this.confirmModal.open().then(resp=> {
-      this.registerService.changePassword(this.passChangeForm.value.oldPassword,this.passChangeForm.value.newPassword)
+      this.registerService.changePassword(this.passChangeForm.value.oldPassword,this.passChangeForm.value.newPassword).catch(err => {
+        switch (err.status) {
+          case 500: this.errStatusMassage = 'Ошибка сервера, попробуйте позже'; break;
+          case 0: this.errStatusMassage = 'Отсутствие интернет соединения'; break;
+        }
+      })
     })
   }
  async saveEnabledCurrencies(){

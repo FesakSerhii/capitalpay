@@ -4,6 +4,7 @@ import { AuthService } from '../service/auth.service';
 import { Router } from '@angular/router';
 import { HttpResponse } from "@angular/common/http";
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import {CheckFormInvalidService} from "../../../../../src/app/service/check-form-invalid.service";
 
 @Component({
   selector: 'app-login',
@@ -14,6 +15,7 @@ export class LoginComponent implements OnInit {
 
   constructor(
     public authService: AuthService,
+    public checkFormInvalidService:CheckFormInvalidService,
     public modalService: NgbModal,
     private router: Router
   ) { }
@@ -31,11 +33,16 @@ export class LoginComponent implements OnInit {
 
   isTwoFactor: boolean = false;
   sms = new FormControl();
+  errStatusMassage: string = null;
 
   ngOnInit(): void {
   }
 
   loginAction() {
+    if(this.loginForm.invalid){
+      this.errStatusMassage='Заполните все необходимые поля';
+      return;
+    }
     this.authService.login(this.loginForm.value.email, this.loginForm.value.password).then((resp: HttpResponse<any>) => {
       console.log(resp);
       if (resp.body.data === "SMS sent") {
@@ -44,7 +51,13 @@ export class LoginComponent implements OnInit {
         sessionStorage.setItem('token', resp.headers.get('Authorization').replace('Bearer', '').trim());
         this.router.navigate(['/admin-panel/dashboard']);
       }
-    })
+    }).catch(err => {
+      switch (err.status) {
+        case 400: this.errStatusMassage = 'Ошибка регистрационных данных'; break;
+        case 500: this.errStatusMassage = 'Ошибка сервера, попробуйте позже'; break;
+        case 0: this.errStatusMassage = 'Отсутствие интернет соединения'; break;
+      }
+    } )
   }
 
   confirmCode() {
@@ -52,5 +65,8 @@ export class LoginComponent implements OnInit {
       sessionStorage.setItem('token', resp.headers.get('Authorization').replace('Bearer', '').trim());
       this.router.navigate(['/admin-panel/dashboard']);
     })
+  }
+  isInvalid(form: FormGroup|FormControl,field: string='') {
+    return this.checkFormInvalidService.isInvalid(form,field);
   }
 }

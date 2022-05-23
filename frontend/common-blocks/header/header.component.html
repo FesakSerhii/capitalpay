@@ -59,7 +59,7 @@
     <form [formGroup]="registerForm" class="registration-form">
       <div class="form-field">
         <span class="input-title">Your name *</span>
-        <input type="text" formControlName="username">
+        <input [class.error]="isInvalid(registerForm,'username')" type="text" formControlName="username">
       </div>
       <div class="form-field">
         <span class="input-title">Phone number *</span>
@@ -67,13 +67,14 @@
       </div>
       <div class="form-field">
         <span class="input-title">Email *</span>
-        <input type="email" formControlName="email">
+        <input [class.error]="isInvalid(registerForm,'email')" type="email" formControlName="email">
       </div>
       <div class="form-field">
         <span class="input-title">Comment</span>
         <input type="text" formControlName="comment">
       </div>
-      <button class="section-btn" (click)="$event.preventDefault();">Send an application</button>
+      <button [disabled]="registerForm.invalid"
+              [class.disabled]="registerForm.invalid" class="section-btn" (click)="$event.preventDefault();">Send an application</button>
     </form>
     <div class="modal-footer">
       <p class="m-0 m-auto">Already have an account? <a href="#" class="switch-modal-link" (click)="$event.preventDefault();switchToLogin(loginModal)">Log In</a></p>
@@ -106,25 +107,28 @@
     <form [formGroup]="loginForm" class="registration-form" *ngIf="!isTwoFactor">
       <div class="form-field">
         <span class="input-title">Phone *</span>
-        <input type="email" formControlName="email">
+        <input [class.error]="isInvalid(loginForm,'email')" type="email" formControlName="email" (input)="errStatusMassage=null">
       </div>
       <div class="form-field">
         <span class="input-title">Password</span>
-        <input formControlName="password" [type]="toggle['showPass']?'text':'password'">
+        <input [class.error]="isInvalid(loginForm,'password')" formControlName="password" [type]="toggle['showPass']?'text':'password'" (input)="errStatusMassage=null">
         <img class="password-toggle" src="../../../assets/shapes/eye.svg" alt="eye" (click)="toggle['showPass']=!toggle['showPass']">
       </div>
       <div class="d-flex">
         <input formControlName="isIpTrusted" type="checkbox" style="height: 21px;width: 21px">
         <p class="ml-3">Save current IP address as trusted</p>
       </div>
+      <span style="color: red" *ngIf="errStatusMassage!==null">{{errStatusMassage}}</span>
       <button class="section-btn" (click)="$event.preventDefault();loginAction()">Login</button>
     </form>
     <form class="registration-form" *ngIf="isTwoFactor">
       <div class="form-field">
         <span class="input-title">Code from sms</span>
-        <input type="text" [formControl]="sms">
+        <input [class.error]="isInvalid(sms)" type="text" [formControl]="sms">
       </div>
-      <button class="section-btn" (click)="$event.preventDefault();confirmCode()">Confirm</button>
+      <button [disabled]="!sms.value"
+              [class.disabled]="!sms.value"
+              class="section-btn" (click)="$event.preventDefault();confirmCode()">Confirm</button>
     </form>
     <div class="modal-footer">
       <p class="m-0 m-auto" *ngIf="!isTwoFactor">Don't have an account yet? <a href="#" class="switch-modal-link" (click)="$event.preventDefault();switchToLogin(registerModal)">Sign Up</a></p>
