@@ -60,10 +60,10 @@ public class UserCardService {
     }
 
     public ResultDTO registerMerchantCard(RegisterUserCardDto dto) {
-        MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(dto.getMerchantId());
-        if (Objects.isNull(merchantP2pSettings) || !merchantP2pSettings.isP2pAllowed()) {
-            return ErrorDictionary.error134;
-        }
+//        MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(dto.getMerchantId());
+//        if (Objects.isNull(merchantP2pSettings) || !merchantP2pSettings.isP2pAllowed()) {
+//            return ErrorDictionary.error134;
+//        }
 
         ResponseEntity<String> response = restTemplate.postForEntity(cardHoldingUrl + "/card-data/register",
                 dto, String.class);
@@ -185,10 +185,10 @@ public class UserCardService {
         if (Objects.isNull(userCard)) {
             return ErrorDictionary.error130;
         }
-        MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(userCard.getUserId());
-        if (Objects.isNull(merchantP2pSettings) || !merchantP2pSettings.isP2pAllowed()) {
-            return ErrorDictionary.error134;
-        }
+//        MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(userCard.getUserId());
+//        if (Objects.isNull(merchantP2pSettings) || !merchantP2pSettings.isP2pAllowed()) {
+//            return ErrorDictionary.error134;
+//        }
 
         CardDataResponseDto dto = getCardDataFromTokenServer(userCard.getToken());
         if (Objects.isNull(dto)) {
@@ -204,7 +204,6 @@ public class UserCardService {
         }
 
         CheckCardValidityResponseDto responseDto = new CheckCardValidityResponseDto(response.isValid(), userCard.getId(), response.getReturnCode());
-
         return new ResultDTO(true, responseDto, 0);
     }
 
