@@ -48,7 +48,7 @@
 <!--                    </textarea>-->
                 <ckeditor [editor]="Editor" style="width: 740px;min-height: 880px" [class.error]="isInvalid(RUSForm,'content')" formControlName="content" (input)="errStatusMassage=null"></ckeditor>
               </div>
-              <button href="#" class="btn btn-success btn-round" (click)="$event.preventDefault();save(RUSForm)">Сохранить<div class="ripple-container"></div></button>
+              <button href="#" class="btn btn-success btn-round" (click)="$event.preventDefault();save(RUSForm,'RUSForm')">Сохранить<div class="ripple-container"></div></button>
             </form>
           </div>
         </div>
@@ -77,7 +77,7 @@
 <!--                    </textarea>-->
                 <ckeditor [editor]="Editor" style="width: 740px;min-height: 880px" [class.error]="isInvalid(KAZForm,'content')" formControlName="content" (input)="errStatusMassage=null"></ckeditor>
               </div>
-              <button href="#" class="btn btn-success btn-round" (click)="$event.preventDefault();save(KAZForm)">Сохранить<div class="ripple-container"></div></button>
+              <button href="#" class="btn btn-success btn-round" (click)="$event.preventDefault();save(KAZForm,'KAZForm')">Сохранить<div class="ripple-container"></div></button>
             </form>
           </div>
         </div>
