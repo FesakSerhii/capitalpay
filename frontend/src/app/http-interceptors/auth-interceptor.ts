@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, TemplateRef} from '@angular/core';
 import {
   HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse
 } from '@angular/common/http';
@@ -8,6 +8,7 @@ import {finalize, tap} from 'rxjs/operators';
 import {Router} from '@angular/router';
 import {AuthService} from '../service/auth.service';
 import {NgxSpinnerService} from 'ngx-spinner';
+import {MassageServiceService} from "../service/massage-service.service";
 
 
 @Injectable()
@@ -18,6 +19,7 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(
     private router: Router,
     private auth: AuthService,
+    private massageServiceService: MassageServiceService,
     private spinnerService: NgxSpinnerService
   ) {
   }
@@ -35,19 +37,19 @@ export class AuthInterceptor implements HttpInterceptor {
         // this.spinnerService.hide();
       },
       (err: any) => {
-        if (err instanceof HttpErrorResponse && err.status === 404) {
-          // this.router.navigate(["/error/404"]);
-          // this.spinnerService.hide();
-        } else if (err instanceof HttpErrorResponse && err.status === 403) {
-          this.auth.tokenStateChange.next(false);
-          // this.spinnerService.hide();
-        } else if ((err instanceof HttpErrorResponse && err.status === 500) || (err instanceof HttpErrorResponse && err.status === 503)) {
-          // this.spinnerService.hide();
-          // this.appErrorModalsService.modalError("server error");
-        } else {
-          // this.spinnerService.hide();
-          // this.appErrorModalsService.modalError("error");
-        }
+          if (err instanceof HttpErrorResponse && err.status === 404) {
+            this.massageServiceService.announceMassage(err.statusText)
+          } else if (err instanceof HttpErrorResponse && err.status === 403) {
+            this.auth.tokenStateChange.next(false);
+          } else if (err instanceof HttpErrorResponse && err.status === 400) {
+            this.massageServiceService.announceMassage('req400Error')
+          } else if (err instanceof HttpErrorResponse && err.status === 0) {
+            this.massageServiceService.announceMassage('noInternetError')
+          } else if ((err instanceof HttpErrorResponse && err.status === 500) || (err instanceof HttpErrorResponse && err.status === 503)) {
+            this.massageServiceService.announceMassage('req500Error')
+          } else {
+            this.massageServiceService.announceMassage(err.statusText)
+          }
       }
     ), finalize(() => {
       this.counter--;

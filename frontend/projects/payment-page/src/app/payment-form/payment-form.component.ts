@@ -32,6 +32,7 @@ export class PaymentFormComponent implements OnInit {
     email: new FormControl(),
     cvv2Code: new FormControl('',[Validators.min(100),Validators.max(999)]),
   });
+  errStatusMassage: string = null;
   token: string = null;
   id: number = null;
   merchantId: number = null;
@@ -80,6 +81,10 @@ export class PaymentFormComponent implements OnInit {
   }
 
   dateInvalid() {
+    if(this.cardForm.invalid){
+      this.errStatusMassage='Заполните все необходимые поля';
+      return;
+    }
     this.expInvalid = false;
     if (this.cardForm.get('expirationMonth').value !== null && this.cardForm.get('expirationYear').value !== null) {
       setTimeout(() => {

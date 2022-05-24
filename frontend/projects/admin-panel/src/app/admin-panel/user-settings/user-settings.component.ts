@@ -236,6 +236,7 @@ export class UserSettingsComponent implements OnInit {
         switch (err.status) {
           case 500: this.errStatusMassage = 'Ошибка сервера, попробуйте позже'; break;
           case 0: this.errStatusMassage = 'Отсутствие интернет соединения'; break;
+          default: this.errStatusMassage = err.statusMessage; break;
         }
       })
     } else {
@@ -246,6 +247,7 @@ export class UserSettingsComponent implements OnInit {
         switch (err.status) {
           case 500: this.errStatusMassage = 'Ошибка сервера, попробуйте позже'; break;
           case 0: this.errStatusMassage = 'Отсутствие интернет соединения'; break;
+          default: this.errStatusMassage = err.statusMessage; break;
         }
       })
     }

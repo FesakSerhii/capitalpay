@@ -61,6 +61,7 @@
         <a href="#!">privacy policy</a>.</label>
       <span class="error" *ngIf="validityError">Error on card validity check.{{getErrMassage()}} Use other card or try again</span>
     </div>
+    <span style="color: red" *ngIf="errStatusMassage!==null">{{errStatusMassage}}</span>
     <button [disabled]="redirect" [class.disabled]="redirect"
             class="form-btn form2-theme" (click)="cancel()">Cancel</button>
     <button
