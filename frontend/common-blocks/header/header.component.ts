@@ -4,6 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../src/app/service/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import {CheckFormInvalidService} from "../../src/app/service/check-form-invalid.service";
 
 @Component({
   selector: 'app-header',
@@ -18,6 +19,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     public modalService: NgbModal,
     public authService: AuthService,
     private router: Router,
+    public checkFormInvalidService:CheckFormInvalidService,
     private route: ActivatedRoute
   ) { }
   isDropdownOpen:boolean=false;
@@ -48,8 +50,8 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     isIpTrusted: new FormControl(false)
   });
   registerForm = new FormGroup({
-    username: new FormControl(),
-    email: new FormControl(),
+    username: new FormControl(undefined, Validators.required),
+    email: new FormControl(undefined, Validators.required),
     comment: new FormControl(),
   })
   toggle = {
@@ -58,6 +60,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   };
   isTwoFactor: boolean = false;
   sms = new FormControl();
+  errStatusMassage: string = null;
 
   ngOnInit(): void {
 
@@ -71,6 +74,10 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     this.open(modal)
   }
   loginAction() {
+    if(this.loginForm.invalid){
+      this.errStatusMassage='Заполните все необходимые поля';
+      return;
+    }
     this.authService.login(this.loginForm.value.email, this.loginForm.value.password).then(resp => {
       if (resp.body['data'] === "SMS sent") {
         this.isTwoFactor = true;
@@ -78,6 +85,12 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
         sessionStorage.setItem('token', resp.headers.get('Authorization').replace('Bearer', '').trim());
         this.modalService.dismissAll();
         this.router.navigate(['/merchant/transaction-log']);
+      }
+    }).catch(err => {
+      switch (err.status) {
+        case 400: this.errStatusMassage = 'Ошибка регистрационных данных'; break;
+        case 500: this.errStatusMassage = 'Ошибка сервера, попробуйте позже'; break;
+        case 0: this.errStatusMassage = 'Отсутствие интернет соединения'; break;
       }
     })
   }
@@ -88,5 +101,9 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
       this.modalService.dismissAll();
       this.router.navigate(['/merchant/transaction-log']);
     })
+  }
+
+  isInvalid(form: FormGroup|FormControl,field: string='') {
+    return this.checkFormInvalidService.isInvalid(form,field);
   }
 }

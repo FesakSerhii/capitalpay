@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {FormControl, PatternValidator, Validators} from '@angular/forms';
+import {FormControl, FormGroup, PatternValidator, Validators} from '@angular/forms';
 import {RegisterService} from '../service/register.service';
 import {ActivatedRoute, Router} from '@angular/router';
+import {CheckFormInvalidService} from "../service/check-form-invalid.service";
 
 @Component({
   selector: 'app-register',
@@ -10,7 +11,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 })
 export class RegisterComponent implements OnInit {
 
-  constructor(public registerService: RegisterService,  public activatedRoute: ActivatedRoute, private router: Router) { }
+  constructor(public registerService: RegisterService, public checkFormInvalidService:CheckFormInvalidService, public activatedRoute: ActivatedRoute, private router: Router) { }
   phoneNumber = new FormControl('+45566678799');
   resendTimer: any = null;
   timerValue = 30;
@@ -21,6 +22,9 @@ export class RegisterComponent implements OnInit {
     showConfirmPass: false
   };
   email = new FormControl();
+  errStatusMassage: string = null;
+  errRegisterMassage: boolean = false;
+  errCodeMassage: boolean = false;
 
   // tslint:disable-next-line:typedef
   password = new FormControl('', [Validators.pattern('^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$')]);
@@ -52,20 +56,40 @@ export class RegisterComponent implements OnInit {
     }, 1000);
   }
   sendEmail(): void {
+    if(this.email.invalid){
+      this.errRegisterMassage=true;
+      return;
+    }
     this.registerService.postEmail(this.email.value).then(resp => {
       this.step = ++this.step;
+    }).catch(err => {
+      switch (err.status) {
+        case 500: this.errStatusMassage = 'Ошибка сервера, попробуйте позже'; break;
+        case 0: this.errStatusMassage = 'Отсутствие интернет соединения'; break;
+      }
     });
   }
   sendCode(): void {
     this.step = ++this.step;
     this.startTimer();
   }
-
+  comparePasswords(){
+    return (this.password.value&&this.passwordConfirm.value)&&(this.password.value===this.passwordConfirm.value)
+  }
   confirmCode(): void {
+    if(this.confirmCodeForm.invalid){
+      this.errCodeMassage=true;
+      return;
+    }
     this.registerService.confirmPhone(this.confirmCodeForm.value).then(resp => {
       this.resendTimer.clearInterval();
       this.timerValue = 30;
       this.navigate();
+    }).catch(err => {
+      switch (err.status) {
+        case 500: this.errStatusMassage = 'Ошибка сервера, попробуйте позже'; break;
+        case 0: this.errStatusMassage = 'Отсутствие интернет соединения'; break;
+      }
     });
   }
 
@@ -74,6 +98,10 @@ export class RegisterComponent implements OnInit {
   }
 
   sendPhoneAndPassword(): void {
+    if(this.phoneNumber.invalid){
+      this.errStatusMassage='Fill all required fields';
+      return;
+    }
     if (this.password.invalid){
       this.password.reset();
       this.passwordConfirm.reset();
@@ -84,7 +112,16 @@ export class RegisterComponent implements OnInit {
       this.registerService.sendPassword(this.code, this.password.value, this.phoneNumber.value).then(resp => {
         this.step = ++this.step;
         this.startTimer();
+      }).catch(err => {
+        switch (err.status) {
+          case 500: this.errStatusMassage = 'Ошибка сервера, попробуйте позже'; break;
+          case 0: this.errStatusMassage = 'Отсутствие интернет соединения'; break;
+        }
       });
     }
+  }
+
+  isInvalid(form: FormGroup|FormControl,field: string='') {
+    return this.checkFormInvalidService.isInvalid(form,field);
   }
 }

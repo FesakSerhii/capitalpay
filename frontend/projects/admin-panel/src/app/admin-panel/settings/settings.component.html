@@ -136,10 +136,10 @@
           <input type="password" class="form-control" formControlName="confirmPassword">
         </div>
       </form>
+      <span style="color: red" *ngIf="errStatusMassage!==null">{{errStatusMassage}}</span>
+      <span style="color: red" *ngIf="!comparePasswords()">Пароли не совпадают</span>
       <div class="d-flex justify-content-end">
         <button class="btn btn-success btn-round"
-                [disabled]="!comparePasswords()"
-                [class.disabled]="!comparePasswords()"
                 (click)="confirmPasswordChange()">Сохранить изменения</button>
       </div>
     </div>

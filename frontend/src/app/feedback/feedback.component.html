@@ -10,13 +10,13 @@
       <div>
         <label class="col-form-label">Компания *</label>
         <div class="form-group has-default bmd-form-group">
-          <input type="text" class="form-control" style="width:450px" formControlName="companyName">
+          <input [class.error]="isInvalid(feedbackForm,'companyName')"type="text" class="form-control" style="width:450px" formControlName="companyName">
         </div>
       </div>
       <div>
         <label class="col-form-label">Фамилия Имя Отчество *</label>
         <div class="form-group has-default bmd-form-group">
-          <input type="text" class="form-control" style="width:450px" formControlName="name">
+          <input [class.error]="isInvalid(feedbackForm,'name')"type="text" class="form-control" style="width:450px" formControlName="name">
         </div>
       </div>
     </div>
@@ -24,13 +24,13 @@
       <div>
         <label class="col-form-label">Телефон *</label>
         <div class="form-group has-default bmd-form-group">
-          <input type="text" class="form-control" style="width:450px" formControlName="phone">
+          <input [class.error]="isInvalid(feedbackForm,'phone')"type="text" class="form-control" style="width:450px" formControlName="phone">
         </div>
       </div>
       <div>
         <label class="col-form-label">Email *</label>
         <div class="form-group has-default bmd-form-group">
-          <input type="email" class="form-control" style="width:450px" formControlName="email">
+          <input [class.error]="isInvalid(feedbackForm,'email')"type="email" class="form-control" style="width:450px" formControlName="email">
         </div>
       </div>
     </div>
@@ -38,13 +38,12 @@
     <div>
       <label class="col-form-label">Текст сообщения * </label>
       <div class="form-group has-default bmd-form-group">
-        <input type="text" class="form-control" style="width:985px" formControlName="text">
+        <input [class.error]="isInvalid(feedbackForm,'text')"type="text" class="form-control" style="width:985px" formControlName="text">
       </div>
     </div>
     </div>
+    <span style="color: red" *ngIf="errStatusMassage!==null">{{errStatusMassage}}</span>
     <button class="btn btn-success btn-round btn-back mt-5"
-            [class.disabled]="feedbackForm.invalid"
-            [disabled]="feedbackForm.invalid"
             style="width: 200px;margin: 0 auto;" (click)="sendFeedback()">Send message</button>
   </form>
 

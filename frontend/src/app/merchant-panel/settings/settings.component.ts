@@ -9,6 +9,7 @@ import {UserService} from '../../../../projects/admin-panel/src/app/service/user
 import {KycService} from '../../../../projects/admin-panel/src/app/service/kyc.service';
 import {ConfirmActionModalComponent} from '../../../../common-blocks/confirm-action-modal/confirm-action-modal.component';
 import {ActivatedRoute} from '@angular/router';
+import {CheckFormInvalidService} from "../../service/check-form-invalid.service";
 
 @Component({
   selector: 'app-settings',
@@ -26,6 +27,7 @@ export class SettingsComponent implements OnInit {
               private registerService: RegisterService,
               private userService: UserService,
               private kycService: KycService,
+              public checkFormInvalidService:CheckFormInvalidService,
               private activatedRoute: ActivatedRoute,
               private paymentsService: PaymentsService) {
   }
@@ -90,6 +92,7 @@ export class SettingsComponent implements OnInit {
   merchantId: number = null;
   confirmMassage: string = null;
   isTwoFactor = new FormControl();
+  errStatusMassage: string = null;
 
 
   ngOnInit(): void {
@@ -243,9 +246,18 @@ export class SettingsComponent implements OnInit {
   }
 
   confirmPasswordChange() {
+    if(this.passChangeForm.invalid){
+      this.errStatusMassage='Заполните все необходимые поля';
+      return;
+    }
     this.confirmMassage = 'changePassword'
     this.confirmModal.open().then(resp => {
-      this.registerService.changePassword(this.passChangeForm.value.oldPassword, this.passChangeForm.value.newPassword)
+      this.registerService.changePassword(this.passChangeForm.value.oldPassword, this.passChangeForm.value.newPassword).catch(err => {
+        switch (err.status) {
+          case 500: this.errStatusMassage = 'Ошибка сервера, попробуйте позже'; break;
+          case 0: this.errStatusMassage = 'Отсутствие интернет соединения'; break;
+        }
+      })
     })
   }
 
@@ -273,5 +285,9 @@ export class SettingsComponent implements OnInit {
     this.activeTab=tab;
     this.cashBoxEditOpened=false;
     this.selectedCashBoxId=null
+  }
+
+  isInvalid(form: FormGroup|FormControl,field: string='') {
+    return this.checkFormInvalidService.isInvalid(form,field);
   }
 }
