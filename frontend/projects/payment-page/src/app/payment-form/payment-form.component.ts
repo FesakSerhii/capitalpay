@@ -47,7 +47,7 @@ export class PaymentFormComponent implements OnInit {
   redirectTimer: number = 5;
   // parameters: string = null;
   acceptTerms = new FormControl();
-
+  yearsArr: number[] = [];
 
   constructor(private userCardService: UserCardService,
               private activatedRoute: ActivatedRoute,
@@ -56,6 +56,11 @@ export class PaymentFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    let currentYear = new Date().getFullYear();
+    for (let i = currentYear; i < currentYear + 6; i++) {
+      this.yearsArr.push(currentYear);
+      currentYear++
+    }
     this.cardHolderNameEnabled()
     let dateFields = {
       expirationMonth: 'expirationYear',

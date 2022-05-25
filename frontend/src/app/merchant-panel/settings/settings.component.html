@@ -84,7 +84,7 @@
             <form [formGroup]="casBoxSettingsForm">
               <div class="form-group has-default bmd-form-group d-flex">
                 <label class="col-form-label label-checkbox pt-0 col-2">Название кассы *</label>
-                <input [class.error]="isInvalid(cashBoxInfo,'name')" type="text" class="form-control" formControlName="name">
+                <input [class.error]="isInvalid(casBoxSettingsForm,'name')" type="text" class="form-control" formControlName="name">
               </div>
             </form>
             <form [formGroup]="cashBoxInfo">
