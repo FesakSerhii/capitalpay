@@ -27,7 +27,7 @@
                 *ngIf="expInvalid">invalid exp date</span>
           <app-custom-select classes="mr-5" placeholder="month" formControlName="expirationMonth"
                              [values]="['01','02','03','04','05','06','07','08','09','10','11','12']" (click)="dateInvalid()"></app-custom-select>
-          <app-custom-select placeholder="year"  formControlName="expirationYear"
+          <app-custom-select *ngIf="yearsArr" placeholder="year"  formControlName="expirationYear"
                              (click)="dateInvalid()"
                              [values]="yearsArr"></app-custom-select>
         </div>

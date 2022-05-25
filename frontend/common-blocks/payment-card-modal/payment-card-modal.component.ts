@@ -47,7 +47,7 @@ export class PaymentCardModalComponent implements OnInit {
 
   async ngOnInit() {
     let currentYear = new Date().getFullYear();
-    for (let i = currentYear; i < currentYear + 6; i++) {
+    for (let i = 0; i < 6; i++) {
       this.yearsArr.push(currentYear);
       currentYear++
     }
