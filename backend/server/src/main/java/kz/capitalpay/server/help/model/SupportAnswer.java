@@ -6,7 +6,8 @@ import javax.persistence.Id;
 
 @Entity
 public class SupportAnswer {
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     Long Id;
     Long requestId;
     Long operatorId;
