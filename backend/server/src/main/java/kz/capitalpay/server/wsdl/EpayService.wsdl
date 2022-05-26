@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns="http://ws.epay.kkb.kz/xsd" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:ax28="http://sax.xml.org/xsd" xmlns:ax210="http://models.ws.epay.kkb.kz/xsd" xmlns:ax26="http://io.java/xsd" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:ax22="http://security.java/xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ax21="http://cert.security.java/xsd" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="http://ws.epay.kkb.kz/xsd">
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns="http://ws.epay.kkb.kz/xsd"
+                  xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"
+                  xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+                  xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+                  xmlns:ax28="http://sax.xml.org/xsd" xmlns:ax210="http://models.ws.epay.kkb.kz/xsd"
+                  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+                  xmlns:ax22="http://security.java/xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  targetNamespace="http://ws.epay.kkb.kz/xsd">
     <wsdl:documentation>EpayService</wsdl:documentation>
     <wsdl:types>
-        <xs:schema xmlns:ax23="http://security.java/xsd" attributeFormDefault="qualified" elementFormDefault="unqualified" targetNamespace="http://cert.security.java/xsd">
+        <xs:schema xmlns:ax23="http://security.java/xsd" attributeFormDefault="qualified"
+                   elementFormDefault="unqualified" targetNamespace="http://cert.security.java/xsd">
             <xs:import namespace="http://security.java/xsd"/>
             <xs:import namespace="http://security.java/xsd"/>
             <xs:complexType name="CertificateException">
@@ -13,12 +22,14 @@
                 </xs:complexContent>
             </xs:complexType>
         </xs:schema>
-        <xs:schema attributeFormDefault="qualified" elementFormDefault="unqualified" targetNamespace="http://io.java/xsd">
+        <xs:schema attributeFormDefault="qualified" elementFormDefault="unqualified"
+                   targetNamespace="http://io.java/xsd">
             <xs:complexType name="IOException">
                 <xs:sequence/>
             </xs:complexType>
         </xs:schema>
-        <xs:schema attributeFormDefault="qualified" elementFormDefault="unqualified" targetNamespace="http://sax.xml.org/xsd">
+        <xs:schema attributeFormDefault="qualified" elementFormDefault="unqualified"
+                   targetNamespace="http://sax.xml.org/xsd">
             <xs:complexType name="SAXException">
                 <xs:sequence>
                     <xs:element minOccurs="0" name="cause" nillable="true" type="xs:anyType"/>
@@ -27,7 +38,10 @@
                 </xs:sequence>
             </xs:complexType>
         </xs:schema>
-        <xs:schema xmlns:ax27="http://io.java/xsd" xmlns:ax29="http://sax.xml.org/xsd" xmlns:ax24="http://cert.security.java/xsd" xmlns:ax211="http://models.ws.epay.kkb.kz/xsd" xmlns:ax25="http://security.java/xsd" attributeFormDefault="qualified" elementFormDefault="unqualified" targetNamespace="http://ws.epay.kkb.kz/xsd">
+        <xs:schema xmlns:ax27="http://io.java/xsd"
+                   xmlns:ax24="http://cert.security.java/xsd"
+                   xmlns:ax25="http://security.java/xsd" attributeFormDefault="qualified"
+                   elementFormDefault="unqualified" targetNamespace="http://ws.epay.kkb.kz/xsd">
             <xs:import namespace="http://cert.security.java/xsd"/>
             <xs:import namespace="http://security.java/xsd"/>
             <xs:import namespace="http://io.java/xsd"/>
@@ -36,21 +50,24 @@
             <xs:element name="EpayServiceCertificateException">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="CertificateException" nillable="true" type="ax24:CertificateException"/>
+                        <xs:element minOccurs="0" name="CertificateException" nillable="true"
+                                    type="ax24:CertificateException"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
             <xs:element name="EpayServiceUnrecoverableKeyException">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="UnrecoverableKeyException" nillable="true" type="ax25:UnrecoverableKeyException"/>
+                        <xs:element minOccurs="0" name="UnrecoverableKeyException" nillable="true"
+                                    type="ax25:UnrecoverableKeyException"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
             <xs:element name="EpayServiceNoSuchAlgorithmException">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="NoSuchAlgorithmException" nillable="true" type="ax25:NoSuchAlgorithmException"/>
+                        <xs:element minOccurs="0" name="NoSuchAlgorithmException" nillable="true"
+                                    type="ax25:NoSuchAlgorithmException"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -64,28 +81,32 @@
             <xs:element name="EpayServiceKeyStoreException">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="KeyStoreException" nillable="true" type="ax25:KeyStoreException"/>
+                        <xs:element minOccurs="0" name="KeyStoreException" nillable="true"
+                                    type="ax25:KeyStoreException"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
             <xs:element name="EpayServiceSignatureException">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="SignatureException" nillable="true" type="ax25:SignatureException"/>
+                        <xs:element minOccurs="0" name="SignatureException" nillable="true"
+                                    type="ax25:SignatureException"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
             <xs:element name="EpayServiceInvalidKeyException">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="InvalidKeyException" nillable="true" type="ax25:InvalidKeyException"/>
+                        <xs:element minOccurs="0" name="InvalidKeyException" nillable="true"
+                                    type="ax25:InvalidKeyException"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
             <xs:element name="EpayServiceParserConfigurationException">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="ParserConfigurationException" nillable="true" type="xs:anyType"/>
+                        <xs:element minOccurs="0" name="ParserConfigurationException" nillable="true"
+                                    type="xs:anyType"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -100,7 +121,8 @@
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element minOccurs="0" name="transferOrder" nillable="true" type="ax210:TransferOrder"/>
-                        <xs:element minOccurs="0" name="requestSignature" nillable="true" type="ax210:RequestSignature"/>
+                        <xs:element minOccurs="0" name="requestSignature" nillable="true"
+                                    type="ax210:RequestSignature"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -121,7 +143,8 @@
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element minOccurs="0" name="refundOrder" nillable="true" type="ax210:RefundOrder"/>
-                        <xs:element minOccurs="0" name="requestSignature" nillable="true" type="ax210:RequestSignature"/>
+                        <xs:element minOccurs="0" name="requestSignature" nillable="true"
+                                    type="ax210:RequestSignature"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -136,7 +159,8 @@
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element minOccurs="0" name="recurrentOrder" nillable="true" type="ax210:RecurrentOrder"/>
-                        <xs:element minOccurs="0" name="requestSignature" nillable="true" type="ax210:RequestSignature"/>
+                        <xs:element minOccurs="0" name="requestSignature" nillable="true"
+                                    type="ax210:RequestSignature"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -151,7 +175,8 @@
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element minOccurs="0" name="order" nillable="true" type="ax210:AcsOrder"/>
-                        <xs:element minOccurs="0" name="requestSignature" nillable="true" type="ax210:RequestSignature"/>
+                        <xs:element minOccurs="0" name="requestSignature" nillable="true"
+                                    type="ax210:RequestSignature"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -166,7 +191,8 @@
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element minOccurs="0" name="order" nillable="true" type="ax210:Order"/>
-                        <xs:element minOccurs="0" name="requestSignature" nillable="true" type="ax210:RequestSignature"/>
+                        <xs:element minOccurs="0" name="requestSignature" nillable="true"
+                                    type="ax210:RequestSignature"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -181,7 +207,8 @@
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element minOccurs="0" name="order" nillable="true" type="ax210:Is3dOrder"/>
-                        <xs:element minOccurs="0" name="requestSignature" nillable="true" type="ax210:RequestSignature"/>
+                        <xs:element minOccurs="0" name="requestSignature" nillable="true"
+                                    type="ax210:RequestSignature"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -196,7 +223,8 @@
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element minOccurs="0" name="order" nillable="true" type="ax210:GetCardListRequest"/>
-                        <xs:element minOccurs="0" name="requestSignature" nillable="true" type="ax210:RequestSignature"/>
+                        <xs:element minOccurs="0" name="requestSignature" nillable="true"
+                                    type="ax210:RequestSignature"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -211,7 +239,8 @@
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element minOccurs="0" name="order" nillable="true" type="ax210:FormZipOrder"/>
-                        <xs:element minOccurs="0" name="requestSignature" nillable="true" type="ax210:RequestSignature"/>
+                        <xs:element minOccurs="0" name="requestSignature" nillable="true"
+                                    type="ax210:RequestSignature"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -226,7 +255,8 @@
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element minOccurs="0" name="order" nillable="true" type="ax210:DeleteCardRequest"/>
-                        <xs:element minOccurs="0" name="requestSignature" nillable="true" type="ax210:RequestSignature"/>
+                        <xs:element minOccurs="0" name="requestSignature" nillable="true"
+                                    type="ax210:RequestSignature"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -241,7 +271,8 @@
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element minOccurs="0" name="controlOrder" nillable="true" type="ax210:ControlOrder"/>
-                        <xs:element minOccurs="0" name="requestSignature" nillable="true" type="ax210:RequestSignature"/>
+                        <xs:element minOccurs="0" name="requestSignature" nillable="true"
+                                    type="ax210:RequestSignature"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -256,7 +287,8 @@
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element minOccurs="0" name="order" nillable="true" type="ax210:CheckZipOrder"/>
-                        <xs:element minOccurs="0" name="requestSignature" nillable="true" type="ax210:RequestSignature"/>
+                        <xs:element minOccurs="0" name="requestSignature" nillable="true"
+                                    type="ax210:RequestSignature"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -271,7 +303,8 @@
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element minOccurs="0" name="order" nillable="true" type="ax210:CheckOrder"/>
-                        <xs:element minOccurs="0" name="requestSignature" nillable="true" type="ax210:RequestSignature"/>
+                        <xs:element minOccurs="0" name="requestSignature" nillable="true"
+                                    type="ax210:RequestSignature"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -284,7 +317,8 @@
             </xs:element>
             <xs:complexType name="Refunds">
                 <xs:sequence>
-                    <xs:element maxOccurs="unbounded" minOccurs="0" name="refundItem" nillable="true" type="ns:RefundItem"/>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="refundItem" nillable="true"
+                                type="ns:RefundItem"/>
                 </xs:sequence>
             </xs:complexType>
             <xs:complexType name="RefundItem">
@@ -298,7 +332,8 @@
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element minOccurs="0" name="order" nillable="true" type="ax210:CheckForeignCardRequest"/>
-                        <xs:element minOccurs="0" name="requestSignature" nillable="true" type="ax210:RequestSignature"/>
+                        <xs:element minOccurs="0" name="requestSignature" nillable="true"
+                                    type="ax210:RequestSignature"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -313,7 +348,8 @@
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element minOccurs="0" name="order" nillable="true" type="ax210:CardidPaymentOrderRequest"/>
-                        <xs:element minOccurs="0" name="requestSignature" nillable="true" type="ax210:RequestSignature"/>
+                        <xs:element minOccurs="0" name="requestSignature" nillable="true"
+                                    type="ax210:RequestSignature"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -328,7 +364,8 @@
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element minOccurs="0" name="order" nillable="true" type="ax210:AirastanaPaymentOrder"/>
-                        <xs:element minOccurs="0" name="requestSignature" nillable="true" type="ax210:RequestSignature"/>
+                        <xs:element minOccurs="0" name="requestSignature" nillable="true"
+                                    type="ax210:RequestSignature"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -343,7 +380,8 @@
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element minOccurs="0" name="order" nillable="true" type="ax210:AirastanaAcsOrder"/>
-                        <xs:element minOccurs="0" name="requestSignature" nillable="true" type="ax210:RequestSignature"/>
+                        <xs:element minOccurs="0" name="requestSignature" nillable="true"
+                                    type="ax210:RequestSignature"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -355,7 +393,8 @@
                 </xs:complexType>
             </xs:element>
         </xs:schema>
-        <xs:schema xmlns:ax212="http://ws.epay.kkb.kz/xsd" attributeFormDefault="qualified" elementFormDefault="unqualified" targetNamespace="http://models.ws.epay.kkb.kz/xsd">
+        <xs:schema xmlns:ax212="http://ws.epay.kkb.kz/xsd" attributeFormDefault="qualified"
+                   elementFormDefault="unqualified" targetNamespace="http://models.ws.epay.kkb.kz/xsd">
             <xs:import namespace="http://ws.epay.kkb.kz/xsd"/>
             <xs:import namespace="http://ws.epay.kkb.kz/xsd"/>
             <xs:complexType name="Order">
@@ -506,7 +545,8 @@
             <xs:complexType name="CardsResult">
                 <xs:sequence>
                     <xs:element minOccurs="0" name="abonentid" nillable="true" type="xs:string"/>
-                    <xs:element maxOccurs="unbounded" minOccurs="0" name="cardsResultItems" nillable="true" type="ax210:CardsResultItem"/>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="cardsResultItems" nillable="true"
+                                type="ax210:CardsResultItem"/>
                     <xs:element minOccurs="0" name="responseSignature" nillable="true" type="ax212:ResponseSignature"/>
                     <xs:element minOccurs="0" name="result" nillable="true" type="xs:string"/>
                     <xs:element minOccurs="0" name="type" nillable="true" type="xs:string"/>
@@ -661,7 +701,8 @@
                 <xs:complexContent>
                     <xs:extension base="ax210:Order">
                         <xs:sequence>
-                            <xs:element maxOccurs="unbounded" minOccurs="0" name="amadeusItems" nillable="true" type="ax210:AmadeusItem"/>
+                            <xs:element maxOccurs="unbounded" minOccurs="0" name="amadeusItems" nillable="true"
+                                        type="ax210:AmadeusItem"/>
                             <xs:element minOccurs="0" name="fingerprintId" nillable="true" type="xs:string"/>
                             <xs:element minOccurs="0" name="senderIP" nillable="true" type="xs:string"/>
                         </xs:sequence>
@@ -683,7 +724,8 @@
                             <xs:element minOccurs="0" name="checkFraudResultString" nillable="true" type="xs:string"/>
                             <xs:element minOccurs="0" name="isCorpCard" nillable="true" type="xs:string"/>
                             <xs:element minOccurs="0" name="isKKBCard" nillable="true" type="xs:string"/>
-                            <xs:element minOccurs="0" name="numberOfTransactionsMoreThan90" nillable="true" type="xs:string"/>
+                            <xs:element minOccurs="0" name="numberOfTransactionsMoreThan90" nillable="true"
+                                        type="xs:string"/>
                         </xs:sequence>
                     </xs:extension>
                 </xs:complexContent>
@@ -696,7 +738,8 @@
                 </xs:complexContent>
             </xs:complexType>
         </xs:schema>
-        <xs:schema attributeFormDefault="qualified" elementFormDefault="unqualified" targetNamespace="http://security.java/xsd">
+        <xs:schema attributeFormDefault="qualified" elementFormDefault="unqualified"
+                   targetNamespace="http://security.java/xsd">
             <xs:complexType name="GeneralSecurityException">
                 <xs:sequence/>
             </xs:complexType>
@@ -890,61 +933,106 @@
         <wsdl:operation name="recurrentOrder">
             <wsdl:input message="ns:recurrentOrderRequest" wsaw:Action="urn:recurrentOrder"/>
             <wsdl:output message="ns:recurrentOrderResponse" wsaw:Action="urn:recurrentOrderResponse"/>
-            <wsdl:fault message="ns:EpayServiceCertificateException" name="EpayServiceCertificateException" wsaw:Action="urn:recurrentOrderEpayServiceCertificateException"/>
-            <wsdl:fault message="ns:EpayServiceUnrecoverableKeyException" name="EpayServiceUnrecoverableKeyException" wsaw:Action="urn:recurrentOrderEpayServiceUnrecoverableKeyException"/>
-            <wsdl:fault message="ns:EpayServiceNoSuchAlgorithmException" name="EpayServiceNoSuchAlgorithmException" wsaw:Action="urn:recurrentOrderEpayServiceNoSuchAlgorithmException"/>
-            <wsdl:fault message="ns:EpayServiceIOException" name="EpayServiceIOException" wsaw:Action="urn:recurrentOrderEpayServiceIOException"/>
-            <wsdl:fault message="ns:EpayServiceKeyStoreException" name="EpayServiceKeyStoreException" wsaw:Action="urn:recurrentOrderEpayServiceKeyStoreException"/>
-            <wsdl:fault message="ns:EpayServiceSignatureException" name="EpayServiceSignatureException" wsaw:Action="urn:recurrentOrderEpayServiceSignatureException"/>
-            <wsdl:fault message="ns:EpayServiceInvalidKeyException" name="EpayServiceInvalidKeyException" wsaw:Action="urn:recurrentOrderEpayServiceInvalidKeyException"/>
-            <wsdl:fault message="ns:EpayServiceParserConfigurationException" name="EpayServiceParserConfigurationException" wsaw:Action="urn:recurrentOrderEpayServiceParserConfigurationException"/>
-            <wsdl:fault message="ns:EpayServiceSAXException" name="EpayServiceSAXException" wsaw:Action="urn:recurrentOrderEpayServiceSAXException"/>
+            <wsdl:fault message="ns:EpayServiceCertificateException" name="EpayServiceCertificateException"
+                        wsaw:Action="urn:recurrentOrderEpayServiceCertificateException"/>
+            <wsdl:fault message="ns:EpayServiceUnrecoverableKeyException" name="EpayServiceUnrecoverableKeyException"
+                        wsaw:Action="urn:recurrentOrderEpayServiceUnrecoverableKeyException"/>
+            <wsdl:fault message="ns:EpayServiceNoSuchAlgorithmException" name="EpayServiceNoSuchAlgorithmException"
+                        wsaw:Action="urn:recurrentOrderEpayServiceNoSuchAlgorithmException"/>
+            <wsdl:fault message="ns:EpayServiceIOException" name="EpayServiceIOException"
+                        wsaw:Action="urn:recurrentOrderEpayServiceIOException"/>
+            <wsdl:fault message="ns:EpayServiceKeyStoreException" name="EpayServiceKeyStoreException"
+                        wsaw:Action="urn:recurrentOrderEpayServiceKeyStoreException"/>
+            <wsdl:fault message="ns:EpayServiceSignatureException" name="EpayServiceSignatureException"
+                        wsaw:Action="urn:recurrentOrderEpayServiceSignatureException"/>
+            <wsdl:fault message="ns:EpayServiceInvalidKeyException" name="EpayServiceInvalidKeyException"
+                        wsaw:Action="urn:recurrentOrderEpayServiceInvalidKeyException"/>
+            <wsdl:fault message="ns:EpayServiceParserConfigurationException"
+                        name="EpayServiceParserConfigurationException"
+                        wsaw:Action="urn:recurrentOrderEpayServiceParserConfigurationException"/>
+            <wsdl:fault message="ns:EpayServiceSAXException" name="EpayServiceSAXException"
+                        wsaw:Action="urn:recurrentOrderEpayServiceSAXException"/>
         </wsdl:operation>
         <wsdl:operation name="controlOrderForCommerce">
             <wsdl:input message="ns:controlOrderForCommerceRequest" wsaw:Action="urn:controlOrderForCommerce"/>
-            <wsdl:output message="ns:controlOrderForCommerceResponse" wsaw:Action="urn:controlOrderForCommerceResponse"/>
-            <wsdl:fault message="ns:EpayServiceCertificateException" name="EpayServiceCertificateException" wsaw:Action="urn:controlOrderForCommerceEpayServiceCertificateException"/>
-            <wsdl:fault message="ns:EpayServiceUnrecoverableKeyException" name="EpayServiceUnrecoverableKeyException" wsaw:Action="urn:controlOrderForCommerceEpayServiceUnrecoverableKeyException"/>
-            <wsdl:fault message="ns:EpayServiceNoSuchAlgorithmException" name="EpayServiceNoSuchAlgorithmException" wsaw:Action="urn:controlOrderForCommerceEpayServiceNoSuchAlgorithmException"/>
-            <wsdl:fault message="ns:EpayServiceIOException" name="EpayServiceIOException" wsaw:Action="urn:controlOrderForCommerceEpayServiceIOException"/>
-            <wsdl:fault message="ns:EpayServiceKeyStoreException" name="EpayServiceKeyStoreException" wsaw:Action="urn:controlOrderForCommerceEpayServiceKeyStoreException"/>
-            <wsdl:fault message="ns:EpayServiceSignatureException" name="EpayServiceSignatureException" wsaw:Action="urn:controlOrderForCommerceEpayServiceSignatureException"/>
-            <wsdl:fault message="ns:EpayServiceInvalidKeyException" name="EpayServiceInvalidKeyException" wsaw:Action="urn:controlOrderForCommerceEpayServiceInvalidKeyException"/>
-            <wsdl:fault message="ns:EpayServiceParserConfigurationException" name="EpayServiceParserConfigurationException" wsaw:Action="urn:controlOrderForCommerceEpayServiceParserConfigurationException"/>
-            <wsdl:fault message="ns:EpayServiceSAXException" name="EpayServiceSAXException" wsaw:Action="urn:controlOrderForCommerceEpayServiceSAXException"/>
+            <wsdl:output message="ns:controlOrderForCommerceResponse"
+                         wsaw:Action="urn:controlOrderForCommerceResponse"/>
+            <wsdl:fault message="ns:EpayServiceCertificateException" name="EpayServiceCertificateException"
+                        wsaw:Action="urn:controlOrderForCommerceEpayServiceCertificateException"/>
+            <wsdl:fault message="ns:EpayServiceUnrecoverableKeyException" name="EpayServiceUnrecoverableKeyException"
+                        wsaw:Action="urn:controlOrderForCommerceEpayServiceUnrecoverableKeyException"/>
+            <wsdl:fault message="ns:EpayServiceNoSuchAlgorithmException" name="EpayServiceNoSuchAlgorithmException"
+                        wsaw:Action="urn:controlOrderForCommerceEpayServiceNoSuchAlgorithmException"/>
+            <wsdl:fault message="ns:EpayServiceIOException" name="EpayServiceIOException"
+                        wsaw:Action="urn:controlOrderForCommerceEpayServiceIOException"/>
+            <wsdl:fault message="ns:EpayServiceKeyStoreException" name="EpayServiceKeyStoreException"
+                        wsaw:Action="urn:controlOrderForCommerceEpayServiceKeyStoreException"/>
+            <wsdl:fault message="ns:EpayServiceSignatureException" name="EpayServiceSignatureException"
+                        wsaw:Action="urn:controlOrderForCommerceEpayServiceSignatureException"/>
+            <wsdl:fault message="ns:EpayServiceInvalidKeyException" name="EpayServiceInvalidKeyException"
+                        wsaw:Action="urn:controlOrderForCommerceEpayServiceInvalidKeyException"/>
+            <wsdl:fault message="ns:EpayServiceParserConfigurationException"
+                        name="EpayServiceParserConfigurationException"
+                        wsaw:Action="urn:controlOrderForCommerceEpayServiceParserConfigurationException"/>
+            <wsdl:fault message="ns:EpayServiceSAXException" name="EpayServiceSAXException"
+                        wsaw:Action="urn:controlOrderForCommerceEpayServiceSAXException"/>
         </wsdl:operation>
         <wsdl:operation name="transferOrder">
             <wsdl:input message="ns:transferOrderRequest" wsaw:Action="urn:transferOrder"/>
             <wsdl:output message="ns:transferOrderResponse" wsaw:Action="urn:transferOrderResponse"/>
-            <wsdl:fault message="ns:EpayServiceCertificateException" name="EpayServiceCertificateException" wsaw:Action="urn:transferOrderEpayServiceCertificateException"/>
-            <wsdl:fault message="ns:EpayServiceUnrecoverableKeyException" name="EpayServiceUnrecoverableKeyException" wsaw:Action="urn:transferOrderEpayServiceUnrecoverableKeyException"/>
-            <wsdl:fault message="ns:EpayServiceNoSuchAlgorithmException" name="EpayServiceNoSuchAlgorithmException" wsaw:Action="urn:transferOrderEpayServiceNoSuchAlgorithmException"/>
-            <wsdl:fault message="ns:EpayServiceIOException" name="EpayServiceIOException" wsaw:Action="urn:transferOrderEpayServiceIOException"/>
-            <wsdl:fault message="ns:EpayServiceKeyStoreException" name="EpayServiceKeyStoreException" wsaw:Action="urn:transferOrderEpayServiceKeyStoreException"/>
-            <wsdl:fault message="ns:EpayServiceSignatureException" name="EpayServiceSignatureException" wsaw:Action="urn:transferOrderEpayServiceSignatureException"/>
-            <wsdl:fault message="ns:EpayServiceInvalidKeyException" name="EpayServiceInvalidKeyException" wsaw:Action="urn:transferOrderEpayServiceInvalidKeyException"/>
-            <wsdl:fault message="ns:EpayServiceParserConfigurationException" name="EpayServiceParserConfigurationException" wsaw:Action="urn:transferOrderEpayServiceParserConfigurationException"/>
-            <wsdl:fault message="ns:EpayServiceSAXException" name="EpayServiceSAXException" wsaw:Action="urn:transferOrderEpayServiceSAXException"/>
+            <wsdl:fault message="ns:EpayServiceCertificateException" name="EpayServiceCertificateException"
+                        wsaw:Action="urn:transferOrderEpayServiceCertificateException"/>
+            <wsdl:fault message="ns:EpayServiceUnrecoverableKeyException" name="EpayServiceUnrecoverableKeyException"
+                        wsaw:Action="urn:transferOrderEpayServiceUnrecoverableKeyException"/>
+            <wsdl:fault message="ns:EpayServiceNoSuchAlgorithmException" name="EpayServiceNoSuchAlgorithmException"
+                        wsaw:Action="urn:transferOrderEpayServiceNoSuchAlgorithmException"/>
+            <wsdl:fault message="ns:EpayServiceIOException" name="EpayServiceIOException"
+                        wsaw:Action="urn:transferOrderEpayServiceIOException"/>
+            <wsdl:fault message="ns:EpayServiceKeyStoreException" name="EpayServiceKeyStoreException"
+                        wsaw:Action="urn:transferOrderEpayServiceKeyStoreException"/>
+            <wsdl:fault message="ns:EpayServiceSignatureException" name="EpayServiceSignatureException"
+                        wsaw:Action="urn:transferOrderEpayServiceSignatureException"/>
+            <wsdl:fault message="ns:EpayServiceInvalidKeyException" name="EpayServiceInvalidKeyException"
+                        wsaw:Action="urn:transferOrderEpayServiceInvalidKeyException"/>
+            <wsdl:fault message="ns:EpayServiceParserConfigurationException"
+                        name="EpayServiceParserConfigurationException"
+                        wsaw:Action="urn:transferOrderEpayServiceParserConfigurationException"/>
+            <wsdl:fault message="ns:EpayServiceSAXException" name="EpayServiceSAXException"
+                        wsaw:Action="urn:transferOrderEpayServiceSAXException"/>
         </wsdl:operation>
         <wsdl:operation name="refundOrderForCommerce">
             <wsdl:input message="ns:refundOrderForCommerceRequest" wsaw:Action="urn:refundOrderForCommerce"/>
             <wsdl:output message="ns:refundOrderForCommerceResponse" wsaw:Action="urn:refundOrderForCommerceResponse"/>
-            <wsdl:fault message="ns:EpayServiceCertificateException" name="EpayServiceCertificateException" wsaw:Action="urn:refundOrderForCommerceEpayServiceCertificateException"/>
-            <wsdl:fault message="ns:EpayServiceUnrecoverableKeyException" name="EpayServiceUnrecoverableKeyException" wsaw:Action="urn:refundOrderForCommerceEpayServiceUnrecoverableKeyException"/>
-            <wsdl:fault message="ns:EpayServiceNoSuchAlgorithmException" name="EpayServiceNoSuchAlgorithmException" wsaw:Action="urn:refundOrderForCommerceEpayServiceNoSuchAlgorithmException"/>
-            <wsdl:fault message="ns:EpayServiceIOException" name="EpayServiceIOException" wsaw:Action="urn:refundOrderForCommerceEpayServiceIOException"/>
-            <wsdl:fault message="ns:EpayServiceKeyStoreException" name="EpayServiceKeyStoreException" wsaw:Action="urn:refundOrderForCommerceEpayServiceKeyStoreException"/>
-            <wsdl:fault message="ns:EpayServiceSignatureException" name="EpayServiceSignatureException" wsaw:Action="urn:refundOrderForCommerceEpayServiceSignatureException"/>
-            <wsdl:fault message="ns:EpayServiceInvalidKeyException" name="EpayServiceInvalidKeyException" wsaw:Action="urn:refundOrderForCommerceEpayServiceInvalidKeyException"/>
-            <wsdl:fault message="ns:EpayServiceParserConfigurationException" name="EpayServiceParserConfigurationException" wsaw:Action="urn:refundOrderForCommerceEpayServiceParserConfigurationException"/>
-            <wsdl:fault message="ns:EpayServiceSAXException" name="EpayServiceSAXException" wsaw:Action="urn:refundOrderForCommerceEpayServiceSAXException"/>
+            <wsdl:fault message="ns:EpayServiceCertificateException" name="EpayServiceCertificateException"
+                        wsaw:Action="urn:refundOrderForCommerceEpayServiceCertificateException"/>
+            <wsdl:fault message="ns:EpayServiceUnrecoverableKeyException" name="EpayServiceUnrecoverableKeyException"
+                        wsaw:Action="urn:refundOrderForCommerceEpayServiceUnrecoverableKeyException"/>
+            <wsdl:fault message="ns:EpayServiceNoSuchAlgorithmException" name="EpayServiceNoSuchAlgorithmException"
+                        wsaw:Action="urn:refundOrderForCommerceEpayServiceNoSuchAlgorithmException"/>
+            <wsdl:fault message="ns:EpayServiceIOException" name="EpayServiceIOException"
+                        wsaw:Action="urn:refundOrderForCommerceEpayServiceIOException"/>
+            <wsdl:fault message="ns:EpayServiceKeyStoreException" name="EpayServiceKeyStoreException"
+                        wsaw:Action="urn:refundOrderForCommerceEpayServiceKeyStoreException"/>
+            <wsdl:fault message="ns:EpayServiceSignatureException" name="EpayServiceSignatureException"
+                        wsaw:Action="urn:refundOrderForCommerceEpayServiceSignatureException"/>
+            <wsdl:fault message="ns:EpayServiceInvalidKeyException" name="EpayServiceInvalidKeyException"
+                        wsaw:Action="urn:refundOrderForCommerceEpayServiceInvalidKeyException"/>
+            <wsdl:fault message="ns:EpayServiceParserConfigurationException"
+                        name="EpayServiceParserConfigurationException"
+                        wsaw:Action="urn:refundOrderForCommerceEpayServiceParserConfigurationException"/>
+            <wsdl:fault message="ns:EpayServiceSAXException" name="EpayServiceSAXException"
+                        wsaw:Action="urn:refundOrderForCommerceEpayServiceSAXException"/>
         </wsdl:operation>
         <wsdl:operation name="cardidPaymentOrder">
             <wsdl:input message="ns:cardidPaymentOrderRequest" wsaw:Action="urn:cardidPaymentOrder"/>
             <wsdl:output message="ns:cardidPaymentOrderResponse" wsaw:Action="urn:cardidPaymentOrderResponse"/>
-            <wsdl:fault message="ns:EpayServiceParserConfigurationException" name="EpayServiceParserConfigurationException" wsaw:Action="urn:cardidPaymentOrderEpayServiceParserConfigurationException"/>
-            <wsdl:fault message="ns:EpayServiceSAXException" name="EpayServiceSAXException" wsaw:Action="urn:cardidPaymentOrderEpayServiceSAXException"/>
-            <wsdl:fault message="ns:EpayServiceIOException" name="EpayServiceIOException" wsaw:Action="urn:cardidPaymentOrderEpayServiceIOException"/>
+            <wsdl:fault message="ns:EpayServiceParserConfigurationException"
+                        name="EpayServiceParserConfigurationException"
+                        wsaw:Action="urn:cardidPaymentOrderEpayServiceParserConfigurationException"/>
+            <wsdl:fault message="ns:EpayServiceSAXException" name="EpayServiceSAXException"
+                        wsaw:Action="urn:cardidPaymentOrderEpayServiceSAXException"/>
+            <wsdl:fault message="ns:EpayServiceIOException" name="EpayServiceIOException"
+                        wsaw:Action="urn:cardidPaymentOrderEpayServiceIOException"/>
         </wsdl:operation>
         <wsdl:operation name="checkForeignCard">
             <wsdl:input message="ns:checkForeignCardRequest" wsaw:Action="urn:checkForeignCard"/>
@@ -957,45 +1045,76 @@
         <wsdl:operation name="paymentOrderAcs">
             <wsdl:input message="ns:paymentOrderAcsRequest" wsaw:Action="urn:paymentOrderAcs"/>
             <wsdl:output message="ns:paymentOrderAcsResponse" wsaw:Action="urn:paymentOrderAcsResponse"/>
-            <wsdl:fault message="ns:EpayServiceCertificateException" name="EpayServiceCertificateException" wsaw:Action="urn:paymentOrderAcsEpayServiceCertificateException"/>
-            <wsdl:fault message="ns:EpayServiceUnrecoverableKeyException" name="EpayServiceUnrecoverableKeyException" wsaw:Action="urn:paymentOrderAcsEpayServiceUnrecoverableKeyException"/>
-            <wsdl:fault message="ns:EpayServiceNoSuchAlgorithmException" name="EpayServiceNoSuchAlgorithmException" wsaw:Action="urn:paymentOrderAcsEpayServiceNoSuchAlgorithmException"/>
-            <wsdl:fault message="ns:EpayServiceIOException" name="EpayServiceIOException" wsaw:Action="urn:paymentOrderAcsEpayServiceIOException"/>
-            <wsdl:fault message="ns:EpayServiceKeyStoreException" name="EpayServiceKeyStoreException" wsaw:Action="urn:paymentOrderAcsEpayServiceKeyStoreException"/>
-            <wsdl:fault message="ns:EpayServiceSignatureException" name="EpayServiceSignatureException" wsaw:Action="urn:paymentOrderAcsEpayServiceSignatureException"/>
-            <wsdl:fault message="ns:EpayServiceInvalidKeyException" name="EpayServiceInvalidKeyException" wsaw:Action="urn:paymentOrderAcsEpayServiceInvalidKeyException"/>
-            <wsdl:fault message="ns:EpayServiceParserConfigurationException" name="EpayServiceParserConfigurationException" wsaw:Action="urn:paymentOrderAcsEpayServiceParserConfigurationException"/>
-            <wsdl:fault message="ns:EpayServiceSAXException" name="EpayServiceSAXException" wsaw:Action="urn:paymentOrderAcsEpayServiceSAXException"/>
+            <wsdl:fault message="ns:EpayServiceCertificateException" name="EpayServiceCertificateException"
+                        wsaw:Action="urn:paymentOrderAcsEpayServiceCertificateException"/>
+            <wsdl:fault message="ns:EpayServiceUnrecoverableKeyException" name="EpayServiceUnrecoverableKeyException"
+                        wsaw:Action="urn:paymentOrderAcsEpayServiceUnrecoverableKeyException"/>
+            <wsdl:fault message="ns:EpayServiceNoSuchAlgorithmException" name="EpayServiceNoSuchAlgorithmException"
+                        wsaw:Action="urn:paymentOrderAcsEpayServiceNoSuchAlgorithmException"/>
+            <wsdl:fault message="ns:EpayServiceIOException" name="EpayServiceIOException"
+                        wsaw:Action="urn:paymentOrderAcsEpayServiceIOException"/>
+            <wsdl:fault message="ns:EpayServiceKeyStoreException" name="EpayServiceKeyStoreException"
+                        wsaw:Action="urn:paymentOrderAcsEpayServiceKeyStoreException"/>
+            <wsdl:fault message="ns:EpayServiceSignatureException" name="EpayServiceSignatureException"
+                        wsaw:Action="urn:paymentOrderAcsEpayServiceSignatureException"/>
+            <wsdl:fault message="ns:EpayServiceInvalidKeyException" name="EpayServiceInvalidKeyException"
+                        wsaw:Action="urn:paymentOrderAcsEpayServiceInvalidKeyException"/>
+            <wsdl:fault message="ns:EpayServiceParserConfigurationException"
+                        name="EpayServiceParserConfigurationException"
+                        wsaw:Action="urn:paymentOrderAcsEpayServiceParserConfigurationException"/>
+            <wsdl:fault message="ns:EpayServiceSAXException" name="EpayServiceSAXException"
+                        wsaw:Action="urn:paymentOrderAcsEpayServiceSAXException"/>
         </wsdl:operation>
         <wsdl:operation name="is3dOrder">
             <wsdl:input message="ns:is3dOrderRequest" wsaw:Action="urn:is3dOrder"/>
             <wsdl:output message="ns:is3dOrderResponse" wsaw:Action="urn:is3dOrderResponse"/>
-            <wsdl:fault message="ns:EpayServiceIOException" name="EpayServiceIOException" wsaw:Action="urn:is3dOrderEpayServiceIOException"/>
-            <wsdl:fault message="ns:EpayServiceSAXException" name="EpayServiceSAXException" wsaw:Action="urn:is3dOrderEpayServiceSAXException"/>
-            <wsdl:fault message="ns:EpayServiceParserConfigurationException" name="EpayServiceParserConfigurationException" wsaw:Action="urn:is3dOrderEpayServiceParserConfigurationException"/>
-            <wsdl:fault message="ns:EpayServiceCertificateException" name="EpayServiceCertificateException" wsaw:Action="urn:is3dOrderEpayServiceCertificateException"/>
-            <wsdl:fault message="ns:EpayServiceUnrecoverableKeyException" name="EpayServiceUnrecoverableKeyException" wsaw:Action="urn:is3dOrderEpayServiceUnrecoverableKeyException"/>
-            <wsdl:fault message="ns:EpayServiceNoSuchAlgorithmException" name="EpayServiceNoSuchAlgorithmException" wsaw:Action="urn:is3dOrderEpayServiceNoSuchAlgorithmException"/>
-            <wsdl:fault message="ns:EpayServiceKeyStoreException" name="EpayServiceKeyStoreException" wsaw:Action="urn:is3dOrderEpayServiceKeyStoreException"/>
-            <wsdl:fault message="ns:EpayServiceSignatureException" name="EpayServiceSignatureException" wsaw:Action="urn:is3dOrderEpayServiceSignatureException"/>
-            <wsdl:fault message="ns:EpayServiceInvalidKeyException" name="EpayServiceInvalidKeyException" wsaw:Action="urn:is3dOrderEpayServiceInvalidKeyException"/>
+            <wsdl:fault message="ns:EpayServiceIOException" name="EpayServiceIOException"
+                        wsaw:Action="urn:is3dOrderEpayServiceIOException"/>
+            <wsdl:fault message="ns:EpayServiceSAXException" name="EpayServiceSAXException"
+                        wsaw:Action="urn:is3dOrderEpayServiceSAXException"/>
+            <wsdl:fault message="ns:EpayServiceParserConfigurationException"
+                        name="EpayServiceParserConfigurationException"
+                        wsaw:Action="urn:is3dOrderEpayServiceParserConfigurationException"/>
+            <wsdl:fault message="ns:EpayServiceCertificateException" name="EpayServiceCertificateException"
+                        wsaw:Action="urn:is3dOrderEpayServiceCertificateException"/>
+            <wsdl:fault message="ns:EpayServiceUnrecoverableKeyException" name="EpayServiceUnrecoverableKeyException"
+                        wsaw:Action="urn:is3dOrderEpayServiceUnrecoverableKeyException"/>
+            <wsdl:fault message="ns:EpayServiceNoSuchAlgorithmException" name="EpayServiceNoSuchAlgorithmException"
+                        wsaw:Action="urn:is3dOrderEpayServiceNoSuchAlgorithmException"/>
+            <wsdl:fault message="ns:EpayServiceKeyStoreException" name="EpayServiceKeyStoreException"
+                        wsaw:Action="urn:is3dOrderEpayServiceKeyStoreException"/>
+            <wsdl:fault message="ns:EpayServiceSignatureException" name="EpayServiceSignatureException"
+                        wsaw:Action="urn:is3dOrderEpayServiceSignatureException"/>
+            <wsdl:fault message="ns:EpayServiceInvalidKeyException" name="EpayServiceInvalidKeyException"
+                        wsaw:Action="urn:is3dOrderEpayServiceInvalidKeyException"/>
         </wsdl:operation>
         <wsdl:operation name="getCardList">
             <wsdl:input message="ns:getCardListRequest" wsaw:Action="urn:getCardList"/>
             <wsdl:output message="ns:getCardListResponse" wsaw:Action="urn:getCardListResponse"/>
-            <wsdl:fault message="ns:EpayServiceCertificateException" name="EpayServiceCertificateException" wsaw:Action="urn:getCardListEpayServiceCertificateException"/>
-            <wsdl:fault message="ns:EpayServiceUnrecoverableKeyException" name="EpayServiceUnrecoverableKeyException" wsaw:Action="urn:getCardListEpayServiceUnrecoverableKeyException"/>
-            <wsdl:fault message="ns:EpayServiceNoSuchAlgorithmException" name="EpayServiceNoSuchAlgorithmException" wsaw:Action="urn:getCardListEpayServiceNoSuchAlgorithmException"/>
-            <wsdl:fault message="ns:EpayServiceIOException" name="EpayServiceIOException" wsaw:Action="urn:getCardListEpayServiceIOException"/>
-            <wsdl:fault message="ns:EpayServiceKeyStoreException" name="EpayServiceKeyStoreException" wsaw:Action="urn:getCardListEpayServiceKeyStoreException"/>
-            <wsdl:fault message="ns:EpayServiceSignatureException" name="EpayServiceSignatureException" wsaw:Action="urn:getCardListEpayServiceSignatureException"/>
-            <wsdl:fault message="ns:EpayServiceInvalidKeyException" name="EpayServiceInvalidKeyException" wsaw:Action="urn:getCardListEpayServiceInvalidKeyException"/>
-            <wsdl:fault message="ns:EpayServiceParserConfigurationException" name="EpayServiceParserConfigurationException" wsaw:Action="urn:getCardListEpayServiceParserConfigurationException"/>
-            <wsdl:fault message="ns:EpayServiceSAXException" name="EpayServiceSAXException" wsaw:Action="urn:getCardListEpayServiceSAXException"/>
+            <wsdl:fault message="ns:EpayServiceCertificateException" name="EpayServiceCertificateException"
+                        wsaw:Action="urn:getCardListEpayServiceCertificateException"/>
+            <wsdl:fault message="ns:EpayServiceUnrecoverableKeyException" name="EpayServiceUnrecoverableKeyException"
+                        wsaw:Action="urn:getCardListEpayServiceUnrecoverableKeyException"/>
+            <wsdl:fault message="ns:EpayServiceNoSuchAlgorithmException" name="EpayServiceNoSuchAlgorithmException"
+                        wsaw:Action="urn:getCardListEpayServiceNoSuchAlgorithmException"/>
+            <wsdl:fault message="ns:EpayServiceIOException" name="EpayServiceIOException"
+                        wsaw:Action="urn:getCardListEpayServiceIOException"/>
+            <wsdl:fault message="ns:EpayServiceKeyStoreException" name="EpayServiceKeyStoreException"
+                        wsaw:Action="urn:getCardListEpayServiceKeyStoreException"/>
+            <wsdl:fault message="ns:EpayServiceSignatureException" name="EpayServiceSignatureException"
+                        wsaw:Action="urn:getCardListEpayServiceSignatureException"/>
+            <wsdl:fault message="ns:EpayServiceInvalidKeyException" name="EpayServiceInvalidKeyException"
+                        wsaw:Action="urn:getCardListEpayServiceInvalidKeyException"/>
+            <wsdl:fault message="ns:EpayServiceParserConfigurationException"
+                        name="EpayServiceParserConfigurationException"
+                        wsaw:Action="urn:getCardListEpayServiceParserConfigurationException"/>
+            <wsdl:fault message="ns:EpayServiceSAXException" name="EpayServiceSAXException"
+                        wsaw:Action="urn:getCardListEpayServiceSAXException"/>
         </wsdl:operation>
         <wsdl:operation name="airastanaPaymentAcsOrder">
             <wsdl:input message="ns:airastanaPaymentAcsOrderRequest" wsaw:Action="urn:airastanaPaymentAcsOrder"/>
-            <wsdl:output message="ns:airastanaPaymentAcsOrderResponse" wsaw:Action="urn:airastanaPaymentAcsOrderResponse"/>
+            <wsdl:output message="ns:airastanaPaymentAcsOrderResponse"
+                         wsaw:Action="urn:airastanaPaymentAcsOrderResponse"/>
         </wsdl:operation>
         <wsdl:operation name="deleteCard">
             <wsdl:input message="ns:deleteCardRequest" wsaw:Action="urn:deleteCard"/>
@@ -1004,15 +1123,25 @@
         <wsdl:operation name="checkOrder">
             <wsdl:input message="ns:checkOrderRequest" wsaw:Action="urn:checkOrder"/>
             <wsdl:output message="ns:checkOrderResponse" wsaw:Action="urn:checkOrderResponse"/>
-            <wsdl:fault message="ns:EpayServiceCertificateException" name="EpayServiceCertificateException" wsaw:Action="urn:checkOrderEpayServiceCertificateException"/>
-            <wsdl:fault message="ns:EpayServiceUnrecoverableKeyException" name="EpayServiceUnrecoverableKeyException" wsaw:Action="urn:checkOrderEpayServiceUnrecoverableKeyException"/>
-            <wsdl:fault message="ns:EpayServiceNoSuchAlgorithmException" name="EpayServiceNoSuchAlgorithmException" wsaw:Action="urn:checkOrderEpayServiceNoSuchAlgorithmException"/>
-            <wsdl:fault message="ns:EpayServiceIOException" name="EpayServiceIOException" wsaw:Action="urn:checkOrderEpayServiceIOException"/>
-            <wsdl:fault message="ns:EpayServiceKeyStoreException" name="EpayServiceKeyStoreException" wsaw:Action="urn:checkOrderEpayServiceKeyStoreException"/>
-            <wsdl:fault message="ns:EpayServiceSignatureException" name="EpayServiceSignatureException" wsaw:Action="urn:checkOrderEpayServiceSignatureException"/>
-            <wsdl:fault message="ns:EpayServiceInvalidKeyException" name="EpayServiceInvalidKeyException" wsaw:Action="urn:checkOrderEpayServiceInvalidKeyException"/>
-            <wsdl:fault message="ns:EpayServiceParserConfigurationException" name="EpayServiceParserConfigurationException" wsaw:Action="urn:checkOrderEpayServiceParserConfigurationException"/>
-            <wsdl:fault message="ns:EpayServiceSAXException" name="EpayServiceSAXException" wsaw:Action="urn:checkOrderEpayServiceSAXException"/>
+            <wsdl:fault message="ns:EpayServiceCertificateException" name="EpayServiceCertificateException"
+                        wsaw:Action="urn:checkOrderEpayServiceCertificateException"/>
+            <wsdl:fault message="ns:EpayServiceUnrecoverableKeyException" name="EpayServiceUnrecoverableKeyException"
+                        wsaw:Action="urn:checkOrderEpayServiceUnrecoverableKeyException"/>
+            <wsdl:fault message="ns:EpayServiceNoSuchAlgorithmException" name="EpayServiceNoSuchAlgorithmException"
+                        wsaw:Action="urn:checkOrderEpayServiceNoSuchAlgorithmException"/>
+            <wsdl:fault message="ns:EpayServiceIOException" name="EpayServiceIOException"
+                        wsaw:Action="urn:checkOrderEpayServiceIOException"/>
+            <wsdl:fault message="ns:EpayServiceKeyStoreException" name="EpayServiceKeyStoreException"
+                        wsaw:Action="urn:checkOrderEpayServiceKeyStoreException"/>
+            <wsdl:fault message="ns:EpayServiceSignatureException" name="EpayServiceSignatureException"
+                        wsaw:Action="urn:checkOrderEpayServiceSignatureException"/>
+            <wsdl:fault message="ns:EpayServiceInvalidKeyException" name="EpayServiceInvalidKeyException"
+                        wsaw:Action="urn:checkOrderEpayServiceInvalidKeyException"/>
+            <wsdl:fault message="ns:EpayServiceParserConfigurationException"
+                        name="EpayServiceParserConfigurationException"
+                        wsaw:Action="urn:checkOrderEpayServiceParserConfigurationException"/>
+            <wsdl:fault message="ns:EpayServiceSAXException" name="EpayServiceSAXException"
+                        wsaw:Action="urn:checkOrderEpayServiceSAXException"/>
         </wsdl:operation>
     </wsdl:portType>
     <wsdl:binding name="EpayServiceSoap11Binding" type="ns:EpayServicePortType">

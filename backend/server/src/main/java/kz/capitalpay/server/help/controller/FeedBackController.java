@@ -25,9 +25,9 @@ public class FeedBackController {
     Gson gson;
 
     @PostMapping("/feedback")
-    ResultDTO feedBack( @RequestBody FeedBackDTO request) {
+    ResultDTO feedBack(@RequestBody FeedBackDTO request) {
         logger.info(gson.toJson(request));
-        return feedBackService.feedBack( request);
+        return feedBackService.feedBack(request);
     }
 
 }

@@ -1,10 +1,8 @@
 package kz.capitalpay.server.help.dto;
 
 import kz.capitalpay.server.files.model.FileStorage;
-import kz.capitalpay.server.help.model.SupportAnswer;
 import kz.capitalpay.server.login.model.ApplicationUser;
 
-import javax.persistence.Column;
 import java.util.List;
 
 public class OneSupportRequestResponceDTO {
@@ -22,7 +20,7 @@ public class OneSupportRequestResponceDTO {
 
     String status;
 
-   List< SupportAnswerDTO> supportAnswer;
+    List<SupportAnswerDTO> supportAnswer;
 
     public Long getId() {
         return id;
