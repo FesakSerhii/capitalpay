@@ -58,8 +58,7 @@ export class PaymentFormComponent implements OnInit {
   ngOnInit(): void {
     let currentYear = new Date().getFullYear();
     for (let i = currentYear; i < currentYear + 6; i++) {
-      this.yearsArr.push(currentYear);
-      currentYear++
+      this.yearsArr.push(i);
     }
     this.cardHolderNameEnabled()
     let dateFields = {
