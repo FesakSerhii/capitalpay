@@ -1,8 +1,6 @@
 package kz.capitalpay.server.merchantsettings.service;
 
 import com.google.gson.Gson;
-import kz.capitalpay.server.merchantsettings.dto.MerchantKycFieldDTO;
-import kz.capitalpay.server.merchantsettings.model.MerchantKyc;
 import kz.capitalpay.server.merchantsettings.model.MerchantSettings;
 import kz.capitalpay.server.merchantsettings.repository.MerchantSettingsRepository;
 import org.slf4j.Logger;
@@ -35,7 +33,6 @@ public class MerchantSettingsService {
         }
         return merchantSettings.getFieldValue();
     }
-
 
 
     public void setField(Long merchantId, String fieldName, String fieldValue) {

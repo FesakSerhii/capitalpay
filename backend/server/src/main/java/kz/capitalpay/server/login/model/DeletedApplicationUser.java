@@ -1,8 +1,8 @@
 package kz.capitalpay.server.login.model;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.io.Serializable;
-import java.util.Set;
 
 @Entity
 public class DeletedApplicationUser implements Serializable {

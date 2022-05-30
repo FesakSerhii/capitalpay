@@ -1,7 +1,6 @@
 package kz.capitalpay.server.cashbox.controller;
 
 import com.google.gson.Gson;
-import kz.capitalpay.server.cashbox.dto.CashboxCurrencyEditListDTO;
 import kz.capitalpay.server.cashbox.dto.CashboxPaysystemEditListDTO;
 import kz.capitalpay.server.cashbox.dto.CashboxRequestDTO;
 import kz.capitalpay.server.cashbox.service.CashboxPaysystemService;

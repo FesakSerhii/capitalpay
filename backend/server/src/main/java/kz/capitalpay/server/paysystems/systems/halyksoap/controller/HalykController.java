@@ -2,7 +2,6 @@ package kz.capitalpay.server.paysystems.systems.halyksoap.controller;
 
 import com.google.gson.Gson;
 import kz.capitalpay.server.cashbox.service.CashboxService;
-import kz.capitalpay.server.constants.HalykOrderDictionary;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import org.slf4j.Logger;

@@ -65,6 +65,6 @@ public class TranslateController {
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-        return new ResultDTO(false, errors,-2);
+        return new ResultDTO(false, errors, -2);
     }
 }

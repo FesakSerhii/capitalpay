@@ -16,7 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.error106;
 import static kz.capitalpay.server.constants.ErrorDictionary.error112;
@@ -94,10 +97,10 @@ public class MerchantPaysystemService {
         logger.info("List: {}", paysystemList);
 
         List<PaysystemInfo> systemPaysystemInfoList = paysystemService.paysystemList();
-        logger.info("systemPaysystemInfoList: {}",gson.toJson(systemPaysystemInfoList));
+        logger.info("systemPaysystemInfoList: {}", gson.toJson(systemPaysystemInfoList));
         List<PaysystemInfo> result = new ArrayList<>();
         for (PaysystemInfo ps : systemPaysystemInfoList) {
-            logger.info("ps.getId(): {}",ps.getId());
+            logger.info("ps.getId(): {}", ps.getId());
             logger.info(String.valueOf(paysystemList.contains(ps.getId())));
             if (ps.isEnabled() && paysystemList.contains(ps.getId())) {
                 result.add(ps);

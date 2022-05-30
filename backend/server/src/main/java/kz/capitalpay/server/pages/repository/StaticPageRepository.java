@@ -10,5 +10,6 @@ public interface StaticPageRepository extends JpaRepository<StaticPage, Long> {
     StaticPage findTopByTagAndLanguage(String tag, String language);
 
     List<StaticPage> findByLanguage(String language);
+
     List<StaticPage> findByTag(String tag);
 }

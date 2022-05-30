@@ -51,7 +51,6 @@ public class TestSystemInService {
     ApplicationUserService applicationUserService;
 
 
-
     public String getPaymentButton(Payment payment) {
 
         return " <form class=\"tpsform_radioitem\" method=\"post\" action=\"https://api.capitalpay.kz/testsystem/pay\">" +

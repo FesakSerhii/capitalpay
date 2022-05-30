@@ -26,7 +26,6 @@ public class TestSystemFantomService {
     TestsystemPaymentRepository testsystemPaymentRepository;
 
 
-
     @Autowired
     TestSystemInService testSystemInService;
 
@@ -86,7 +85,7 @@ public class TestSystemFantomService {
     }
 
     public String checkPendingStatus(String paymentid) {
-        TestsystemPayment payment = setStatus(paymentid,4L);
+        TestsystemPayment payment = setStatus(paymentid, 4L);
         return payment.getStatus();
     }
 }

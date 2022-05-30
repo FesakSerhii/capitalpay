@@ -21,7 +21,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
@@ -82,7 +85,7 @@ public class CashboxCurrencyService {
             Set<String> currencySet = new HashSet<>(currencyList);
             logger.info("Set: {}", gson.toJson(currencySet));
             List<SystemCurrency> systemCurrencyList = merchantCurrencyService.currencyList(owner.getId());
-            List<CurrencyDTO> result = new ArrayList<>() ;
+            List<CurrencyDTO> result = new ArrayList<>();
             for (SystemCurrency sk : systemCurrencyList) {
                 logger.info("contains: {}", currencySet.contains(sk.getAlpha()));
                 result.add(new CurrencyDTO(sk.getAlpha(), sk.getNumber(), sk.getUnicode(), sk.getName(), sk.isEnabled()));

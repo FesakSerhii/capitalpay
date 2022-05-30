@@ -73,7 +73,7 @@ public class PageTestSystemController {
         logger.info(paymentid);
         logger.info(status);
 
-        String redirectUrl =    testSystemInService.getRedirectUrlForPayment(paymentid, status);
+        String redirectUrl = testSystemInService.getRedirectUrlForPayment(paymentid, status);
 
         httpServletResponse.setHeader("Location", redirectUrl);
         httpServletResponse.setStatus(302);

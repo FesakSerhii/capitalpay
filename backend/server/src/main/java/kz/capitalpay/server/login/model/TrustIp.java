@@ -6,7 +6,8 @@ import javax.persistence.Id;
 
 @Entity
 public class TrustIp {
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     Long id;
     String ip;
     Long userId;

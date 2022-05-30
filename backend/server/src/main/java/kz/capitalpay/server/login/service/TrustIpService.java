@@ -23,12 +23,12 @@ public class TrustIpService {
 
     public String validIpAddress(Long userId, String ip) {
 
-        List<TrustIp> trustIps = trustIpRepository.findByUserIdAndEnable(userId,true);
-        if(trustIps== null || trustIps.size()==0){
+        List<TrustIp> trustIps = trustIpRepository.findByUserIdAndEnable(userId, true);
+        if (trustIps == null || trustIps.size() == 0) {
             return ip;
-        }else{
-            for(TrustIp trustIp : trustIps){
-                if(trustIp.getIp().equals(ip)){
+        } else {
+            for (TrustIp trustIp : trustIps) {
+                if (trustIp.getIp().equals(ip)) {
                     return ip;
                 }
             }
@@ -37,13 +37,13 @@ public class TrustIpService {
     }
 
     public void addTrustIp(Long userId, String ip) {
-        TrustIp trustIp = trustIpRepository.findTopByUserIdAndIp(userId,ip);
-        if(trustIp==null){
+        TrustIp trustIp = trustIpRepository.findTopByUserIdAndIp(userId, ip);
+        if (trustIp == null) {
             trustIp = new TrustIp();
             trustIp.setIp(ip);
             trustIp.setUserId(userId);
-            List<TrustIp> trustIps = trustIpRepository.findByUserIdAndEnable(userId,true);
-            if(trustIps!=null && trustIps.size()>0){
+            List<TrustIp> trustIps = trustIpRepository.findByUserIdAndEnable(userId, true);
+            if (trustIps != null && trustIps.size() > 0) {
                 trustIp.setEnable(true);
             }
             trustIpRepository.save(trustIp);

@@ -48,7 +48,6 @@ public class SystemEventsLogsService {
     }
 
 
-
     public boolean addNewPaysystemAction(String author, String eventName, String json, String target) {
         PaysystemAction paysystemAction = new PaysystemAction();
         paysystemAction.setTimestamp(System.currentTimeMillis());
@@ -59,7 +58,6 @@ public class SystemEventsLogsService {
         paysystemActionRepository.save(paysystemAction);
         return true;
     }
-
 
 
 }

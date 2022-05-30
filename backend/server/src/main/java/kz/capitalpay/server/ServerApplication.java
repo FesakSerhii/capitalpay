@@ -34,7 +34,7 @@ public class ServerApplication {
     }
 
     @Bean
-    Gson getGson(){
+    Gson getGson() {
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
         return gson;
@@ -46,7 +46,7 @@ public class ServerApplication {
     }
 
     @Bean
-    RestTemplate getRestTemplate(){
+    RestTemplate getRestTemplate() {
 //        return new RestTemplate();
 
         RestTemplate restTemplate = new RestTemplateBuilder()
@@ -56,7 +56,7 @@ public class ServerApplication {
         return restTemplate;
     }
 
-     class PlusEncoderInterceptor implements ClientHttpRequestInterceptor {
+    class PlusEncoderInterceptor implements ClientHttpRequestInterceptor {
 
         @Override
         public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {

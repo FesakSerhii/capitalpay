@@ -21,7 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
@@ -159,7 +160,7 @@ public class CashboxPaysystemService {
             for (PaysystemInfo ps : systemPaysystemInfoList) {
 //                logger.info(ps.getId().toString());
 //                logger.info(String.valueOf(paysystemList.contains(ps.getId())));
-                if(paysystemList.contains(ps.getId())){
+                if (paysystemList.contains(ps.getId())) {
                     result.add(ps);
                 }
             }

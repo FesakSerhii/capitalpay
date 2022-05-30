@@ -67,7 +67,6 @@ public class SendEmailService {
             logger.info(text);
 
 
-
             Session session = Session.getInstance(properties, new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {

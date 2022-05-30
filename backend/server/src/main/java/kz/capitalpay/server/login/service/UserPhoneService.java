@@ -17,9 +17,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
-import java.util.UUID;
 
-import static kz.capitalpay.server.constants.ErrorDictionary.*;
+import static kz.capitalpay.server.constants.ErrorDictionary.error102;
+import static kz.capitalpay.server.constants.ErrorDictionary.error103;
 import static kz.capitalpay.server.login.service.UserEmailService.CONFIRMED;
 import static kz.capitalpay.server.login.service.UserEmailService.PENDING;
 

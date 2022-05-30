@@ -2,9 +2,11 @@ package kz.capitalpay.server.validation;
 
 import kz.capitalpay.server.dto.ResultDTO;
 import org.springframework.stereotype.Service;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
 
 @Service

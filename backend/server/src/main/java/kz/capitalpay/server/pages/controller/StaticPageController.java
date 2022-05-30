@@ -2,7 +2,6 @@ package kz.capitalpay.server.pages.controller;
 
 import com.google.gson.Gson;
 import kz.capitalpay.server.dto.ResultDTO;
-import kz.capitalpay.server.merchantsettings.dto.MerchantKycDTO;
 import kz.capitalpay.server.pages.dto.DeleteDTO;
 import kz.capitalpay.server.pages.dto.SavePageDTO;
 import kz.capitalpay.server.pages.dto.ShowListDTO;

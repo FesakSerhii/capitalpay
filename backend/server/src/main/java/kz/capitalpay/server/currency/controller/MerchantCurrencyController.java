@@ -46,8 +46,6 @@ public class MerchantCurrencyController {
     }
 
 
-
-
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResultDTO handleValidationExceptions(
@@ -58,6 +56,6 @@ public class MerchantCurrencyController {
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-        return new ResultDTO(false, errors,-2);
+        return new ResultDTO(false, errors, -2);
     }
 }

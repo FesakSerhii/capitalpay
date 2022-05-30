@@ -33,7 +33,7 @@ public class TwoFactorAuthController {
     @PostMapping("/set")
     ResultDTO twoFactorAuth(@RequestBody TwoFactorAuthDTO request, Principal principal) {
         logger.info(gson.toJson(request));
-        return  applicationUserService.twoFactorAuth(principal,request);
+        return applicationUserService.twoFactorAuth(principal, request);
     }
 
     @PostMapping("/available")

@@ -1,6 +1,6 @@
 /**
  * EpayServiceNoSuchAlgorithmExceptionException.java
- *
+ * <p>
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.7.9  Built on : Nov 16, 2018 (12:05:37 GMT)
  */
@@ -19,17 +19,17 @@ public class EpayServiceNoSuchAlgorithmExceptionException extends java.lang.Exce
     }
 
     public EpayServiceNoSuchAlgorithmExceptionException(java.lang.String s,
-        java.lang.Throwable ex) {
+                                                        java.lang.Throwable ex) {
         super(s, ex);
     }
 
     public EpayServiceNoSuchAlgorithmExceptionException(
-        java.lang.Throwable cause) {
+            java.lang.Throwable cause) {
         super(cause);
     }
 
     public void setFaultMessage(
-        kz.capitalpay.server.wsdl.EpayServiceStub.EpayServiceNoSuchAlgorithmException msg) {
+            kz.capitalpay.server.wsdl.EpayServiceStub.EpayServiceNoSuchAlgorithmException msg) {
         faultMessage = msg;
     }
 

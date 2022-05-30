@@ -3,7 +3,7 @@ package kz.capitalpay.server.simple.dto;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public class PaymentDetailDTO  {
+public class PaymentDetailDTO {
 
     Long timestamp;
     LocalDateTime localDateTime;
@@ -16,7 +16,7 @@ public class PaymentDetailDTO  {
     String status;
 
 
-//    SHA256(cashboxId + billId + status + secret)
+    //    SHA256(cashboxId + billId + status + secret)
     String signature;
 
 

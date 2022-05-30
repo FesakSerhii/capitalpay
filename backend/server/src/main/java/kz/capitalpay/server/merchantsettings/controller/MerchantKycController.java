@@ -42,7 +42,7 @@ public class MerchantKycController {
 
 
     @PostMapping("/kyc/get")
-    @RolesAllowed({ADMIN, OPERATOR,MERCHANT})
+    @RolesAllowed({ADMIN, OPERATOR, MERCHANT})
     ResultDTO getKyc(@Valid @RequestBody MerchantKycDTO request, Principal principal) {
         logger.info("KYC get");
         return merchantKycService.getKyc(principal, request);

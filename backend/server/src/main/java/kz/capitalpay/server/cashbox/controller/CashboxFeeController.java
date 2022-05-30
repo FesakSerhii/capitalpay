@@ -15,7 +15,7 @@ import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
-import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
+import static kz.capitalpay.server.login.service.ApplicationRoleService.MERCHANT;
 
 @RestController
 @RequestMapping(value = "/api/v1/auth/fee", produces = "application/json;charset=UTF-8")

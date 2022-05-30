@@ -29,6 +29,6 @@ public class PublicStaticPage {
     @PostMapping("/one")
     ResultDTO showPage(@Valid @RequestBody ShowOnePageDTO request) {
         logger.info("Show One Page");
-        return staticPageService.showPage( request);
+        return staticPageService.showPage(request);
     }
 }

@@ -26,6 +26,7 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.UUID;
+
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
 import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.CLIENT_FEE;
 import static kz.capitalpay.server.merchantsettings.service.MerchantKycService.TOTAL_FEE;
@@ -167,7 +168,7 @@ public class SimpleService {
         BigDecimal finalPriceCustomerAfterAdjustmentInPenny = totalAmountThatMerchantWantReceived
                 .divide(new BigDecimal("1")
                         .subtract(totalFee
-                                .divide(oneHundred, MathContext.DECIMAL128)),MathContext.DECIMAL128)
+                                .divide(oneHundred, MathContext.DECIMAL128)), MathContext.DECIMAL128)
                 .multiply(oneHundred);
 
         return finalPriceCustomerAfterAdjustmentInPenny.setScale(0, RoundingMode.HALF_UP);

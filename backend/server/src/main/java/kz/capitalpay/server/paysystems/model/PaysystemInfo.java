@@ -8,7 +8,8 @@ import javax.persistence.Id;
 @Entity
 public class PaysystemInfo {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     Long id;
     @Column(unique = true)
     String name;

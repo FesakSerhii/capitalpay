@@ -8,7 +8,8 @@ import java.time.LocalDateTime;
 
 @Entity
 public class StaticPage {
-@Id @GeneratedValue
+    @Id
+    @GeneratedValue
     Long id;
     String language;
     String name;
