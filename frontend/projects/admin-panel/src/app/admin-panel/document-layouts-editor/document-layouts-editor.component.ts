@@ -73,6 +73,7 @@ export class DocumentLayoutsEditorComponent implements OnInit {
       switch (err.status) {
         case 500: this[formName+'ErrStatusMassage'] = 'Ошибка сервера, попробуйте позже'; break;
         case 0: this[formName+'ErrStatusMassage'] = 'Отсутствие интернет соединения'; break;
+        default: this[formName+'ErrStatusMassage'] = err.statusMessage; break;
       }
     })
   }

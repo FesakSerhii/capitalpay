@@ -32,6 +32,7 @@ export class PaymentFormComponent implements OnInit {
     email: new FormControl(),
     cvv2Code: new FormControl('',[Validators.min(100),Validators.max(999)]),
   });
+  errStatusMassage: string = null;
   token: string = null;
   id: number = null;
   merchantId: number = null;
@@ -46,7 +47,7 @@ export class PaymentFormComponent implements OnInit {
   redirectTimer: number = 5;
   // parameters: string = null;
   acceptTerms = new FormControl();
-
+  yearsArr: number[] = [];
 
   constructor(private userCardService: UserCardService,
               private activatedRoute: ActivatedRoute,
@@ -55,6 +56,11 @@ export class PaymentFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    let currentYear = new Date().getFullYear();
+    for (let i = 0; i < 6; i++) {
+      this.yearsArr.push(currentYear);
+      currentYear++
+    }
     this.cardHolderNameEnabled()
     let dateFields = {
       expirationMonth: 'expirationYear',
@@ -80,6 +86,10 @@ export class PaymentFormComponent implements OnInit {
   }
 
   dateInvalid() {
+    if(this.cardForm.invalid){
+      this.errStatusMassage='Заполните все необходимые поля';
+      return;
+    }
     this.expInvalid = false;
     if (this.cardForm.get('expirationMonth').value !== null && this.cardForm.get('expirationYear').value !== null) {
       setTimeout(() => {

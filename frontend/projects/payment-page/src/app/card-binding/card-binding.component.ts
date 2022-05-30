@@ -30,6 +30,7 @@ export class CardBindingComponent implements OnInit {
   parameters: string = null;
   queryParamEnable: boolean = false;
   acceptTerms = new FormControl();
+  errStatusMassage: string = null;
 
 
   constructor(private userCardService: UserCardService,
@@ -56,6 +57,24 @@ export class CardBindingComponent implements OnInit {
           // this.redirectTimerStart('redirectfailed')
           this.redirectSource = 'redirectfailed';
           this.redirectService.redirectTimerStart()
+        }
+      }).catch(err => {
+        switch (err.status) {
+          case 500: {
+            this.validityError = true;
+            this.validityErrorCode = 'Ошибка сервера, попробуйте позже';
+            break;
+          }
+          case 0: {
+            this.validityError = true;
+            this.validityErrorCode = 'Отсутствие интернет соединения';
+            break;
+          }
+          default: {
+            this.validityError = true;
+            this.validityErrorCode = err.statusMessage;
+            break;
+          }
         }
       })
     })
@@ -105,11 +124,26 @@ export class CardBindingComponent implements OnInit {
             this.redirect = true;
             // this.redirectTimerStart('redirectsuccess')
             this.redirectSource = 'redirectsuccess';
-            console.log('start interval in card-binding:',new Date());
+            console.log('start interval in card-binding:', new Date());
             this.redirectService.redirectTimerStart()
           }).catch(err => {
-            this.validityError = true;
-            this.validityErrorCode = err.message;
+            switch (err.status) {
+              case 500: {
+                this.validityError = true;
+                this.validityErrorCode = 'Ошибка сервера, попробуйте позже';
+                break;
+              }
+              case 0: {
+                this.validityError = true;
+                this.validityErrorCode = 'Отсутствие интернет соединения';
+                break;
+              }
+              default: {
+                this.validityError = true;
+                this.validityErrorCode = err.statusMessage;
+                break;
+              }
+            }
           })
         }
       )

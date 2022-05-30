@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild} from '@angular/core';
 import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
+import {MassageServiceService} from "../../src/app/service/massage-service.service";
 
 @Component({
   selector: 'app-massage-modal',
@@ -26,19 +27,37 @@ export class MassageModalComponent implements OnInit {
     userBlockSuccessful:"Пользватель успешно заблокирован",
     userActivateSuccessful:"Пользватель успешно активирован",
     cardNumberInvalid:"Введенная карта невалидна",
+    req500Error:"Ошибка сервера",
+    req400Error:"Ошибка запроса",
+    noInternetError:"Отсутствует интернет соединение",
   };
   private modal: NgbModalRef = null;
 
   ngOnInit() {
+
   }
 
   open():Promise<any>{
-    this.modal = this.modalService.open(this.massageModal);
-    return this.modal.result;
+    if(!this.modalService.hasOpenModals()){
+      this.modal = this.modalService.open(this.massageModal);
+      return this.modal.result;
+    };
+  }
+  openWithMassageType(massageType){
+    this.messageType = massageType;
+    this.open()
   }
 
   close() {
     this.modal.close(true);
     this.onModalClose.emit(true);
+    this.modal.dismiss()
   }
+
+  // subscribeToInterceptor(){
+  //   this.massageServiceService.newMassagesSubscription$.subscribe(
+  //     massage => {
+  //       this.openWithMassageType(massage);
+  //     });
+  // }
 }

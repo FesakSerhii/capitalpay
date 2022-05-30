@@ -22,7 +22,9 @@ export class LoginComponent implements OnInit {
 
   loginForm = new FormGroup({
     email: new FormControl(/*'+37096384345'*/undefined, Validators.required),
+    // email: new FormControl('+37096384345', Validators.required),
     password: new FormControl(/*'blablabla'*/undefined, Validators.required),
+    // password: new FormControl('blablabla', Validators.required),
     isIpTrusted: new FormControl()
   });
 
@@ -56,6 +58,7 @@ export class LoginComponent implements OnInit {
         case 400: this.errStatusMassage = 'Ошибка регистрационных данных'; break;
         case 500: this.errStatusMassage = 'Ошибка сервера, попробуйте позже'; break;
         case 0: this.errStatusMassage = 'Отсутствие интернет соединения'; break;
+        default: this.errStatusMassage = err.statusMessage; break;
       }
     } )
   }

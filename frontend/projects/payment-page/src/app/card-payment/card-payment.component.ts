@@ -88,10 +88,29 @@ export class CardPaymentComponent implements OnInit {
           this.redirectSource = this.redirectfailed;
         }
       }).catch(err => {
-      this.validityError = true;
-      this.validityErrorCode = err.message;
-      this.redirectSource = this.redirectfailed;
-      this.redirectService.redirectTimerStart()
+      switch (err.status) {
+        case 500: {
+          this.validityError = true;
+          this.validityErrorCode = 'Ошибка сервера, попробуйте позже';
+          this.redirectSource = this.redirectfailed;
+          this.redirectService.redirectTimerStart()
+          break;
+        }
+        case 0: {
+          this.validityError = true;
+          this.validityErrorCode = 'Отсутствие интернет соединения';
+          this.redirectSource = this.redirectfailed;
+          this.redirectService.redirectTimerStart()
+          break;
+        }
+        default: {
+          this.validityError = true;
+          this.validityErrorCode = err.statusMessage;
+          this.redirectSource = this.redirectfailed;
+          this.redirectService.redirectTimerStart()
+          break;
+        }
+      }
     })
   }
 

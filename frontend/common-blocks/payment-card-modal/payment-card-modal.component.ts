@@ -43,8 +43,14 @@ export class PaymentCardModalComponent implements OnInit {
     },
   ];
   userId: number;
+  yearsArr: number[] = [];
 
   async ngOnInit() {
+    let currentYear = new Date().getFullYear();
+    for (let i = 0; i < 6; i++) {
+      this.yearsArr.push(currentYear);
+      currentYear++
+    }
     this.activatedRoute.queryParamMap.subscribe((param) => {
       this.userId = +param.get('userId');
     })

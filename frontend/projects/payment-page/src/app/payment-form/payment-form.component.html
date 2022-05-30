@@ -46,7 +46,7 @@
                            autocomplete="cc-exp-year"
                            [disabled]="redirect"
                            [class.disabled]="redirect"
-                           [values]="[2021,2022,2023,2024,2025,2026]" formControlName="expirationYear" (click)="dateInvalid()"></app-custom-select>
+                           [values]="yearsArr" formControlName="expirationYear" (click)="dateInvalid()"></app-custom-select>
       </div>
       <label class="tpsform_input ico pass" for="cardseccode">
         <span>Card Security Code *</span>
@@ -61,6 +61,7 @@
         <a href="#!">privacy policy</a>.</label>
       <span class="error" *ngIf="validityError">Error on card validity check.{{getErrMassage()}} Use other card or try again</span>
     </div>
+    <span style="color: red" *ngIf="errStatusMassage!==null">{{errStatusMassage}}</span>
     <button [disabled]="redirect" [class.disabled]="redirect"
             class="form-btn form2-theme" (click)="cancel()">Cancel</button>
     <button
