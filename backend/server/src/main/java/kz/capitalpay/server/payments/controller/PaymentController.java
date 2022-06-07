@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.payments.dto.OnePaymentDetailsRequestDTO;
 import kz.capitalpay.server.payments.service.PaymentService;
+import kz.capitalpay.server.util.ValidationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,9 @@ public class PaymentController {
     @Autowired
     PaymentService paymentService;
 
+    @Autowired
+    ValidationUtil validationUtil;
+
     @PostMapping("/list")
     @RolesAllowed({ADMIN, OPERATOR, MERCHANT})
     ResultDTO paymentList(Principal principal) {
@@ -51,12 +55,6 @@ public class PaymentController {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResultDTO handleValidationExceptions(
             MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return new ResultDTO(false, errors, -2);
+        return validationUtil.handleValidation(ex);
     }
 }

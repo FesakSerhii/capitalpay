@@ -23,7 +23,7 @@ import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static kz.capitalpay.server.constants.ErrorDictionary.error109;
+import static kz.capitalpay.server.constants.ErrorDictionary.SUPPORT_REQUEST_NOT_FOUND;
 import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.ANSWER_SUPPORT_REQUEST;
 import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.CHANGE_STATUS_SUPPORT_REQUEST;
 
@@ -138,7 +138,7 @@ public class SupportService {
         try {
             SupportRequest supportRequest = supportRequestRepository.findById(request.getId()).orElse(null);
             if (supportRequest == null) {
-                return error109;
+                return SUPPORT_REQUEST_NOT_FOUND;
             }
             ApplicationUser applicationUser = applicationUserService.getUserById(supportRequest.getAuthorId());
             applicationUser.setPassword(null);
@@ -198,7 +198,7 @@ public class SupportService {
             ApplicationUser operator = applicationUserService.getUserByLogin(principal.getName());
             SupportRequest supportRequest = supportRequestRepository.findById(request.getRequestId()).orElse(null);
             if (supportRequest == null) {
-                return error109;
+                return SUPPORT_REQUEST_NOT_FOUND;
             }
             ApplicationUser merchant = applicationUserService.getUserById(supportRequest.getAuthorId());
             if (request.getStatus() == 1) {
@@ -224,7 +224,7 @@ public class SupportService {
             ApplicationUser operator = applicationUserService.getUserByLogin(principal.getName());
             SupportRequest supportRequest = supportRequestRepository.findById(request.getRequestId()).orElse(null);
             if (supportRequest == null) {
-                return error109;
+                return SUPPORT_REQUEST_NOT_FOUND;
             }
 
             ApplicationUser merchant = applicationUserService.getUserById(supportRequest.getAuthorId());

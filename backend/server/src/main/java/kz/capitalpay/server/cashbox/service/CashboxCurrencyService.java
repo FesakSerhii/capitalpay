@@ -65,15 +65,14 @@ public class CashboxCurrencyService {
         try {
             Cashbox cashbox = cashboxRepository.findById(request.getCashboxId()).orElse(null);
             if (cashbox == null) {
-                return error113;
+                return CASHBOX_NOT_FOUND;
             }
 
             ApplicationUser owner = applicationUserService.getUserByLogin(principal.getName());
-            ApplicationUser operator = null;
             if (!owner.getRoles().contains(applicationRoleService.getRole(OPERATOR)) &&
                     !owner.getRoles().contains(applicationRoleService.getRole(ADMIN)) &&
                     !cashbox.getMerchantId().equals(owner.getId())) {
-                return error110;
+                return NOT_ENOUGH_RIGHTS;
             }
 
             String currencyJson = cashboxSettingsService.getField(cashbox.getId(), CASHBOX_CURRENCY_LIST);
@@ -90,9 +89,7 @@ public class CashboxCurrencyService {
                 logger.info("contains: {}", currencySet.contains(sk.getAlpha()));
                 result.add(new CurrencyDTO(sk.getAlpha(), sk.getNumber(), sk.getUnicode(), sk.getName(), sk.isEnabled()));
             }
-
             return new ResultDTO(true, result, 0);
-
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
@@ -104,17 +101,15 @@ public class CashboxCurrencyService {
         try {
             Cashbox cashbox = cashboxRepository.findById(request.getCashboxId()).orElse(null);
             if (cashbox == null) {
-                return error113;
+                return CASHBOX_NOT_FOUND;
             }
 
             ApplicationUser owner = applicationUserService.getUserByLogin(principal.getName());
-
             if (!cashbox.getMerchantId().equals(owner.getId())) {
-                return error110;
+                return NOT_ENOUGH_RIGHTS;
             }
 
             List<SystemCurrency> systemCurrencyList = merchantCurrencyService.currencyList(owner.getId());
-
             for (String s : request.getCurrencyList()) {
                 boolean error = true;
                 for (SystemCurrency sk : systemCurrencyList) {
@@ -124,14 +119,11 @@ public class CashboxCurrencyService {
                     }
                 }
                 if (error) {
-                    return error112;
+                    return CURRENCY_NOT_FOUND;
                 }
             }
-
             String currencyJson = gson.toJson(request.getCurrencyList());
             logger.info(currencyJson);
-
-
             cashboxSettingsService.setField(cashbox.getId(), CASHBOX_CURRENCY_LIST, currencyJson);
             return new ResultDTO(true, request.getCurrencyList(), 0);
         } catch (Exception e) {
@@ -146,7 +138,6 @@ public class CashboxCurrencyService {
         if (currencyJson != null && currencyJson.length() > 0) {
             currencyList = gson.fromJson(currencyJson, List.class);
         }
-
         return currencyList.contains(currency) &&
                 merchantCurrencyService.checkCurrencyEnable(merchantId, currency);
     }

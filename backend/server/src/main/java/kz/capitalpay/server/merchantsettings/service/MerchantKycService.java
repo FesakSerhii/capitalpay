@@ -63,10 +63,10 @@ public class MerchantKycService {
         try {
             ApplicationUser applicationUser = applicationUserService.getUserById(request.getMerchantId());
             if (applicationUser == null) {
-                return error106;
+                return USER_NOT_FOUND;
             }
             if (!applicationUser.getRoles().contains(applicationRoleService.getRole(MERCHANT))) {
-                return error108;
+                return NOT_A_MERCHANT;
             }
             for (MerchantKycFieldDTO field : request.getFields()) {
                 if (field.getFieldName().equalsIgnoreCase(IINBIN)) {
@@ -103,16 +103,16 @@ public class MerchantKycService {
         try {
             ApplicationUser merchant = applicationUserService.getUserById(request.getMerchantId());
             if (merchant == null) {
-                return error106;
+                return USER_NOT_FOUND;
             }
             ApplicationUser operator = applicationUserService.getUserByLogin(principal.getName());
             if (!operator.getRoles().contains(applicationRoleService.getRole(ADMIN)) &&
                     !operator.getRoles().contains(applicationRoleService.getRole(OPERATOR)) &&
                     !operator.getId().equals(merchant.getId())) {
-                return error110;
+                return NOT_ENOUGH_RIGHTS;
             }
             if (!merchant.getRoles().contains(applicationRoleService.getRole(MERCHANT))) {
-                return error108;
+                return NOT_A_MERCHANT;
             }
             Map<String, String> result = new HashMap<>();
             result.put(IINBIN, getField(merchant.getId(), IINBIN));

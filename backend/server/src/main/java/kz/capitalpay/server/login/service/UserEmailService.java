@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-import static kz.capitalpay.server.constants.ErrorDictionary.error101;
-import static kz.capitalpay.server.constants.ErrorDictionary.error102;
+import static kz.capitalpay.server.constants.ErrorDictionary.EMAIL_USED;
+import static kz.capitalpay.server.constants.ErrorDictionary.CONFIRM_CODE_NOT_FOUND;
 
 @Service
 public class UserEmailService {
@@ -37,7 +37,7 @@ public class UserEmailService {
         try {
             PendingEmail pendingEmail = pendingEmailRepository.findByEmail(request.getEmail());
             if (pendingEmail != null && !pendingEmail.getStatus().equals(PENDING)) {
-                return error101;
+                return EMAIL_USED;
             }
             if (pendingEmail == null) {
                 pendingEmail = new PendingEmail();
@@ -66,7 +66,7 @@ public class UserEmailService {
         if (pendingEmail != null) {
             return new ResultDTO(true, pendingEmail, 0);
         } else {
-            return error102;
+            return CONFIRM_CODE_NOT_FOUND;
         }
     }
 

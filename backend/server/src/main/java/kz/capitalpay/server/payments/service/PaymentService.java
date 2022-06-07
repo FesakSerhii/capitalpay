@@ -174,7 +174,7 @@ public class PaymentService {
         try {
             ApplicationUser applicationUser = applicationUserService.getUserByLogin(principal.getName());
             if (applicationUser == null) {
-                return error106;
+                return USER_NOT_FOUND;
             }
             List<Payment> paymentList = new ArrayList<>();
             if (applicationUser.getRoles().contains(applicationRoleService.getRole(OPERATOR))
@@ -195,20 +195,20 @@ public class PaymentService {
         try {
             ApplicationUser applicationUser = applicationUserService.getUserByLogin(principal.getName());
             if (applicationUser == null) {
-                return error106;
+                return USER_NOT_FOUND;
             }
             Payment payment = paymentRepository.findByGuid(request.getGuid());
             if (payment == null) {
                 logger.error("GUID: {}", request.getGuid());
                 logger.error("Payment: {}", payment);
-                return error118;
+                return PAYMENT_NOT_FOUND;
             }
             if (!applicationUser.getRoles().contains(applicationRoleService.getRole(OPERATOR))
                     && !applicationUser.getRoles().contains(applicationRoleService.getRole(ADMIN))) {
                 if (!payment.getMerchantId().equals(applicationUser.getId())) {
                     logger.error("Payment: {}", gson.toJson(payment));
                     logger.error("Merchant: {}", gson.toJson(applicationUser));
-                    return error110;
+                    return NOT_ENOUGH_RIGHTS;
                 }
             }
             return new ResultDTO(true, payment, 0);

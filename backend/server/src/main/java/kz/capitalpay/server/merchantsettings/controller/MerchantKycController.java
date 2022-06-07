@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.merchantsettings.dto.MerchantKycDTO;
 import kz.capitalpay.server.merchantsettings.service.MerchantKycService;
+import kz.capitalpay.server.util.ValidationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,9 @@ public class MerchantKycController {
     @Autowired
     MerchantKycService merchantKycService;
 
+    @Autowired
+    ValidationUtil validationUtil;
+
 
     @PostMapping("/kyc/set")
     @RolesAllowed({ADMIN, OPERATOR})
@@ -53,12 +57,6 @@ public class MerchantKycController {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResultDTO handleValidationExceptions(
             MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return new ResultDTO(false, errors, -2);
+        return validationUtil.handleValidation(ex);
     }
 }

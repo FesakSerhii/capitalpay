@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.paysystems.dto.ActivatePaysystemDTO;
 import kz.capitalpay.server.paysystems.service.PaysystemService;
+import kz.capitalpay.server.util.ValidationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,9 @@ public class PaysystemController {
     @Autowired
     PaysystemService paysystemService;
 
+    @Autowired
+    ValidationUtil validationUtil;
+
     @PostMapping("/system/list")
     @RolesAllowed({"ROLE_ADMIN", "ROLE_OPERATOR"})
     ResultDTO paysystemList() {
@@ -51,12 +55,6 @@ public class PaysystemController {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResultDTO handleValidationExceptions(
             MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return new ResultDTO(false, errors, -2);
+        return validationUtil.handleValidation(ex);
     }
 }

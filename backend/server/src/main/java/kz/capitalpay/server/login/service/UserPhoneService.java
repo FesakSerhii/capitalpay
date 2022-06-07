@@ -18,8 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Random;
 
-import static kz.capitalpay.server.constants.ErrorDictionary.error102;
-import static kz.capitalpay.server.constants.ErrorDictionary.error103;
+import static kz.capitalpay.server.constants.ErrorDictionary.CONFIRM_CODE_NOT_FOUND;
+import static kz.capitalpay.server.constants.ErrorDictionary.PHONE_USED;
 import static kz.capitalpay.server.login.service.UserEmailService.CONFIRMED;
 import static kz.capitalpay.server.login.service.UserEmailService.PENDING;
 
@@ -55,12 +55,12 @@ public class UserPhoneService {
         try {
             PendingEmail pendingEmail = userEmailService.checkConfirm(request.getCode());
             if (pendingEmail == null) {
-                return error102;
+                return CONFIRM_CODE_NOT_FOUND;
             }
             userEmailService.confirm(pendingEmail);
             PendingPhone pendingPhone = pendingPhoneRepository.findTopByPhone(request.getPhone());
             if (pendingPhone != null && !pendingPhone.getStatus().equals(PENDING)) {
-                return error103;
+                return PHONE_USED;
             }
             if (pendingPhone == null) {
                 pendingPhone = new PendingPhone();
@@ -87,7 +87,7 @@ public class UserPhoneService {
         try {
             PendingPhone pendingPhone = pendingPhoneRepository.findTopByConfirmCodeAndStatus(request.getCode(), PENDING);
             if (pendingPhone == null) {
-                return error102;
+                return CONFIRM_CODE_NOT_FOUND;
             }
             pendingPhone.setStatus(CONFIRMED);
             pendingPhoneRepository.save(pendingPhone);

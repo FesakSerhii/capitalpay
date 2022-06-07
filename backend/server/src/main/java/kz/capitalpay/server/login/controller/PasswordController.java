@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.login.dto.NewPasswordRequestDTO;
 import kz.capitalpay.server.login.service.PasswordService;
+import kz.capitalpay.server.util.ValidationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ public class PasswordController {
     @Autowired
     PasswordService passwordService;
 
+    @Autowired
+    ValidationUtil validationUtil;
+
     @PostMapping("/new")
     ResultDTO newPassword(@Valid @RequestBody NewPasswordRequestDTO request, Principal principal) {
         logger.info(gson.toJson(request));
@@ -40,12 +44,6 @@ public class PasswordController {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResultDTO handleValidationExceptions(
             MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return new ResultDTO(false, errors, -2);
+        return validationUtil.handleValidation(ex);
     }
 }

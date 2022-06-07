@@ -73,17 +73,15 @@ public class CashboxService {
             Cashbox cashbox = new Cashbox();
             cashbox.setMerchantId(owner.getId());
             cashbox.setName(request.getName());
-
             cashboxRepository.save(cashbox);
 
             if (currencyService.checkEnable(request.getCurrency())) {
                 cashboxSettingsService.setField(cashbox.getId(), CASHBOX_CURRENCY_LIST, gson.toJson(List.of(request.getCurrency())));
             } else {
                 cashboxRepository.delete(cashbox);
-                return error112;
+                return CURRENCY_NOT_FOUND;
             }
             return new ResultDTO(true, cashbox, 0);
-
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
@@ -95,10 +93,10 @@ public class CashboxService {
             ApplicationUser owner = applicationUserService.getUserByLogin(principal.getName());
             Cashbox cashbox = cashboxRepository.findById(request.getCashboxId()).orElse(null);
             if (cashbox == null) {
-                return error113;
+                return CASHBOX_NOT_FOUND;
             }
             if (!cashbox.getMerchantId().equals(owner.getId())) {
-                return error110;
+                return NOT_ENOUGH_RIGHTS;
             }
             cashbox.setName(request.getName());
             cashboxRepository.save(cashbox);
@@ -114,10 +112,10 @@ public class CashboxService {
             ApplicationUser owner = applicationUserService.getUserByLogin(principal.getName());
             Cashbox cashbox = cashboxRepository.findById(request.getCashboxId()).orElse(null);
             if (cashbox == null) {
-                return error113;
+                return CASHBOX_NOT_FOUND;
             }
             if (!cashbox.getMerchantId().equals(owner.getId())) {
-                return error110;
+                return NOT_ENOUGH_RIGHTS;
             }
             cashbox.setDeleted(true);
             cashboxRepository.save(cashbox);
@@ -207,8 +205,7 @@ public class CashboxService {
     }
 
     public String getInteractUrl(Payment payment) {
-        String interactionUrl = cashboxSettingsService.getField(payment.getCashboxId(), INTERACTION_URL);
-        return interactionUrl;
+        return cashboxSettingsService.getField(payment.getCashboxId(), INTERACTION_URL);
     }
 
     public String getInteractUrl(Long cashBoxId) {
@@ -228,18 +225,18 @@ public class CashboxService {
     public ResultDTO setCashBoxCard(SetCashBoxCardDto dto) {
         Optional<Cashbox> optionalCashBox = cashboxRepository.findById(dto.getCashBoxId());
         if (optionalCashBox.isEmpty()) {
-            return ErrorDictionary.error113;
+            return ErrorDictionary.CASHBOX_NOT_FOUND;
         }
         Cashbox cashbox = optionalCashBox.get();
         if (!cashbox.getMerchantId().equals(dto.getMerchantId())) {
-            return ErrorDictionary.error122;
+            return ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXES;
         }
         UserCard userCard = userCardRepository.findById(dto.getCardId()).orElse(null);
         if (Objects.isNull(userCard)) {
-            return ErrorDictionary.error130;
+            return ErrorDictionary.CARD_NOT_FOUND;
         }
         if (!userCard.getUserId().equals(dto.getMerchantId())) {
-            return ErrorDictionary.error133;
+            return ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOX_OWNER;
         }
 
         MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(cashbox.getMerchantId());
@@ -255,7 +252,7 @@ public class CashboxService {
     public ResultDTO getCashBoxP2pSettings(Long cashBoxId) {
         Optional<Cashbox> optionalCashBox = cashboxRepository.findById(cashBoxId);
         if (optionalCashBox.isEmpty()) {
-            return ErrorDictionary.error113;
+            return ErrorDictionary.CASHBOX_NOT_FOUND;
         }
 
         Cashbox cashbox = optionalCashBox.get();
@@ -285,7 +282,7 @@ public class CashboxService {
     public ResultDTO setCashBoxP2pSettings(SetCashBoxP2pSettingsDto dto) {
         Optional<Cashbox> optionalCashBox = cashboxRepository.findById(dto.getCashBoxId());
         if (optionalCashBox.isEmpty()) {
-            return ErrorDictionary.error113;
+            return ErrorDictionary.CASHBOX_NOT_FOUND;
         }
         Cashbox cashbox = optionalCashBox.get();
         cashbox.setP2pAllowed(dto.isP2pAllowed());

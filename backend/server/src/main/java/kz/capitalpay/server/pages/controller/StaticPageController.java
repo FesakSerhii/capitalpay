@@ -7,6 +7,7 @@ import kz.capitalpay.server.pages.dto.SavePageDTO;
 import kz.capitalpay.server.pages.dto.ShowListDTO;
 import kz.capitalpay.server.pages.dto.ShowOnePageDTO;
 import kz.capitalpay.server.pages.service.StaticPageService;
+import kz.capitalpay.server.util.ValidationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,9 @@ public class StaticPageController {
 
     @Autowired
     StaticPageService staticPageService;
+
+    @Autowired
+    ValidationUtil validationUtil;
 
 
     @PostMapping("/list")
@@ -67,12 +71,6 @@ public class StaticPageController {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResultDTO handleValidationExceptions(
             MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return new ResultDTO(false, errors, -2);
+        return validationUtil.handleValidation(ex);
     }
 }

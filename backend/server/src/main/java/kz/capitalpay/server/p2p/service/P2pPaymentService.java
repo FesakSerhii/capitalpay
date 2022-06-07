@@ -123,7 +123,7 @@ public class P2pPaymentService {
     public ResultDTO getP2pPaymentDataById(String id) {
         Payment p2pPayment = findById(id);
         if (Objects.isNull(p2pPayment)) {
-            return ErrorDictionary.error118;
+            return ErrorDictionary.PAYMENT_NOT_FOUND;
         }
         return new ResultDTO(true, p2pPayment, 0);
     }

@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static kz.capitalpay.server.constants.ErrorDictionary.error119;
+import static kz.capitalpay.server.constants.ErrorDictionary.PAGE_NOT_FOUND;
 import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.*;
 
 @Service
@@ -106,7 +106,7 @@ public class StaticPageService {
         try {
             StaticPage staticPage = staticPageRepository.findTopByTagAndLanguage(request.getTag(), request.getLanguage());
             if (staticPage == null) {
-                return error119;
+                return PAGE_NOT_FOUND;
             }
             return new ResultDTO(true, staticPage, 0);
         } catch (Exception e) {
@@ -120,7 +120,7 @@ public class StaticPageService {
             ApplicationUser applicationUser = applicationUserService.getUserByLogin(principal.getName());
             List<StaticPage> staticPageList = staticPageRepository.findByTag(request.getTag());
             if (staticPageList == null) {
-                return error119;
+                return PAGE_NOT_FOUND;
             }
             systemEventsLogsService.addNewOperatorAction(applicationUser.getUsername(), DELETE_STATIC_PAGE,
                     gson.toJson(request), "all");

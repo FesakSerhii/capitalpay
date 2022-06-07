@@ -16,7 +16,7 @@ import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
-import static kz.capitalpay.server.constants.ErrorDictionary.error120;
+import static kz.capitalpay.server.constants.ErrorDictionary.AVAILABLE_ONLY_FOR_ADMIN_OR_OPERATOR;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.OPERATOR;
 
@@ -73,7 +73,7 @@ public class HalykSettingsService {
                 }
                 return new ResultDTO(true, request.getFields(), 0);
             } else {
-                return error120;
+                return AVAILABLE_ONLY_FOR_ADMIN_OR_OPERATOR;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -119,7 +119,7 @@ public class HalykSettingsService {
                 result.put(DATE_LAST_DOWNLOADS, getFieldValue(DATE_LAST_DOWNLOADS));
                 return new ResultDTO(true, result, 0);
             } else {
-                return error120;
+                return AVAILABLE_ONLY_FOR_ADMIN_OR_OPERATOR;
             }
         } catch (Exception e) {
             e.printStackTrace();

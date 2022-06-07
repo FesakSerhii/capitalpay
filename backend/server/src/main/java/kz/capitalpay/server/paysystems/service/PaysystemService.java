@@ -36,8 +36,8 @@ import java.math.RoundingMode;
 import java.security.Principal;
 import java.util.*;
 
-import static kz.capitalpay.server.constants.ErrorDictionary.error114;
-import static kz.capitalpay.server.constants.ErrorDictionary.error118;
+import static kz.capitalpay.server.constants.ErrorDictionary.PAYSYSTEM_NOT_FOUND;
+import static kz.capitalpay.server.constants.ErrorDictionary.PAYMENT_NOT_FOUND;
 import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.ACTIVATE_PAYSYSTEM;
 import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.CLIENT_FEE;
 import static kz.capitalpay.server.merchantsettings.service.MerchantKycService.TOTAL_FEE;
@@ -119,7 +119,7 @@ public class PaysystemService {
             ApplicationUser operator = applicationUserService.getUserByLogin(principal.getName());
             PaysystemInfo paysystemInfo = paysystemInfoRepository.findById(request.getPaysystemId()).orElse(null);
             if (paysystemInfo == null) {
-                return error114;
+                return PAYSYSTEM_NOT_FOUND;
             }
             paysystemInfo.setEnabled(request.getEnabled());
 
@@ -155,7 +155,7 @@ public class PaysystemService {
 
             Payment payment = paymentService.getPayment(request.getPaymentId());
             if (payment == null) {
-                return error118;
+                return PAYMENT_NOT_FOUND;
             }
 
             List<PaysystemInfo> availablePaysystems = cashboxPaysystemService

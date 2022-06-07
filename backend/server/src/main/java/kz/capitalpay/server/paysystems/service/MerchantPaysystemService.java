@@ -21,8 +21,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static kz.capitalpay.server.constants.ErrorDictionary.error106;
-import static kz.capitalpay.server.constants.ErrorDictionary.error112;
+import static kz.capitalpay.server.constants.ErrorDictionary.USER_NOT_FOUND;
+import static kz.capitalpay.server.constants.ErrorDictionary.CURRENCY_NOT_FOUND;
 import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.EDIT_MERCHANT_PAYSYSTEM;
 import static kz.capitalpay.server.merchantsettings.service.MerchantSettingsService.MERCHANT_PAYSYSTEM_LIST;
 
@@ -50,7 +50,7 @@ public class MerchantPaysystemService {
         try {
             ApplicationUser merchant = applicationUserService.getUserById(request.getMerchantId());
             if (merchant == null) {
-                return error106;
+                return USER_NOT_FOUND;
             }
 
             String paysystemJson = merchantSettingsService.getField(merchant.getId(), MERCHANT_PAYSYSTEM_LIST);
@@ -113,7 +113,7 @@ public class MerchantPaysystemService {
         try {
             ApplicationUser merchant = applicationUserService.getUserById(request.getMerchantId());
             if (merchant == null) {
-                return error106;
+                return USER_NOT_FOUND;
             }
 
             ApplicationUser operator = applicationUserService.getUserByLogin(principal.getName());
@@ -129,7 +129,7 @@ public class MerchantPaysystemService {
                     }
                 }
                 if (error) {
-                    return error112;
+                    return CURRENCY_NOT_FOUND;
                 }
             }
 
