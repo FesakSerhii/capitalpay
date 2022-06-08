@@ -26,7 +26,7 @@ import static kz.capitalpay.server.login.service.UserEmailService.PENDING;
 @Service
 public class UserPhoneService {
 
-    Logger logger = LoggerFactory.getLogger(UserPhoneService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserPhoneService.class);
 
     @Autowired
     Gson gson;
@@ -49,7 +49,7 @@ public class UserPhoneService {
     @Autowired
     ApplicationUserRepository applicationUserRepository;
 
-    Random random = new Random(System.currentTimeMillis());
+    private final Random random = new Random(System.currentTimeMillis());
 
     public ResultDTO savePassword(SignUpPhoneRequestDTO request) {
         try {
@@ -72,12 +72,10 @@ public class UserPhoneService {
             pendingPhone.setPasswordHash(bCryptPasswordEncoder.encode(request.getPassword()));
             pendingPhone.setStatus(PENDING);
             pendingPhoneRepository.save(pendingPhone);
-
             sendSmsService.sendSms(pendingPhone.getPhone(), "CapitalPay confirm code: " + pendingPhone.getConfirmCode());
-
             return new ResultDTO(true, "SMS sent", 0);
         } catch (Exception e) {
-            logger.error("Line number: {} \n{}", e.getStackTrace()[0].getLineNumber(), e.getMessage());
+            LOGGER.error("Line number: {} \n{}", e.getStackTrace()[0].getLineNumber(), e.getMessage());
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }
@@ -92,18 +90,15 @@ public class UserPhoneService {
             pendingPhone.setStatus(CONFIRMED);
             pendingPhoneRepository.save(pendingPhone);
             ResultDTO result = applicationUserService.createNewUser(pendingPhone.getPhone(), pendingPhone.getPasswordHash());
-
             if (!result.isResult()) {
                 return result;
             }
             ApplicationUser applicationUser = applicationUserRepository.findByUsername((String) result.getData());
-
             applicationUser.setEmail(pendingPhone.getEmail());
             applicationUserRepository.save(applicationUser);
-
             return result;
         } catch (Exception e) {
-            logger.error("Line number: {} \n{}", e.getStackTrace()[0].getLineNumber(), e.getMessage());
+            LOGGER.error("Line number: {} \n{}", e.getStackTrace()[0].getLineNumber(), e.getMessage());
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }

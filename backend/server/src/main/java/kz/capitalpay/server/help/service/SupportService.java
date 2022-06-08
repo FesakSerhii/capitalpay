@@ -165,7 +165,6 @@ public class SupportService {
 
             List<SupportAnswer> supportAnswerList = supportAnswerRepository.findByRequestId(supportRequest.getId());
             if (supportAnswerList != null && supportAnswerList.size() > 0) {
-
                 List<SupportAnswerDTO> supportAnswerDTOS = new ArrayList<>();
                 for (SupportAnswer sa : supportAnswerList) {
                     SupportAnswerDTO supportAnswer = new SupportAnswerDTO();
