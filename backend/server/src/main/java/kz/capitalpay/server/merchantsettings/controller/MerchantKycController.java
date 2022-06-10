@@ -9,15 +9,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.HashMap;
-import java.util.Map;
 
 import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
 
@@ -25,22 +22,22 @@ import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
 @RequestMapping(value = "/api/v1/auth/merchantsettings", produces = "application/json;charset=UTF-8")
 public class MerchantKycController {
 
-    Logger logger = LoggerFactory.getLogger(MerchantKycController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MerchantKycController.class);
 
     @Autowired
-    Gson gson;
+    private Gson gson;
 
     @Autowired
-    MerchantKycService merchantKycService;
+    private MerchantKycService merchantKycService;
 
     @Autowired
-    ValidationUtil validationUtil;
+    private ValidationUtil validationUtil;
 
 
     @PostMapping("/kyc/set")
     @RolesAllowed({ADMIN, OPERATOR})
     ResultDTO setKyc(@Valid @RequestBody MerchantKycDTO request, Principal principal) {
-        logger.info("KYC set");
+        LOGGER.info("KYC set");
         return merchantKycService.setKyc(principal, request);
     }
 
@@ -48,7 +45,7 @@ public class MerchantKycController {
     @PostMapping("/kyc/get")
     @RolesAllowed({ADMIN, OPERATOR, MERCHANT})
     ResultDTO getKyc(@Valid @RequestBody MerchantKycDTO request, Principal principal) {
-        logger.info("KYC get");
+        LOGGER.info("KYC get");
         return merchantKycService.getKyc(principal, request);
     }
 

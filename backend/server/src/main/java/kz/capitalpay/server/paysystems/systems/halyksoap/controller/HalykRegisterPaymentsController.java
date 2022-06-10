@@ -4,7 +4,6 @@ import kz.capitalpay.server.paysystems.systems.halyksoap.dto.RegisterPaymentsDat
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykRegisterPaymentsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -22,10 +21,14 @@ import static kz.capitalpay.server.login.service.ApplicationRoleService.OPERATOR
 @RestController
 @RequestMapping("/api/v1/auth/paysystems/register")
 public class HalykRegisterPaymentsController {
-    private final Logger logger = LoggerFactory.getLogger(HalykRegisterPaymentsController.class);
 
-    @Autowired
-    private HalykRegisterPaymentsService halykRegisterPaymentsService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(HalykRegisterPaymentsController.class);
+
+    private final HalykRegisterPaymentsService halykRegisterPaymentsService;
+
+    public HalykRegisterPaymentsController(HalykRegisterPaymentsService halykRegisterPaymentsService) {
+        this.halykRegisterPaymentsService = halykRegisterPaymentsService;
+    }
 
     @RequestMapping(value = "/download", method = RequestMethod.POST,
             produces = "text/plain;charset=UTF-8")
@@ -34,7 +37,7 @@ public class HalykRegisterPaymentsController {
     public ResponseEntity<Object> halykRegisterPaymentsDownload(@RequestBody RegisterPaymentsDateDTO dateDTO)
             throws IOException {
         File file = halykRegisterPaymentsService.createTextFileForDownload(dateDTO);
-        logger.info("file exist with name " + file.getName());
+        LOGGER.info("file exist with name " + file.getName());
         byte[] bytes = Files.readAllBytes(file.toPath());
         ByteArrayResource byteResource = new ByteArrayResource(bytes);
         return ResponseEntity.ok()

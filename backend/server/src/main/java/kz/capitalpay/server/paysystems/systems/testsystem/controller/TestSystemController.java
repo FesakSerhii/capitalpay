@@ -1,6 +1,5 @@
 package kz.capitalpay.server.paysystems.systems.testsystem.controller;
 
-import com.google.gson.Gson;
 import kz.capitalpay.server.paysystems.systems.testsystem.service.TestSystemInService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,10 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/testsystem", produces = "application/json;charset=UTF-8")
 public class TestSystemController {
 
-    Logger logger = LoggerFactory.getLogger(TestSystemController.class);
-
-    @Autowired
-    Gson gson;
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestSystemController.class);
 
     @Autowired
     TestSystemInService testSystemInService;

@@ -4,5 +4,6 @@ import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykSettings;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface HalykSettingsRepository extends JpaRepository<HalykSettings, Long> {
+
     HalykSettings findTopByFieldName(String fieldName);
 }

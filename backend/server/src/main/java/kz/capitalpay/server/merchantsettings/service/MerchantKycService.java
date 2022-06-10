@@ -27,25 +27,25 @@ import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
 @Service
 public class MerchantKycService {
 
-    Logger logger = LoggerFactory.getLogger(MerchantKycService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MerchantKycService.class);
 
     @Autowired
-    Gson gson;
+    private Gson gson;
 
     @Autowired
-    MerchantKycRepository merchantKycRepository;
+    private MerchantKycRepository merchantKycRepository;
 
     @Autowired
-    ApplicationUserService applicationUserService;
+    private ApplicationUserService applicationUserService;
 
     @Autowired
-    ApplicationRoleService applicationRoleService;
+    private ApplicationRoleService applicationRoleService;
 
     @Autowired
-    SystemEventsLogsService systemEventsLogsService;
+    private SystemEventsLogsService systemEventsLogsService;
 
     @Autowired
-    BinIinValidatorService binIinValidatorService;
+    private BinIinValidatorService binIinValidatorService;
 
     public static final String IINBIN = "iinbin";
     public static final String MNAME = "mname";
@@ -126,7 +126,7 @@ public class MerchantKycService {
             result.put(IIK, getField(merchant.getId(), IIK));
             result.put(BIK, getField(merchant.getId(), BIK));
             result.put(TOTAL_FEE, getField(merchant.getId(), TOTAL_FEE));
-            logger.info(gson.toJson(result));
+            LOGGER.info(gson.toJson(result));
             return new ResultDTO(true, result, 0);
         } catch (Exception e) {
             e.printStackTrace();

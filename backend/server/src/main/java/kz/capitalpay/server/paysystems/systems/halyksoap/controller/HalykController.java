@@ -6,7 +6,6 @@ import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,19 +16,20 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class HalykController {
 
-    Logger logger = LoggerFactory.getLogger(HalykController.class);
+    private static final Logger logger = LoggerFactory.getLogger(HalykController.class);
 
-    @Autowired
-    Gson gson;
-
-    @Autowired
-    HalykSoapService halykSoapService;
-
-    @Autowired
-    CashboxService cashboxService;
+    private final Gson gson;
+    private final HalykSoapService halykSoapService;
+    private final CashboxService cashboxService;
 
     @Value("${kkbsign.send.order.action.link}")
     String actionLink;
+
+    public HalykController(Gson gson, HalykSoapService halykSoapService, CashboxService cashboxService) {
+        this.gson = gson;
+        this.halykSoapService = halykSoapService;
+        this.cashboxService = cashboxService;
+    }
 
 
     @PostMapping("/paysystem/halyk/listener")
@@ -41,9 +41,8 @@ public class HalykController {
         logger.info("MD: {}", MD);
         logger.info("TermUrl: {}", TermUrl);
 
-
         String sessionid;
-        Object payment;
+        Payment payment;
         // TODO: Костыль ради песочницы
         if (actionLink.equals("https://testpay.kkb.kz")) {
             sessionid = halykSoapService.getSessionByPaRes(PaRes);
@@ -57,7 +56,7 @@ public class HalykController {
         logger.info(gson.toJson(payment));
 
         payment = halykSoapService.paymentOrderAcs(MD, PaRes, sessionid, false);
-        String redirectUrl = cashboxService.getRedirectForPayment((Payment) payment);
+        String redirectUrl = cashboxService.getRedirectForPayment(payment);
 
         response.setHeader("Location", redirectUrl);
         response.setStatus(302);

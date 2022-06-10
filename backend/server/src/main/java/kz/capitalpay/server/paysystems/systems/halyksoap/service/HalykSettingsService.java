@@ -9,7 +9,6 @@ import kz.capitalpay.server.paysystems.systems.halyksoap.dto.HalykFieldsDTO;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykSettings;
 import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykSettingsRepository;
 import kz.capitalpay.server.validation.BinIinValidatorService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -22,17 +21,11 @@ import static kz.capitalpay.server.login.service.ApplicationRoleService.OPERATOR
 
 @Service
 public class HalykSettingsService {
-    @Autowired
-    private ApplicationUserService applicationUserService;
 
-    @Autowired
-    private ApplicationRoleService applicationRoleService;
-
-    @Autowired
-    private BinIinValidatorService binIinValidatorService;
-
-    @Autowired
-    private HalykSettingsRepository halykSettingsRepository;
+    private final ApplicationUserService applicationUserService;
+    private final ApplicationRoleService applicationRoleService;
+    private final BinIinValidatorService binIinValidatorService;
+    private final HalykSettingsRepository halykSettingsRepository;
 
     public static final String KOBD = "kobd";
     public static final String LSKOR = "lskor";
@@ -55,6 +48,13 @@ public class HalykSettingsService {
     public static final String PLATEL = "platel";
     public static final String ORDER_NUMBER_REPORT = "order_number";
     public static final String DATE_LAST_DOWNLOADS = "date_last_downloads";
+
+    public HalykSettingsService(ApplicationUserService applicationUserService, ApplicationRoleService applicationRoleService, BinIinValidatorService binIinValidatorService, HalykSettingsRepository halykSettingsRepository) {
+        this.applicationUserService = applicationUserService;
+        this.applicationRoleService = applicationRoleService;
+        this.binIinValidatorService = binIinValidatorService;
+        this.halykSettingsRepository = halykSettingsRepository;
+    }
 
     public ResultDTO setOrUpdateHalykSettings(Principal principal, HalykDTO request) {
         try {

@@ -7,15 +7,12 @@ import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.util.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.HashMap;
-import java.util.Map;
 
 import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
 
@@ -27,7 +24,7 @@ public class CashBoxSettingController {
     private CashboxSettingsService cashboxSettingsService;
 
     @Autowired
-    ValidationUtil validationUtil;
+    private ValidationUtil validationUtil;
 
     @PostMapping("/delete")
     @RolesAllowed({ADMIN, OPERATOR})

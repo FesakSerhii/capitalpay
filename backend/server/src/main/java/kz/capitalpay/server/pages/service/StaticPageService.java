@@ -13,7 +13,6 @@ import kz.capitalpay.server.pages.model.StaticPage;
 import kz.capitalpay.server.pages.repository.StaticPageRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -27,19 +26,19 @@ import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.*;
 @Service
 public class StaticPageService {
 
-    Logger logger = LoggerFactory.getLogger(StaticPageService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(StaticPageService.class);
 
-    @Autowired
-    Gson gson;
+    private final Gson gson;
+    private final StaticPageRepository staticPageRepository;
+    private final ApplicationUserService applicationUserService;
+    private final SystemEventsLogsService systemEventsLogsService;
 
-    @Autowired
-    StaticPageRepository staticPageRepository;
-
-    @Autowired
-    ApplicationUserService applicationUserService;
-
-    @Autowired
-    SystemEventsLogsService systemEventsLogsService;
+    public StaticPageService(Gson gson, StaticPageRepository staticPageRepository, ApplicationUserService applicationUserService, SystemEventsLogsService systemEventsLogsService) {
+        this.gson = gson;
+        this.staticPageRepository = staticPageRepository;
+        this.applicationUserService = applicationUserService;
+        this.systemEventsLogsService = systemEventsLogsService;
+    }
 
 
     public ResultDTO showAll(ShowListDTO request) {
