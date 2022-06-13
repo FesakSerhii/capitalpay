@@ -2,8 +2,7 @@ package kz.capitalpay.server.paysystems.systems;
 
 import kz.capitalpay.server.payments.model.Payment;
 
-public interface PaySystem  {
-
+public interface PaySystem {
 
     String getComponentName();
 

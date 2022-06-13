@@ -1,6 +1,6 @@
 /**
  * EpayServiceCallbackHandler.java
- *
+ * <p>
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.7.9  Built on : Nov 16, 2018 (12:05:37 GMT)
  */
@@ -43,7 +43,7 @@ public abstract class EpayServiceCallbackHandler {
      * override this method for handling normal response from is3DOrder operation
      */
     public void receiveResultis3DOrder(
-        kz.capitalpay.server.wsdl.EpayServiceStub.Is3DOrderResponse result) {
+            kz.capitalpay.server.wsdl.EpayServiceStub.Is3DOrderResponse result) {
     }
 
     /**
@@ -58,7 +58,7 @@ public abstract class EpayServiceCallbackHandler {
      * override this method for handling normal response from paymentOrderAcs operation
      */
     public void receiveResultpaymentOrderAcs(
-        kz.capitalpay.server.wsdl.EpayServiceStub.PaymentOrderAcsResponse result) {
+            kz.capitalpay.server.wsdl.EpayServiceStub.PaymentOrderAcsResponse result) {
     }
 
     /**
@@ -73,7 +73,7 @@ public abstract class EpayServiceCallbackHandler {
      * override this method for handling normal response from deleteCard operation
      */
     public void receiveResultdeleteCard(
-        kz.capitalpay.server.wsdl.EpayServiceStub.DeleteCardResponse result) {
+            kz.capitalpay.server.wsdl.EpayServiceStub.DeleteCardResponse result) {
     }
 
     /**
@@ -88,7 +88,7 @@ public abstract class EpayServiceCallbackHandler {
      * override this method for handling normal response from checkOrder operation
      */
     public void receiveResultcheckOrder(
-        kz.capitalpay.server.wsdl.EpayServiceStub.CheckOrderResponse result) {
+            kz.capitalpay.server.wsdl.EpayServiceStub.CheckOrderResponse result) {
     }
 
     /**
@@ -103,7 +103,7 @@ public abstract class EpayServiceCallbackHandler {
      * override this method for handling normal response from airastanaPaymentAcsOrder operation
      */
     public void receiveResultairastanaPaymentAcsOrder(
-        kz.capitalpay.server.wsdl.EpayServiceStub.AirastanaPaymentAcsOrderResponse result) {
+            kz.capitalpay.server.wsdl.EpayServiceStub.AirastanaPaymentAcsOrderResponse result) {
     }
 
     /**
@@ -118,7 +118,7 @@ public abstract class EpayServiceCallbackHandler {
      * override this method for handling normal response from getCardList operation
      */
     public void receiveResultgetCardList(
-        kz.capitalpay.server.wsdl.EpayServiceStub.GetCardListResponse result) {
+            kz.capitalpay.server.wsdl.EpayServiceStub.GetCardListResponse result) {
     }
 
     /**
@@ -133,7 +133,7 @@ public abstract class EpayServiceCallbackHandler {
      * override this method for handling normal response from refundOrderForCommerce operation
      */
     public void receiveResultrefundOrderForCommerce(
-        kz.capitalpay.server.wsdl.EpayServiceStub.RefundOrderForCommerceResponse result) {
+            kz.capitalpay.server.wsdl.EpayServiceStub.RefundOrderForCommerceResponse result) {
     }
 
     /**
@@ -148,7 +148,7 @@ public abstract class EpayServiceCallbackHandler {
      * override this method for handling normal response from cardidPaymentOrder operation
      */
     public void receiveResultcardidPaymentOrder(
-        kz.capitalpay.server.wsdl.EpayServiceStub.CardidPaymentOrderResponse result) {
+            kz.capitalpay.server.wsdl.EpayServiceStub.CardidPaymentOrderResponse result) {
     }
 
     /**
@@ -163,7 +163,7 @@ public abstract class EpayServiceCallbackHandler {
      * override this method for handling normal response from transferOrder operation
      */
     public void receiveResulttransferOrder(
-        kz.capitalpay.server.wsdl.EpayServiceStub.TransferOrderResponse result) {
+            kz.capitalpay.server.wsdl.EpayServiceStub.TransferOrderResponse result) {
     }
 
     /**
@@ -178,7 +178,7 @@ public abstract class EpayServiceCallbackHandler {
      * override this method for handling normal response from paymentOrder operation
      */
     public void receiveResultpaymentOrder(
-        kz.capitalpay.server.wsdl.EpayServiceStub.PaymentOrderResponse result) {
+            kz.capitalpay.server.wsdl.EpayServiceStub.PaymentOrderResponse result) {
     }
 
     /**
@@ -193,7 +193,7 @@ public abstract class EpayServiceCallbackHandler {
      * override this method for handling normal response from checkForeignCard operation
      */
     public void receiveResultcheckForeignCard(
-        kz.capitalpay.server.wsdl.EpayServiceStub.CheckForeignCardResponse result) {
+            kz.capitalpay.server.wsdl.EpayServiceStub.CheckForeignCardResponse result) {
     }
 
     /**
@@ -208,7 +208,7 @@ public abstract class EpayServiceCallbackHandler {
      * override this method for handling normal response from controlOrderForCommerce operation
      */
     public void receiveResultcontrolOrderForCommerce(
-        kz.capitalpay.server.wsdl.EpayServiceStub.ControlOrderForCommerceResponse result) {
+            kz.capitalpay.server.wsdl.EpayServiceStub.ControlOrderForCommerceResponse result) {
     }
 
     /**
@@ -223,7 +223,7 @@ public abstract class EpayServiceCallbackHandler {
      * override this method for handling normal response from recurrentOrder operation
      */
     public void receiveResultrecurrentOrder(
-        kz.capitalpay.server.wsdl.EpayServiceStub.RecurrentOrderResponse result) {
+            kz.capitalpay.server.wsdl.EpayServiceStub.RecurrentOrderResponse result) {
     }
 
     /**
@@ -238,7 +238,7 @@ public abstract class EpayServiceCallbackHandler {
      * override this method for handling normal response from formZip operation
      */
     public void receiveResultformZip(
-        kz.capitalpay.server.wsdl.EpayServiceStub.FormZipResponse result) {
+            kz.capitalpay.server.wsdl.EpayServiceStub.FormZipResponse result) {
     }
 
     /**
@@ -253,7 +253,7 @@ public abstract class EpayServiceCallbackHandler {
      * override this method for handling normal response from checkZip operation
      */
     public void receiveResultcheckZip(
-        kz.capitalpay.server.wsdl.EpayServiceStub.CheckZipResponse result) {
+            kz.capitalpay.server.wsdl.EpayServiceStub.CheckZipResponse result) {
     }
 
     /**
@@ -268,7 +268,7 @@ public abstract class EpayServiceCallbackHandler {
      * override this method for handling normal response from airastanaPaymentOrder operation
      */
     public void receiveResultairastanaPaymentOrder(
-        kz.capitalpay.server.wsdl.EpayServiceStub.AirastanaPaymentOrderResponse result) {
+            kz.capitalpay.server.wsdl.EpayServiceStub.AirastanaPaymentOrderResponse result) {
     }
 
     /**

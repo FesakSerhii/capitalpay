@@ -46,7 +46,7 @@ public class FileStorageService {
         try {
             ApplicationUser user = applicationUserService.getUserByLogin(principal.getName());
             if (Objects.isNull(multipartFile)) {
-                return ErrorDictionary.error137;
+                return ErrorDictionary.EMPTY_FILE;
             }
 
             String originalFilename = StringUtils.cleanPath(multipartFile.getOriginalFilename());
@@ -70,7 +70,6 @@ public class FileStorageService {
                 newFile = fileStorageRepository.save(newFile);
                 logger.info("newFile: {}", newFile);
             }
-
             return new ResultDTO(true, newFile, 0);
         } catch (Exception e) {
             e.printStackTrace();
@@ -108,8 +107,8 @@ public class FileStorageService {
         //This bytes[] has bytes in decimal format;
         //Convert it to hexadecimal format
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < bytes.length; i++) {
-            sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+        for (byte aByte : bytes) {
+            sb.append(Integer.toString((aByte & 0xff) + 0x100, 16).substring(1));
         }
 
         //return complete hash
@@ -117,13 +116,9 @@ public class FileStorageService {
     }
 
     public List<FileStorage> getFilListById(List<Long> filesIdList) {
-
         List<FileStorage> result = new ArrayList<>();
         for (Long fileId : filesIdList) {
-            FileStorage fileStorage = fileStorageRepository.findById(fileId).orElse(null);
-            if (fileStorage != null) {
-                result.add(fileStorage);
-            }
+            fileStorageRepository.findById(fileId).ifPresent(result::add);
         }
         return result;
     }

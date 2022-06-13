@@ -9,30 +9,23 @@ import kz.capitalpay.server.paysystems.systems.halyksoap.dto.HalykFieldsDTO;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykSettings;
 import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykSettingsRepository;
 import kz.capitalpay.server.validation.BinIinValidatorService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
-import static kz.capitalpay.server.constants.ErrorDictionary.error120;
+import static kz.capitalpay.server.constants.ErrorDictionary.AVAILABLE_ONLY_FOR_ADMIN_OR_OPERATOR;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.OPERATOR;
 
 @Service
 public class HalykSettingsService {
-    @Autowired
-    private ApplicationUserService applicationUserService;
 
-    @Autowired
-    private ApplicationRoleService applicationRoleService;
-
-    @Autowired
-    private BinIinValidatorService binIinValidatorService;
-
-    @Autowired
-    private HalykSettingsRepository halykSettingsRepository;
+    private final ApplicationUserService applicationUserService;
+    private final ApplicationRoleService applicationRoleService;
+    private final BinIinValidatorService binIinValidatorService;
+    private final HalykSettingsRepository halykSettingsRepository;
 
     public static final String KOBD = "kobd";
     public static final String LSKOR = "lskor";
@@ -56,6 +49,13 @@ public class HalykSettingsService {
     public static final String ORDER_NUMBER_REPORT = "order_number";
     public static final String DATE_LAST_DOWNLOADS = "date_last_downloads";
 
+    public HalykSettingsService(ApplicationUserService applicationUserService, ApplicationRoleService applicationRoleService, BinIinValidatorService binIinValidatorService, HalykSettingsRepository halykSettingsRepository) {
+        this.applicationUserService = applicationUserService;
+        this.applicationRoleService = applicationRoleService;
+        this.binIinValidatorService = binIinValidatorService;
+        this.halykSettingsRepository = halykSettingsRepository;
+    }
+
     public ResultDTO setOrUpdateHalykSettings(Principal principal, HalykDTO request) {
         try {
             ApplicationUser admin = applicationUserService.getUserByLogin(principal.getName());
@@ -73,7 +73,7 @@ public class HalykSettingsService {
                 }
                 return new ResultDTO(true, request.getFields(), 0);
             } else {
-                return error120;
+                return AVAILABLE_ONLY_FOR_ADMIN_OR_OPERATOR;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -119,7 +119,7 @@ public class HalykSettingsService {
                 result.put(DATE_LAST_DOWNLOADS, getFieldValue(DATE_LAST_DOWNLOADS));
                 return new ResultDTO(true, result, 0);
             } else {
-                return error120;
+                return AVAILABLE_ONLY_FOR_ADMIN_OR_OPERATOR;
             }
         } catch (Exception e) {
             e.printStackTrace();

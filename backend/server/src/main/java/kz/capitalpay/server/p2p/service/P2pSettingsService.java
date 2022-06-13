@@ -51,7 +51,7 @@ public class P2pSettingsService {
 
         UserCard userCard = userCardRepository.findById(merchantP2pSettings.getDefaultCardId()).orElse(null);
         if (Objects.isNull(userCard)) {
-            return ErrorDictionary.error130;
+            return ErrorDictionary.CARD_NOT_FOUND;
         }
         dto.setCardNumber(userCard.getCardNumber());
         dto.setMerchantId(merchantP2pSettings.getUserId());
@@ -62,7 +62,7 @@ public class P2pSettingsService {
     public ResultDTO setP2pSettings(P2pSettingsDto dto) {
         Optional<MerchantP2pSettings> optionalMerchantP2pSettings = p2pSettingsRepository.findByUserId(dto.getMerchantId());
         if (optionalMerchantP2pSettings.isEmpty()) {
-            return ErrorDictionary.error132;
+            return ErrorDictionary.P2P_SETTINGS_NOT_FOUND;
         }
 
         MerchantP2pSettings merchantP2pSettings = optionalMerchantP2pSettings.get();

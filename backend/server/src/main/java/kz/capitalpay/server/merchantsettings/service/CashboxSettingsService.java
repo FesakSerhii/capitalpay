@@ -78,7 +78,7 @@ public class CashboxSettingsService {
                 }
                 return new ResultDTO(true, request.getFields(), 0);
             } else {
-                return error121;
+                return AVAILABLE_ONLY_FOR_ADMIN_OPERATOR_AND_MERCHANT;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -106,7 +106,7 @@ public class CashboxSettingsService {
                 result.put(CASHBOX_ID, String.valueOf(cashBoxDTO.getCashBoxId()));
                 return new ResultDTO(true, result, 0);
             } else {
-                return error121;
+                return AVAILABLE_ONLY_FOR_ADMIN_OPERATOR_AND_MERCHANT;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -121,7 +121,7 @@ public class CashboxSettingsService {
     public ResultDTO getPublicCashboxSettings(String p2pPaymentId) {
         Payment payment = paymentService.findById(p2pPaymentId);
         if (Objects.isNull(payment)) {
-            return error118;
+            return PAYMENT_NOT_FOUND;
         }
         return getPublicCashBoxSettings(payment.getCashboxId());
     }
@@ -136,7 +136,7 @@ public class CashboxSettingsService {
                 cashboxSettingsRepository.delete(cashboxSettings);
                 return new ResultDTO(true, "settings was deleted", 0);
             } else {
-                return error120;
+                return AVAILABLE_ONLY_FOR_ADMIN_OR_OPERATOR;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -172,7 +172,7 @@ public class CashboxSettingsService {
         Cashbox cashbox = cashboxRepository.findById(cashboxId).orElse(null);
         double total_fee = Double.parseDouble(merchantKycService.getField(cashbox.getMerchantId(), TOTAL_FEE));
         if (Double.parseDouble(fieldValue) > total_fee) {
-            return error127;
+            return CLIENT_FEE_GREATER_THAN_TOTAL_FEE;
         }
         if (fieldValue.trim().isEmpty()) {
             fieldValue = "0.0";
@@ -188,7 +188,7 @@ public class CashboxSettingsService {
         try {
             Cashbox cashbox = cashboxRepository.findById(cashBoxId).orElse(null);
             if (Objects.isNull(cashbox)) {
-                return error113;
+                return CASHBOX_NOT_FOUND;
             }
             MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(cashbox.getMerchantId());
             Map<String, Object> result = new HashMap<>();

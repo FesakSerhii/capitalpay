@@ -50,7 +50,6 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         logger.info("step1");
 
         UsernamePasswordAuthenticationToken authenticationToken = getAuthentication(request);
-
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         chain.doFilter(request, response);
     }
@@ -73,7 +72,6 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                 if (user != null) {
                     return new UsernamePasswordAuthenticationToken(user, authorities, roleSet);
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -84,7 +82,6 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private Algorithm getAlgorithm() {
-
         final InputStream inputStreamPriv = getClass().getClassLoader()
                 .getResourceAsStream("rsa/privatekey.pem");
 
@@ -104,7 +101,6 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
         try {
             KeyFactory kf = KeyFactory.getInstance("RSA");
-
             X509EncodedKeySpec keySpecX509pub = new X509EncodedKeySpec(Base64.getDecoder().decode(publicKeyContent));
             PKCS8EncodedKeySpec keySpecX509priv = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKeyContent));
             RSAPublicKey publicKey = (RSAPublicKey) kf.generatePublic(keySpecX509pub);

@@ -1,13 +1,10 @@
 package kz.capitalpay.server.paysystems.controller;
 
 import com.google.gson.Gson;
-import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.paysystems.dto.BillPaymentDto;
 import kz.capitalpay.server.paysystems.service.PaysystemService;
-import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,19 +21,10 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping(value = "/public/paysystem", produces = "application/json;charset=UTF-8")
 public class PublicPaysystemController {
 
-    Logger logger = LoggerFactory.getLogger(PublicPaysystemController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PublicPaysystemController.class);
 
-    @Autowired
-    Gson gson;
-
-    @Autowired
-    PaysystemService paysystemService;
-
-    @Autowired
-    HalykSoapService halykSoapService;
-
-    @Autowired
-    PaymentService paymentService;
+    private final Gson gson;
+    private final PaysystemService paysystemService;
 
     @Value("${halyk.soap.purchase.termurl}")
     String purchaseTermUrl;
@@ -46,6 +34,11 @@ public class PublicPaysystemController {
 
     @Value("${remote.api.addres}")
     String apiAddress;
+
+    public PublicPaysystemController(Gson gson, PaysystemService paysystemService) {
+        this.gson = gson;
+        this.paysystemService = paysystemService;
+    }
 
     //
 //    @PostMapping("/system/buttonlist")

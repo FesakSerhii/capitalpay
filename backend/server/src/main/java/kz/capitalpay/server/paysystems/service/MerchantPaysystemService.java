@@ -12,55 +12,55 @@ import kz.capitalpay.server.paysystems.dto.PaySystemListDTO;
 import kz.capitalpay.server.paysystems.model.PaysystemInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import static kz.capitalpay.server.constants.ErrorDictionary.error106;
-import static kz.capitalpay.server.constants.ErrorDictionary.error112;
+import static kz.capitalpay.server.constants.ErrorDictionary.CURRENCY_NOT_FOUND;
+import static kz.capitalpay.server.constants.ErrorDictionary.USER_NOT_FOUND;
 import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.EDIT_MERCHANT_PAYSYSTEM;
 import static kz.capitalpay.server.merchantsettings.service.MerchantSettingsService.MERCHANT_PAYSYSTEM_LIST;
 
 @Service
 public class MerchantPaysystemService {
 
-    Logger logger = LoggerFactory.getLogger(MerchantPaysystemService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MerchantPaysystemService.class);
 
-    @Autowired
-    Gson gson;
+    private final Gson gson;
+    private final ApplicationUserService applicationUserService;
+    private final MerchantSettingsService merchantSettingsService;
+    private final PaysystemService paysystemService;
+    private final SystemEventsLogsService systemEventsLogsService;
 
-    @Autowired
-    ApplicationUserService applicationUserService;
-
-    @Autowired
-    MerchantSettingsService merchantSettingsService;
-
-    @Autowired
-    PaysystemService paysystemService;
-
-    @Autowired
-    SystemEventsLogsService systemEventsLogsService;
+    public MerchantPaysystemService(Gson gson, ApplicationUserService applicationUserService, MerchantSettingsService merchantSettingsService, PaysystemService paysystemService, SystemEventsLogsService systemEventsLogsService) {
+        this.gson = gson;
+        this.applicationUserService = applicationUserService;
+        this.merchantSettingsService = merchantSettingsService;
+        this.paysystemService = paysystemService;
+        this.systemEventsLogsService = systemEventsLogsService;
+    }
 
     public ResultDTO findAll(MerchantRequestDTO request) {
         try {
             ApplicationUser merchant = applicationUserService.getUserById(request.getMerchantId());
             if (merchant == null) {
-                return error106;
+                return USER_NOT_FOUND;
             }
-
             String paysystemJson = merchantSettingsService.getField(merchant.getId(), MERCHANT_PAYSYSTEM_LIST);
-            logger.info("JSON: {}", paysystemJson);
+            LOGGER.info("JSON: {}", paysystemJson);
             List<Long> paysystemList = new ArrayList<>();
             if (paysystemJson != null && paysystemJson.length() > 0) {
                 List<Double> doubleList = gson.fromJson(paysystemJson, List.class);
                 doubleList.forEach(aDouble -> paysystemList.add(aDouble.longValue()));
-                logger.info(gson.toJson(paysystemList));
+                LOGGER.info(gson.toJson(paysystemList));
             }
-            logger.info("List: {}", paysystemList);
+            LOGGER.info("List: {}", paysystemList);
             Set<Long> paysystemSet = new HashSet<>(paysystemList);
-            logger.info("Set: {}", gson.toJson(paysystemSet));
+            LOGGER.info("Set: {}", gson.toJson(paysystemSet));
             List<PaysystemInfo> systemPaysystemInfoList = paysystemService.paysystemList();
             List<PaySystemListDTO> result = new ArrayList<>();
             for (PaysystemInfo ps : systemPaysystemInfoList) {
@@ -69,11 +69,9 @@ public class MerchantPaysystemService {
                     paySystemListDTO.setId(ps.getId());
                     paySystemListDTO.setName(ps.getName());
                     paySystemListDTO.setEnabled(paysystemSet.contains(ps.getId()));
-
                     result.add(paySystemListDTO);
                 }
             }
-
             return new ResultDTO(true, result, 0);
         } catch (Exception e) {
             e.printStackTrace();
@@ -84,21 +82,21 @@ public class MerchantPaysystemService {
 
     public List<PaysystemInfo> paysystemList(Long merchantId) {
         String paysystemJson = merchantSettingsService.getField(merchantId, MERCHANT_PAYSYSTEM_LIST);
-        logger.info("JSON: {}", paysystemJson);
+        LOGGER.info("JSON: {}", paysystemJson);
         List<Long> paysystemList = new ArrayList<>();
         if (paysystemJson != null && paysystemJson.length() > 0) {
             List<Double> doubleList = gson.fromJson(paysystemJson, List.class);
             doubleList.forEach(aDouble -> paysystemList.add(aDouble.longValue()));
-            logger.info(gson.toJson(paysystemList));
+            LOGGER.info(gson.toJson(paysystemList));
         }
-        logger.info("List: {}", paysystemList);
+        LOGGER.info("List: {}", paysystemList);
 
         List<PaysystemInfo> systemPaysystemInfoList = paysystemService.paysystemList();
-        logger.info("systemPaysystemInfoList: {}",gson.toJson(systemPaysystemInfoList));
+        LOGGER.info("systemPaysystemInfoList: {}", gson.toJson(systemPaysystemInfoList));
         List<PaysystemInfo> result = new ArrayList<>();
         for (PaysystemInfo ps : systemPaysystemInfoList) {
-            logger.info("ps.getId(): {}",ps.getId());
-            logger.info(String.valueOf(paysystemList.contains(ps.getId())));
+            LOGGER.info("ps.getId(): {}", ps.getId());
+            LOGGER.info(String.valueOf(paysystemList.contains(ps.getId())));
             if (ps.isEnabled() && paysystemList.contains(ps.getId())) {
                 result.add(ps);
             }
@@ -110,11 +108,9 @@ public class MerchantPaysystemService {
         try {
             ApplicationUser merchant = applicationUserService.getUserById(request.getMerchantId());
             if (merchant == null) {
-                return error106;
+                return USER_NOT_FOUND;
             }
-
             ApplicationUser operator = applicationUserService.getUserByLogin(principal.getName());
-
             List<PaysystemInfo> systemPaysystemInfoList = paysystemService.paysystemList();
 
             for (Long l : request.getPaysystemList()) {
@@ -126,18 +122,15 @@ public class MerchantPaysystemService {
                     }
                 }
                 if (error) {
-                    return error112;
+                    return CURRENCY_NOT_FOUND;
                 }
             }
 
             String paysystemJson = gson.toJson(request.getPaysystemList());
-            logger.info(paysystemJson);
-
+            LOGGER.info(paysystemJson);
             systemEventsLogsService.addNewOperatorAction(operator.getUsername(),
                     EDIT_MERCHANT_PAYSYSTEM, gson.toJson(request), merchant.getId().toString());
-
             merchantSettingsService.setField(merchant.getId(), MERCHANT_PAYSYSTEM_LIST, paysystemJson);
-
             return new ResultDTO(true, request.getPaysystemList(), 0);
         } catch (Exception e) {
             e.printStackTrace();

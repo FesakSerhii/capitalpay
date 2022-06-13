@@ -1,11 +1,9 @@
 package kz.capitalpay.server.paysystems.systems.testsystem.service;
 
-import com.google.gson.Gson;
 import kz.capitalpay.server.paysystems.systems.testsystem.model.TestsystemPayment;
 import kz.capitalpay.server.paysystems.systems.testsystem.repository.TestsystemPaymentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -17,20 +15,17 @@ import static kz.capitalpay.server.simple.service.SimpleService.*;
 @Service
 public class TestSystemFantomService {
 
-    Logger logger = LoggerFactory.getLogger(TestSystemFantomService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestSystemFantomService.class);
 
-    @Autowired
-    Gson gson;
-
-    @Autowired
-    TestsystemPaymentRepository testsystemPaymentRepository;
-
-
-
-    @Autowired
-    TestSystemInService testSystemInService;
+    private final TestsystemPaymentRepository testsystemPaymentRepository;
+    private final TestSystemInService testSystemInService;
 
     Random random = new Random();
+
+    public TestSystemFantomService(TestsystemPaymentRepository testsystemPaymentRepository, TestSystemInService testSystemInService) {
+        this.testsystemPaymentRepository = testsystemPaymentRepository;
+        this.testSystemInService = testSystemInService;
+    }
 
     public void createPayment(String paymentid, String billid, BigDecimal totalamount, String currency) {
         try {
@@ -64,9 +59,7 @@ public class TestSystemFantomService {
                 payment.setStatus(PENDING);
             }
             testsystemPaymentRepository.save(payment);
-
             notifyCapitalPAyAboutStatusChange(payment);
-
             return payment;
         } catch (Exception e) {
             e.printStackTrace();
@@ -75,18 +68,16 @@ public class TestSystemFantomService {
     }
 
 
-    private boolean notifyCapitalPAyAboutStatusChange(TestsystemPayment payment) {
+    private void notifyCapitalPAyAboutStatusChange(TestsystemPayment payment) {
         try {
-            testSystemInService.chаngePaymentStаtus(payment);
-            return true;
+            testSystemInService.changePaymentStatus(payment);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
     }
 
     public String checkPendingStatus(String paymentid) {
-        TestsystemPayment payment = setStatus(paymentid,4L);
+        TestsystemPayment payment = setStatus(paymentid, 4L);
         return payment.getStatus();
     }
 }

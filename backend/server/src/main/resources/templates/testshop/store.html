@@ -25,7 +25,8 @@
     </div>
     <div class="hat">
         <div class="container">
-            <a class="hat_logo" href="https://api.capitalpay.kz/testshop/page"><img src="/testshop/img/demologo.png" alt=""></a>
+            <a class="hat_logo" href="https://api.capitalpay.kz/testshop/page"><img src="/testshop/img/demologo.png"
+                                                                                    alt=""></a>
             <nav class="menu">
                 <ul>
                     <li class="menu_item active"><a href="#!">IPhone</a></li>
@@ -97,7 +98,7 @@
 
                 <form method="post" action="https://api.capitalpay.kz/payment/simple/pay">
                     <input name="cashboxid" type="hidden" value="1"/>
-                    <input name="billid" type="hidden" th:value="${bilId}" />
+                    <input name="billid" type="hidden" th:value="${bilId}"/>
                     <input name="totalamount" type="hidden" value="609900"/>
                     <input name="currency" type="hidden" value="KZT"/>
                     <input name="param" type="hidden" value="спорттовары"/>
@@ -125,7 +126,7 @@
 
                 <form method="post" action="https://api.capitalpay.kz/payment/simple/pay">
                     <input name="cashboxid" type="hidden" value="1"/>
-                    <input name="billid" type="hidden" th:value="${bilId+1}" />
+                    <input name="billid" type="hidden" th:value="${bilId+1}"/>
                     <input name="totalamount" type="hidden" value="379900"/>
                     <input name="currency" type="hidden" value="KZT"/>
                     <input name="description" type="hidden" value="Apple iPhone 11 128 GB Black Slim"/>
@@ -151,7 +152,7 @@
 
                 <form method="post" action="https://api.capitalpay.kz/payment/simple/pay">
                     <input name="cashboxid" type="hidden" value="1"/>
-                    <input name="billid" type="hidden" th:value="${bilId+2}" />
+                    <input name="billid" type="hidden" th:value="${bilId+2}"/>
                     <input name="totalamount" type="hidden" value="419900"/>
                     <input name="currency" type="hidden" value="KZT"/>
                     <input name="description" type="hidden" value="iPhone 12 Mini 128 Gb Red"/>

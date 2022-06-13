@@ -67,6 +67,7 @@ public class TestShopController {
         modelMap.addAttribute("color", "green");
         return "testshop/paymentstatus";
     }
+
     @GetMapping("/testshop/failed")
     String showSimpleStatusPageFailed(ModelMap modelMap) {
         modelMap.addAttribute("billid", "");
@@ -79,7 +80,7 @@ public class TestShopController {
 
     @PostMapping("/testshop/listener")
     @ResponseBody
-    String interactionUrl(@RequestBody String json){
+    String interactionUrl(@RequestBody String json) {
         logger.info("Interaction url:");
         logger.info(json);
         return "OK";

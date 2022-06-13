@@ -5,6 +5,7 @@ import kz.capitalpay.server.currency.dto.MerchantEditListDTO;
 import kz.capitalpay.server.currency.dto.MerchantRequestDTO;
 import kz.capitalpay.server.currency.service.MerchantCurrencyService;
 import kz.capitalpay.server.dto.ResultDTO;
+import kz.capitalpay.server.util.ValidationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,9 @@ public class MerchantCurrencyController {
     @Autowired
     MerchantCurrencyService merchantCurrencyService;
 
+    @Autowired
+    ValidationUtil validationUtil;
+
     @PostMapping("/merchant/list")
     @RolesAllowed({"ROLE_ADMIN", "ROLE_OPERATOR"})
     ResultDTO merchantList(@RequestBody MerchantRequestDTO request) {
@@ -46,18 +50,10 @@ public class MerchantCurrencyController {
     }
 
 
-
-
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResultDTO handleValidationExceptions(
             MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return new ResultDTO(false, errors,-2);
+        return validationUtil.handleValidation(ex);
     }
 }

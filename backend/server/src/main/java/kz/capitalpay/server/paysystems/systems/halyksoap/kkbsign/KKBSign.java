@@ -100,7 +100,7 @@ public class KKBSign implements Serializable {
                     sign[length - i - 1] = b;
                 }
             }
-            System.out.println("Send Signature len: "+sign.length);
+            System.out.println("Send Signature len: " + sign.length);
             return new String(Base64.encode(sign));
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -116,7 +116,7 @@ public class KKBSign implements Serializable {
             final byte[] decode = Base64.decode(signature.toCharArray());
             final char[] charArray = password.toCharArray();
 
-            System.out.println("Verify Signature len: "+decode.length);
+            System.out.println("Verify Signature len: " + decode.length);
 
             final KeyStore instance = KeyStore.getInstance(this.keystoretype);
             instance.load(new FileInputStream(cert), charArray);

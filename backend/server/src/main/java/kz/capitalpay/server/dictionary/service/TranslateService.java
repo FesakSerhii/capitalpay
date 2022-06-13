@@ -54,7 +54,7 @@ public class TranslateService {
         try {
             Set<String> pageList = new HashSet<>();
             List<Translate> translateList = translateRepository.findAll();
-            if (translateList != null && translateList.size() > 0) {
+            if (translateList.size() > 0) {
                 for (Translate tr : translateList) {
                     pageList.add(tr.getPage());
                 }

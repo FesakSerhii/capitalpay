@@ -1,6 +1,6 @@
 /**
  * EpayServiceKeyStoreExceptionException.java
- *
+ * <p>
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.7.9  Built on : Nov 16, 2018 (12:05:37 GMT)
  */
@@ -19,7 +19,7 @@ public class EpayServiceKeyStoreExceptionException extends java.lang.Exception {
     }
 
     public EpayServiceKeyStoreExceptionException(java.lang.String s,
-        java.lang.Throwable ex) {
+                                                 java.lang.Throwable ex) {
         super(s, ex);
     }
 
@@ -28,7 +28,7 @@ public class EpayServiceKeyStoreExceptionException extends java.lang.Exception {
     }
 
     public void setFaultMessage(
-        kz.capitalpay.server.wsdl.EpayServiceStub.EpayServiceKeyStoreException msg) {
+            kz.capitalpay.server.wsdl.EpayServiceStub.EpayServiceKeyStoreException msg) {
         faultMessage = msg;
     }
 

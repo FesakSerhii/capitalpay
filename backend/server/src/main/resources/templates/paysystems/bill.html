@@ -7,64 +7,64 @@
 </head>
 <body>
 <div class="location">
-<h1>Оплата завершена успешно</h1>
-<div class="nameField">
-    <div class="valueField">Статус</div>
-    <div class="valueField"><p th:text="${bill.getResultPayment()}"> </p></div>
-</div>
-<div class="nameField">
-    <div class="valueField">Получатель</div>
-    <div class="valueField"><p th:text="${bill.getMerchantName()}"> </p></div>
-</div>
-<div class="nameField">
-    <div class="valueField">Адрес веб-сайта продавца</div>
-    <div class="valueField"><p th:text="${bill.getWebSiteMerchant()}"> </p></div>
-</div>
-<div class="nameField">
-    <div class="valueField">№ заказа</div>
-    <div class="valueField"><p th:text="${bill.getOrderId()}"> </p></div>
-</div>
-<div class="nameField">
-    <div class="valueField">Дата транзакции</div>
-    <div class="valueField"><p th:text="${bill.getDateTransaction()}"> </p></div>
-</div>
-<div class="nameField">
-    <div class="valueField">Тип транзакции</div>
-    <div class="valueField"><p th:text="${bill.getTypeTransaction()}"> </p></div>
-</div>
-<div class="nameField">
-    <div class="valueField">Наименование платежной системы</div>
-    <div class="valueField"><p th:text="${bill.getPaySystemName()}"> </p></div>
-</div>
-<div class="nameField">
-    <div class="valueField">Номер уведомления/номер транзакции</div>
-    <div class="valueField"><p th:text="${bill.getNumberTransaction()}"> </p></div>
-</div>
-<div class="nameField">
-    <div class="valueField">Имя плательщика</div>
-    <div class="valueField"><p th:text="${bill.getCardHolderName()}"> </p></div>
-</div>
-<div class="nameField">
-    <div class="valueField">Номер платежной карты</div>
-    <div class="valueField"><p th:text="${bill.getCardNumber()}"> </p></div>
-</div>
-<div class="nameField">
-    <div class="valueField">Назначение платежа</div>
-    <div class="valueField"><p th:text="${bill.getPurposePayment()}"> </p></div>
-</div>
-<div class="nameField">
-    <div class="valueField">Сумма платежа</div>
-    <div class="valueField"><p th:text="${bill.getAmountPayment()}"> </p></div>
-</div>
-<div class="nameField">
-    <div class="valueField">Комиссия</div>
-    <div class="valueField"><p th:text="${bill.getAmountFee()}"> </p></div>
-</div>
-<div class="nameField">
-    <div class="valueField"><b>Итого к оплате</b></div>
-    <div class="valueField"><b><p th:text="${bill.getTotalAmount()}"> </p></b></div>
-</div>
-<br>
+    <h1>Оплата завершена успешно</h1>
+    <div class="nameField">
+        <div class="valueField">Статус</div>
+        <div class="valueField"><p th:text="${bill.getResultPayment()}"></p></div>
+    </div>
+    <div class="nameField">
+        <div class="valueField">Получатель</div>
+        <div class="valueField"><p th:text="${bill.getMerchantName()}"></p></div>
+    </div>
+    <div class="nameField">
+        <div class="valueField">Адрес веб-сайта продавца</div>
+        <div class="valueField"><p th:text="${bill.getWebSiteMerchant()}"></p></div>
+    </div>
+    <div class="nameField">
+        <div class="valueField">№ заказа</div>
+        <div class="valueField"><p th:text="${bill.getOrderId()}"></p></div>
+    </div>
+    <div class="nameField">
+        <div class="valueField">Дата транзакции</div>
+        <div class="valueField"><p th:text="${bill.getDateTransaction()}"></p></div>
+    </div>
+    <div class="nameField">
+        <div class="valueField">Тип транзакции</div>
+        <div class="valueField"><p th:text="${bill.getTypeTransaction()}"></p></div>
+    </div>
+    <div class="nameField">
+        <div class="valueField">Наименование платежной системы</div>
+        <div class="valueField"><p th:text="${bill.getPaySystemName()}"></p></div>
+    </div>
+    <div class="nameField">
+        <div class="valueField">Номер уведомления/номер транзакции</div>
+        <div class="valueField"><p th:text="${bill.getNumberTransaction()}"></p></div>
+    </div>
+    <div class="nameField">
+        <div class="valueField">Имя плательщика</div>
+        <div class="valueField"><p th:text="${bill.getCardHolderName()}"></p></div>
+    </div>
+    <div class="nameField">
+        <div class="valueField">Номер платежной карты</div>
+        <div class="valueField"><p th:text="${bill.getCardNumber()}"></p></div>
+    </div>
+    <div class="nameField">
+        <div class="valueField">Назначение платежа</div>
+        <div class="valueField"><p th:text="${bill.getPurposePayment()}"></p></div>
+    </div>
+    <div class="nameField">
+        <div class="valueField">Сумма платежа</div>
+        <div class="valueField"><p th:text="${bill.getAmountPayment()}"></p></div>
+    </div>
+    <div class="nameField">
+        <div class="valueField">Комиссия</div>
+        <div class="valueField"><p th:text="${bill.getAmountFee()}"></p></div>
+    </div>
+    <div class="nameField">
+        <div class="valueField"><b>Итого к оплате</b></div>
+        <div class="valueField"><b><p th:text="${bill.getTotalAmount()}"></p></b></div>
+    </div>
+    <br>
     <button onclick="window.location.href = 'https://api.capitalpay.kz/testshop/page';">Перейти в магазин</button>
     <button onclick="window.location.href = 'https://api.capitalpay.kz/testshop/page';">Печать чека</button>
 </div>
@@ -75,6 +75,7 @@
     .location {
         text-align: center
     }
+
     .nameField {
         height: 50px;
     }

@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import java.security.Principal;
 import java.util.List;
 
-import static kz.capitalpay.server.constants.ErrorDictionary.error111;
+import static kz.capitalpay.server.constants.ErrorDictionary.CURRENCY_ALREADY_EXISTS;
 import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.ADD_CURRENCY;
 import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.EDIT_ONE_CURRENCY;
 
@@ -92,7 +92,7 @@ public class CurrencyService {
         try {
             SystemCurrency currency = currencyRepository.findByAlpha(request.getAlpha());
             if (currency != null) {
-                return error111;
+                return CURRENCY_ALREADY_EXISTS;
             } else {
                 currency = new SystemCurrency();
             }

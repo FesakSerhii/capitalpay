@@ -7,8 +7,10 @@ import kz.capitalpay.server.files.service.FileStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
@@ -25,10 +27,10 @@ public class FileUploadController {
     @Autowired
     FileStorageService fileStorageService;
 
-    @PostMapping(value= "/upload")
+    @PostMapping(value = "/upload")
     ResultDTO uploadFile(Principal principal, @RequestParam MultipartFile multipartFile) {
         logger.info("\n\n\n I'm here ");
         logger.info(" original name " + multipartFile.getOriginalFilename());
-        return fileStorageService.uploadFile(multipartFile,principal);
+        return fileStorageService.uploadFile(multipartFile, principal);
     }
 }

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    Logger logger = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
 
     @Autowired
     ApplicationUserRepository applicationUserRepository;
@@ -25,15 +25,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        logger.info("Username: {}", username);
+        LOGGER.info("Username: {}", username);
         ApplicationUser applicationUser = applicationUserRepository.findByUsername(username);
-        logger.info(gson.toJson(applicationUser));
+        LOGGER.info(gson.toJson(applicationUser));
         if (applicationUser == null) {
             throw new UsernameNotFoundException(username);
         }
-        UserDetails user = new org.springframework.security.core.userdetails.User(applicationUser.getUsername(), applicationUser.getPassword(),
+        return new org.springframework.security.core.userdetails.User(applicationUser.getUsername(), applicationUser.getPassword(),
                 applicationUser.getRoles());
-        return user;
     }
 
 

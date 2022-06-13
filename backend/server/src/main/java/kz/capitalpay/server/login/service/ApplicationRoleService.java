@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.util.List;
 
 @Service
@@ -25,7 +24,6 @@ public class ApplicationRoleService {
     @Autowired
     ApplicationRoleRepository applicationRoleRepository;
 
-
     public ApplicationRole getRole(String authority) {
         logger.info("Get role");
         ApplicationRole role = applicationRoleRepository.findByAuthority(authority);
@@ -40,10 +38,8 @@ public class ApplicationRoleService {
     public boolean isEmpty() {
         logger.info("Is empty");
         List<ApplicationRole> roleList = applicationRoleRepository.findAll();
-        logger.info("Is null {}",roleList == null);
-        logger.info("Size: {}",roleList.size());
-        logger.info("Return {}", roleList == null || roleList.size() == 0);
-
-        return roleList == null || roleList.size() == 0;
+        logger.info("Size: {}", roleList.size());
+        logger.info("Return {}", roleList.size() == 0);
+        return roleList.size() == 0;
     }
 }

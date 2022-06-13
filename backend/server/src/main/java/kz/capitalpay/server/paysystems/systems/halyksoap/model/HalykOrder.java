@@ -18,7 +18,7 @@ public class HalykOrder {
     String amount;
     String cardholderName;
     String currency;
-    @Column(name="description")
+    @Column(name = "description")
     String desc;
     String merchantid;
     String orderid;

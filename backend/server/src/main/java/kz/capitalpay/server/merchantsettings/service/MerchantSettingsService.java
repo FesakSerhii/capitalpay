@@ -1,8 +1,6 @@
 package kz.capitalpay.server.merchantsettings.service;
 
 import com.google.gson.Gson;
-import kz.capitalpay.server.merchantsettings.dto.MerchantKycFieldDTO;
-import kz.capitalpay.server.merchantsettings.model.MerchantKyc;
 import kz.capitalpay.server.merchantsettings.model.MerchantSettings;
 import kz.capitalpay.server.merchantsettings.repository.MerchantSettingsRepository;
 import org.slf4j.Logger;
@@ -13,13 +11,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class MerchantSettingsService {
 
-    Logger logger = LoggerFactory.getLogger(MerchantSettingsService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MerchantSettingsService.class);
 
     @Autowired
-    Gson gson;
+    private Gson gson;
 
     @Autowired
-    MerchantSettingsRepository merchantSettingsRepository;
+    private MerchantSettingsRepository merchantSettingsRepository;
 
     public static final String MERCHANT_CURRENCY_LIST = "currencylist";
     public static final String MERCHANT_PAYSYSTEM_LIST = "paysystemlist";
@@ -35,7 +33,6 @@ public class MerchantSettingsService {
         }
         return merchantSettings.getFieldValue();
     }
-
 
 
     public void setField(Long merchantId, String fieldName, String fieldValue) {

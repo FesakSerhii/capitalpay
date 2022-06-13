@@ -10,7 +10,8 @@ import javax.persistence.Id;
 @Entity
 public class ApplicationRole implements GrantedAuthority {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     Long id;
     @Column(unique = true)
     String authority;

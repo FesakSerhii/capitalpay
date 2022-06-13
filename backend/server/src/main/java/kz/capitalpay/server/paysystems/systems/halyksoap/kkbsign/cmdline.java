@@ -7,8 +7,7 @@ import java.io.FileOutputStream;
 // Decompiled by Procyon v0.5.36
 // 
 
-class cmdline
-{
+class cmdline {
     public static void main(final String[] array) {
         String s = "";
         String s2 = "";
@@ -29,8 +28,7 @@ class cmdline
             final KKBSign kkbSign = new KKBSign();
             if (0 == s7.compareTo("b")) {
                 System.out.println(kkbSign.build64(new String(array[1]), new String(array[2]), new String(array[3])));
-            }
-            else {
+            } else {
                 final String name = new String(array[1]);
                 s = new String(array[2]);
                 s2 = new String(array[3]);
@@ -51,13 +49,11 @@ class cmdline
                 fileInputStream2.read(array3);
                 if (kkbSign.verify(s6, new String(array3), s2, s3, s5)) {
                     System.out.println("Signature verified successfully");
-                }
-                else {
+                } else {
                     System.out.println("Signature error");
                 }
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.err.println("Caught exception " + ex.toString());
         }
     }

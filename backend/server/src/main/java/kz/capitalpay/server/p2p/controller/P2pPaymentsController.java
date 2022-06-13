@@ -63,6 +63,8 @@ public class P2pPaymentsController {
                                         @RequestParam @NotBlank(message = "sign must not be blank") String signature,
                                         HttpServletRequest httpRequest,
                                         RedirectAttributes redirectAttributes) {
+
+        LOGGER.info("/send-p2p-to-client");
         String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
         if (ipAddress == null) {
             ipAddress = httpRequest.getRemoteAddr();
@@ -80,6 +82,7 @@ public class P2pPaymentsController {
                                           @RequestParam @NotBlank(message = "sign must not be blank") String signature,
                                           HttpServletRequest httpRequest,
                                           RedirectAttributes redirectAttributes) {
+        LOGGER.info("/send-p2p-to-merchant");
         String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
         if (ipAddress == null) {
             ipAddress = httpRequest.getRemoteAddr();
@@ -92,7 +95,7 @@ public class P2pPaymentsController {
     @PostMapping("/send-anonymous-p2p-to-merchant")
     public ResultDTO paymentCardPay(HttpServletRequest httpRequest,
                                     @Valid @RequestBody SendAnonymousP2pToMerchantDto dto) {
-
+        LOGGER.info("/send-anonymous-p2p-to-merchant");
         return p2pService.sendAnonymousP2pPayment(httpRequest, dto.getPaymentId(), dto.getCardHolderName(),
                 dto.getCvv(), dto.getMonth(), dto.getPan(), dto.getYear());
     }
@@ -107,6 +110,7 @@ public class P2pPaymentsController {
                                                   HttpServletRequest httpRequest,
                                                   RedirectAttributes redirectAttributes
     ) {
+        LOGGER.info("/anonymous-p2p-to-merchant");
         String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
         if (ipAddress == null) {
             ipAddress = httpRequest.getRemoteAddr();
@@ -133,6 +137,7 @@ public class P2pPaymentsController {
     public RedirectView listener(@RequestParam String PaRes,
                                  @RequestParam String MD,
                                  @RequestParam(required = false) String TermUrl) {
+        LOGGER.info("p2p/paysystem/listener");
         LOGGER.info("PaRes: {}", PaRes);
         LOGGER.info("MD: {}", MD);
         LOGGER.info("TermUrl: {}", TermUrl);

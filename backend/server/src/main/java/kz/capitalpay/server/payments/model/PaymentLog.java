@@ -7,7 +7,8 @@ import javax.persistence.Id;
 
 @Entity
 public class PaymentLog {
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     Long id;
     Long timestamp;
     String paymentID;
@@ -15,7 +16,6 @@ public class PaymentLog {
     String action;
     @Column(length = 16383)
     String details;
-
 
 
     public Long getId() {

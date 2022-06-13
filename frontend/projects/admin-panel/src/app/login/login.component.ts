@@ -21,10 +21,10 @@ export class LoginComponent implements OnInit {
   ) { }
 
   loginForm = new FormGroup({
-    // email: new FormControl(/*'+37096384345'*/undefined, Validators.required),
-    email: new FormControl('+37096384345', Validators.required),
-    // password: new FormControl(/*'blablabla'*/undefined, Validators.required),
-    password: new FormControl('blablabla', Validators.required),
+    email: new FormControl(/*'+37096384345'*/undefined, Validators.required),
+    // email: new FormControl('+37096384345', Validators.required),
+    password: new FormControl(/*'blablabla'*/undefined, Validators.required),
+    // password: new FormControl('blablabla', Validators.required),
     isIpTrusted: new FormControl()
   });
 

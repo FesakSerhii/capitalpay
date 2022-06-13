@@ -17,8 +17,8 @@ import org.springframework.stereotype.Service;
 import java.security.Principal;
 import java.util.*;
 
-import static kz.capitalpay.server.constants.ErrorDictionary.error106;
-import static kz.capitalpay.server.constants.ErrorDictionary.error112;
+import static kz.capitalpay.server.constants.ErrorDictionary.USER_NOT_FOUND;
+import static kz.capitalpay.server.constants.ErrorDictionary.CURRENCY_NOT_FOUND;
 import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.EDIT_MERCHANT_CURRENCY;
 import static kz.capitalpay.server.merchantsettings.service.MerchantSettingsService.MERCHANT_CURRENCY_LIST;
 
@@ -46,7 +46,7 @@ public class MerchantCurrencyService {
         try {
             ApplicationUser merchant = applicationUserService.getUserById(request.getMerchantId());
             if (merchant == null) {
-                return error106;
+                return USER_NOT_FOUND;
             }
 
             String currencyJson = merchantSettingsService.getField(merchant.getId(), MERCHANT_CURRENCY_LIST);
@@ -100,7 +100,7 @@ public class MerchantCurrencyService {
         try {
             ApplicationUser merchant = applicationUserService.getUserById(request.getMerchantId());
             if (merchant == null) {
-                return error106;
+                return USER_NOT_FOUND;
             }
 
             ApplicationUser operator = applicationUserService.getUserByLogin(principal.getName());
@@ -116,7 +116,7 @@ public class MerchantCurrencyService {
                     }
                 }
                 if (error) {
-                    return error112;
+                    return CURRENCY_NOT_FOUND;
                 }
             }
 

@@ -12,11 +12,10 @@ public class CreateNewUserDTO {
     @Email
     @NotBlank
     String email;
-    @Pattern(regexp = "[+]\\d{11}",message = "Phone number standard E.164: +77012345678")
+    @Pattern(regexp = "[+]\\d{11}", message = "Phone number standard E.164: +77012345678")
     String phone;
 
     List<String> roleList;
-
 
 
     public String getPassword() {

@@ -23,15 +23,15 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static kz.capitalpay.server.constants.ErrorDictionary.error106;
-import static kz.capitalpay.server.constants.ErrorDictionary.error107;
+import static kz.capitalpay.server.constants.ErrorDictionary.NOT_ENOUGH_RIGHTS_TO_CHANGE_ROLE;
+import static kz.capitalpay.server.constants.ErrorDictionary.USER_NOT_FOUND;
 import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.*;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
 
 @Service
 public class UserListService {
 
-    Logger logger = LoggerFactory.getLogger(UserListService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserListService.class);
 
     @Autowired
     Gson gson;
@@ -88,11 +88,11 @@ public class UserListService {
                     CHANGE_ROLE, gson.toJson(request), applicationUser.getId().toString());
 
             if (admin.getRoles().contains(applicationRoleService.getRole(ADMIN))) {
-                logger.info("Admin!");
+                LOGGER.info("Admin!");
                 applicationUser.setRoles(roleListFromStringList(request.getRoleList()));
                 applicationUserRepository.save(applicationUser);
             } else if (admin.getRoles().contains(applicationRoleService.getRole(OPERATOR))) {
-                logger.info("Operator!");
+                LOGGER.info("Operator!");
 //                if (request.getRoleList().contains(OPERATOR) || request.getRoleList().contains(ADMIN)) {
 //                    return error107;
 //                }
@@ -124,13 +124,13 @@ public class UserListService {
     public ResultDTO roleList(Principal principal) {
         ApplicationUser admin = applicationUserRepository.findByUsername(principal.getName());
         if (admin == null) {
-            logger.error(gson.toJson(principal));
-            logger.error("Admin: {}", admin);
-            return error106;
+            LOGGER.error(gson.toJson(principal));
+            LOGGER.error("Admin: {}", admin);
+            return USER_NOT_FOUND;
         }
         Set<ApplicationRole> applicationRoles = new HashSet<>();
         if (admin.getRoles() == null) {
-            logger.error("Admin role list: {}", admin.getRoles());
+            LOGGER.error("Admin role list: {}", admin.getRoles());
         } else {
             if (admin.getRoles().contains(applicationRoleService.getRole(ADMIN))) {
                 applicationRoles.add(applicationRoleService.getRole(USER));
@@ -153,7 +153,7 @@ public class UserListService {
             if (!result.isResult()) {
                 return result;
             }
-            logger.info(gson.toJson(result));
+            LOGGER.info(gson.toJson(result));
             ApplicationUser applicationUser = applicationUserRepository.findByUsername((String) result.getData());
             applicationUser.setEmail(request.getEmail());
             applicationUser.setTimestamp(System.currentTimeMillis());
@@ -162,7 +162,7 @@ public class UserListService {
 
             if (!admin.getRoles().contains(applicationRoleService.getRole(ADMIN))) {
                 if (request.getRoleList().contains(OPERATOR) || request.getRoleList().contains(ADMIN)) {
-                    return error107;
+                    return NOT_ENOUGH_RIGHTS_TO_CHANGE_ROLE;
                 }
             }
             applicationUser.setRoles(roleListFromStringList(request.getRoleList()));
@@ -191,35 +191,29 @@ public class UserListService {
     }
 
     public ResultDTO deleteUser(Principal principal, DeleteUserDTO request) {
-
         try {
-
             ApplicationUser applicationUser = applicationUserService.getUserById(request.getUserId());
             if (applicationUser == null) {
-                return error106;
+                return USER_NOT_FOUND;
             }
             ApplicationUser admin = applicationUserRepository.findByUsername(principal.getName());
             if (!admin.getRoles().contains(applicationRoleService.getRole(ADMIN))) {
                 Set<ApplicationRole> roleSet = applicationUser.getRoles();
                 if (roleSet.contains(applicationRoleService.getRole(OPERATOR)) ||
                         roleSet.contains(applicationRoleService.getRole(OPERATOR))) {
-                    return error107;
+                    return NOT_ENOUGH_RIGHTS_TO_CHANGE_ROLE;
                 }
             }
-
             DeletedApplicationUser deleted = new DeletedApplicationUser(applicationUser);
             deletedApplicationUserRepository.save(deleted);
             applicationUserRepository.delete(applicationUser);
-
             systemEventsLogsService.addNewOperatorAction(principal.getName(),
                     DELETE_USER, gson.toJson(request), applicationUser.getId().toString());
-
             return new ResultDTO(true, request.getUserId(), 0);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }
-
     }
 
 
@@ -227,17 +221,16 @@ public class UserListService {
         try {
             ApplicationUser applicationUser = applicationUserService.getUserById(request.getId());
             if (applicationUser == null) {
-                return error106;
+                return USER_NOT_FOUND;
             }
             ApplicationUser admin = applicationUserRepository.findByUsername(principal.getName());
             if (!admin.getRoles().contains(applicationRoleService.getRole(ADMIN))) {
                 Set<ApplicationRole> roleSet = applicationUser.getRoles();
                 if (roleSet.contains(applicationRoleService.getRole(OPERATOR)) ||
                         roleSet.contains(applicationRoleService.getRole(OPERATOR))) {
-                    return error107;
+                    return NOT_ENOUGH_RIGHTS_TO_CHANGE_ROLE;
                 }
             }
-
             applicationUser.setEmail(request.getEmail());
             applicationUser.setUsername(request.getPhone());
             applicationUser.setActive(request.isActive());
@@ -248,10 +241,8 @@ public class UserListService {
             if (request.getPassword() != null) {
                 applicationUser.setPassword(bCryptPasswordEncoder.encode(request.getPassword()));
             }
-
             applicationUserRepository.save(applicationUser);
             ApplicationUser resultUser = maskPassword(applicationUser);
-
             request.setPassword(null);
             systemEventsLogsService.addNewOperatorAction(principal.getName(),
                     EDIT_USER, gson.toJson(request), applicationUser.getId().toString());
@@ -266,7 +257,7 @@ public class UserListService {
         try {
             ApplicationUser applicationUser = applicationUserService.getUserById(request.getId());
             if (applicationUser == null) {
-                return error106;
+                return USER_NOT_FOUND;
             }
             ApplicationUser resultUser = maskPassword(applicationUser);
             systemEventsLogsService.addNewOperatorAction(principal.getName(),
@@ -281,7 +272,7 @@ public class UserListService {
     public ResultDTO activateUser(Long id) {
         ApplicationUser user = applicationUserRepository.findById(id).orElse(null);
         if (Objects.isNull(user)) {
-            return error106;
+            return USER_NOT_FOUND;
         }
         user.setActive(true);
         user.setBlocked(false);
@@ -292,7 +283,7 @@ public class UserListService {
     public ResultDTO blockUser(Long id) {
         ApplicationUser user = applicationUserRepository.findById(id).orElse(null);
         if (Objects.isNull(user)) {
-            return error106;
+            return USER_NOT_FOUND;
         }
         user.setActive(false);
         user.setBlocked(true);

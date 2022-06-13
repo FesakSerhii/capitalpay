@@ -16,9 +16,9 @@ import java.util.Random;
 @Service
 public class TwoFactorService {
 
-    Logger logger = LoggerFactory.getLogger(TwoFactorService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TwoFactorService.class);
 
-    Random random = new Random();
+    private final Random random = new Random();
 
     @Autowired
     ApplicationUserService applicationUserService;
@@ -53,7 +53,7 @@ public class TwoFactorService {
             TwoFactorAuth twoFactorAuth = twoFactorAuthRepository.findById(user.getId()).orElse(null);
             return twoFactorAuth != null;
         } else {
-            logger.error("User: {}", gson.toJson(user));
+            LOGGER.error("User: {}", gson.toJson(user));
             return false;
         }
     }
@@ -66,9 +66,7 @@ public class TwoFactorService {
     public void sendSms(ApplicationUser user) {
         String code = String.valueOf(random.nextInt(999999));
         sendSmsService.sendSms(user.getUsername(), "Code: " + code);
-
         TwoFactorAuth twoFactorAuth = twoFactorAuthRepository.findById(user.getId()).orElse(null);
-
         if (twoFactorAuth != null) {
             twoFactorAuth.setSmscode(code);
             twoFactorAuthRepository.save(twoFactorAuth);
@@ -81,7 +79,7 @@ public class TwoFactorService {
             twoFactorAuth.setCheckSms(sms);
             twoFactorAuthRepository.save(twoFactorAuth);
             if (twoFactorAuth.getCheckSms() != null && !twoFactorAuth.getSmscode().equals(twoFactorAuth.getCheckSms())) {
-                logger.error("SMS: " + twoFactorAuth.getSmscode() + " != " + twoFactorAuth.getCheckSms());
+                LOGGER.error("SMS: " + twoFactorAuth.getSmscode() + " != " + twoFactorAuth.getCheckSms());
             }
         }
     }
@@ -98,7 +96,7 @@ public class TwoFactorService {
         TwoFactorAuth twoFactorAuth = twoFactorAuthRepository.findById(id).orElse(null);
         if (twoFactorAuth != null) {
             if (twoFactorAuth.getCheckSms() != null && !twoFactorAuth.getSmscode().equals(twoFactorAuth.getCheckSms())) {
-                logger.error("SMS: " + twoFactorAuth.getSmscode() + " != " + twoFactorAuth.getCheckSms());
+                LOGGER.error("SMS: " + twoFactorAuth.getSmscode() + " != " + twoFactorAuth.getCheckSms());
                 return false;
             } else {
                 twoFactorAuth.setCheckSms(null);

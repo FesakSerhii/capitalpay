@@ -24,11 +24,9 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class WebSecurity extends WebSecurityConfigurerAdapter {
 
-    Logger logger = LoggerFactory.getLogger(WebSecurity.class);
-
-
-    BCryptPasswordEncoder bCryptPasswordEncoder;
-    UserDetailsServiceImpl userDetailsService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurity.class);
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserDetailsServiceImpl userDetailsService;
 
     public WebSecurity(BCryptPasswordEncoder bCryptPasswordEncoder, UserDetailsServiceImpl userDetailsService) {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
@@ -58,7 +56,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .addFilter(jwtAuthenticationFilter())
                 .addFilter(new JWTAuthorizationFilter(authenticationManager()))
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        logger.info("Security Configure");
+        LOGGER.info("Security Configure");
     }
 
     @Override

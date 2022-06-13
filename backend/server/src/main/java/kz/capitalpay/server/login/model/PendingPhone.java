@@ -8,9 +8,9 @@ import javax.persistence.Id;
 public class PendingPhone {
     @Id
     String phone;
-    @Column(name="email",nullable = false,unique = true)
+    @Column(name = "email", nullable = false, unique = true)
     String email;
-    @Column(name="password_hash",nullable = false,unique = true)
+    @Column(name = "password_hash", nullable = false, unique = true)
     String passwordHash;
     @Column(name = "confirm_code", nullable = false, unique = true)
     String confirmCode;

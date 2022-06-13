@@ -10,6 +10,7 @@ import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.merchantsettings.service.MerchantKycService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,11 +35,10 @@ public class CashboxFeeService {
         try {
             List<Cashbox> cashboxList = cashboxRepository.findByMerchantIdAndDeletedFalse(feeDto.getMerchantId());
             List<CashBoxFeeListDto> result = cashboxList.stream()
-                            .map(o -> new CashBoxFeeListDto(o.getId(), o.getName(), getTotalFee(o.getMerchantId()),
-                                    getClientFee(o.getId()), getMerchantFee(o.getMerchantId(), o.getId())))
+                    .map(o -> new CashBoxFeeListDto(o.getId(), o.getName(), getTotalFee(o.getMerchantId()),
+                            getClientFee(o.getId()), getMerchantFee(o.getMerchantId(), o.getId())))
                     .collect(Collectors.toList());
             return new ResultDTO(true, result, 0);
-
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
@@ -47,7 +47,7 @@ public class CashboxFeeService {
 
     public ResultDTO saveCashBoxFeeList(CashBoxFeeDto feeDto, Principal principal) {
         try {
-            for(CashBoxFeeListDto data : feeDto.getFeeList()) {
+            for (CashBoxFeeListDto data : feeDto.getFeeList()) {
                 cashboxSettingsService.setField(data.getCashBoxId(), CLIENT_FEE, data.getClientFee());
             }
             return getCashBoxFeeList(feeDto);

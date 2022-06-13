@@ -14,12 +14,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-import static kz.capitalpay.server.constants.ErrorDictionary.error101;
-import static kz.capitalpay.server.constants.ErrorDictionary.error102;
+import static kz.capitalpay.server.constants.ErrorDictionary.CONFIRM_CODE_NOT_FOUND;
+import static kz.capitalpay.server.constants.ErrorDictionary.EMAIL_USED;
 
 @Service
 public class UserEmailService {
-    Logger logger = LoggerFactory.getLogger(UserEmailService.class);
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserEmailService.class);
 
     @Autowired
     Gson gson;
@@ -37,7 +38,7 @@ public class UserEmailService {
         try {
             PendingEmail pendingEmail = pendingEmailRepository.findByEmail(request.getEmail());
             if (pendingEmail != null && !pendingEmail.getStatus().equals(PENDING)) {
-                return error101;
+                return EMAIL_USED;
             }
             if (pendingEmail == null) {
                 pendingEmail = new PendingEmail();
@@ -54,7 +55,7 @@ public class UserEmailService {
 
             return new ResultDTO(true, request, 0);
         } catch (Exception e) {
-            logger.error("Line number: {} \n{}", e.getStackTrace()[0].getLineNumber(), e.getMessage());
+            LOGGER.error("Line number: {} \n{}", e.getStackTrace()[0].getLineNumber(), e.getMessage());
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }
@@ -66,7 +67,7 @@ public class UserEmailService {
         if (pendingEmail != null) {
             return new ResultDTO(true, pendingEmail, 0);
         } else {
-            return error102;
+            return CONFIRM_CODE_NOT_FOUND;
         }
     }
 
@@ -79,9 +80,8 @@ public class UserEmailService {
         }
     }
 
-    public boolean confirm(PendingEmail pendingEmail) {
+    public void confirm(PendingEmail pendingEmail) {
         pendingEmail.setStatus(CONFIRMED);
         pendingEmailRepository.save(pendingEmail);
-        return true;
     }
 }

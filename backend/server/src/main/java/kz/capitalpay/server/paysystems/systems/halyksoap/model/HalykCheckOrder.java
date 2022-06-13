@@ -14,8 +14,8 @@ public class HalykCheckOrder {
     LocalDateTime localDateTime;
 
     //===Request=======
-String merchantid;
-String orderid;
+    String merchantid;
+    String orderid;
 
     //===Response======
     String acceptReversalDate;

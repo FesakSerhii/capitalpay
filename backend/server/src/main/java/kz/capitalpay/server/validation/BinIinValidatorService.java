@@ -2,24 +2,26 @@ package kz.capitalpay.server.validation;
 
 import kz.capitalpay.server.dto.ResultDTO;
 import org.springframework.stereotype.Service;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
 
 @Service
 public class BinIinValidatorService {
     public ResultDTO checkBinIin(String iinBin) {
         if (iinBin.length() != 12) {
-            return error123;
+            return MUST_CONTAIN_12_DIGITS;
         }
         if (iinBin.replace(iinBin.substring(0, 1), "").length() == 0) {
-            return error124;
+            return CONTAINS_IDENTICAL_DIGITS;
         }
         boolean hasNotOnlyDigits = Arrays.stream(iinBin.split(""))
                 .anyMatch(s -> !Character.isDigit(s.charAt(0)));
         if (hasNotOnlyDigits) {
-            return error125;
+            return MUST_CONTAIN_ONLY_DIGITS;
         }
         List<Integer> numbers = Arrays.stream(iinBin.split(""))
                 .map(Integer::parseInt)
@@ -32,7 +34,7 @@ public class BinIinValidatorService {
         if (controlValue == summa && summa > 0) {
             return new ResultDTO(true, "BIN or IIN is valid!", 0);
         }
-        return error126;
+        return INVALID_BIN_OR_IIN;
     }
 
     private int calculateSumma(List<Integer> numbers) {

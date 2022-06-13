@@ -16,6 +16,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -41,13 +42,9 @@ import static kz.capitalpay.server.login.config.SecurityConstants.*;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    Logger logger = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
-
-    Gson gson = new Gson();
-
-    AuthenticationManager authenticationManager;
-
-    ApplicationUserService applicationUserService = ContextProvider.getBean(ApplicationUserService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
+    private final AuthenticationManager authenticationManager;
+    private final ApplicationUserService applicationUserService = ContextProvider.getBean(ApplicationUserService.class);
 
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
@@ -55,11 +52,11 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        logger.info("step3");
+        LOGGER.info("step3");
         ApplicationUserDTO cred = null;
         try {
             cred = new ObjectMapper().readValue(request.getInputStream(), ApplicationUserDTO.class);
-            logger.info("cred " + cred);
+            LOGGER.info("cred " + cred);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -70,9 +67,9 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             };
         }
 
-        logger.info("archer before " + cred.getUsername());
+        LOGGER.info("archer before " + cred.getUsername());
         String ip = applicationUserService.validIpAddress(request, cred.getUsername());
-        logger.info("ip " + ip);
+        LOGGER.info("ip " + ip);
         if (ip == null) {
             throw new AuthenticationException("Authentication failed") {
             };
@@ -83,7 +80,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 cred.getPassword(),
                 new ArrayList<>()
         );
-        logger.info("token from auth " + token);
+        LOGGER.info("token from auth " + token);
 
         if (applicationUserService.requireTwoFactorAuth(cred.getUsername())) {
             if (cred.getSms() == null) {
@@ -94,7 +91,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         }
 
         Authentication authentication = authenticationManager.authenticate(token);
-        logger.info("authentication " + authentication.getPrincipal().toString());
+        LOGGER.info("authentication " + authentication.getPrincipal().toString());
         applicationUserService.setTrustIp(ip, cred);
         return authentication;
     }
@@ -106,17 +103,16 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String[] roles = new String[authResult.getAuthorities().size()];
 
         Set<String> roleSet = authResult.getAuthorities().stream()
-                .map(r -> r.getAuthority()).collect(Collectors.toSet());
-
+                .map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
         roles = roleSet.toArray(roles);
 
         ApplicationUser applicationUser = applicationUserService.getUserByLogin(username);
-        logger.info("application User" + applicationUser);
+        LOGGER.info("application User" + applicationUser);
 
         if (applicationUserService.requireTwoFactorAuth(username)) {
             if (applicationUserService.smsNeedCheck(username)) {
                 if (applicationUserService.smsCheckResult(username)) {
-                    logger.info("step4");
+                    LOGGER.info("step4");
                     String token = JWT.create()
                             .withSubject(username)
                             .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
@@ -125,31 +121,28 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                             .withJWTId(UUID.randomUUID().toString())
                             .sign(getAlgorithm());
                     response.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
-                    logger.info("token step4" + token);
+                    LOGGER.info("token step4" + token);
 
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                     response.getWriter().write(gson.toJson(new ResultDTO(true, username, 0)));
                 } else {
-                    logger.info("step5");
+                    LOGGER.info("step5");
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 //                    response.getWriter().write(gson.toJson(new ResultDTO(true, "SMS sent", 0)));
                     //TODO:костыль для тестирования двухфакторной аутентификации
                     response.getWriter().write(gson.toJson(new ResultDTO(true, "SMS sent", 0,
                             applicationUserService.findSmsCode(applicationUser))));
-
                 }
             } else {
-                logger.info("step6");
+                LOGGER.info("step6");
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 //                response.getWriter().write(gson.toJson(new ResultDTO(true, "SMS sent", 0)));
                 //TODO:костыль для тестирования двухфакторной аутентификации
                 response.getWriter().write(gson.toJson(new ResultDTO(true, "SMS sent", 0,
                         applicationUserService.findSmsCode(applicationUser))));
             }
-
         } else {
-            logger.info("step7");
-
+            LOGGER.info("step7");
             String token = JWT.create()
                     .withSubject(username)
                     .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
@@ -157,16 +150,14 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                     .withClaim("merchantId", applicationUser.getId())
                     .withJWTId(UUID.randomUUID().toString())
                     .sign(getAlgorithm());
-            logger.info("ste7 token " + token);
+            LOGGER.info("ste7 token " + token);
             response.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
-
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.getWriter().write(gson.toJson(new ResultDTO(true, roles, 0)));
         }
     }
 
     private Algorithm getAlgorithm() {
-
         final InputStream inputStreamPriv = getClass().getClassLoader()
                 .getResourceAsStream("rsa/privatekey.pem");
 
@@ -187,15 +178,11 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         try {
             KeyFactory kf = KeyFactory.getInstance("RSA");
-
             X509EncodedKeySpec keySpecX509pub = new X509EncodedKeySpec(Base64.getDecoder().decode(publicKeyContent));
             PKCS8EncodedKeySpec keySpecX509priv = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKeyContent));
             RSAPublicKey publicKey = (RSAPublicKey) kf.generatePublic(keySpecX509pub);
             RSAPrivateKey privateKey = (RSAPrivateKey) kf.generatePrivate(keySpecX509priv);
-
-
-            Algorithm algorithm = Algorithm.RSA256(publicKey, privateKey);
-            return algorithm;
+            return Algorithm.RSA256(publicKey, privateKey);
         } catch (Exception e) {
             e.printStackTrace();
         }

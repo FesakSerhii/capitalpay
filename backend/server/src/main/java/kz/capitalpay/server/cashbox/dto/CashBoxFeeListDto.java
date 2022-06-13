@@ -7,7 +7,7 @@ public class CashBoxFeeListDto {
     private String merchantFee;
     private String clientFee;
 
-    public CashBoxFeeListDto(Long cashBoxId, String cashBoxName, String totalFee,  String clientFee, String merchantFee) {
+    public CashBoxFeeListDto(Long cashBoxId, String cashBoxName, String totalFee, String clientFee, String merchantFee) {
         this.cashBoxId = cashBoxId;
         this.cashBoxName = cashBoxName;
         this.totalFee = totalFee;

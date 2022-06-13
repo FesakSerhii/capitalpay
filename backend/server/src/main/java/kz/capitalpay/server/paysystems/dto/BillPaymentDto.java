@@ -146,7 +146,7 @@ public class BillPaymentDto {
             } else {
                 builder.append("X");
             }
-            if(i == 3 || i == 7 || i == 11) {
+            if (i == 3 || i == 7 || i == 11) {
                 builder.append(" ");
             }
         }
@@ -154,11 +154,11 @@ public class BillPaymentDto {
     }
 
     private static String checkPaySystem(String cardNumber) {
-        if(cardNumber.length() == 18 && cardNumber.startsWith("3") || cardNumber.startsWith("5")
+        if (cardNumber.length() == 18 && cardNumber.startsWith("3") || cardNumber.startsWith("5")
                 || cardNumber.startsWith("6")) {
             return "Maestro";
         }
-        if(cardNumber.length() == 16) {
+        if (cardNumber.length() == 16) {
             switch (cardNumber.charAt(0)) {
                 case '2':
                     return "МИР";

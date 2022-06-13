@@ -6,11 +6,10 @@ import java.io.*;
 // Decompiled by Procyon v0.5.36
 // 
 
-public class Base64
-{
+public class Base64 {
     private static char[] alphabet;
     private static byte[] codes;
-    
+
     public static char[] encode(final byte[] array) {
         final char[] array2 = new char[(array.length + 2) / 3 * 4];
         for (int i = 0, n = 0; i < array.length; i += 3, n += 4) {
@@ -35,7 +34,7 @@ public class Base64
         }
         return array2;
     }
-    
+
     public static byte[] decode(final char[] array) {
         int length = array.length;
         for (int i = 0; i < array.length; ++i) {
@@ -55,14 +54,14 @@ public class Base64
         int n3 = 0;
         int j = 0;
         for (int k = 0; k < array.length; ++k) {
-            final byte b = (byte)((array[k] <= '\u00ff') ? Base64.codes[array[k]] : -1);
+            final byte b = (byte) ((array[k] <= '\u00ff') ? Base64.codes[array[k]] : -1);
             if (b >= 0) {
                 final int n4 = n3 << 6;
                 n2 += 6;
                 n3 = (n4 | b);
                 if (n2 >= 8) {
                     n2 -= 8;
-                    array2[j++] = (byte)(n3 >> n2 & 0xFF);
+                    array2[j++] = (byte) (n3 >> n2 & 0xFF);
                 }
             }
         }
@@ -71,7 +70,7 @@ public class Base64
         }
         return array2;
     }
-    
+
     public static void main(final String[] array) {
         boolean b = false;
         if (array.length == 0) {
@@ -81,8 +80,7 @@ public class Base64
         for (int i = 0; i < array.length; ++i) {
             if ("-decode".equalsIgnoreCase(array[i])) {
                 b = true;
-            }
-            else if ("-d".equalsIgnoreCase(array[i])) {
+            } else if ("-d".equalsIgnoreCase(array[i])) {
                 b = true;
             }
         }
@@ -98,7 +96,7 @@ public class Base64
         }
         writeChars(file, encode(readBytes(file)));
     }
-    
+
     private static byte[] readBytes(final File file) {
         final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         try {
@@ -111,13 +109,12 @@ public class Base64
                 }
             }
             bufferedInputStream.close();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         return byteArrayOutputStream.toByteArray();
     }
-    
+
     private static char[] readChars(final File file) {
         final CharArrayWriter charArrayWriter = new CharArrayWriter();
         try {
@@ -130,35 +127,32 @@ public class Base64
                 }
             }
             bufferedReader.close();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         return charArrayWriter.toCharArray();
     }
-    
+
     private static void writeBytes(final File file, final byte[] b) {
         try {
             final BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(file));
             bufferedOutputStream.write(b);
             bufferedOutputStream.close();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
-    
+
     private static void writeChars(final File file, final char[] cbuf) {
         try {
             final BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
             bufferedWriter.write(cbuf);
             bufferedWriter.close();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
-    
+
     static {
         Base64.alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".toCharArray();
         Base64.codes = new byte[256];
@@ -166,13 +160,13 @@ public class Base64
             Base64.codes[i] = -1;
         }
         for (int j = 65; j <= 90; ++j) {
-            Base64.codes[j] = (byte)(j - 65);
+            Base64.codes[j] = (byte) (j - 65);
         }
         for (int k = 97; k <= 122; ++k) {
-            Base64.codes[k] = (byte)(26 + k - 97);
+            Base64.codes[k] = (byte) (26 + k - 97);
         }
         for (int l = 48; l <= 57; ++l) {
-            Base64.codes[l] = (byte)(52 + l - 48);
+            Base64.codes[l] = (byte) (52 + l - 48);
         }
         Base64.codes[43] = 62;
         Base64.codes[47] = 63;

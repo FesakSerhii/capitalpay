@@ -27,8 +27,10 @@
     </target>
     <target depends="init" name="pre.compile.test">
         <!--Test the classpath for the availability of necesary classes-->
-        <available classpathref="axis2.class.path" property="stax.available" classname="javax.xml.stream.XMLStreamReader"/>
-        <available classpathref="axis2.class.path" property="axis2.available" classname="org.apache.axis2.engine.AxisEngine"/>
+        <available classpathref="axis2.class.path" property="stax.available"
+                   classname="javax.xml.stream.XMLStreamReader"/>
+        <available classpathref="axis2.class.path" property="axis2.available"
+                   classname="org.apache.axis2.engine.AxisEngine"/>
         <condition property="jars.ok">
             <and>
                 <isset property="stax.available"/>
@@ -40,7 +42,8 @@
         <echo message="Axis2 Availability= ${axis2.available}"/>
     </target>
     <target depends="pre.compile.test" name="compile.src" if="jars.ok">
-        <javac debug="on" memoryMaximumSize="256m" memoryInitialSize="256m" fork="true" destdir="${classes}" srcdir="${src}">
+        <javac debug="on" memoryMaximumSize="256m" memoryInitialSize="256m" fork="true" destdir="${classes}"
+               srcdir="${src}">
             <classpath refid="axis2.class.path"/>
         </javac>
     </target>
