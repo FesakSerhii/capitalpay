@@ -30,19 +30,11 @@ public class MerchantPaysystemService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MerchantPaysystemService.class);
 
-    private final Gson gson;
-    private final ApplicationUserService applicationUserService;
-    private final MerchantSettingsService merchantSettingsService;
-    private final PaysystemService paysystemService;
-    private final SystemEventsLogsService systemEventsLogsService;
-
-    public MerchantPaysystemService(Gson gson, ApplicationUserService applicationUserService, MerchantSettingsService merchantSettingsService, PaysystemService paysystemService, SystemEventsLogsService systemEventsLogsService) {
-        this.gson = gson;
-        this.applicationUserService = applicationUserService;
-        this.merchantSettingsService = merchantSettingsService;
-        this.paysystemService = paysystemService;
-        this.systemEventsLogsService = systemEventsLogsService;
-    }
+    Gson gson;
+    ApplicationUserService applicationUserService;
+    MerchantSettingsService merchantSettingsService;
+    PaysystemService paysystemService;
+    SystemEventsLogsService systemEventsLogsService;
 
     public ResultDTO findAll(MerchantRequestDTO request) {
         try {

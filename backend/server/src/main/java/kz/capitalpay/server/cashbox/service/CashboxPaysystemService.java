@@ -6,7 +6,6 @@ import kz.capitalpay.server.cashbox.dto.CashboxRequestDTO;
 import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.cashbox.repository.CashboxRepository;
 import kz.capitalpay.server.dto.ResultDTO;
-import kz.capitalpay.server.eventlog.service.SystemEventsLogsService;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.service.ApplicationRoleService;
 import kz.capitalpay.server.login.service.ApplicationUserService;
@@ -17,7 +16,6 @@ import kz.capitalpay.server.paysystems.service.MerchantPaysystemService;
 import kz.capitalpay.server.paysystems.service.PaysystemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -32,31 +30,14 @@ import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsServi
 @Service
 public class CashboxPaysystemService {
 
-    Logger logger = LoggerFactory.getLogger(CashboxPaysystemService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CashboxPaysystemService.class);
 
-
-    @Autowired
     Gson gson;
-
-    @Autowired
     ApplicationUserService applicationUserService;
-
-    @Autowired
     ApplicationRoleService applicationRoleService;
-
-    @Autowired
     CashboxRepository cashboxRepository;
-
-    @Autowired
     CashboxSettingsService cashboxSettingsService;
-
-    @Autowired
     PaysystemService paysystemService;
-
-    @Autowired
-    SystemEventsLogsService systemEventsLogsService;
-
-    @Autowired
     MerchantPaysystemService merchantPaysystemService;
 
     public ResultDTO findAll(Principal principal, CashboxRequestDTO request) {
