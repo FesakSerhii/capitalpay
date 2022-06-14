@@ -13,7 +13,7 @@ import kz.capitalpay.server.merchantsettings.repository.CashboxSettingsRepositor
 import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
 import kz.capitalpay.server.p2p.service.P2pSettingsService;
 import kz.capitalpay.server.payments.model.Payment;
-import kz.capitalpay.server.payments.service.PaymentService;
+import kz.capitalpay.server.payments.repository.PaymentRepository;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -35,7 +35,7 @@ public class CashboxSettingsService {
     private final ApplicationRoleService applicationRoleService;
     private final CashboxRepository cashboxRepository;
     private final P2pSettingsService p2pSettingsService;
-    private final PaymentService paymentService;
+    private final PaymentRepository paymentRepository;
 
     public static final String CASHBOX_CURRENCY_LIST = "currencylist";
     public static final String CASHBOX_PAYSYSTEM_LIST = "paysystemlist";
@@ -49,14 +49,14 @@ public class CashboxSettingsService {
     public static final String MERCHANT_ID = "merchantId";
     public static final String CASHBOX_ID = "cashboxId";
 
-    public CashboxSettingsService(CashboxSettingsRepository cashboxSettingsRepository, MerchantKycService merchantKycService, ApplicationUserService applicationUserService, ApplicationRoleService applicationRoleService, CashboxRepository cashboxRepository, P2pSettingsService p2pSettingsService, PaymentService paymentService) {
+    public CashboxSettingsService(CashboxSettingsRepository cashboxSettingsRepository, MerchantKycService merchantKycService, ApplicationUserService applicationUserService, ApplicationRoleService applicationRoleService, CashboxRepository cashboxRepository, P2pSettingsService p2pSettingsService, PaymentRepository paymentRepository) {
         this.cashboxSettingsRepository = cashboxSettingsRepository;
         this.cashboxRepository = cashboxRepository;
         this.merchantKycService = merchantKycService;
         this.applicationUserService = applicationUserService;
         this.applicationRoleService = applicationRoleService;
         this.p2pSettingsService = p2pSettingsService;
-        this.paymentService = paymentService;
+        this.paymentRepository = paymentRepository;
     }
 
     public ResultDTO setOrUpdateCashboxSettings(Principal principal, CashBoxSettingDTO request) {
@@ -119,7 +119,7 @@ public class CashboxSettingsService {
     }
 
     public ResultDTO getPublicCashboxSettings(String p2pPaymentId) {
-        Payment payment = paymentService.findById(p2pPaymentId);
+        Payment payment = paymentRepository.findById(p2pPaymentId).orElse(null);
         if (Objects.isNull(payment)) {
             return PAYMENT_NOT_FOUND;
         }

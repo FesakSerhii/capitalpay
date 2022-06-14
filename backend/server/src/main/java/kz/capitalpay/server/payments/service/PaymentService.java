@@ -1,7 +1,6 @@
 package kz.capitalpay.server.payments.service;
 
 import com.google.gson.Gson;
-import kz.capitalpay.server.cashbox.dto.CashboxBalanceDTO;
 import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.dto.ResultDTO;
@@ -19,13 +18,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
@@ -123,11 +120,6 @@ public class PaymentService {
         }
     }
 
-    public Cashbox getCashboxByOrderId(String orderid) {
-        Payment payment = paymentRepository.findTopByPaySysPayId(orderid);
-        return cashboxService.findById(payment.getCashboxId());
-    }
-
     public Payment findByPaySysPayId(String paySysPayId) {
         return paymentRepository.findTopByPaySysPayId(paySysPayId);
     }
@@ -212,23 +204,5 @@ public class PaymentService {
             return new ResultDTO(false, e.getMessage(), -1);
         }
 
-    }
-
-    public List<CashboxBalanceDTO> getBalance(Long cashboxId) {
-        Map<String, BigDecimal> result = new HashMap<>();
-        List<Payment> paymentList = paymentRepository.findByCashboxIdAndStatus(cashboxId, SUCCESS);
-
-        for (Payment payment : paymentList) {
-            BigDecimal amount = BigDecimal.ZERO;
-            if (result.containsKey(payment.getCurrency())) {
-                amount = result.get(payment.getCurrency());
-            }
-            amount = amount.add(payment.getTotalAmount());
-            result.put(payment.getCurrency(), amount);
-        }
-        logger.info("result " + result.toString());
-        return result.entrySet().stream()
-                .map(o -> new CashboxBalanceDTO(o.getKey(), o.getValue()))
-                .collect(Collectors.toList());
     }
 }
