@@ -41,6 +41,7 @@ public class CashboxPaysystemController {
     @RolesAllowed({ADMIN, OPERATOR, MERCHANT})
     ResultDTO cashboxList(@RequestBody CashboxRequestDTO request, Principal principal) {
         logger.info("Cashbox paysystem List");
+        logger.info("CashboxRequestDTO: {}", request);
         return cashboxPaysystemService.findAll(principal, request);
     }
 
