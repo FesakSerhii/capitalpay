@@ -38,6 +38,8 @@ public class MerchantPaysystemService {
 
     public ResultDTO findAll(MerchantRequestDTO dto) {
         try {
+            LOGGER.info("findAll(MerchantRequestDTO dto)");
+            LOGGER.info("dto: {}", dto);
             ApplicationUser merchant = applicationUserService.getUserById(dto.getMerchantId());
             if (merchant == null) {
                 return USER_NOT_FOUND;

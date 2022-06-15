@@ -42,6 +42,8 @@ public class CashboxPaysystemService {
 
     public ResultDTO findAll(Principal principal, CashboxRequestDTO dto) {
         try {
+            LOGGER.info("findAll(Principal principal, CashboxRequestDTO dto)");
+            LOGGER.info("dto: {}", dto);
             Cashbox cashbox = cashboxRepository.findById(dto.getCashboxId()).orElse(null);
             if (cashbox == null) {
                 return CASHBOX_NOT_FOUND;

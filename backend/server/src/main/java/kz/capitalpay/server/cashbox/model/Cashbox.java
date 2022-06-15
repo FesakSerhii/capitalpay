@@ -9,16 +9,16 @@ import javax.persistence.Id;
 public class Cashbox {
     @Id
     @GeneratedValue
-    Long id;
-    Long merchantId;
-    String name;
+    private Long id;
+    private Long merchantId;
+    private String name;
     @Column(name = "deleted", columnDefinition = "boolean default false", nullable = false)
-    boolean deleted;
-    Long userCardId;
+    private boolean deleted;
+    private Long userCardId;
     @Column(columnDefinition = "boolean default false", nullable = false)
-    boolean p2pAllowed;
+    private boolean p2pAllowed;
     @Column(columnDefinition = "boolean default true", nullable = false)
-    boolean useDefaultCard;
+    private boolean useDefaultCard;
 
     public Long getId() {
         return id;
