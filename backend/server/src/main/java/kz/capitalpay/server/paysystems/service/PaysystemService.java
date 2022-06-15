@@ -46,15 +46,25 @@ public class PaysystemService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PaysystemService.class);
 
+    @Autowired
     Gson gson;
+    @Autowired
     PaysystemInfoRepository paysystemInfoRepository;
+    @Autowired
     ApplicationUserService applicationUserService;
+    @Autowired
     SystemEventsLogsService systemEventsLogsService;
+    @Autowired
     PaymentService paymentService;
+    @Autowired
     CashboxPaysystemService cashboxPaysystemService;
+    @Autowired
     MerchantKycService merchantKycService;
+    @Autowired
     CashboxSettingsService cashboxSettingsService;
+    @Autowired
     List<PaySystem> paySystemList;
+    @Autowired
     CashboxService cashboxService;
 
 

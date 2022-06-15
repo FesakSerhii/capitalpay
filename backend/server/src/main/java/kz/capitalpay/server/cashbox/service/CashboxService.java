@@ -9,16 +9,19 @@ import kz.capitalpay.server.currency.dto.MerchantRequestDTO;
 import kz.capitalpay.server.currency.service.CurrencyService;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.login.model.ApplicationUser;
+import kz.capitalpay.server.login.service.ApplicationRoleService;
 import kz.capitalpay.server.login.service.ApplicationUserService;
 import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
 import kz.capitalpay.server.p2p.service.P2pSettingsService;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.repository.PaymentRepository;
+import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.usercard.model.UserCard;
 import kz.capitalpay.server.usercard.repository.UserCardRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -36,29 +39,39 @@ import static kz.capitalpay.server.simple.service.SimpleService.SUCCESS;
 @Service
 public class CashboxService {
 
-    private static final Logger logger = LoggerFactory.getLogger(CashboxService.class);
+    Logger logger = LoggerFactory.getLogger(CashboxService.class);
 
-    private final Random random = new Random();
+    Random random = new Random();
 
-    private final Gson gson;
-    private final ApplicationUserService applicationUserService;
-    private final CurrencyService currencyService;
-    private final CashboxSettingsService cashboxSettingsService;
-    private final CashboxRepository cashboxRepository;
-    private final UserCardRepository userCardRepository;
-    private final P2pSettingsService p2pSettingsService;
-    private final PaymentRepository paymentRepository;
+    @Autowired
+    Gson gson;
 
-    public CashboxService(Gson gson, ApplicationUserService applicationUserService, CurrencyService currencyService, CashboxSettingsService cashboxSettingsService, CashboxRepository cashboxRepository, UserCardRepository userCardRepository, P2pSettingsService p2pSettingsService, PaymentRepository paymentRepository) {
-        this.gson = gson;
-        this.applicationUserService = applicationUserService;
-        this.currencyService = currencyService;
-        this.cashboxSettingsService = cashboxSettingsService;
-        this.cashboxRepository = cashboxRepository;
-        this.userCardRepository = userCardRepository;
-        this.p2pSettingsService = p2pSettingsService;
-        this.paymentRepository = paymentRepository;
-    }
+    @Autowired
+    ApplicationUserService applicationUserService;
+
+    @Autowired
+    CurrencyService currencyService;
+
+    @Autowired
+    CashboxSettingsService cashboxSettingsService;
+
+    @Autowired
+    CashboxRepository cashboxRepository;
+
+    @Autowired
+    ApplicationRoleService applicationRoleService;
+
+    @Autowired
+    PaymentService paymentService;
+
+    @Autowired
+    UserCardRepository userCardRepository;
+
+    @Autowired
+    P2pSettingsService p2pSettingsService;
+
+    @Autowired
+    PaymentRepository paymentRepository;
 
     public ResultDTO createNew(Principal principal, CashboxCreateRequestDTO request) {
         try {
