@@ -36,9 +36,9 @@ public class MerchantPaysystemService {
     PaysystemService paysystemService;
     SystemEventsLogsService systemEventsLogsService;
 
-    public ResultDTO findAll(MerchantRequestDTO request) {
+    public ResultDTO findAll(MerchantRequestDTO dto) {
         try {
-            ApplicationUser merchant = applicationUserService.getUserById(request.getMerchantId());
+            ApplicationUser merchant = applicationUserService.getUserById(dto.getMerchantId());
             if (merchant == null) {
                 return USER_NOT_FOUND;
             }

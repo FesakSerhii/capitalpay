@@ -39,10 +39,10 @@ public class CashboxPaysystemController {
 
     @PostMapping("/cashbox/list")
     @RolesAllowed({ADMIN, OPERATOR, MERCHANT})
-    ResultDTO cashboxList(@RequestBody CashboxRequestDTO request, Principal principal) {
+    ResultDTO cashboxList(@RequestBody CashboxRequestDTO dto, Principal principal) {
         logger.info("Cashbox paysystem List");
-        logger.info("CashboxRequestDTO: {}", request);
-        return cashboxPaysystemService.findAll(principal, request);
+        logger.info("CashboxRequestDTO: {}", dto);
+        return cashboxPaysystemService.findAll(principal, dto);
     }
 
     @PostMapping("/cashbox/edit")

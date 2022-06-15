@@ -40,9 +40,9 @@ public class CashboxPaysystemService {
     PaysystemService paysystemService;
     MerchantPaysystemService merchantPaysystemService;
 
-    public ResultDTO findAll(Principal principal, CashboxRequestDTO request) {
+    public ResultDTO findAll(Principal principal, CashboxRequestDTO dto) {
         try {
-            Cashbox cashbox = cashboxRepository.findById(request.getCashboxId()).orElse(null);
+            Cashbox cashbox = cashboxRepository.findById(dto.getCashboxId()).orElse(null);
             if (cashbox == null) {
                 return CASHBOX_NOT_FOUND;
             }
