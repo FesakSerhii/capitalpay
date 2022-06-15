@@ -7,6 +7,7 @@ import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.paysystems.systems.testsystem.model.TestsystemPayment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.CHANGE_PAYMENT_STATUS;
@@ -16,9 +17,13 @@ public class TestSystemInService {
 
     private static final Logger logger = LoggerFactory.getLogger(TestSystemInService.class);
 
-    private final Gson gson;
-    private final PaymentService paymentService;
-    private final SystemEventsLogsService systemEventsLogsService;
+    @Autowired
+    Gson gson;
+    @Autowired
+    PaymentService paymentService;
+    @Autowired
+    SystemEventsLogsService systemEventsLogsService;
+
     private static final String COMPONENT_NAME = "TestSystem";
 
     public TestSystemInService(Gson gson, PaymentService paymentService, SystemEventsLogsService systemEventsLogsService) {

@@ -15,6 +15,7 @@ import kz.capitalpay.server.simple.dto.PaymentDetailDTO;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -36,25 +37,23 @@ public class PaymentService {
 
     private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
 
-    private final Gson gson;
-    private final PaymentRepository paymentRepository;
-    private final PaymentLogService paymentLogService;
-    private final CashboxService cashboxService;
-    private final RestTemplate restTemplate;
-    private final ApplicationUserService applicationUserService;
-    private final ApplicationRoleService applicationRoleService;
-    private final P2pPaymentService p2pPaymentService;
-
-    public PaymentService(Gson gson, PaymentRepository paymentRepository, PaymentLogService paymentLogService, CashboxService cashboxService, RestTemplate restTemplate, ApplicationUserService applicationUserService, ApplicationRoleService applicationRoleService, P2pPaymentService p2pPaymentService) {
-        this.gson = gson;
-        this.paymentRepository = paymentRepository;
-        this.paymentLogService = paymentLogService;
-        this.cashboxService = cashboxService;
-        this.restTemplate = restTemplate;
-        this.applicationUserService = applicationUserService;
-        this.applicationRoleService = applicationRoleService;
-        this.p2pPaymentService = p2pPaymentService;
-    }
+    @Autowired
+    Gson gson;
+    @Autowired
+    PaymentRepository paymentRepository;
+    @Autowired
+    PaymentLogService paymentLogService;
+    @Autowired
+    CashboxService cashboxService;
+    @Autowired
+    RestTemplate restTemplate;
+    @Autowired
+    ApplicationUserService applicationUserService;
+    @Autowired
+    ApplicationRoleService applicationRoleService;
+    @Autowired
+    P2pPaymentService p2pPaymentService;
+    
 
     public boolean checkUnic(Cashbox cashbox, String billid) {
         List<Payment> paymentList = paymentRepository.findByCashboxIdAndBillId(cashbox.getId(), billid);
