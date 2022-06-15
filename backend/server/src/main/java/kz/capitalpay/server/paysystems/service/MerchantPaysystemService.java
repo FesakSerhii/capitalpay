@@ -42,13 +42,6 @@ public class MerchantPaysystemService {
     @Autowired
     SystemEventsLogsService systemEventsLogsService;
 
-    public MerchantPaysystemService(Gson gson, ApplicationUserService applicationUserService, MerchantSettingsService merchantSettingsService, PaysystemService paysystemService, SystemEventsLogsService systemEventsLogsService) {
-        this.gson = gson;
-        this.applicationUserService = applicationUserService;
-        this.merchantSettingsService = merchantSettingsService;
-        this.paysystemService = paysystemService;
-        this.systemEventsLogsService = systemEventsLogsService;
-    }
 
     public ResultDTO findAll(MerchantRequestDTO request) {
         try {
