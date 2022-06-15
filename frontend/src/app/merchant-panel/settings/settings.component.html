@@ -5,22 +5,22 @@
         назад
       </a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item" *ngIf="!cashBoxEditOpened">
       <a class="nav-link" [class.active]="activeTab==='tab1'" (click)="$event.preventDefault();changeTab('tab1')">
         кассы
       </a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item" *ngIf="!cashBoxEditOpened">
       <a class="nav-link" [class.active]="activeTab==='tab2'" (click)="$event.preventDefault();changeTab('tab2')">
         комиссии
       </a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item" *ngIf="!cashBoxEditOpened">
       <a class="nav-link" [class.active]="activeTab==='tab3'" (click)="$event.preventDefault();changeTab('tab3')">
         информация акаунта
       </a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item" *ngIf="!cashBoxEditOpened">
       <a class="nav-link" [class.active]="activeTab==='tab4'" (click)="$event.preventDefault();changeTab('tab4')">
         безопасность
       </a>
