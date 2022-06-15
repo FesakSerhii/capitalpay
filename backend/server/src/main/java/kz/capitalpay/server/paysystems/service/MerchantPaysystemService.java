@@ -12,6 +12,7 @@ import kz.capitalpay.server.paysystems.dto.PaySystemListDTO;
 import kz.capitalpay.server.paysystems.model.PaysystemInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -30,11 +31,16 @@ public class MerchantPaysystemService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MerchantPaysystemService.class);
 
-    private final Gson gson;
-    private final ApplicationUserService applicationUserService;
-    private final MerchantSettingsService merchantSettingsService;
-    private final PaysystemService paysystemService;
-    private final SystemEventsLogsService systemEventsLogsService;
+    @Autowired
+    Gson gson;
+    @Autowired
+    ApplicationUserService applicationUserService;
+    @Autowired
+    MerchantSettingsService merchantSettingsService;
+    @Autowired
+    PaysystemService paysystemService;
+    @Autowired
+    SystemEventsLogsService systemEventsLogsService;
 
     public MerchantPaysystemService(Gson gson, ApplicationUserService applicationUserService, MerchantSettingsService merchantSettingsService, PaysystemService paysystemService, SystemEventsLogsService systemEventsLogsService) {
         this.gson = gson;

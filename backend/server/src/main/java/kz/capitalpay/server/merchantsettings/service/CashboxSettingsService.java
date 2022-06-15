@@ -14,6 +14,7 @@ import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
 import kz.capitalpay.server.p2p.service.P2pSettingsService;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.repository.PaymentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -29,13 +30,20 @@ import static kz.capitalpay.server.merchantsettings.service.MerchantKycService.T
 @Service
 public class CashboxSettingsService {
 
-    private final CashboxSettingsRepository cashboxSettingsRepository;
-    private final MerchantKycService merchantKycService;
-    private final ApplicationUserService applicationUserService;
-    private final ApplicationRoleService applicationRoleService;
-    private final CashboxRepository cashboxRepository;
-    private final P2pSettingsService p2pSettingsService;
-    private final PaymentRepository paymentRepository;
+    @Autowired
+    CashboxSettingsRepository cashboxSettingsRepository;
+    @Autowired
+    MerchantKycService merchantKycService;
+    @Autowired
+    ApplicationUserService applicationUserService;
+    @Autowired
+    ApplicationRoleService applicationRoleService;
+    @Autowired
+    CashboxRepository cashboxRepository;
+    @Autowired
+    P2pSettingsService p2pSettingsService;
+    @Autowired
+    PaymentRepository paymentRepository;
 
     public static final String CASHBOX_CURRENCY_LIST = "currencylist";
     public static final String CASHBOX_PAYSYSTEM_LIST = "paysystemlist";

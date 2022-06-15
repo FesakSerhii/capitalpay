@@ -26,12 +26,6 @@ public class TestSystemInService {
 
     private static final String COMPONENT_NAME = "TestSystem";
 
-    public TestSystemInService(Gson gson, PaymentService paymentService, SystemEventsLogsService systemEventsLogsService) {
-        this.gson = gson;
-        this.paymentService = paymentService;
-        this.systemEventsLogsService = systemEventsLogsService;
-    }
-
 
     public String getPaymentButton(Payment payment) {
 
