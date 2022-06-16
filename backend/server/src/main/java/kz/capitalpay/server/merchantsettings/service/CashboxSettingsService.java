@@ -57,15 +57,6 @@ public class CashboxSettingsService {
     public static final String MERCHANT_ID = "merchantId";
     public static final String CASHBOX_ID = "cashboxId";
 
-    public CashboxSettingsService(CashboxSettingsRepository cashboxSettingsRepository, MerchantKycService merchantKycService, ApplicationUserService applicationUserService, ApplicationRoleService applicationRoleService, CashboxRepository cashboxRepository, P2pSettingsService p2pSettingsService, PaymentRepository paymentRepository) {
-        this.cashboxSettingsRepository = cashboxSettingsRepository;
-        this.cashboxRepository = cashboxRepository;
-        this.merchantKycService = merchantKycService;
-        this.applicationUserService = applicationUserService;
-        this.applicationRoleService = applicationRoleService;
-        this.p2pSettingsService = p2pSettingsService;
-        this.paymentRepository = paymentRepository;
-    }
 
     public ResultDTO setOrUpdateCashboxSettings(Principal principal, CashBoxSettingDTO request) {
         try {

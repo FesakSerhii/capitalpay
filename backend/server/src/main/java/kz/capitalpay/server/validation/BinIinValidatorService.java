@@ -62,7 +62,7 @@ public class BinIinValidatorService {
                 9 * numbers.get(6) +
                 10 * numbers.get(7) +
                 11 * numbers.get(8) +
-                1 * numbers.get(9) +
+                numbers.get(9) +
                 2 * numbers.get(10);
         return summa % 11;
     }

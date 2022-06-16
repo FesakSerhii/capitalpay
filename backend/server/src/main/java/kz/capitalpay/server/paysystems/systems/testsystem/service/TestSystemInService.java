@@ -58,7 +58,7 @@ public class TestSystemInService {
         logger.info(request.getId());
         Payment payment = paymentService.getPayment(request.getId());
         payment.setStatus(request.getStatus());
-        systemEventsLogsService.addNewPaysystemAction(COMPONENT_NAME, CHANGE_PAYMENT_STATUS,
+        systemEventsLogsService.addNewPaySystemAction(COMPONENT_NAME, CHANGE_PAYMENT_STATUS,
                 gson.toJson(request), payment.getMerchantId().toString());
 
 //        testSystemOutService.notifyClientAboutStatusChange(payment);
