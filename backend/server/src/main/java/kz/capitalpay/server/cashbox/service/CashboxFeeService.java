@@ -39,7 +39,6 @@ public class CashboxFeeService {
                             getClientFee(o.getId()), getMerchantFee(o.getMerchantId(), o.getId())))
                     .collect(Collectors.toList());
             return new ResultDTO(true, result, 0);
-
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);

@@ -8,6 +8,7 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 
 public interface HalykRegisterPaymentsRepository extends CrudRepository<Payment, Long> {
+
     //    @Query(value = "SELECT p.total_amount as totalAmount, " +
 //            " p.merchant_id as merchantId, " +
 //            " p.currency as currency, " +

@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 public class TrustIpService {
 
-    Logger logger = LoggerFactory.getLogger(TrustIpService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TrustIpService.class);
 
     @Autowired
     Gson gson;
@@ -22,7 +22,6 @@ public class TrustIpService {
     TrustIpRepository trustIpRepository;
 
     public String validIpAddress(Long userId, String ip) {
-
         List<TrustIp> trustIps = trustIpRepository.findByUserIdAndEnable(userId, true);
         if (trustIps == null || trustIps.size() == 0) {
             return ip;

@@ -11,13 +11,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class MerchantSettingsService {
 
-    Logger logger = LoggerFactory.getLogger(MerchantSettingsService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MerchantSettingsService.class);
 
     @Autowired
-    Gson gson;
+    private Gson gson;
 
     @Autowired
-    MerchantSettingsRepository merchantSettingsRepository;
+    private MerchantSettingsRepository merchantSettingsRepository;
 
     public static final String MERCHANT_CURRENCY_LIST = "currencylist";
     public static final String MERCHANT_PAYSYSTEM_LIST = "paysystemlist";

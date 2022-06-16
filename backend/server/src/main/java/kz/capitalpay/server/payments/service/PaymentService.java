@@ -1,7 +1,6 @@
 package kz.capitalpay.server.payments.service;
 
 import com.google.gson.Gson;
-import kz.capitalpay.server.cashbox.dto.CashboxBalanceDTO;
 import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.dto.ResultDTO;
@@ -20,13 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
@@ -38,34 +35,28 @@ import static kz.capitalpay.server.simple.service.SimpleService.SUCCESS;
 @Service
 public class PaymentService {
 
-    Logger logger = LoggerFactory.getLogger(PaymentService.class);
+    private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
 
     @Autowired
     Gson gson;
-
     @Autowired
     PaymentRepository paymentRepository;
-
     @Autowired
     PaymentLogService paymentLogService;
-
     @Autowired
     CashboxService cashboxService;
-
     @Autowired
     RestTemplate restTemplate;
-
     @Autowired
     ApplicationUserService applicationUserService;
-
     @Autowired
     ApplicationRoleService applicationRoleService;
-
     @Autowired
     P2pPaymentService p2pPaymentService;
+    
 
     public boolean checkUnic(Cashbox cashbox, String billid) {
-        List<Payment> paymentList = paymentRepository.findByCashboxIdAndAndBillId(cashbox.getId(), billid);
+        List<Payment> paymentList = paymentRepository.findByCashboxIdAndBillId(cashbox.getId(), billid);
         return (paymentList == null || paymentList.size() == 0);
     }
 
@@ -128,11 +119,6 @@ public class PaymentService {
         }
     }
 
-    public Cashbox getCashboxByOrderId(String orderid) {
-        Payment payment = paymentRepository.findTopByPaySysPayId(orderid);
-        return cashboxService.findById(payment.getCashboxId());
-    }
-
     public Payment findByPaySysPayId(String paySysPayId) {
         return paymentRepository.findTopByPaySysPayId(paySysPayId);
     }
@@ -146,7 +132,7 @@ public class PaymentService {
     }
 
     public Payment getPaymentByBillAndCashbox(String billid, Long cashboxid) {
-        return paymentRepository.findTopByCashboxIdAndAndBillId(cashboxid, billid);
+        return paymentRepository.findTopByCashboxIdAndBillId(cashboxid, billid);
     }
 
     public PaymentDetailDTO signDetail(Payment payment) {
@@ -174,7 +160,7 @@ public class PaymentService {
         try {
             ApplicationUser applicationUser = applicationUserService.getUserByLogin(principal.getName());
             if (applicationUser == null) {
-                return error106;
+                return USER_NOT_FOUND;
             }
             List<Payment> paymentList = new ArrayList<>();
             if (applicationUser.getRoles().contains(applicationRoleService.getRole(OPERATOR))
@@ -195,20 +181,20 @@ public class PaymentService {
         try {
             ApplicationUser applicationUser = applicationUserService.getUserByLogin(principal.getName());
             if (applicationUser == null) {
-                return error106;
+                return USER_NOT_FOUND;
             }
             Payment payment = paymentRepository.findByGuid(request.getGuid());
             if (payment == null) {
                 logger.error("GUID: {}", request.getGuid());
                 logger.error("Payment: {}", payment);
-                return error118;
+                return PAYMENT_NOT_FOUND;
             }
             if (!applicationUser.getRoles().contains(applicationRoleService.getRole(OPERATOR))
                     && !applicationUser.getRoles().contains(applicationRoleService.getRole(ADMIN))) {
                 if (!payment.getMerchantId().equals(applicationUser.getId())) {
                     logger.error("Payment: {}", gson.toJson(payment));
                     logger.error("Merchant: {}", gson.toJson(applicationUser));
-                    return error110;
+                    return NOT_ENOUGH_RIGHTS;
                 }
             }
             return new ResultDTO(true, payment, 0);
@@ -217,23 +203,5 @@ public class PaymentService {
             return new ResultDTO(false, e.getMessage(), -1);
         }
 
-    }
-
-    public List<CashboxBalanceDTO> getBalance(Long cashboxId) {
-        Map<String, BigDecimal> result = new HashMap<>();
-        List<Payment> paymentList = paymentRepository.findByCashboxIdAndStatus(cashboxId, SUCCESS);
-
-        for (Payment payment : paymentList) {
-            BigDecimal amount = BigDecimal.ZERO;
-            if (result.containsKey(payment.getCurrency())) {
-                amount = result.get(payment.getCurrency());
-            }
-            amount = amount.add(payment.getTotalAmount());
-            result.put(payment.getCurrency(), amount);
-        }
-        logger.info("result " + result.toString());
-        return result.entrySet().stream()
-                .map(o -> new CashboxBalanceDTO(o.getKey(), o.getValue()))
-                .collect(Collectors.toList());
     }
 }

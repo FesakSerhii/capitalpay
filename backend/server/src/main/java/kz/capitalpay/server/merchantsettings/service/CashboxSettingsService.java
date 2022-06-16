@@ -13,7 +13,8 @@ import kz.capitalpay.server.merchantsettings.repository.CashboxSettingsRepositor
 import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
 import kz.capitalpay.server.p2p.service.P2pSettingsService;
 import kz.capitalpay.server.payments.model.Payment;
-import kz.capitalpay.server.payments.service.PaymentService;
+import kz.capitalpay.server.payments.repository.PaymentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -29,13 +30,20 @@ import static kz.capitalpay.server.merchantsettings.service.MerchantKycService.T
 @Service
 public class CashboxSettingsService {
 
-    private final CashboxSettingsRepository cashboxSettingsRepository;
-    private final MerchantKycService merchantKycService;
-    private final ApplicationUserService applicationUserService;
-    private final ApplicationRoleService applicationRoleService;
-    private final CashboxRepository cashboxRepository;
-    private final P2pSettingsService p2pSettingsService;
-    private final PaymentService paymentService;
+    @Autowired
+    CashboxSettingsRepository cashboxSettingsRepository;
+    @Autowired
+    MerchantKycService merchantKycService;
+    @Autowired
+    ApplicationUserService applicationUserService;
+    @Autowired
+    ApplicationRoleService applicationRoleService;
+    @Autowired
+    CashboxRepository cashboxRepository;
+    @Autowired
+    P2pSettingsService p2pSettingsService;
+    @Autowired
+    PaymentRepository paymentRepository;
 
     public static final String CASHBOX_CURRENCY_LIST = "currencylist";
     public static final String CASHBOX_PAYSYSTEM_LIST = "paysystemlist";
@@ -49,15 +57,6 @@ public class CashboxSettingsService {
     public static final String MERCHANT_ID = "merchantId";
     public static final String CASHBOX_ID = "cashboxId";
 
-    public CashboxSettingsService(CashboxSettingsRepository cashboxSettingsRepository, MerchantKycService merchantKycService, ApplicationUserService applicationUserService, ApplicationRoleService applicationRoleService, CashboxRepository cashboxRepository, P2pSettingsService p2pSettingsService, PaymentService paymentService) {
-        this.cashboxSettingsRepository = cashboxSettingsRepository;
-        this.cashboxRepository = cashboxRepository;
-        this.merchantKycService = merchantKycService;
-        this.applicationUserService = applicationUserService;
-        this.applicationRoleService = applicationRoleService;
-        this.p2pSettingsService = p2pSettingsService;
-        this.paymentService = paymentService;
-    }
 
     public ResultDTO setOrUpdateCashboxSettings(Principal principal, CashBoxSettingDTO request) {
         try {
@@ -78,7 +77,7 @@ public class CashboxSettingsService {
                 }
                 return new ResultDTO(true, request.getFields(), 0);
             } else {
-                return error121;
+                return AVAILABLE_ONLY_FOR_ADMIN_OPERATOR_AND_MERCHANT;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -106,7 +105,7 @@ public class CashboxSettingsService {
                 result.put(CASHBOX_ID, String.valueOf(cashBoxDTO.getCashBoxId()));
                 return new ResultDTO(true, result, 0);
             } else {
-                return error121;
+                return AVAILABLE_ONLY_FOR_ADMIN_OPERATOR_AND_MERCHANT;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -119,9 +118,9 @@ public class CashboxSettingsService {
     }
 
     public ResultDTO getPublicCashboxSettings(String p2pPaymentId) {
-        Payment payment = paymentService.findById(p2pPaymentId);
+        Payment payment = paymentRepository.findById(p2pPaymentId).orElse(null);
         if (Objects.isNull(payment)) {
-            return error118;
+            return PAYMENT_NOT_FOUND;
         }
         return getPublicCashBoxSettings(payment.getCashboxId());
     }
@@ -136,7 +135,7 @@ public class CashboxSettingsService {
                 cashboxSettingsRepository.delete(cashboxSettings);
                 return new ResultDTO(true, "settings was deleted", 0);
             } else {
-                return error120;
+                return AVAILABLE_ONLY_FOR_ADMIN_OR_OPERATOR;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -172,7 +171,7 @@ public class CashboxSettingsService {
         Cashbox cashbox = cashboxRepository.findById(cashboxId).orElse(null);
         double total_fee = Double.parseDouble(merchantKycService.getField(cashbox.getMerchantId(), TOTAL_FEE));
         if (Double.parseDouble(fieldValue) > total_fee) {
-            return error127;
+            return CLIENT_FEE_GREATER_THAN_TOTAL_FEE;
         }
         if (fieldValue.trim().isEmpty()) {
             fieldValue = "0.0";
@@ -188,7 +187,7 @@ public class CashboxSettingsService {
         try {
             Cashbox cashbox = cashboxRepository.findById(cashBoxId).orElse(null);
             if (Objects.isNull(cashbox)) {
-                return error113;
+                return CASHBOX_NOT_FOUND;
             }
             MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(cashbox.getMerchantId());
             Map<String, Object> result = new HashMap<>();

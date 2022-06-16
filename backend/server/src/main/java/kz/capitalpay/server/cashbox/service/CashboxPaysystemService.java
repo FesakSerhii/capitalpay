@@ -32,7 +32,7 @@ import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsServi
 @Service
 public class CashboxPaysystemService {
 
-    Logger logger = LoggerFactory.getLogger(CashboxPaysystemService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CashboxPaysystemService.class);
 
 
     @Autowired
@@ -59,21 +59,20 @@ public class CashboxPaysystemService {
     @Autowired
     MerchantPaysystemService merchantPaysystemService;
 
-    public ResultDTO findAll(Principal principal, CashboxRequestDTO request) {
+    public ResultDTO findAll(Principal principal, CashboxRequestDTO dto) {
         try {
-            Cashbox cashbox = cashboxRepository.findById(request.getCashboxId()).orElse(null);
+            LOGGER.info("findAll(Principal principal, CashboxRequestDTO dto)");
+            LOGGER.info("dto: {}", dto);
+            Cashbox cashbox = cashboxRepository.findById(dto.getCashboxId()).orElse(null);
             if (cashbox == null) {
-                return error113;
+                return CASHBOX_NOT_FOUND;
             }
-
             ApplicationUser owner = applicationUserService.getUserByLogin(principal.getName());
-
             if (!owner.getRoles().contains(applicationRoleService.getRole(OPERATOR)) &&
                     !owner.getRoles().contains(applicationRoleService.getRole(ADMIN)) &&
                     !cashbox.getMerchantId().equals(owner.getId())) {
-                return error110;
+                return NOT_ENOUGH_RIGHTS;
             }
-
             String paysystemJson = cashboxSettingsService.getField(cashbox.getId(), CASHBOX_PAYSYSTEM_LIST);
             List<Long> paysystemList = new ArrayList<>();
 
@@ -93,7 +92,6 @@ public class CashboxPaysystemService {
                 result.add(paySystemListDTO);
             }
             return new ResultDTO(true, result, 0);
-
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
@@ -105,15 +103,12 @@ public class CashboxPaysystemService {
         try {
             Cashbox cashbox = cashboxRepository.findById(request.getCashboxId()).orElse(null);
             if (cashbox == null) {
-                return error113;
+                return CASHBOX_NOT_FOUND;
             }
-
             ApplicationUser owner = applicationUserService.getUserByLogin(principal.getName());
-
             if (!cashbox.getMerchantId().equals(owner.getId())) {
-                return error110;
+                return NOT_ENOUGH_RIGHTS;
             }
-
             List<PaysystemInfo> systemPaysystemInfoList = paysystemService.paysystemList();
 
             for (Long l : request.getPaysystemList()) {
@@ -125,13 +120,12 @@ public class CashboxPaysystemService {
                     }
                 }
                 if (error) {
-                    return error112;
+                    return CURRENCY_NOT_FOUND;
                 }
             }
 
             String paysystemJson = gson.toJson(request.getPaysystemList());
 //            logger.info(paysystemJson);
-
             cashboxSettingsService.setField(cashbox.getId(), CASHBOX_PAYSYSTEM_LIST, paysystemJson);
             return new ResultDTO(true, request.getPaysystemList(), 0);
         } catch (Exception e) {
@@ -143,9 +137,7 @@ public class CashboxPaysystemService {
     public List<PaysystemInfo> availablePaysystemList(Long cashboxId) {
         try {
             Cashbox cashbox = cashboxRepository.findById(cashboxId).orElse(null);
-
             ApplicationUser owner = applicationUserService.getUserById(cashbox.getMerchantId());
-
             String paysystemJson = cashboxSettingsService.getField(cashboxId, CASHBOX_PAYSYSTEM_LIST);
             List<Long> paysystemList = new ArrayList<>();
 
@@ -165,7 +157,6 @@ public class CashboxPaysystemService {
                 }
             }
             return result;
-
         } catch (Exception e) {
             e.printStackTrace();
         }

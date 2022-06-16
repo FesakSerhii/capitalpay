@@ -27,25 +27,25 @@ import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
 @Service
 public class MerchantKycService {
 
-    Logger logger = LoggerFactory.getLogger(MerchantKycService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MerchantKycService.class);
 
     @Autowired
-    Gson gson;
+    private Gson gson;
 
     @Autowired
-    MerchantKycRepository merchantKycRepository;
+    private MerchantKycRepository merchantKycRepository;
 
     @Autowired
-    ApplicationUserService applicationUserService;
+    private ApplicationUserService applicationUserService;
 
     @Autowired
-    ApplicationRoleService applicationRoleService;
+    private ApplicationRoleService applicationRoleService;
 
     @Autowired
-    SystemEventsLogsService systemEventsLogsService;
+    private SystemEventsLogsService systemEventsLogsService;
 
     @Autowired
-    BinIinValidatorService binIinValidatorService;
+    private BinIinValidatorService binIinValidatorService;
 
     public static final String IINBIN = "iinbin";
     public static final String MNAME = "mname";
@@ -63,10 +63,10 @@ public class MerchantKycService {
         try {
             ApplicationUser applicationUser = applicationUserService.getUserById(request.getMerchantId());
             if (applicationUser == null) {
-                return error106;
+                return USER_NOT_FOUND;
             }
             if (!applicationUser.getRoles().contains(applicationRoleService.getRole(MERCHANT))) {
-                return error108;
+                return NOT_A_MERCHANT;
             }
             for (MerchantKycFieldDTO field : request.getFields()) {
                 if (field.getFieldName().equalsIgnoreCase(IINBIN)) {
@@ -103,16 +103,16 @@ public class MerchantKycService {
         try {
             ApplicationUser merchant = applicationUserService.getUserById(request.getMerchantId());
             if (merchant == null) {
-                return error106;
+                return USER_NOT_FOUND;
             }
             ApplicationUser operator = applicationUserService.getUserByLogin(principal.getName());
             if (!operator.getRoles().contains(applicationRoleService.getRole(ADMIN)) &&
                     !operator.getRoles().contains(applicationRoleService.getRole(OPERATOR)) &&
                     !operator.getId().equals(merchant.getId())) {
-                return error110;
+                return NOT_ENOUGH_RIGHTS;
             }
             if (!merchant.getRoles().contains(applicationRoleService.getRole(MERCHANT))) {
-                return error108;
+                return NOT_A_MERCHANT;
             }
             Map<String, String> result = new HashMap<>();
             result.put(IINBIN, getField(merchant.getId(), IINBIN));
@@ -126,7 +126,7 @@ public class MerchantKycService {
             result.put(IIK, getField(merchant.getId(), IIK));
             result.put(BIK, getField(merchant.getId(), BIK));
             result.put(TOTAL_FEE, getField(merchant.getId(), TOTAL_FEE));
-            logger.info(gson.toJson(result));
+            LOGGER.info(gson.toJson(result));
             return new ResultDTO(true, result, 0);
         } catch (Exception e) {
             e.printStackTrace();

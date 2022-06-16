@@ -13,15 +13,15 @@ import static kz.capitalpay.server.constants.ErrorDictionary.*;
 public class BinIinValidatorService {
     public ResultDTO checkBinIin(String iinBin) {
         if (iinBin.length() != 12) {
-            return error123;
+            return MUST_CONTAIN_12_DIGITS;
         }
         if (iinBin.replace(iinBin.substring(0, 1), "").length() == 0) {
-            return error124;
+            return CONTAINS_IDENTICAL_DIGITS;
         }
         boolean hasNotOnlyDigits = Arrays.stream(iinBin.split(""))
                 .anyMatch(s -> !Character.isDigit(s.charAt(0)));
         if (hasNotOnlyDigits) {
-            return error125;
+            return MUST_CONTAIN_ONLY_DIGITS;
         }
         List<Integer> numbers = Arrays.stream(iinBin.split(""))
                 .map(Integer::parseInt)
@@ -34,7 +34,7 @@ public class BinIinValidatorService {
         if (controlValue == summa && summa > 0) {
             return new ResultDTO(true, "BIN or IIN is valid!", 0);
         }
-        return error126;
+        return INVALID_BIN_OR_IIN;
     }
 
     private int calculateSumma(List<Integer> numbers) {
@@ -62,7 +62,7 @@ public class BinIinValidatorService {
                 9 * numbers.get(6) +
                 10 * numbers.get(7) +
                 11 * numbers.get(8) +
-                1 * numbers.get(9) +
+                numbers.get(9) +
                 2 * numbers.get(10);
         return summa % 11;
     }

@@ -29,7 +29,6 @@ public class HalykRegisterPaymentsService {
     private final static String CONSTANT_NAME_REGISTER = "register";
     private static final Logger LOGGER = LoggerFactory.getLogger(HalykRegisterPaymentsService.class);
 
-    private final Logger logger = LoggerFactory.getLogger(HalykRegisterPaymentsService.class);
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private static final Long DAY_IN_MILLIS = 86400000L;
 
@@ -103,9 +102,7 @@ public class HalykRegisterPaymentsService {
 
         BigDecimal currentHalykMoney = halyk.getAmount() == null ? BigDecimal.ZERO : halyk.getAmount();
         BigDecimal moneyForHalyk = amount.multiply(percent);
-
         BigDecimal moneyForMerchant = amount.subtract(moneyForHalyk);
-
         halyk.setAmount(currentHalykMoney.add(moneyForHalyk));
         merchant.setAmount(moneyForMerchant);
     }

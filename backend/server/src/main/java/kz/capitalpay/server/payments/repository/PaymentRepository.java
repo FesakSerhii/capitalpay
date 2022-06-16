@@ -8,9 +8,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PaymentRepository extends JpaRepository<Payment, String> {
-    List<Payment> findByCashboxIdAndAndBillId(Long cashboxId, String billId);
 
-    Payment findTopByCashboxIdAndAndBillId(Long cashboxId, String billId);
+    List<Payment> findByCashboxIdAndBillId(Long cashboxId, String billId);
+
+    Payment findTopByCashboxIdAndBillId(Long cashboxId, String billId);
 
     Payment findByGuid(String guid);
 

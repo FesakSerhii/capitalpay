@@ -5,6 +5,7 @@ import kz.capitalpay.server.cashbox.dto.CashboxPaysystemEditListDTO;
 import kz.capitalpay.server.cashbox.dto.CashboxRequestDTO;
 import kz.capitalpay.server.cashbox.service.CashboxPaysystemService;
 import kz.capitalpay.server.dto.ResultDTO;
+import kz.capitalpay.server.util.ValidationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +34,15 @@ public class CashboxPaysystemController {
     @Autowired
     CashboxPaysystemService cashboxPaysystemService;
 
+    @Autowired
+    ValidationUtil validationUtil;
+
     @PostMapping("/cashbox/list")
     @RolesAllowed({ADMIN, OPERATOR, MERCHANT})
-    ResultDTO cashboxList(@RequestBody CashboxRequestDTO request, Principal principal) {
+    ResultDTO cashboxList(@RequestBody CashboxRequestDTO dto, Principal principal) {
         logger.info("Cashbox paysystem List");
-        return cashboxPaysystemService.findAll(principal, request);
+        logger.info("CashboxRequestDTO: {}", dto);
+        return cashboxPaysystemService.findAll(principal, dto);
     }
 
     @PostMapping("/cashbox/edit")
@@ -52,12 +57,6 @@ public class CashboxPaysystemController {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResultDTO handleValidationExceptions(
             MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return new ResultDTO(false, errors, -2);
+        return validationUtil.handleValidation(ex);
     }
 }

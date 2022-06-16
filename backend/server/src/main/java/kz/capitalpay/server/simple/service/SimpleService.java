@@ -72,16 +72,16 @@ public class SimpleService {
     public ResultDTO newPayment(SimpleRequestDTO request) {
         try {
             if (request.getBillid().length() > 31) {
-                return error115;
+                return BILL_ID_IS_TOO_LONG;
             }
 
             Cashbox cashbox = cashboxService.findById(request.getCashboxid());
             if (cashbox == null) {
-                return error113;
+                return CASHBOX_NOT_FOUND;
             }
             ApplicationUser merchant = applicationUserService.getUserById(cashbox.getMerchantId());
             if (!paymentService.checkUnic(cashbox, request.getBillid())) {
-                return error116;
+                return BILL_ID_ALREADY_EXISTS;
             }
 
             String merchantName = merchantKycService.getField(merchant.getId(), MerchantKycService.MNAME);
@@ -90,11 +90,11 @@ public class SimpleService {
                     .movePointLeft(2).setScale(2, RoundingMode.HALF_UP);
 
             if (!cashboxCurrencyService.checkCurrencyEnable(cashbox.getId(), merchant.getId(), request.getCurrency())) {
-                return error112;
+                return CURRENCY_NOT_FOUND;
             }
 
             if (request.getParam() != null && request.getParam().length() > 255) {
-                return error117;
+                return PARAM_IS_TOO_LONG;
             }
 
             Payment payment = new Payment();

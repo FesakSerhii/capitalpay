@@ -18,15 +18,15 @@ import org.springframework.stereotype.Service;
 
 import java.util.Random;
 
-import static kz.capitalpay.server.constants.ErrorDictionary.error102;
-import static kz.capitalpay.server.constants.ErrorDictionary.error103;
+import static kz.capitalpay.server.constants.ErrorDictionary.CONFIRM_CODE_NOT_FOUND;
+import static kz.capitalpay.server.constants.ErrorDictionary.PHONE_USED;
 import static kz.capitalpay.server.login.service.UserEmailService.CONFIRMED;
 import static kz.capitalpay.server.login.service.UserEmailService.PENDING;
 
 @Service
 public class UserPhoneService {
 
-    Logger logger = LoggerFactory.getLogger(UserPhoneService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserPhoneService.class);
 
     @Autowired
     Gson gson;
@@ -49,18 +49,18 @@ public class UserPhoneService {
     @Autowired
     ApplicationUserRepository applicationUserRepository;
 
-    Random random = new Random(System.currentTimeMillis());
+    private final Random random = new Random(System.currentTimeMillis());
 
     public ResultDTO savePassword(SignUpPhoneRequestDTO request) {
         try {
             PendingEmail pendingEmail = userEmailService.checkConfirm(request.getCode());
             if (pendingEmail == null) {
-                return error102;
+                return CONFIRM_CODE_NOT_FOUND;
             }
             userEmailService.confirm(pendingEmail);
             PendingPhone pendingPhone = pendingPhoneRepository.findTopByPhone(request.getPhone());
             if (pendingPhone != null && !pendingPhone.getStatus().equals(PENDING)) {
-                return error103;
+                return PHONE_USED;
             }
             if (pendingPhone == null) {
                 pendingPhone = new PendingPhone();
@@ -72,12 +72,10 @@ public class UserPhoneService {
             pendingPhone.setPasswordHash(bCryptPasswordEncoder.encode(request.getPassword()));
             pendingPhone.setStatus(PENDING);
             pendingPhoneRepository.save(pendingPhone);
-
             sendSmsService.sendSms(pendingPhone.getPhone(), "CapitalPay confirm code: " + pendingPhone.getConfirmCode());
-
             return new ResultDTO(true, "SMS sent", 0);
         } catch (Exception e) {
-            logger.error("Line number: {} \n{}", e.getStackTrace()[0].getLineNumber(), e.getMessage());
+            LOGGER.error("Line number: {} \n{}", e.getStackTrace()[0].getLineNumber(), e.getMessage());
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }
@@ -87,23 +85,20 @@ public class UserPhoneService {
         try {
             PendingPhone pendingPhone = pendingPhoneRepository.findTopByConfirmCodeAndStatus(request.getCode(), PENDING);
             if (pendingPhone == null) {
-                return error102;
+                return CONFIRM_CODE_NOT_FOUND;
             }
             pendingPhone.setStatus(CONFIRMED);
             pendingPhoneRepository.save(pendingPhone);
             ResultDTO result = applicationUserService.createNewUser(pendingPhone.getPhone(), pendingPhone.getPasswordHash());
-
             if (!result.isResult()) {
                 return result;
             }
             ApplicationUser applicationUser = applicationUserRepository.findByUsername((String) result.getData());
-
             applicationUser.setEmail(pendingPhone.getEmail());
             applicationUserRepository.save(applicationUser);
-
             return result;
         } catch (Exception e) {
-            logger.error("Line number: {} \n{}", e.getStackTrace()[0].getLineNumber(), e.getMessage());
+            LOGGER.error("Line number: {} \n{}", e.getStackTrace()[0].getLineNumber(), e.getMessage());
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }

@@ -69,11 +69,11 @@ public class UserCardService {
                 dto, String.class);
         String token = response.getBody();
         if (Objects.isNull(token) || token.trim().isEmpty()) {
-            return ErrorDictionary.error129;
+            return ErrorDictionary.CARD_REGISTRATION_ERROR;
         }
 
         if (!isTestServer && userCardRepository.existsByUserIdAndToken(dto.getMerchantId(), token)) {
-            return ErrorDictionary.error136;
+            return ErrorDictionary.CARD_ALREADY_EXISTS;
         }
 
         UserCard userCard = new UserCard();
@@ -87,7 +87,7 @@ public class UserCardService {
     public ResultDTO getCardData(String token) {
         CardDataResponseDto dto = getCardDataFromTokenServer(token);
         if (Objects.isNull(dto)) {
-            return ErrorDictionary.error130;
+            return ErrorDictionary.CARD_NOT_FOUND;
         }
 
         return new ResultDTO(true, dto, 0);
@@ -132,14 +132,14 @@ public class UserCardService {
     public ResultDTO registerClientCard(RegisterClientCardDto dto) {
         Cashbox cashbox = cashboxService.findById(dto.getCashBoxId());
         if (!cashbox.isP2pAllowed()) {
-            return ErrorDictionary.error134;
+            return ErrorDictionary.P2P_IS_NOT_ALLOWED;
         }
 
         ResponseEntity<String> response = restTemplate.postForEntity(cardHoldingUrl + "/card-data/register",
                 dto, String.class);
         String token = response.getBody();
         if (Objects.isNull(token) || token.trim().isEmpty()) {
-            return ErrorDictionary.error129;
+            return ErrorDictionary.CARD_REGISTRATION_ERROR;
         }
 
         ClientCard clientCard = new ClientCard();
@@ -155,17 +155,17 @@ public class UserCardService {
     public ResultDTO checkClientCardValidity(Long cardId, String ipAddress, String userAgent) {
         ClientCard clientCard = clientCardRepository.findById(cardId).orElse(null);
         if (Objects.isNull(clientCard)) {
-            return ErrorDictionary.error130;
+            return ErrorDictionary.CARD_NOT_FOUND;
         }
 
         Cashbox cashbox = cashboxService.findById(clientCard.getCashBoxId());
         if (!cashbox.isP2pAllowed()) {
-            return ErrorDictionary.error134;
+            return ErrorDictionary.P2P_IS_NOT_ALLOWED;
         }
 
         CardDataResponseDto dto = getCardDataFromTokenServer(clientCard.getToken());
         if (Objects.isNull(dto)) {
-            return ErrorDictionary.error130;
+            return ErrorDictionary.CARD_NOT_FOUND;
         }
 
         CheckCardValidityResponse response = halykSoapService.checkCardValidity(ipAddress, userAgent, dto);
@@ -183,7 +183,7 @@ public class UserCardService {
     public ResultDTO checkUserCardValidity(Long cardId, String ipAddress, String userAgent) {
         UserCard userCard = userCardRepository.findById(cardId).orElse(null);
         if (Objects.isNull(userCard)) {
-            return ErrorDictionary.error130;
+            return ErrorDictionary.CARD_NOT_FOUND;
         }
 //        MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(userCard.getUserId());
 //        if (Objects.isNull(merchantP2pSettings) || !merchantP2pSettings.isP2pAllowed()) {
@@ -192,7 +192,7 @@ public class UserCardService {
 
         CardDataResponseDto dto = getCardDataFromTokenServer(userCard.getToken());
         if (Objects.isNull(dto)) {
-            return ErrorDictionary.error130;
+            return ErrorDictionary.CARD_NOT_FOUND;
         }
 
         CheckCardValidityResponse response = halykSoapService.checkCardValidity(ipAddress, userAgent, dto);
@@ -210,15 +210,15 @@ public class UserCardService {
     public ResultDTO changeMerchantDefaultCard(ChangeMerchantDefaultCardDto dto) {
         MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(dto.getMerchantId());
         if (Objects.isNull(merchantP2pSettings)) {
-            return ErrorDictionary.error132;
+            return ErrorDictionary.P2P_SETTINGS_NOT_FOUND;
         }
         UserCard userCard = userCardRepository.findById(dto.getCardId()).orElse(null);
         if (Objects.isNull(userCard)) {
-            return ErrorDictionary.error130;
+            return ErrorDictionary.CARD_NOT_FOUND;
         }
 
         if (!merchantP2pSettings.isP2pAllowed()) {
-            return ErrorDictionary.error134;
+            return ErrorDictionary.P2P_IS_NOT_ALLOWED;
         }
 
         final Long oldDefaultCardId = merchantP2pSettings.getDefaultCardId();
@@ -247,15 +247,15 @@ public class UserCardService {
     public ResultDTO deleteUserCard(DeleteUserCardDto dto) {
         UserCard userCard = userCardRepository.findById(dto.getCardId()).orElse(null);
         if (Objects.isNull(userCard)) {
-            return ErrorDictionary.error130;
+            return ErrorDictionary.CARD_NOT_FOUND;
         }
         if (!userCard.getUserId().equals(dto.getMerchantId())) {
-            return ErrorDictionary.error133;
+            return ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOX_OWNER;
         }
 
         MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(dto.getMerchantId());
         if (Objects.isNull(merchantP2pSettings) || !merchantP2pSettings.isP2pAllowed()) {
-            return ErrorDictionary.error134;
+            return ErrorDictionary.P2P_IS_NOT_ALLOWED;
         }
 
         userCard.setDeleted(true);
@@ -265,17 +265,17 @@ public class UserCardService {
     public ResultDTO deleteClientCard(Long cardId) {
         ClientCard clientCard = clientCardRepository.findById(cardId).orElse(null);
         if (Objects.isNull(clientCard)) {
-            return ErrorDictionary.error130;
+            return ErrorDictionary.CARD_NOT_FOUND;
         }
 
         MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(clientCard.getMerchantId());
         if (Objects.isNull(merchantP2pSettings) || !merchantP2pSettings.isP2pAllowed()) {
-            return ErrorDictionary.error134;
+            return ErrorDictionary.P2P_IS_NOT_ALLOWED;
         }
 
         Cashbox cashbox = cashboxService.findById(clientCard.getCashBoxId());
         if (!cashbox.isP2pAllowed()) {
-            return ErrorDictionary.error134;
+            return ErrorDictionary.P2P_IS_NOT_ALLOWED;
         }
 
         clientCard.setDeleted(true);

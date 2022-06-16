@@ -19,11 +19,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.HashSet;
 import java.util.Objects;
-import java.util.Random;
 import java.util.Set;
 
-import static kz.capitalpay.server.constants.ErrorDictionary.error104;
-import static kz.capitalpay.server.constants.ErrorDictionary.error105;
+import static kz.capitalpay.server.constants.ErrorDictionary.OLD_PASSWORD_DOES_NOT_MATCH;
+import static kz.capitalpay.server.constants.ErrorDictionary.USER_ALREADY_EXISTS;
 import static kz.capitalpay.server.login.config.SecurityConstants.HEADER_STRING;
 import static kz.capitalpay.server.login.config.SecurityConstants.TOKEN_PREFIX;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
@@ -54,8 +53,6 @@ public class ApplicationUserService {
     @Autowired
     TrustIpService trustIpService;
 
-    Random random = new Random();
-
     public String findSmsCode(ApplicationUser applicationUser) {
         return twoFactorService.findCodeFromSms(applicationUser);
     }
@@ -75,7 +72,6 @@ public class ApplicationUserService {
         } else {
             throw new IllegalArgumentException("User " + applicationUser.getUsername() + " exists");
         }
-
         logger.info(gson.toJson(applicationUser));
     }
 
@@ -87,7 +83,7 @@ public class ApplicationUserService {
     public ResultDTO createNewUser(String username, String passwordHash) {
         ApplicationUser user = applicationUserRepository.findByUsername(username);
         if (user != null && user.getUsername().equals(username)) {
-            return error104;
+            return USER_ALREADY_EXISTS;
         }
         ApplicationUser applicationUser = new ApplicationUser();
         applicationUser.setUsername(username);
@@ -112,9 +108,8 @@ public class ApplicationUserService {
             applicationUserRepository.save(user);
             return new ResultDTO(true, user.getUsername(), 0);
         } else {
-            return error105;
+            return OLD_PASSWORD_DOES_NOT_MATCH;
         }
-
     }
 
 
@@ -124,13 +119,10 @@ public class ApplicationUserService {
     }
 
     public void sendTwoFactorSms(String username) {
-
         ApplicationUser applicationUser = applicationUserRepository.findByUsername(username);
         if (applicationUser != null) {
-
             twoFactorService.sendSms(applicationUser);
         }
-
     }
 
     public void checkTwoFactorSms(ApplicationUserDTO cred) {
@@ -156,7 +148,6 @@ public class ApplicationUserService {
             } else {
                 twoFactorService.removeTwoFactorAuth(applicationUser.getId());
             }
-
             return new ResultDTO(true, "Two Factor Set", 0);
         } catch (Exception e) {
             e.printStackTrace();
