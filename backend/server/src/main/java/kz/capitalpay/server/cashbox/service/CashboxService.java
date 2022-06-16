@@ -15,6 +15,7 @@ import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
 import kz.capitalpay.server.p2p.service.P2pSettingsService;
 import kz.capitalpay.server.payments.model.Payment;
+import kz.capitalpay.server.payments.repository.PaymentRepository;
 import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.usercard.model.UserCard;
 import kz.capitalpay.server.usercard.repository.UserCardRepository;
@@ -23,10 +24,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.security.Principal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
 import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.*;
@@ -66,6 +69,9 @@ public class CashboxService {
 
     @Autowired
     P2pSettingsService p2pSettingsService;
+
+    @Autowired
+    PaymentRepository paymentRepository;
 
     public ResultDTO createNew(Principal principal, CashboxCreateRequestDTO request) {
         try {
@@ -329,9 +335,31 @@ public class CashboxService {
         cashboxDTO.setName(cashbox.getName());
         cashboxDTO.setMerchantId(cashbox.getMerchantId());
         cashboxDTO.setDeleted(cashbox.isDeleted());
-        cashboxDTO.setBalance(paymentService.getBalance(cashbox.getId()));
+        cashboxDTO.setBalance(getBalance(cashbox.getId()));
         return cashboxDTO;
     }
 
+    private List<CashboxBalanceDTO> getBalance(Long cashboxId) {
+        Map<String, BigDecimal> result = new HashMap<>();
+        List<Payment> paymentList = paymentRepository.findByCashboxIdAndStatus(cashboxId, SUCCESS);
+
+        for (Payment payment : paymentList) {
+            BigDecimal amount = BigDecimal.ZERO;
+            if (result.containsKey(payment.getCurrency())) {
+                amount = result.get(payment.getCurrency());
+            }
+            amount = amount.add(payment.getTotalAmount());
+            result.put(payment.getCurrency(), amount);
+        }
+        logger.info("result " + result.toString());
+        return result.entrySet().stream()
+                .map(o -> new CashboxBalanceDTO(o.getKey(), o.getValue()))
+                .collect(Collectors.toList());
+    }
+
+    public Cashbox getCashboxByOrderId(String orderid) {
+        Payment payment = paymentRepository.findTopByPaySysPayId(orderid);
+        return findById(payment.getCashboxId());
+    }
 
 }

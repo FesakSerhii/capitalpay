@@ -1,7 +1,6 @@
 package kz.capitalpay.server.payments.service;
 
 import com.google.gson.Gson;
-import kz.capitalpay.server.cashbox.dto.CashboxBalanceDTO;
 import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.dto.ResultDTO;
@@ -16,16 +15,15 @@ import kz.capitalpay.server.simple.dto.PaymentDetailDTO;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
@@ -39,25 +37,23 @@ public class PaymentService {
 
     private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
 
-    private final Gson gson;
-    private final PaymentRepository paymentRepository;
-    private final PaymentLogService paymentLogService;
-    private final CashboxService cashboxService;
-    private final RestTemplate restTemplate;
-    private final ApplicationUserService applicationUserService;
-    private final ApplicationRoleService applicationRoleService;
-    private final P2pPaymentService p2pPaymentService;
-
-    public PaymentService(Gson gson, PaymentRepository paymentRepository, PaymentLogService paymentLogService, CashboxService cashboxService, RestTemplate restTemplate, ApplicationUserService applicationUserService, ApplicationRoleService applicationRoleService, P2pPaymentService p2pPaymentService) {
-        this.gson = gson;
-        this.paymentRepository = paymentRepository;
-        this.paymentLogService = paymentLogService;
-        this.cashboxService = cashboxService;
-        this.restTemplate = restTemplate;
-        this.applicationUserService = applicationUserService;
-        this.applicationRoleService = applicationRoleService;
-        this.p2pPaymentService = p2pPaymentService;
-    }
+    @Autowired
+    Gson gson;
+    @Autowired
+    PaymentRepository paymentRepository;
+    @Autowired
+    PaymentLogService paymentLogService;
+    @Autowired
+    CashboxService cashboxService;
+    @Autowired
+    RestTemplate restTemplate;
+    @Autowired
+    ApplicationUserService applicationUserService;
+    @Autowired
+    ApplicationRoleService applicationRoleService;
+    @Autowired
+    P2pPaymentService p2pPaymentService;
+    
 
     public boolean checkUnic(Cashbox cashbox, String billid) {
         List<Payment> paymentList = paymentRepository.findByCashboxIdAndBillId(cashbox.getId(), billid);
@@ -121,11 +117,6 @@ public class PaymentService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public Cashbox getCashboxByOrderId(String orderid) {
-        Payment payment = paymentRepository.findTopByPaySysPayId(orderid);
-        return cashboxService.findById(payment.getCashboxId());
     }
 
     public Payment findByPaySysPayId(String paySysPayId) {
@@ -212,23 +203,5 @@ public class PaymentService {
             return new ResultDTO(false, e.getMessage(), -1);
         }
 
-    }
-
-    public List<CashboxBalanceDTO> getBalance(Long cashboxId) {
-        Map<String, BigDecimal> result = new HashMap<>();
-        List<Payment> paymentList = paymentRepository.findByCashboxIdAndStatus(cashboxId, SUCCESS);
-
-        for (Payment payment : paymentList) {
-            BigDecimal amount = BigDecimal.ZERO;
-            if (result.containsKey(payment.getCurrency())) {
-                amount = result.get(payment.getCurrency());
-            }
-            amount = amount.add(payment.getTotalAmount());
-            result.put(payment.getCurrency(), amount);
-        }
-        logger.info("result " + result.toString());
-        return result.entrySet().stream()
-                .map(o -> new CashboxBalanceDTO(o.getKey(), o.getValue()))
-                .collect(Collectors.toList());
     }
 }

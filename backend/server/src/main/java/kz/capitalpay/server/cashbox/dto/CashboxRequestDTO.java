@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 public class CashboxRequestDTO {
 
     @NotNull
-    Long cashboxId;
+    private Long cashboxId;
 
     public Long getCashboxId() {
         return cashboxId;
@@ -13,5 +13,12 @@ public class CashboxRequestDTO {
 
     public void setCashboxId(Long cashboxId) {
         this.cashboxId = cashboxId;
+    }
+
+    @Override
+    public String toString() {
+        return "CashboxRequestDTO{" +
+                "cashboxId=" + cashboxId +
+                '}';
     }
 }

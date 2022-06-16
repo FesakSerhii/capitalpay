@@ -4,10 +4,10 @@ import com.google.gson.Gson;
 import kz.capitalpay.server.eventlog.service.SystemEventsLogsService;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
-import kz.capitalpay.server.paysystems.systems.testsystem.TestSystem;
 import kz.capitalpay.server.paysystems.systems.testsystem.model.TestsystemPayment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.CHANGE_PAYMENT_STATUS;
@@ -17,17 +17,14 @@ public class TestSystemInService {
 
     private static final Logger logger = LoggerFactory.getLogger(TestSystemInService.class);
 
-    private final Gson gson;
-    private final PaymentService paymentService;
-    private final SystemEventsLogsService systemEventsLogsService;
-    private final TestSystem testSystem;
+    @Autowired
+    Gson gson;
+    @Autowired
+    PaymentService paymentService;
+    @Autowired
+    SystemEventsLogsService systemEventsLogsService;
 
-    public TestSystemInService(Gson gson, PaymentService paymentService, SystemEventsLogsService systemEventsLogsService, TestSystem testSystem) {
-        this.gson = gson;
-        this.paymentService = paymentService;
-        this.systemEventsLogsService = systemEventsLogsService;
-        this.testSystem = testSystem;
-    }
+    private static final String COMPONENT_NAME = "TestSystem";
 
 
     public String getPaymentButton(Payment payment) {
@@ -61,7 +58,7 @@ public class TestSystemInService {
         logger.info(request.getId());
         Payment payment = paymentService.getPayment(request.getId());
         payment.setStatus(request.getStatus());
-        systemEventsLogsService.addNewPaysystemAction(testSystem.getComponentName(), CHANGE_PAYMENT_STATUS,
+        systemEventsLogsService.addNewPaySystemAction(COMPONENT_NAME, CHANGE_PAYMENT_STATUS,
                 gson.toJson(request), payment.getMerchantId().toString());
 
 //        testSystemOutService.notifyClientAboutStatusChange(payment);

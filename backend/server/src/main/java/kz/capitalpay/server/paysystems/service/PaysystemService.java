@@ -46,16 +46,26 @@ public class PaysystemService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PaysystemService.class);
 
-    private final Gson gson;
-    private final PaysystemInfoRepository paysystemInfoRepository;
-    private final ApplicationUserService applicationUserService;
-    private final SystemEventsLogsService systemEventsLogsService;
-    private final PaymentService paymentService;
-    private final CashboxPaysystemService cashboxPaysystemService;
-    private final MerchantKycService merchantKycService;
-    private final CashboxSettingsService cashboxSettingsService;
-    private final List<PaySystem> paySystemList;
-    private final CashboxService cashboxService;
+    @Autowired
+    Gson gson;
+    @Autowired
+    PaysystemInfoRepository paysystemInfoRepository;
+    @Autowired
+    ApplicationUserService applicationUserService;
+    @Autowired
+    SystemEventsLogsService systemEventsLogsService;
+    @Autowired
+    PaymentService paymentService;
+    @Autowired
+    CashboxPaysystemService cashboxPaysystemService;
+    @Autowired
+    MerchantKycService merchantKycService;
+    @Autowired
+    CashboxSettingsService cashboxSettingsService;
+    @Autowired
+    List<PaySystem> paySystemList;
+    @Autowired
+    CashboxService cashboxService;
 
 
     @Value("${remote.api.addres}")
@@ -65,19 +75,6 @@ public class PaysystemService {
     HalykSoapService halykSoapService;
 
     Map<String, PaySystem> paySystems = new HashMap<>();
-
-    public PaysystemService(Gson gson, PaysystemInfoRepository paysystemInfoRepository, ApplicationUserService applicationUserService, SystemEventsLogsService systemEventsLogsService, PaymentService paymentService, CashboxPaysystemService cashboxPaysystemService, MerchantKycService merchantKycService, CashboxSettingsService cashboxSettingsService, List<PaySystem> paySystemList, CashboxService cashboxService) {
-        this.gson = gson;
-        this.paysystemInfoRepository = paysystemInfoRepository;
-        this.applicationUserService = applicationUserService;
-        this.systemEventsLogsService = systemEventsLogsService;
-        this.paymentService = paymentService;
-        this.cashboxPaysystemService = cashboxPaysystemService;
-        this.merchantKycService = merchantKycService;
-        this.cashboxSettingsService = cashboxSettingsService;
-        this.paySystemList = paySystemList;
-        this.cashboxService = cashboxService;
-    }
 
     public ResultDTO systemList() {
         try {

@@ -32,7 +32,7 @@ import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsServi
 @Service
 public class CashboxPaysystemService {
 
-    Logger logger = LoggerFactory.getLogger(CashboxPaysystemService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CashboxPaysystemService.class);
 
 
     @Autowired
@@ -59,9 +59,11 @@ public class CashboxPaysystemService {
     @Autowired
     MerchantPaysystemService merchantPaysystemService;
 
-    public ResultDTO findAll(Principal principal, CashboxRequestDTO request) {
+    public ResultDTO findAll(Principal principal, CashboxRequestDTO dto) {
         try {
-            Cashbox cashbox = cashboxRepository.findById(request.getCashboxId()).orElse(null);
+            LOGGER.info("findAll(Principal principal, CashboxRequestDTO dto)");
+            LOGGER.info("dto: {}", dto);
+            Cashbox cashbox = cashboxRepository.findById(dto.getCashboxId()).orElse(null);
             if (cashbox == null) {
                 return CASHBOX_NOT_FOUND;
             }

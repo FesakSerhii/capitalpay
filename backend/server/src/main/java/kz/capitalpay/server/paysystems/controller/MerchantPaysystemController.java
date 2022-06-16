@@ -31,9 +31,10 @@ public class MerchantPaysystemController {
 
     @PostMapping("/merchant/list")
     @RolesAllowed({"ROLE_ADMIN", "ROLE_OPERATOR"})
-    ResultDTO merchantList(@RequestBody MerchantRequestDTO request) {
+    ResultDTO merchantList(@RequestBody MerchantRequestDTO dto) {
         LOGGER.info("Merchant List");
-        return merchantPaysystemService.findAll(request);
+        LOGGER.info("MerchantRequestDTO: {}", dto);
+        return merchantPaysystemService.findAll(dto);
     }
 
     @PostMapping("/merchant/edit")
