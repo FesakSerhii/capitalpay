@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {ApiService} from './api.service';
+import {TokenService} from "./token.service";
 
 const token = 'Bearer '+sessionStorage.getItem('token');
 
@@ -8,11 +9,11 @@ const token = 'Bearer '+sessionStorage.getItem('token');
 })
 export class FileService {
 
-  constructor(public apiService: ApiService) { }
+  constructor(public apiService: ApiService, private tokenService:TokenService) { }
 
   sendFile(fileToUpload){
     const multipartFile = new FormData();
     multipartFile.append('multipartFile', fileToUpload, fileToUpload.name);
-    return this.apiService.postFormData('api','/file/upload', token, multipartFile).toPromise();
+    return this.apiService.postFormData('api','/file/upload', this.tokenService.token, multipartFile).toPromise();
   }
 }

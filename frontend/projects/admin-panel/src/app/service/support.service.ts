@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {ApiService} from "./api.service";
+import {TokenService} from "../../../../../src/app/service/token.service";
 
 const token = 'Bearer '+sessionStorage.getItem('token');
 
@@ -8,7 +9,7 @@ const token = 'Bearer '+sessionStorage.getItem('token');
 })
 export class SupportService {
 
-  constructor(public apiService: ApiService) { }
+  constructor(public apiService: ApiService, private tokenService:TokenService) { }
 
   getSupportList(){
     return this.apiService.postJwt('api','/support/list',token).toPromise();
