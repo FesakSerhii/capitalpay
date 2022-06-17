@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import {ApiService} from './api.service';
 import {TokenService} from "./token.service";
 
-const token = 'Bearer '+sessionStorage.getItem('token');
 
 @Injectable({
   providedIn: 'root'
