@@ -13,7 +13,7 @@ export class UserService {
   constructor(public apiService: ApiService,private tokenService:TokenService) { }
   getUserInfo(){
     try {
-      return helper.decodeToken(sessionStorage.getItem('this.tokenService.token'));
+      return helper.decodeToken(this.tokenService.token);
     } catch (error) {
 
     }
