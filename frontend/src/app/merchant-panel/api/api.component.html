@@ -4,7 +4,7 @@
     <table class="table m-0">
       <thead>
       <tr class="cursor-pointer">
-        <th colspan="5" (click)="activeTitleId=activeTitleId===item.id?null:item.id">{{item.title}}</th>
+        <th colspan="5" (click)="activeTitleId=activeTitleId===item.id?null:item.id;activeSectionId=null">{{item.title}}</th>
       </tr>
       <ng-container *ngIf="item.id===activeTitleId">
         <tr class="cursor-pointer" *ngFor="let section of item.sections" (click)="activeSectionId!==section.id?changeSectionContent(section):openSection(section)">
