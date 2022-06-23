@@ -61,6 +61,7 @@ public class P2pPaymentsController {
                                         @RequestParam @NotNull(message = "acceptedSum must not be null") BigDecimal acceptedSum,
                                         @RequestParam @NotNull(message = "cashBoxId must not be null") Long cashBoxId,
                                         @RequestParam @NotBlank(message = "sign must not be blank") String signature,
+                                        @RequestParam(required = false) String param,
                                         HttpServletRequest httpRequest,
                                         RedirectAttributes redirectAttributes) {
 
@@ -70,7 +71,7 @@ public class P2pPaymentsController {
             ipAddress = httpRequest.getRemoteAddr();
         }
         String userAgent = httpRequest.getHeader("User-Agent");
-        SendP2pToClientDto dto = new SendP2pToClientDto(clientCardToken, merchantId, acceptedSum, cashBoxId, signature);
+        SendP2pToClientDto dto = new SendP2pToClientDto(clientCardToken, merchantId, acceptedSum, cashBoxId, signature, param);
         return p2pService.sendP2pToClient(dto, userAgent, ipAddress, redirectAttributes);
     }
 
@@ -80,6 +81,7 @@ public class P2pPaymentsController {
                                           @RequestParam @NotNull(message = "acceptedSum must not be null") BigDecimal acceptedSum,
                                           @RequestParam @NotNull(message = "cashBoxId must not be null") Long cashBoxId,
                                           @RequestParam @NotBlank(message = "sign must not be blank") String signature,
+                                          @RequestParam(required = false) String param,
                                           HttpServletRequest httpRequest,
                                           RedirectAttributes redirectAttributes) {
         LOGGER.info("/send-p2p-to-merchant");
@@ -88,7 +90,7 @@ public class P2pPaymentsController {
             ipAddress = httpRequest.getRemoteAddr();
         }
         String userAgent = httpRequest.getHeader("User-Agent");
-        SendP2pToClientDto dto = new SendP2pToClientDto(clientCardToken, merchantId, acceptedSum, cashBoxId, signature);
+        SendP2pToClientDto dto = new SendP2pToClientDto(clientCardToken, merchantId, acceptedSum, cashBoxId, signature, param);
         return p2pService.sendP2pToMerchant(dto, userAgent, ipAddress, redirectAttributes);
     }
 
