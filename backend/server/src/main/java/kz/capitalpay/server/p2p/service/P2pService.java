@@ -125,6 +125,7 @@ public class P2pService {
         if (!checkP2pSignature(dto)) {
 //            return new ResultDTO(false, "Invalid signature", -1);
             LOGGER.info(new ResultDTO(false, "Invalid signature", -1).toString());
+            addErrorAttributes(redirectAttributes, ErrorDictionary.INVALID_SIGNATURE);
             return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
         }
 
