@@ -26,8 +26,9 @@ public class SaveCardController {
 
     @GetMapping("/register-user-card")
     public String registerUserCardWithBank(@RequestParam Long merchantId,
+                                           @RequestParam String orderId,
                                            ModelMap modelMap) {
-        ResultDTO result = userCardService.registerMerchantCardWithBank(merchantId, "");
+        ResultDTO result = userCardService.registerMerchantCardWithBank(merchantId, orderId);
         Map<String, String> resultMap = (Map<String, String>) result.getData();
         modelMap.addAttribute("xml", resultMap.get("xml"));
         modelMap.addAttribute("backLink", resultMap.get("backLink"));
