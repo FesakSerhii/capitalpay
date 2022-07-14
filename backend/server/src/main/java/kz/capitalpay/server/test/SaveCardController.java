@@ -6,11 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @Controller
@@ -37,9 +35,17 @@ public class SaveCardController {
         return "test_register_card";
     }
 
+    @ResponseBody
     @PostMapping("/test-post-link")
-    public String testPostLink(String body) {
+    public String testPostLink(@RequestBody String body,
+                               HttpServletRequest request) {
         LOGGER.info("PostLink body: {}", body);
+        LOGGER.info("getRequestURI {}", request.getRequestURI());
+        LOGGER.info("getContextPath {}", request.getContextPath());
+        LOGGER.info("getPathInfo {}", request.getPathInfo());
+        LOGGER.info("getQueryString {}", request.getQueryString());
+        LOGGER.info("getServletPath {}", request.getServletPath());
+        LOGGER.info("getServletPath {}", request.getParameterMap());
         return "";
     }
 }
