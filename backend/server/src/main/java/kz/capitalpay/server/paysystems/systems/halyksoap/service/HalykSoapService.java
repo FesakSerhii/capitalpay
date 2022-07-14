@@ -68,6 +68,16 @@ public class HalykSoapService {
     @Value("${kkbsign.send.order.action.link}")
     String sendOrderActionLink;
 
+    @Value("${halyk.soap.merchant.id}")
+    String testTerminalId;
+
+    @Value("${halyk.soap.certificate.id}")
+    String testCertificateId;
+
+    @Value("${halyk.soap.merchant.name}")
+    String testMerchantShopName;
+
+
     private final Gson gson;
     private final HalykOrderRepository halykOrderRepository;
     private final HalykPaymentOrderAcsRepository halykPaymentOrderAcsRepository;
@@ -597,18 +607,12 @@ public class HalykSoapService {
     private CheckCardValidityPayment generateCardCheckPayment(String ipAddress, String userAgent, Long merchantId,
                                                               BigDecimal totalAmount) {
         CheckCardValidityPayment payment = new CheckCardValidityPayment();
-        CheckCardValidityPayment lastPayment = checkCardValidityPaymentRepository.findLast().orElse(null);
-        if (Objects.nonNull(lastPayment)) {
-            payment.setOrderId(p2pPaymentService.generateOrderId(lastPayment.getOrderId()));
-        } else {
-            payment.setOrderId("00000163601600");
-        }
+        payment.setOrderId(p2pPaymentService.generateOrderId());
         payment.setCurrency("KZT");
         payment.setDescription("Check card validity payment");
         payment.setLocalDateTime(LocalDateTime.now());
         payment.setIpAddress(ipAddress);
         payment.setMerchantId(merchantId);
-
         payment.setTotalAmount(totalAmount);
         payment.setUserAgent(userAgent);
         payment.setStatus("NEW");
@@ -1055,5 +1059,46 @@ public class HalykSoapService {
             return payment;
         }
         return paymentService.findByPaySysPayId(paymentOrder.getOrderid());
+    }
+
+    public String createSaveCardXml(String orderId, Long serviceMerchantId, String param) {
+        KKBSign kkbSign = new KKBSign();
+//        orderId = "00000164372177";
+        String merchantStr = String.format("<merchant cert_id=\"%s\" name=\"%s\">" +
+                        "<order order_id=\"%s\" amount=\"10,00\" currency=\"%s\">" +
+                        "<department merchant_id=\"%s\"" +
+                        " abonent_id=\"%s\" " +
+//                        "recepient=\"%s\" " +
+//                        "sessionid=\"%s\" " +
+                        "approve=\"0\" " +
+//                        "service_id=\"%s\" " +
+//                        "abonent_iin=\"%s\"/" +
+                        "/>" +
+                        "</order>" +
+                        "</merchant>",
+
+                testCertificateId,
+                "CAPITALPAY",
+                orderId,
+                "398",
+                testTerminalId,
+//                serviceMerchantId,
+                serviceMerchantId
+//                sessionId,
+//                param
+//                iin,
+        );
+
+        String signatureValue = kkbSign.sign64(merchantStr, keystore, clientAlias, keypass, storepass);
+
+        return String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?><document>%s" +
+                        "<merchant_sign type=\"RSA\">" +
+                        "%s" +
+                        "</merchant_sign>" +
+                        "</document>",
+
+                merchantStr,
+                signatureValue
+        );
     }
 }

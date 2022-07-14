@@ -33,6 +33,11 @@ public class UserCardController {
         return userCardService.registerMerchantCard(dto);
     }
 
+    @PostMapping("/register-with-bank")
+    public ResultDTO registerUserCard(@RequestParam Long merchantId, @RequestParam String orderId) {
+        return userCardService.registerMerchantCardWithBank(merchantId, orderId);
+    }
+
     @PostMapping("/check-validity/{cardId}")
     public ResultDTO checkCardValidity(@PathVariable Long cardId,
                                        HttpServletRequest httpRequest) {

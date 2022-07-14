@@ -9,6 +9,7 @@ import kz.capitalpay.server.constants.ErrorDictionary;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.p2p.dto.P2pSettingsResponseDto;
 import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
+import kz.capitalpay.server.p2p.service.P2pPaymentService;
 import kz.capitalpay.server.p2p.service.P2pSettingsService;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import kz.capitalpay.server.usercard.dto.*;
@@ -24,10 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,11 +42,12 @@ public class UserCardService {
     private final CashboxRepository cashboxRepository;
     private final CashboxService cashboxService;
     private final P2pSettingsService p2pSettingsService;
+    private final P2pPaymentService p2pPaymentService;
 
     @Value("${server.test}")
     private boolean isTestServer;
 
-    public UserCardService(UserCardRepository userCardRepository, RestTemplate restTemplate, HalykSoapService halykSoapService, ClientCardRepository clientCardRepository, ObjectMapper objectMapper, CashboxRepository cashboxRepository, CashboxService cashboxService, P2pSettingsService p2pSettingsService) {
+    public UserCardService(UserCardRepository userCardRepository, RestTemplate restTemplate, HalykSoapService halykSoapService, ClientCardRepository clientCardRepository, ObjectMapper objectMapper, CashboxRepository cashboxRepository, CashboxService cashboxService, P2pSettingsService p2pSettingsService, P2pPaymentService p2pPaymentService) {
         this.userCardRepository = userCardRepository;
         this.restTemplate = restTemplate;
         this.halykSoapService = halykSoapService;
@@ -57,6 +56,7 @@ public class UserCardService {
         this.cashboxRepository = cashboxRepository;
         this.cashboxService = cashboxService;
         this.p2pSettingsService = p2pSettingsService;
+        this.p2pPaymentService = p2pPaymentService;
     }
 
     public ResultDTO registerMerchantCard(RegisterUserCardDto dto) {
@@ -82,6 +82,17 @@ public class UserCardService {
         userCard.setUserId(dto.getMerchantId());
         userCard = userCardRepository.save(userCard);
         return new ResultDTO(true, userCard, 0);
+    }
+
+    public ResultDTO registerMerchantCardWithBank(Long merchantId, String orderId) {
+        String saveCardXml = halykSoapService.createSaveCardXml(orderId, merchantId, "test");
+        LOGGER.info("saveCardXml {}", saveCardXml);
+        String encodedXml = Base64.getEncoder().encodeToString(saveCardXml.getBytes());
+        Map<String, String> result = new HashMap<>();
+        result.put("xml", encodedXml);
+        result.put("backLink", "https://capitalpay.kz/api/test-post-link");
+        result.put("postLink", "https://capitalpay.kz/api/test-post-link");
+        return new ResultDTO(true, result, 0);
     }
 
     public ResultDTO getCardData(String token) {

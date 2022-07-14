@@ -27,6 +27,11 @@ public class ClientCardController {
         return userCardService.registerClientCard(dto);
     }
 
+//    @PostMapping("/register-with-bank")
+//    public ResultDTO registerUserCard() {
+//
+//    }
+
     @PostMapping("/check-validity/{cardId}")
     public ResultDTO checkCardValidity(@PathVariable Long cardId,
                                        HttpServletRequest httpRequest) {

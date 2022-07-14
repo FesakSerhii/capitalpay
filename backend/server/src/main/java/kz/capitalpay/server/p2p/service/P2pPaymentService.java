@@ -47,12 +47,7 @@ public class P2pPaymentService {
     public Payment generateP2pPayment(String ipAddress, String userAgent, Long merchantId, BigDecimal totalAmount,
                                       Long cashBoxId, boolean toClient, String currency, String param) {
         Payment payment = new Payment();
-        Payment lastPayment = paymentRepository.findLast().orElse(null);
-        if (Objects.nonNull(lastPayment)) {
-            payment.setPaySysPayId(generateOrderId(lastPayment.getPaySysPayId()));
-        } else {
-            payment.setPaySysPayId("00000173801600");
-        }
+        payment.setPaySysPayId(generateOrderId());
         payment.setGuid(UUID.randomUUID().toString());
         payment.setCurrency(currency);
         payment.setLocalDateTime(LocalDateTime.now());
@@ -71,8 +66,12 @@ public class P2pPaymentService {
         return payment;
     }
 
-    public String generateOrderId(String lastOrderId) {
-        Long lastOrderIdLong = Long.parseLong(lastOrderId);
+    public String generateOrderId() {
+        Payment lastPayment = paymentRepository.findLast().orElse(null);
+        if (Objects.isNull(lastPayment)) {
+            return "00000173801600";
+        }
+        long lastOrderIdLong = Long.parseLong(lastPayment.getPaySysPayId());
         Long newOrderId = lastOrderIdLong + 1;
         StringBuilder zerosStr = new StringBuilder();
         if (String.valueOf(newOrderId).length() < 14) {
