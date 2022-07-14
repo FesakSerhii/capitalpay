@@ -90,8 +90,8 @@ public class UserCardService {
         String encodedXml = Base64.getEncoder().encodeToString(saveCardXml.getBytes());
         Map<String, String> result = new HashMap<>();
         result.put("xml", encodedXml);
-        result.put("backLink", "https://capitalpay.kz/api/test-post-link");
-        result.put("postLink", "https://capitalpay.kz/api/test-post-link");
+        result.put("backLink", "https://api.capitalpay.kz/api/test-post-link");
+        result.put("postLink", "https://api.capitalpay.kz/api/test-post-link");
         return new ResultDTO(true, result, 0);
     }
 
