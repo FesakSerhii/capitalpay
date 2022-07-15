@@ -142,6 +142,7 @@ public class UserCardService {
         userCardFromBank.setValid(true);
         userCardFromBank.setBankCardId(halykSaveCardOrder.getCardId());
         userCardFromBank.setCardNumber(maskCardFromBank(halykSaveCardOrder.getCardHash()));
+        userBankCardRepository.save(userCardFromBank);
     }
 
     private void setClientCardFromBankData(HalykSaveCardOrder halykSaveCardOrder) {
@@ -153,6 +154,7 @@ public class UserCardService {
         clientCardFromBank.setValid(true);
         clientCardFromBank.setBankCardId(halykSaveCardOrder.getCardId());
         clientCardFromBank.setCardNumber(maskCardFromBank(halykSaveCardOrder.getCardHash()));
+        clientBankCardRepository.save(clientCardFromBank);
     }
 
     private ResultDTO registerCardFromBank(String saveCardXml) {
