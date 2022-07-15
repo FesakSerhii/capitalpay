@@ -98,6 +98,7 @@ public class UserCardService {
         Payment payment = paymentService.generateSaveBankCardPayment(orderId);
         UserCardFromBank userCardFromBank = new UserCardFromBank();
         userCardFromBank.setOrderId(payment.getPaySysPayId());
+        userBankCardRepository.save(userCardFromBank);
         String saveCardXml = halykSoapService.createSaveCardXml(payment.getPaySysPayId(), merchantId, true);
         return registerCardFromBank(saveCardXml);
     }
@@ -108,6 +109,7 @@ public class UserCardService {
         clientCardFromBank.setOrderId(payment.getPaySysPayId());
         clientCardFromBank.setCashBoxId(cashBoxId);
         clientCardFromBank.setParams(params);
+        clientBankCardRepository.save(clientCardFromBank);
         String saveCardXml = halykSoapService.createSaveCardXml(payment.getPaySysPayId(), merchantId, false);
         return registerCardFromBank(saveCardXml);
     }
