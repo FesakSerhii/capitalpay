@@ -20,16 +20,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.OPERATOR;
 import static kz.capitalpay.server.payments.service.PaymentLogService.CHANGE_STATUS_PAYMENT;
 import static kz.capitalpay.server.payments.service.PaymentLogService.CREATE_NEW_PAYMENT;
+import static kz.capitalpay.server.simple.service.SimpleService.SAVE_BANK_CARD;
 import static kz.capitalpay.server.simple.service.SimpleService.SUCCESS;
 
 @Service
@@ -53,7 +51,7 @@ public class PaymentService {
     ApplicationRoleService applicationRoleService;
     @Autowired
     P2pPaymentService p2pPaymentService;
-    
+
 
     public boolean checkUnic(Cashbox cashbox, String billid) {
         List<Payment> paymentList = paymentRepository.findByCashboxIdAndBillId(cashbox.getId(), billid);
@@ -203,5 +201,15 @@ public class PaymentService {
             return new ResultDTO(false, e.getMessage(), -1);
         }
 
+    }
+
+    public Payment generateSaveBankCardPayment(String orderId) {
+        Payment payment = new Payment();
+        payment.setSaveBankCard(true);
+        payment.setGuid(UUID.randomUUID().toString());
+        payment.setStatus(SAVE_BANK_CARD);
+        payment.setPaySysPayId(orderId);
+//        payment.setPaySysPayId(p2pPaymentService.generateOrderId());
+        return paymentRepository.save(payment);
     }
 }

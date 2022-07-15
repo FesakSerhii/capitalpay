@@ -9,13 +9,19 @@ import kz.capitalpay.server.constants.ErrorDictionary;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.p2p.dto.P2pSettingsResponseDto;
 import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
-import kz.capitalpay.server.p2p.service.P2pPaymentService;
 import kz.capitalpay.server.p2p.service.P2pSettingsService;
+import kz.capitalpay.server.payments.model.Payment;
+import kz.capitalpay.server.payments.service.PaymentService;
+import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykSaveCardOrder;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import kz.capitalpay.server.usercard.dto.*;
 import kz.capitalpay.server.usercard.model.ClientCard;
+import kz.capitalpay.server.usercard.model.ClientCardFromBank;
 import kz.capitalpay.server.usercard.model.UserCard;
+import kz.capitalpay.server.usercard.model.UserCardFromBank;
+import kz.capitalpay.server.usercard.repository.ClientBankCardRepository;
 import kz.capitalpay.server.usercard.repository.ClientCardRepository;
+import kz.capitalpay.server.usercard.repository.UserBankCardRepository;
 import kz.capitalpay.server.usercard.repository.UserCardRepository;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
@@ -42,12 +48,14 @@ public class UserCardService {
     private final CashboxRepository cashboxRepository;
     private final CashboxService cashboxService;
     private final P2pSettingsService p2pSettingsService;
-    private final P2pPaymentService p2pPaymentService;
+    private final PaymentService paymentService;
+    private final UserBankCardRepository userBankCardRepository;
+    private final ClientBankCardRepository clientBankCardRepository;
 
     @Value("${server.test}")
     private boolean isTestServer;
 
-    public UserCardService(UserCardRepository userCardRepository, RestTemplate restTemplate, HalykSoapService halykSoapService, ClientCardRepository clientCardRepository, ObjectMapper objectMapper, CashboxRepository cashboxRepository, CashboxService cashboxService, P2pSettingsService p2pSettingsService, P2pPaymentService p2pPaymentService) {
+    public UserCardService(UserCardRepository userCardRepository, RestTemplate restTemplate, HalykSoapService halykSoapService, ClientCardRepository clientCardRepository, ObjectMapper objectMapper, CashboxRepository cashboxRepository, CashboxService cashboxService, P2pSettingsService p2pSettingsService, PaymentService paymentService, UserBankCardRepository userBankCardRepository, ClientBankCardRepository clientBankCardRepository) {
         this.userCardRepository = userCardRepository;
         this.restTemplate = restTemplate;
         this.halykSoapService = halykSoapService;
@@ -56,7 +64,9 @@ public class UserCardService {
         this.cashboxRepository = cashboxRepository;
         this.cashboxService = cashboxService;
         this.p2pSettingsService = p2pSettingsService;
-        this.p2pPaymentService = p2pPaymentService;
+        this.paymentService = paymentService;
+        this.userBankCardRepository = userBankCardRepository;
+        this.clientBankCardRepository = clientBankCardRepository;
     }
 
     public ResultDTO registerMerchantCard(RegisterUserCardDto dto) {
@@ -85,13 +95,71 @@ public class UserCardService {
     }
 
     public ResultDTO registerMerchantCardWithBank(Long merchantId, String orderId) {
-        String saveCardXml = halykSoapService.createSaveCardXml(orderId, merchantId, "test");
+        Payment payment = paymentService.generateSaveBankCardPayment(orderId);
+        UserCardFromBank userCardFromBank = new UserCardFromBank();
+        userCardFromBank.setOrderId(payment.getPaySysPayId());
+        String saveCardXml = halykSoapService.createSaveCardXml(payment.getPaySysPayId(), merchantId, true);
+        return registerCardFromBank(saveCardXml);
+    }
+
+    public ResultDTO registerClientCardWithBank(Long merchantId, String orderId, Long cashBoxId, String params) {
+        Payment payment = paymentService.generateSaveBankCardPayment(orderId);
+        ClientCardFromBank clientCardFromBank = new ClientCardFromBank();
+        clientCardFromBank.setOrderId(payment.getPaySysPayId());
+        clientCardFromBank.setCashBoxId(cashBoxId);
+        clientCardFromBank.setParams(params);
+        String saveCardXml = halykSoapService.createSaveCardXml(payment.getPaySysPayId(), merchantId, false);
+        return registerCardFromBank(saveCardXml);
+    }
+
+    public void completeBankCardSaving(String requestBody) {
+        LOGGER.info("completeBankCardSaving()");
+        if (Objects.isNull(requestBody) || requestBody.trim().isEmpty()) {
+            LOGGER.info("requestBody is NULL");
+            return;
+        }
+        String xml = requestBody.replace("response=", "");
+        HalykSaveCardOrder halykSaveCardOrder = halykSoapService.parseSaveCardWithBankXml(xml);
+        if (Objects.isNull(halykSaveCardOrder)) {
+            LOGGER.info("halykSaveCardOrder is NULL");
+            return;
+        }
+        if (halykSaveCardOrder.getResponseServiceId().equals("true")) {
+            setUserCardFromBankData(halykSaveCardOrder);
+        } else {
+            setClientCardFromBankData(halykSaveCardOrder);
+        }
+    }
+
+    private void setUserCardFromBankData(HalykSaveCardOrder halykSaveCardOrder) {
+        UserCardFromBank userCardFromBank = userBankCardRepository.findByOrderId(halykSaveCardOrder.getOrderId()).orElse(null);
+        if (Objects.isNull(userCardFromBank)) {
+            LOGGER.info("userCardFromBank is NULL");
+            return;
+        }
+        userCardFromBank.setValid(true);
+        userCardFromBank.setBankCardId(halykSaveCardOrder.getCardId());
+        userCardFromBank.setCardNumber(maskCardFromBank(halykSaveCardOrder.getCardHash()));
+    }
+
+    private void setClientCardFromBankData(HalykSaveCardOrder halykSaveCardOrder) {
+        ClientCardFromBank clientCardFromBank = clientBankCardRepository.findByOrderId(halykSaveCardOrder.getOrderId()).orElse(null);
+        if (Objects.isNull(clientCardFromBank)) {
+            LOGGER.info("userCardFromBank is NULL");
+            return;
+        }
+        clientCardFromBank.setValid(true);
+        clientCardFromBank.setBankCardId(halykSaveCardOrder.getCardId());
+        clientCardFromBank.setCardNumber(maskCardFromBank(halykSaveCardOrder.getCardHash()));
+    }
+
+    private ResultDTO registerCardFromBank(String saveCardXml) {
         LOGGER.info("saveCardXml {}", saveCardXml);
         String encodedXml = Base64.getEncoder().encodeToString(saveCardXml.getBytes());
         Map<String, String> result = new HashMap<>();
         result.put("xml", encodedXml);
-        result.put("backLink", "https://api.capitalpay.kz/api/test-post-link");
-        result.put("postLink", "https://api.capitalpay.kz/api/test-post-link");
+        result.put("backLink", "https://api.capitalpay.kz/api/save-card-link");
+        result.put("postLink", "https://capitalpay.kz");
         return new ResultDTO(true, result, 0);
     }
 
@@ -320,6 +388,10 @@ public class UserCardService {
 
     private String maskCardNumber(String cardNumber) {
         return cardNumber.replaceAll("\\b(\\d{4})(\\d{8})(\\d{4})", "$1********$3");
+    }
+
+    private String maskCardFromBank(String number) {
+        return number.replace("-", "").replace("X", "*");
     }
 
     private CardDataForMerchantDto generateClientCardResponseDto(ClientCard clientCard) {

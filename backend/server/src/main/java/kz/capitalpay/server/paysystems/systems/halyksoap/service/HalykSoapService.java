@@ -13,8 +13,11 @@ import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.paysystems.systems.halyksoap.kkbsign.KKBSign;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykOrder;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykPaymentOrderAcs;
+import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykSaveCardOrder;
 import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykOrderRepository;
 import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykPaymentOrderAcsRepository;
+import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykSaveCardOrderRepository;
+import kz.capitalpay.server.paysystems.systems.halyksoap.xml.Document;
 import kz.capitalpay.server.usercard.dto.CardDataResponseDto;
 import kz.capitalpay.server.usercard.dto.CheckCardValidityResponse;
 import kz.capitalpay.server.wsdl.*;
@@ -24,6 +27,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+import java.io.StringReader;
 import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.time.LocalDateTime;
@@ -86,8 +92,9 @@ public class HalykSoapService {
     private final PaymentRepository paymentRepository;
     private final PaymentLogService paymentLogService;
     private final P2pPaymentService p2pPaymentService;
+    private final HalykSaveCardOrderRepository halykSaveCardOrderRepository;
 
-    public HalykSoapService(Gson gson, HalykOrderRepository halykOrderRepository, HalykPaymentOrderAcsRepository halykPaymentOrderAcsRepository, PaymentService paymentService, CheckCardValidityPaymentRepository checkCardValidityPaymentRepository, PaymentRepository paymentRepository, PaymentLogService paymentLogService, P2pPaymentService p2pPaymentService) {
+    public HalykSoapService(Gson gson, HalykOrderRepository halykOrderRepository, HalykPaymentOrderAcsRepository halykPaymentOrderAcsRepository, PaymentService paymentService, CheckCardValidityPaymentRepository checkCardValidityPaymentRepository, PaymentRepository paymentRepository, PaymentLogService paymentLogService, P2pPaymentService p2pPaymentService, HalykSaveCardOrderRepository halykSaveCardOrderRepository) {
         this.gson = gson;
         this.halykOrderRepository = halykOrderRepository;
         this.halykPaymentOrderAcsRepository = halykPaymentOrderAcsRepository;
@@ -96,6 +103,7 @@ public class HalykSoapService {
         this.paymentRepository = paymentRepository;
         this.paymentLogService = paymentLogService;
         this.p2pPaymentService = p2pPaymentService;
+        this.halykSaveCardOrderRepository = halykSaveCardOrderRepository;
     }
 
 
@@ -1061,35 +1069,44 @@ public class HalykSoapService {
         return paymentService.findByPaySysPayId(paymentOrder.getOrderid());
     }
 
-    public String createSaveCardXml(String orderId, Long serviceMerchantId, String param) {
+    public String createSaveCardXml(String orderId, Long serviceMerchantId, boolean isMerchantCard) {
         KKBSign kkbSign = new KKBSign();
-//        orderId = "00000164372177";
+        String merchantName = "CAPITALPAY";
+        String currencyCode = "398";
+
         String merchantStr = String.format("<merchant cert_id=\"%s\" name=\"%s\">" +
                         "<order order_id=\"%s\" amount=\"10,00\" currency=\"%s\">" +
                         "<department merchant_id=\"%s\"" +
                         " abonent_id=\"%s\" " +
-//                        "recepient=\"%s\" " +
-//                        "sessionid=\"%s\" " +
                         "approve=\"0\" " +
-//                        "service_id=\"%s\" " +
-//                        "abonent_iin=\"%s\"/" +
+                        "service_id=\"%s\" " +
                         "/>" +
                         "</order>" +
                         "</merchant>",
 
                 testCertificateId,
-                "CAPITALPAY",
+                merchantName,
                 orderId,
-                "398",
+                currencyCode,
                 testTerminalId,
-//                serviceMerchantId,
-                serviceMerchantId
-//                sessionId,
-//                param
-//                iin,
+                serviceMerchantId,
+                isMerchantCard
         );
 
         String signatureValue = kkbSign.sign64(merchantStr, keystore, clientAlias, keypass, storepass);
+
+        HalykSaveCardOrder halykSaveCardOrder = new HalykSaveCardOrder();
+        halykSaveCardOrder.setMerchantCertId(testCertificateId);
+        halykSaveCardOrder.setMerchantName(merchantName);
+        halykSaveCardOrder.setOrderId(orderId);
+        halykSaveCardOrder.setRequestServiceId(String.valueOf(isMerchantCard));
+        halykSaveCardOrder.setAmount("10,00");
+        halykSaveCardOrder.setCurrencyCode(currencyCode);
+        halykSaveCardOrder.setMerchantId(testTerminalId);
+        halykSaveCardOrder.setAbonentId(serviceMerchantId.toString());
+        halykSaveCardOrder.setMerchantSign(signatureValue);
+        halykSaveCardOrder.setApprove("0");
+        halykSaveCardOrderRepository.save(halykSaveCardOrder);
 
         return String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?><document>%s" +
                         "<merchant_sign type=\"RSA\">" +
@@ -1100,5 +1117,46 @@ public class HalykSoapService {
                 merchantStr,
                 signatureValue
         );
+    }
+
+    public HalykSaveCardOrder parseSaveCardWithBankXml(String xml) {
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(Document.class);
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            StringReader reader = new StringReader(xml);
+            Document document = (Document) unmarshaller.unmarshal(reader);
+            if (Objects.nonNull(document) && Objects.nonNull(document.getBank())
+                    && Objects.nonNull(document.getBank().getCustomer())
+                    && Objects.nonNull(document.getBank().getCustomer().getMerchant())
+                    && Objects.nonNull(document.getBank().getCustomer().getMerchant().getOrder())
+                    && Objects.nonNull(document.getBank().getCustomer().getMerchant().getOrder().getId())
+            ) {
+                HalykSaveCardOrder halykSaveCardOrder = halykSaveCardOrderRepository.findByOrderId(document.getBank().getCustomer().getMerchant().getOrder().getId()).orElse(null);
+                if (Objects.nonNull(halykSaveCardOrder)) {
+                    halykSaveCardOrder.setApprovalCode(document.getBank().getResults().getPayment().getApprovalCode());
+                    halykSaveCardOrder.setBankName(document.getBank().getName());
+                    halykSaveCardOrder.setBankSign(document.getBankSign());
+                    halykSaveCardOrder.setCardBin(document.getBank().getResults().getPayment().getCardBin());
+                    halykSaveCardOrder.setCardHash(document.getBank().getResults().getPayment().getCardHash());
+                    halykSaveCardOrder.setCardId(document.getBank().getResults().getPayment().getCardId());
+                    halykSaveCardOrder.setcHash(document.getBank().getResults().getPayment().getcHash());
+                    halykSaveCardOrder.setResponseCode(document.getBank().getResults().getPayment().getResponseCode());
+                    halykSaveCardOrder.setExpMonth(document.getBank().getResults().getPayment().getExpMonth());
+                    halykSaveCardOrder.setExpYear(document.getBank().getResults().getPayment().getExpYear());
+                    halykSaveCardOrder.setRecepient(document.getBank().getResults().getPayment().getRecepient());
+                    halykSaveCardOrder.setReference(document.getBank().getResults().getPayment().getReference());
+                    halykSaveCardOrder.setSecure(document.getBank().getResults().getPayment().getSecure());
+                    halykSaveCardOrder.setSessionId(document.getBank().getResults().getPayment().getSessionId());
+                    halykSaveCardOrder.setTimestamp(Long.parseLong(document.getBank().getResults().getTimestamp()));
+                    halykSaveCardOrder.setRequestServiceId(document.getBank().getCustomer().getMerchant().getOrder().getDepartment().getServiceId());
+                    halykSaveCardOrderRepository.save(halykSaveCardOrder);
+                    return halykSaveCardOrder;
+                }
+            }
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

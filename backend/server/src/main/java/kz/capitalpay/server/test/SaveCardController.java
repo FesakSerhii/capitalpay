@@ -8,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @Controller
@@ -31,21 +30,28 @@ public class SaveCardController {
         modelMap.addAttribute("xml", resultMap.get("xml"));
         modelMap.addAttribute("backLink", resultMap.get("backLink"));
         modelMap.addAttribute("postLink", resultMap.get("postLink"));
+        return "test_register_card";
+    }
 
+    @GetMapping("/register-client-card")
+    public String registerClientCardWithBank(@RequestParam Long merchantId,
+                                             @RequestParam String orderId,
+                                             @RequestParam Long cashBoxId,
+                                             @RequestParam(required = false) String params,
+                                             ModelMap modelMap) {
+        ResultDTO result = userCardService.registerClientCardWithBank(merchantId, orderId, cashBoxId, params);
+        Map<String, String> resultMap = (Map<String, String>) result.getData();
+        modelMap.addAttribute("xml", resultMap.get("xml"));
+        modelMap.addAttribute("backLink", resultMap.get("backLink"));
+        modelMap.addAttribute("postLink", resultMap.get("postLink"));
         return "test_register_card";
     }
 
     @ResponseBody
-    @PostMapping("/test-post-link")
-    public String testPostLink(@RequestBody String body,
-                               HttpServletRequest request) {
+    @PostMapping("/save-card-link")
+    public String testPostLink(@RequestBody String body) {
         LOGGER.info("PostLink body: {}", body);
-        LOGGER.info("getRequestURI {}", request.getRequestURI());
-        LOGGER.info("getContextPath {}", request.getContextPath());
-        LOGGER.info("getPathInfo {}", request.getPathInfo());
-        LOGGER.info("getQueryString {}", request.getQueryString());
-        LOGGER.info("getServletPath {}", request.getServletPath());
-        LOGGER.info("getServletPath {}", request.getParameterMap());
+        userCardService.completeBankCardSaving(body);
         return "";
     }
 }
