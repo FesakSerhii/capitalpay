@@ -31,6 +31,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import java.io.StringReader;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.rmi.RemoteException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -1121,6 +1122,7 @@ public class HalykSoapService {
 
     public HalykSaveCardOrder parseSaveCardWithBankXml(String xml) {
         try {
+            xml = java.net.URLDecoder.decode(xml, StandardCharsets.UTF_8.name());
             JAXBContext jaxbContext = JAXBContext.newInstance(Document.class);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             StringReader reader = new StringReader(xml);
