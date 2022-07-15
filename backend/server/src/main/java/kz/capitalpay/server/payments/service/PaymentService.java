@@ -206,6 +206,7 @@ public class PaymentService {
     public Payment generateSaveBankCardPayment() {
         Payment payment = new Payment();
         payment.setSaveBankCard(true);
+        payment.setTimestamp(System.currentTimeMillis());
         payment.setGuid(UUID.randomUUID().toString());
         payment.setStatus(SAVE_BANK_CARD);
 //        payment.setPaySysPayId(orderId);
