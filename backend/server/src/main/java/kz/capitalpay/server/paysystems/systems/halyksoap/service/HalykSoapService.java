@@ -1149,7 +1149,7 @@ public class HalykSoapService {
                     halykSaveCardOrder.setReference(document.getBank().getResults().getPayment().getReference());
                     halykSaveCardOrder.setSecure(document.getBank().getResults().getPayment().getSecure());
                     halykSaveCardOrder.setSessionId(document.getBank().getResults().getPayment().getSessionId());
-                    halykSaveCardOrder.setTimestamp(Long.parseLong(document.getBank().getResults().getTimestamp()));
+                    halykSaveCardOrder.setTimestamp(document.getBank().getResults().getTimestamp());
                     halykSaveCardOrder.setRequestServiceId(document.getBank().getCustomer().getMerchant().getOrder().getDepartment().getServiceId());
                     halykSaveCardOrderRepository.save(halykSaveCardOrder);
                     return halykSaveCardOrder;

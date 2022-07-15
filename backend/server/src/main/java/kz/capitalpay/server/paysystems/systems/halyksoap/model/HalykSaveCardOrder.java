@@ -33,7 +33,7 @@ public class HalykSaveCardOrder {
     private String sessionId;
     private String cHash;
     private String approvalCode;
-    private Long timestamp;
+    private String timestamp;
     private String requestServiceId;
     private String responseServiceId;
 
@@ -229,11 +229,11 @@ public class HalykSaveCardOrder {
         this.approvalCode = approvalCode;
     }
 
-    public Long getTimestamp() {
+    public String getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Long timestamp) {
+    public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
 
