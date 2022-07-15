@@ -203,13 +203,13 @@ public class PaymentService {
 
     }
 
-    public Payment generateSaveBankCardPayment(String orderId) {
+    public Payment generateSaveBankCardPayment() {
         Payment payment = new Payment();
         payment.setSaveBankCard(true);
         payment.setGuid(UUID.randomUUID().toString());
         payment.setStatus(SAVE_BANK_CARD);
-        payment.setPaySysPayId(orderId);
-//        payment.setPaySysPayId(p2pPaymentService.generateOrderId());
+//        payment.setPaySysPayId(orderId);
+        payment.setPaySysPayId(p2pPaymentService.generateOrderId());
         return paymentRepository.save(payment);
     }
 }

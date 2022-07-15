@@ -23,9 +23,8 @@ public class SaveCardController {
 
     @GetMapping("/register-user-card")
     public String registerUserCardWithBank(@RequestParam Long merchantId,
-                                           @RequestParam String orderId,
                                            ModelMap modelMap) {
-        ResultDTO result = userCardService.registerMerchantCardWithBank(merchantId, orderId);
+        ResultDTO result = userCardService.registerMerchantCardWithBank(merchantId);
         Map<String, String> resultMap = (Map<String, String>) result.getData();
         modelMap.addAttribute("xml", resultMap.get("xml"));
         modelMap.addAttribute("backLink", resultMap.get("backLink"));
@@ -35,11 +34,10 @@ public class SaveCardController {
 
     @GetMapping("/register-client-card")
     public String registerClientCardWithBank(@RequestParam Long merchantId,
-                                             @RequestParam String orderId,
                                              @RequestParam Long cashBoxId,
                                              @RequestParam(required = false) String params,
                                              ModelMap modelMap) {
-        ResultDTO result = userCardService.registerClientCardWithBank(merchantId, orderId, cashBoxId, params);
+        ResultDTO result = userCardService.registerClientCardWithBank(merchantId, cashBoxId, params);
         Map<String, String> resultMap = (Map<String, String>) result.getData();
         modelMap.addAttribute("xml", resultMap.get("xml"));
         modelMap.addAttribute("backLink", resultMap.get("backLink"));

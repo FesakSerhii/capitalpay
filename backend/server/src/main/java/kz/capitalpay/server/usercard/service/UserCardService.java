@@ -94,8 +94,8 @@ public class UserCardService {
         return new ResultDTO(true, userCard, 0);
     }
 
-    public ResultDTO registerMerchantCardWithBank(Long merchantId, String orderId) {
-        Payment payment = paymentService.generateSaveBankCardPayment(orderId);
+    public ResultDTO registerMerchantCardWithBank(Long merchantId) {
+        Payment payment = paymentService.generateSaveBankCardPayment();
         UserCardFromBank userCardFromBank = new UserCardFromBank();
         userCardFromBank.setOrderId(payment.getPaySysPayId());
         userCardFromBank.setUserId(merchantId);
@@ -104,8 +104,8 @@ public class UserCardService {
         return registerCardFromBank(saveCardXml);
     }
 
-    public ResultDTO registerClientCardWithBank(Long merchantId, String orderId, Long cashBoxId, String params) {
-        Payment payment = paymentService.generateSaveBankCardPayment(orderId);
+    public ResultDTO registerClientCardWithBank(Long merchantId, Long cashBoxId, String params) {
+        Payment payment = paymentService.generateSaveBankCardPayment();
         ClientCardFromBank clientCardFromBank = new ClientCardFromBank();
         clientCardFromBank.setOrderId(payment.getPaySysPayId());
         clientCardFromBank.setCashBoxId(cashBoxId);
