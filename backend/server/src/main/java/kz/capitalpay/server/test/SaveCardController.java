@@ -52,4 +52,12 @@ public class SaveCardController {
         userCardService.completeBankCardSaving(body);
         return "";
     }
+
+    @ResponseBody
+    @PostMapping("/send-p2p")
+    public String sendP2p() {
+        LOGGER.info("sendP2p()");
+        userCardService.sendTestP2p();
+        return "";
+    }
 }

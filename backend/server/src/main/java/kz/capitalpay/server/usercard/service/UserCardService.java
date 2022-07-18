@@ -31,6 +31,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -409,6 +410,19 @@ public class UserCardService {
         dto.setParams(clientCard.getParams());
         dto.setSignature(DigestUtils.sha256Hex(clientCard.getId() + clientCard.getToken() + clientCard.getCardNumber() + secret));
         return dto;
+    }
+
+
+    public void sendTestP2p() {
+        Payment payment = paymentService.generateSaveBankCardPayment();
+        String p2pXml = halykSoapService.createP2pXml(payment.getPaySysPayId(), 663L,
+                "900000028519", "900000028518", new BigDecimal("100.00"));
+        LOGGER.info("p2pXml {}", p2pXml);
+        String encodedXml = Base64.getEncoder().encodeToString(p2pXml.getBytes());
+        ResponseEntity<String> response = restTemplate.postForEntity(
+                "https://testpay.kkb.kz/jsp/hbpay/cid2cid.jsp?Signed_Order_B64=".concat(encodedXml),
+                null, String.class);
+        LOGGER.info("p2p response {}", response.getBody());
     }
 
 }

@@ -167,6 +167,46 @@ public class P2pService {
         }
     }
 
+    public ResultDTO sendP2pToMerchant(SendP2pToClientDto dto, String userAgent, String ipAddress) {
+        Map<String, String> resultUrls = cashboxSettingsService.getMerchantResultUrls(dto.getCashBoxId());
+        if (!checkP2pSignature(dto)) {
+            LOGGER.info(new ResultDTO(false, "Invalid signature", -1).toString());
+            return new ResultDTO(false, "Invalid signature", -1);
+        }
+
+        try {
+            Cashbox cashbox = cashboxService.findById(dto.getCashBoxId());
+            if (!cashbox.getMerchantId().equals(dto.getMerchantId())) {
+                LOGGER.info(ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXES.toString());
+                return ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXES;
+            }
+            Long merchantCardId = cashboxService.findUserCardIdByCashBoxId(dto.getCashBoxId());
+            if (merchantCardId.equals(0L)) {
+                LOGGER.info(ErrorDictionary.CARD_NOT_FOUND.toString());
+                return ErrorDictionary.CARD_NOT_FOUND;
+            }
+            MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(dto.getMerchantId());
+            if (Objects.isNull(merchantP2pSettings) || !merchantP2pSettings.isP2pAllowed()) {
+                LOGGER.info(ErrorDictionary.P2P_IS_NOT_ALLOWED.toString());
+            }
+            if (!cashbox.isP2pAllowed()) {
+                LOGGER.info(ErrorDictionary.P2P_IS_NOT_ALLOWED.toString());
+                return ErrorDictionary.P2P_IS_NOT_ALLOWED;
+            }
+            UserCard merchantCard = userCardService.findUserCardById(merchantCardId);
+//            CardDataResponseDto merchantCardData = userCardService.getCardDataFromTokenServer(merchantCard.getToken());
+//            CardDataResponseDto clientCardData = userCardService.getCardDataFromTokenServer(dto.getClientCardToken());
+
+//            return checkReturnCode(halykSoapService.sendP2p(ipAddress, userAgent, clientCardData, dto,
+//                    merchantCardData.getCardNumber(), false), resultUrls, redirectAttributes);
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.info(ErrorDictionary.CARD_NOT_FOUND.toString());
+            return ErrorDictionary.CARD_NOT_FOUND;
+        }
+    }
+
     public ResultDTO createAnonymousP2pPayment(String userAgent, String ipAddress, Long cashBoxId, Long merchantId,
                                                BigDecimal totalAmount, String currency, String param, String signature) {
         if (!checkAnonymousP2pSignature(cashBoxId, merchantId, totalAmount, signature)) {

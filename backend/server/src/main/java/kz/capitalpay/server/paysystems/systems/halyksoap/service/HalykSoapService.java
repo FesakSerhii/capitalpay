@@ -1120,6 +1120,111 @@ public class HalykSoapService {
         );
     }
 
+    public String sendP2test(String ipAddress, String userAgent, CardDataResponseDto payerCardData,
+                          SendP2pToClientDto dto, boolean toClient) {
+        Payment payment = p2pPaymentService.generateP2pPayment(ipAddress, userAgent, dto.getMerchantId(),
+                dto.getAcceptedSum(), dto.getCashBoxId(), toClient, currency, dto.getParam());
+
+        HalykOrder transferOrder = generateHalykOrder(dto.getAcceptedSum(), "", "p2p",
+                payment.getPaySysPayId(), 8, HalykOrderDictionary.TRANSFER_ORDER, merchantIdP2p);
+
+        String orderId = payment.getPaySysPayId();
+//        String pan = payerCardData.getCardNumber();
+//        String year = payerCardData.getExpireYear().substring(2);
+//        String month = payerCardData.getExpireMonth();
+//        String cvv2 = payerCardData.getCvv2Code();
+//        String amount = dto.getAcceptedSum().toString().replace(".", ",");
+
+//        EpayServiceStub.TransferOrderResponse transferOrderResponse = sendTransferOrderRequest(amount, currency, cvv2,
+//                merchantIdP2p, month, year, orderId, pan, paymentToPan);
+
+//        LOGGER.info("transferOrderResponse");
+//        LOGGER.info("Message: " + transferOrderResponse.get_return().getMessage());
+//        LOGGER.info("Approval code: " + transferOrderResponse.get_return().getApprovalcode());
+//        LOGGER.info("OrderId: " + transferOrderResponse.get_return().getOrderid());
+//        LOGGER.info("getReference: " + transferOrderResponse.get_return().getReference());
+//        LOGGER.info("getReturnCode: " + transferOrderResponse.get_return().getReturnCode());
+//        LOGGER.info("AcsUrl: " + transferOrderResponse.get_return().getAcsUrl());
+//        LOGGER.info("Md: " + transferOrderResponse.get_return().getMd());
+//        LOGGER.info("PaReq: " + transferOrderResponse.get_return().getPareq());
+//
+//        EpayServiceStub.Result result = transferOrderResponse.get_return();
+
+//        parseHalykOrderResponse(transferOrder, result);
+//        LOGGER.info(gson.toJson(transferOrder));
+
+//        if (transferOrderResponse.get_return().getReturnCode().equals("00")) {
+//            payment.setStatus(SUCCESS);
+//            paymentLogService.newEvent(payment.getGuid(), ipAddress, SUCCESS, gson.toJson(payment));
+//            paymentRepository.save(payment);
+//            return "OK";
+//        }
+//        return check3ds(result, transferOrder.getOrderid());
+        return null;
+    }
+
+    public String createP2pXml(String orderId, Long serviceMerchantId, String cardIdFrom,
+                               String cardIdTo, BigDecimal amount) {
+        KKBSign kkbSign = new KKBSign();
+        String merchantName = "CAPITALPAY";
+        String currencyCode = "398";
+        String amountStr = amount.setScale(2).toString().replace(".", ",");
+
+
+        String merchantStr = String.format("  <merchant " +
+                        "cert_id=\"%s\" " +
+                        "name=\"%s\">" +
+                        "    <order " +
+                        "merchant_id=\"%s\" " +
+                        "order_id=\"%s\" " +
+                        "amount=\"%s\" " +
+                        "currency=\"%s\" " +
+                        "merchant_main=\"%s\" " +
+                        "abonent_id_from=\"%s\" " +
+                        "abonent_id_to=\"%s\" " +
+                        "card_id_from=\"%s\" " +
+                        "card_id_to=\"%s\" " +
+//                        "exp_day_fromcard=\"%s\" " +
+//                        "exp_day_tocard=\"%s\"" +
+                        "/>" +
+                        "  </merchant>",
+
+                testCertificateId,
+                merchantName,
+                testTerminalId,
+                orderId,
+                amountStr,
+                currencyCode,
+                testTerminalId,
+                serviceMerchantId,
+                serviceMerchantId,
+                cardIdFrom,
+                cardIdTo
+        );
+
+        String signatureValue = kkbSign.sign64(merchantStr, keystore, clientAlias, keypass, storepass);
+
+//        HalykSaveCardOrder halykSaveCardOrder = new HalykSaveCardOrder();
+//        halykSaveCardOrder.setMerchantCertId(testCertificateId);
+//        halykSaveCardOrder.setMerchantName(merchantName);
+//        halykSaveCardOrder.setOrderId(orderId);
+//        halykSaveCardOrder.setAmount();
+//        halykSaveCardOrder.setCurrencyCode(currencyCode);
+//        halykSaveCardOrder.setMerchantId(testTerminalId);
+//        halykSaveCardOrder.setAbonentId(serviceMerchantId.toString());
+//        halykSaveCardOrder.setMerchantSign(signatureValue);
+//        halykSaveCardOrder.setApprove("0");
+//        halykSaveCardOrderRepository.save(halykSaveCardOrder);
+
+        return String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?><document>" +
+                        "%s  <merchant_sign type=\"RSA\">%s</merchant_sign>" +
+                        "</document>",
+
+                merchantStr,
+                signatureValue
+        );
+    }
+
     public HalykSaveCardOrder parseSaveCardWithBankXml(String xml) {
         try {
             xml = java.net.URLDecoder.decode(xml, StandardCharsets.UTF_8.name());
