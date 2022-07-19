@@ -7,6 +7,7 @@ import kz.capitalpay.server.cashbox.repository.CashboxRepository;
 import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.constants.ErrorDictionary;
 import kz.capitalpay.server.dto.ResultDTO;
+import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.p2p.dto.P2pSettingsResponseDto;
 import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
 import kz.capitalpay.server.p2p.service.P2pSettingsService;
@@ -35,6 +36,9 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.REDIRECT_FAILED_URL;
+import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.REDIRECT_SUCCESS_URL;
+
 @Service
 public class UserCardService {
 
@@ -52,11 +56,12 @@ public class UserCardService {
     private final PaymentService paymentService;
     private final UserBankCardRepository userBankCardRepository;
     private final ClientBankCardRepository clientBankCardRepository;
+    private final CashboxSettingsService cashboxSettingsService;
 
     @Value("${server.test}")
     private boolean isTestServer;
 
-    public UserCardService(UserCardRepository userCardRepository, RestTemplate restTemplate, HalykSoapService halykSoapService, ClientCardRepository clientCardRepository, ObjectMapper objectMapper, CashboxRepository cashboxRepository, CashboxService cashboxService, P2pSettingsService p2pSettingsService, PaymentService paymentService, UserBankCardRepository userBankCardRepository, ClientBankCardRepository clientBankCardRepository) {
+    public UserCardService(UserCardRepository userCardRepository, RestTemplate restTemplate, HalykSoapService halykSoapService, ClientCardRepository clientCardRepository, ObjectMapper objectMapper, CashboxRepository cashboxRepository, CashboxService cashboxService, P2pSettingsService p2pSettingsService, PaymentService paymentService, UserBankCardRepository userBankCardRepository, ClientBankCardRepository clientBankCardRepository, CashboxSettingsService cashboxSettingsService) {
         this.userCardRepository = userCardRepository;
         this.restTemplate = restTemplate;
         this.halykSoapService = halykSoapService;
@@ -68,6 +73,7 @@ public class UserCardService {
         this.paymentService = paymentService;
         this.userBankCardRepository = userBankCardRepository;
         this.clientBankCardRepository = clientBankCardRepository;
+        this.cashboxSettingsService = cashboxSettingsService;
     }
 
     public ResultDTO registerMerchantCard(RegisterUserCardDto dto) {
@@ -103,7 +109,7 @@ public class UserCardService {
         userCardFromBank.setToken(UUID.randomUUID().toString());
         userBankCardRepository.save(userCardFromBank);
         String saveCardXml = halykSoapService.createSaveCardXml(payment.getPaySysPayId(), merchantId, true);
-        return registerCardFromBank(saveCardXml);
+        return registerCardFromBank(saveCardXml, null, "https://capitalpay.kz/");
     }
 
     public ResultDTO registerClientCardWithBank(Long merchantId, Long cashBoxId, String params) {
@@ -111,6 +117,7 @@ public class UserCardService {
         if (!cashbox.isP2pAllowed()) {
             return ErrorDictionary.P2P_IS_NOT_ALLOWED;
         }
+        Map<String, String> resultUrls = cashboxSettingsService.getMerchantResultUrls(cashbox.getId());
 
         Payment payment = paymentService.generateSaveBankCardPayment();
         ClientCardFromBank clientCardFromBank = new ClientCardFromBank();
@@ -119,10 +126,9 @@ public class UserCardService {
         clientCardFromBank.setMerchantId(merchantId);
         clientCardFromBank.setParams(params);
         clientCardFromBank.setToken(UUID.randomUUID().toString());
-        clientCardFromBank = clientBankCardRepository.save(clientCardFromBank);
+        clientBankCardRepository.save(clientCardFromBank);
         String saveCardXml = halykSoapService.createSaveCardXml(payment.getPaySysPayId(), merchantId, false);
-        sendClientCardDataToMerchant(clientCardFromBank);
-        return registerCardFromBank(saveCardXml);
+        return registerCardFromBank(saveCardXml, resultUrls, null);
     }
 
     public void completeBankCardSaving(String requestBody) {
@@ -165,15 +171,21 @@ public class UserCardService {
         clientCardFromBank.setValid(true);
         clientCardFromBank.setBankCardId(halykSaveCardOrder.getCardId());
         clientCardFromBank.setCardNumber(maskCardFromBank(halykSaveCardOrder.getCardHash()));
-        clientBankCardRepository.save(clientCardFromBank);
+        clientCardFromBank = clientBankCardRepository.save(clientCardFromBank);
+        sendClientCardDataToMerchant(clientCardFromBank);
     }
 
-    private ResultDTO registerCardFromBank(String saveCardXml) {
+    private ResultDTO registerCardFromBank(String saveCardXml, Map<String, String> resultUrls, String backLink) {
         LOGGER.info("saveCardXml {}", saveCardXml);
         String encodedXml = Base64.getEncoder().encodeToString(saveCardXml.getBytes());
         Map<String, String> result = new HashMap<>();
         result.put("xml", encodedXml);
-        result.put("backLink", "https://capitalpay.kz");
+        if (Objects.isNull(backLink) && Objects.nonNull(resultUrls)) {
+            result.put("backLink", resultUrls.get(REDIRECT_SUCCESS_URL));
+            result.put("FailureBackLink", resultUrls.get(REDIRECT_FAILED_URL));
+        } else {
+            result.put("backLink", backLink);
+        }
         result.put("postLink", "https://api.capitalpay.kz/api/save-card-link");
         return new ResultDTO(true, result, 0);
     }
