@@ -1,4 +1,4 @@
-package kz.capitalpay.server.paysystems.systems.halyksoap.xml;
+package kz.capitalpay.server.paysystems.systems.halyksoap.xml.save_card;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;

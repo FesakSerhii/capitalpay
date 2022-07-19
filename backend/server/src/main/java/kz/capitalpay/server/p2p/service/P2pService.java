@@ -13,7 +13,9 @@ import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import kz.capitalpay.server.usercard.dto.CardDataResponseDto;
+import kz.capitalpay.server.usercard.model.ClientCardFromBank;
 import kz.capitalpay.server.usercard.model.UserCard;
+import kz.capitalpay.server.usercard.model.UserCardFromBank;
 import kz.capitalpay.server.usercard.service.UserCardService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
@@ -120,10 +122,58 @@ public class P2pService {
         }
     }
 
+    public RedirectView sendBankP2pToClient(SendP2pToClientDto dto, String userAgent, String ipAddress, RedirectAttributes redirectAttributes) {
+        Map<String, String> resultUrls = cashboxSettingsService.getMerchantResultUrls(dto.getCashBoxId());
+        if (!checkP2pSignature(dto)) {
+            LOGGER.info(ErrorDictionary.INVALID_SIGNATURE.toString());
+            addErrorAttributes(redirectAttributes, ErrorDictionary.INVALID_SIGNATURE);
+            return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
+        }
+
+        try {
+            Cashbox cashbox = cashboxService.findById(dto.getCashBoxId());
+            if (!cashbox.getMerchantId().equals(dto.getMerchantId())) {
+                LOGGER.info(ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXES.toString());
+                addErrorAttributes(redirectAttributes, ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXES);
+                return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
+            }
+
+            Long merchantCardId = cashboxService.findUserCardIdByCashBoxId(dto.getCashBoxId());
+            if (merchantCardId.equals(0L)) {
+                LOGGER.info(ErrorDictionary.CARD_NOT_FOUND.toString());
+                addErrorAttributes(redirectAttributes, ErrorDictionary.CARD_NOT_FOUND);
+                return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
+            }
+
+            MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(dto.getMerchantId());
+            if (Objects.isNull(merchantP2pSettings) || !merchantP2pSettings.isP2pAllowed()) {
+                LOGGER.info(ErrorDictionary.P2P_IS_NOT_ALLOWED.toString());
+                addErrorAttributes(redirectAttributes, ErrorDictionary.P2P_IS_NOT_ALLOWED);
+                return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
+            }
+
+            if (!cashbox.isP2pAllowed()) {
+                LOGGER.info(ErrorDictionary.P2P_IS_NOT_ALLOWED.toString());
+                addErrorAttributes(redirectAttributes, ErrorDictionary.P2P_IS_NOT_ALLOWED);
+                return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
+            }
+
+            UserCardFromBank userCard = userCardService.findUserCardFromBankById(merchantCardId);
+            ClientCardFromBank clientCard = userCardService.findClientCardFromBankByToken(dto.getClientCardToken());
+
+            return checkReturnCode(halykSoapService.sendSavedCardsP2p(ipAddress, userAgent, userCard.getBankCardId(), dto,
+                    clientCard.getBankCardId(), true), resultUrls, redirectAttributes);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.info(ErrorDictionary.CARD_NOT_FOUND.toString());
+            addErrorAttributes(redirectAttributes, ErrorDictionary.CARD_NOT_FOUND);
+            return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
+        }
+    }
+
     public RedirectView sendP2pToMerchant(SendP2pToClientDto dto, String userAgent, String ipAddress, RedirectAttributes redirectAttributes) {
         Map<String, String> resultUrls = cashboxSettingsService.getMerchantResultUrls(dto.getCashBoxId());
         if (!checkP2pSignature(dto)) {
-//            return new ResultDTO(false, "Invalid signature", -1);
             LOGGER.info(new ResultDTO(false, "Invalid signature", -1).toString());
             addErrorAttributes(redirectAttributes, ErrorDictionary.INVALID_SIGNATURE);
             return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
@@ -167,43 +217,48 @@ public class P2pService {
         }
     }
 
-    public ResultDTO sendP2pToMerchant(SendP2pToClientDto dto, String userAgent, String ipAddress) {
+    public RedirectView sendBankP2pToMerchant(SendP2pToClientDto dto, String userAgent, String ipAddress, RedirectAttributes redirectAttributes) {
         Map<String, String> resultUrls = cashboxSettingsService.getMerchantResultUrls(dto.getCashBoxId());
         if (!checkP2pSignature(dto)) {
             LOGGER.info(new ResultDTO(false, "Invalid signature", -1).toString());
-            return new ResultDTO(false, "Invalid signature", -1);
+            addErrorAttributes(redirectAttributes, ErrorDictionary.INVALID_SIGNATURE);
+            return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
         }
 
         try {
             Cashbox cashbox = cashboxService.findById(dto.getCashBoxId());
             if (!cashbox.getMerchantId().equals(dto.getMerchantId())) {
                 LOGGER.info(ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXES.toString());
-                return ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXES;
+                addErrorAttributes(redirectAttributes, ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXES);
+                return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
             }
             Long merchantCardId = cashboxService.findUserCardIdByCashBoxId(dto.getCashBoxId());
             if (merchantCardId.equals(0L)) {
                 LOGGER.info(ErrorDictionary.CARD_NOT_FOUND.toString());
-                return ErrorDictionary.CARD_NOT_FOUND;
+                addErrorAttributes(redirectAttributes, ErrorDictionary.CARD_NOT_FOUND);
+                return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
             }
             MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(dto.getMerchantId());
             if (Objects.isNull(merchantP2pSettings) || !merchantP2pSettings.isP2pAllowed()) {
                 LOGGER.info(ErrorDictionary.P2P_IS_NOT_ALLOWED.toString());
+                addErrorAttributes(redirectAttributes, ErrorDictionary.P2P_IS_NOT_ALLOWED);
+                return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
             }
             if (!cashbox.isP2pAllowed()) {
                 LOGGER.info(ErrorDictionary.P2P_IS_NOT_ALLOWED.toString());
-                return ErrorDictionary.P2P_IS_NOT_ALLOWED;
+                addErrorAttributes(redirectAttributes, ErrorDictionary.P2P_IS_NOT_ALLOWED);
+                return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
             }
-            UserCard merchantCard = userCardService.findUserCardById(merchantCardId);
-//            CardDataResponseDto merchantCardData = userCardService.getCardDataFromTokenServer(merchantCard.getToken());
-//            CardDataResponseDto clientCardData = userCardService.getCardDataFromTokenServer(dto.getClientCardToken());
+            UserCardFromBank userCard = userCardService.findUserCardFromBankById(merchantCardId);
+            ClientCardFromBank clientCard = userCardService.findClientCardFromBankByToken(dto.getClientCardToken());
 
-//            return checkReturnCode(halykSoapService.sendP2p(ipAddress, userAgent, clientCardData, dto,
-//                    merchantCardData.getCardNumber(), false), resultUrls, redirectAttributes);
-            return null;
+            return checkReturnCode(halykSoapService.sendSavedCardsP2p(ipAddress, userAgent, clientCard.getBankCardId(), dto,
+                    userCard.getBankCardId(), false), resultUrls, redirectAttributes);
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.info(ErrorDictionary.CARD_NOT_FOUND.toString());
-            return ErrorDictionary.CARD_NOT_FOUND;
+            addErrorAttributes(redirectAttributes, ErrorDictionary.CARD_NOT_FOUND);
+            return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
         }
     }
 

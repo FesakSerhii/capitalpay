@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface ClientBankCardRepository extends JpaRepository<ClientCardFromBank, Long> {
 
     Optional<ClientCardFromBank> findByOrderId(String orderId);
+
+    Optional<ClientCardFromBank> findByToken(String token);
 }

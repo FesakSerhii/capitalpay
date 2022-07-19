@@ -15,6 +15,7 @@ public class UserCardFromBank {
     @Column(columnDefinition = "boolean default false")
     private boolean deleted;
     private String orderId;
+    private String token;
 
     public Long getId() {
         return id;
@@ -70,5 +71,13 @@ public class UserCardFromBank {
 
     public void setOrderId(String orderId) {
         this.orderId = orderId;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

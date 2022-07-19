@@ -55,6 +55,26 @@ public class P2pPaymentsController {
     }
 
 
+//    @PostMapping("/send-p2p-to-client")
+//    public RedirectView sendP2pToClient(@RequestParam @NotNull(message = "clientCardId must not be null") String clientCardToken,
+//                                        @RequestParam @NotNull(message = "merchantId must not be null") Long merchantId,
+//                                        @RequestParam @NotNull(message = "acceptedSum must not be null") BigDecimal acceptedSum,
+//                                        @RequestParam @NotNull(message = "cashBoxId must not be null") Long cashBoxId,
+//                                        @RequestParam @NotBlank(message = "sign must not be blank") String signature,
+//                                        @RequestParam(required = false) String param,
+//                                        HttpServletRequest httpRequest,
+//                                        RedirectAttributes redirectAttributes) {
+//
+//        LOGGER.info("/send-p2p-to-client");
+//        String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
+//        if (ipAddress == null) {
+//            ipAddress = httpRequest.getRemoteAddr();
+//        }
+//        String userAgent = httpRequest.getHeader("User-Agent");
+//        SendP2pToClientDto dto = new SendP2pToClientDto(clientCardToken, merchantId, acceptedSum, cashBoxId, signature, param);
+//        return p2pService.sendP2pToClient(dto, userAgent, ipAddress, redirectAttributes);
+//    }
+
     @PostMapping("/send-p2p-to-client")
     public RedirectView sendP2pToClient(@RequestParam @NotNull(message = "clientCardId must not be null") String clientCardToken,
                                         @RequestParam @NotNull(message = "merchantId must not be null") Long merchantId,
@@ -72,8 +92,27 @@ public class P2pPaymentsController {
         }
         String userAgent = httpRequest.getHeader("User-Agent");
         SendP2pToClientDto dto = new SendP2pToClientDto(clientCardToken, merchantId, acceptedSum, cashBoxId, signature, param);
-        return p2pService.sendP2pToClient(dto, userAgent, ipAddress, redirectAttributes);
+        return p2pService.sendBankP2pToClient(dto, userAgent, ipAddress, redirectAttributes);
     }
+
+//    @PostMapping("/send-p2p-to-merchant")
+//    public RedirectView sendP2pToMerchant(@RequestParam @NotNull(message = "clientCardId must not be null") String clientCardToken,
+//                                          @RequestParam @NotNull(message = "merchantId must not be null") Long merchantId,
+//                                          @RequestParam @NotNull(message = "acceptedSum must not be null") BigDecimal acceptedSum,
+//                                          @RequestParam @NotNull(message = "cashBoxId must not be null") Long cashBoxId,
+//                                          @RequestParam @NotBlank(message = "sign must not be blank") String signature,
+//                                          @RequestParam(required = false) String param,
+//                                          HttpServletRequest httpRequest,
+//                                          RedirectAttributes redirectAttributes) {
+//        LOGGER.info("/send-p2p-to-merchant");
+//        String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
+//        if (ipAddress == null) {
+//            ipAddress = httpRequest.getRemoteAddr();
+//        }
+//        String userAgent = httpRequest.getHeader("User-Agent");
+//        SendP2pToClientDto dto = new SendP2pToClientDto(clientCardToken, merchantId, acceptedSum, cashBoxId, signature, param);
+//        return p2pService.sendP2pToMerchant(dto, userAgent, ipAddress, redirectAttributes);
+//    }
 
     @PostMapping("/send-p2p-to-merchant")
     public RedirectView sendP2pToMerchant(@RequestParam @NotNull(message = "clientCardId must not be null") String clientCardToken,
@@ -91,7 +130,7 @@ public class P2pPaymentsController {
         }
         String userAgent = httpRequest.getHeader("User-Agent");
         SendP2pToClientDto dto = new SendP2pToClientDto(clientCardToken, merchantId, acceptedSum, cashBoxId, signature, param);
-        return p2pService.sendP2pToMerchant(dto, userAgent, ipAddress, redirectAttributes);
+        return p2pService.sendBankP2pToMerchant(dto, userAgent, ipAddress, redirectAttributes);
     }
 
     @PostMapping("/send-anonymous-p2p-to-merchant")

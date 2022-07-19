@@ -18,6 +18,7 @@ public class ClientCardFromBank {
     @Column(columnDefinition = "text")
     private String params;
     private String orderId;
+    private String token;
 
     public Long getId() {
         return id;
@@ -89,5 +90,13 @@ public class ClientCardFromBank {
 
     public void setOrderId(String orderId) {
         this.orderId = orderId;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

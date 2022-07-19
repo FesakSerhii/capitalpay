@@ -100,20 +100,28 @@ public class UserCardService {
         UserCardFromBank userCardFromBank = new UserCardFromBank();
         userCardFromBank.setOrderId(payment.getPaySysPayId());
         userCardFromBank.setUserId(merchantId);
+        userCardFromBank.setToken(UUID.randomUUID().toString());
         userBankCardRepository.save(userCardFromBank);
         String saveCardXml = halykSoapService.createSaveCardXml(payment.getPaySysPayId(), merchantId, true);
         return registerCardFromBank(saveCardXml);
     }
 
     public ResultDTO registerClientCardWithBank(Long merchantId, Long cashBoxId, String params) {
+        Cashbox cashbox = cashboxService.findById(cashBoxId);
+        if (!cashbox.isP2pAllowed()) {
+            return ErrorDictionary.P2P_IS_NOT_ALLOWED;
+        }
+
         Payment payment = paymentService.generateSaveBankCardPayment();
         ClientCardFromBank clientCardFromBank = new ClientCardFromBank();
         clientCardFromBank.setOrderId(payment.getPaySysPayId());
         clientCardFromBank.setCashBoxId(cashBoxId);
         clientCardFromBank.setMerchantId(merchantId);
         clientCardFromBank.setParams(params);
-        clientBankCardRepository.save(clientCardFromBank);
+        clientCardFromBank.setToken(UUID.randomUUID().toString());
+        clientCardFromBank = clientBankCardRepository.save(clientCardFromBank);
         String saveCardXml = halykSoapService.createSaveCardXml(payment.getPaySysPayId(), merchantId, false);
+        sendClientCardDataToMerchant(clientCardFromBank);
         return registerCardFromBank(saveCardXml);
     }
 
@@ -368,6 +376,22 @@ public class UserCardService {
         return new ResultDTO(true, true, 0);
     }
 
+    public UserCardFromBank findUserCardFromBankByToken(String token) {
+        return userBankCardRepository.findByToken(token).orElse(null);
+    }
+
+    public UserCardFromBank findUserCardFromBankById(Long id) {
+        return userBankCardRepository.findById(id).orElse(null);
+    }
+
+    public ClientCardFromBank findClientCardFromBankByToken(String token) {
+        return clientBankCardRepository.findByToken(token).orElse(null);
+    }
+
+    public ClientCardFromBank findClientCardFromBankById(Long id) {
+        return clientBankCardRepository.findById(id).orElse(null);
+    }
+
     private void setDefaultCashBoxCard(UserCard userCard) {
         List<Cashbox> userCashBoxes = cashboxRepository.findByMerchantIdAndDeletedFalse(userCard.getUserId());
         boolean defaultCardExists = userCashBoxes.stream().anyMatch(x -> Objects.nonNull(x.getUserCardId()));
@@ -393,6 +417,22 @@ public class UserCardService {
         }
     }
 
+    private void sendClientCardDataToMerchant(ClientCardFromBank clientCard) {
+        try {
+            String interactionUrl = cashboxService.getInteractUrl(clientCard.getCashBoxId());
+//            String interactionUrl = "http://localhost:8080/testshop/listener";
+            CardDataForMerchantDto detailsJson = generateClientCardResponseDto(clientCard);
+            Map<String, Object> requestJson = new HashMap<>();
+            requestJson.put("type", "registerClientCard");
+            requestJson.put("data", detailsJson);
+            String response = restTemplate.postForObject(interactionUrl,
+                    requestJson, String.class, java.util.Optional.ofNullable(null));
+            LOGGER.info(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private String maskCardNumber(String cardNumber) {
         return cardNumber.replaceAll("\\b(\\d{4})(\\d{8})(\\d{4})", "$1********$3");
     }
@@ -402,6 +442,17 @@ public class UserCardService {
     }
 
     private CardDataForMerchantDto generateClientCardResponseDto(ClientCard clientCard) {
+        CardDataForMerchantDto dto = new CardDataForMerchantDto();
+        String secret = cashboxService.getSecret(clientCard.getCashBoxId());
+        dto.setCardId(clientCard.getId());
+        dto.setCardNumber(clientCard.getCardNumber());
+        dto.setToken(clientCard.getToken());
+        dto.setParams(clientCard.getParams());
+        dto.setSignature(DigestUtils.sha256Hex(clientCard.getId() + clientCard.getToken() + clientCard.getCardNumber() + secret));
+        return dto;
+    }
+
+    private CardDataForMerchantDto generateClientCardResponseDto(ClientCardFromBank clientCard) {
         CardDataForMerchantDto dto = new CardDataForMerchantDto();
         String secret = cashboxService.getSecret(clientCard.getCashBoxId());
         dto.setCardId(clientCard.getId());
