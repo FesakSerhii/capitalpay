@@ -1230,8 +1230,8 @@ public class HalykSoapService {
         String amountStr = amount.setScale(2).toString().replace(".", ",");
 
 
-        LocalDateTime localDateTime = LocalDateTime.now();
-        String zonedDateTime = localDateTime.atZone(ZoneOffset.of("+6:00")).format(dateTimeFormat);
+        LocalDateTime localDateTime = LocalDateTime.now().plusHours(1);
+        String zonedDateTime = localDateTime.atZone(ZoneOffset.of("+06:00")).format(dateTimeFormat);
         String merchantStr = String.format("<merchant " +
                         "cert_id=\"%s\" " +
                         "name=\"%s\" " +

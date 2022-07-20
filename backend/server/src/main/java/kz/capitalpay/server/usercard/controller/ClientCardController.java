@@ -1,20 +1,24 @@
 package kz.capitalpay.server.usercard.controller;
 
 import kz.capitalpay.server.dto.ResultDTO;
+import kz.capitalpay.server.usercard.dto.RegisterClientCardDto;
 import kz.capitalpay.server.usercard.service.UserCardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.Map;
 
-@RestController
+@Controller
 @RequestMapping(value = "/api/v1/client-card", produces = "application/json;charset=UTF-8")
 public class ClientCardController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientCardController.class);
+    private static final String REGISTER_CARD_URL = "https://card.capitalpay.kz";
     private final UserCardService userCardService;
 
 
@@ -22,10 +26,11 @@ public class ClientCardController {
         this.userCardService = userCardService;
     }
 
-//    @PostMapping("/register")
-//    public ResultDTO saveUserCard(@Valid @RequestBody RegisterClientCardDto dto) {
-//        return userCardService.registerClientCard(dto);
-//    }
+    @ResponseBody
+    @PostMapping("/register")
+    public ResultDTO saveUserCard(@Valid @RequestBody RegisterClientCardDto dto) {
+        return userCardService.registerClientCard(dto);
+    }
 
     @GetMapping("/register")
     public String registerClientCardWithBank(@RequestParam Long merchantId,
@@ -40,6 +45,20 @@ public class ClientCardController {
         return "test_register_card";
     }
 
+//    @GetMapping("/register")
+//    public RedirectView registerClientCardWithBank(@RequestParam Long merchantId,
+//                                                   @RequestParam Long cashBoxId,
+//                                                   @RequestParam(required = false) String params,
+//                                                   RedirectAttributes attributes) {
+//        attributes.addAttribute("merchantId", merchantId);
+//        attributes.addAttribute("cashBoxId", cashBoxId);
+//        if (Objects.nonNull(params)) {
+//            attributes.addAttribute("params", params);
+//        }
+//        return new RedirectView(REGISTER_CARD_URL);
+//    }
+
+    @ResponseBody
     @PostMapping("/check-validity/{cardId}")
     public ResultDTO checkCardValidity(@PathVariable Long cardId,
                                        HttpServletRequest httpRequest) {
@@ -51,16 +70,19 @@ public class ClientCardController {
         return userCardService.checkClientCardValidity(cardId, ipAddress, userAgent);
     }
 
+    @ResponseBody
     @PostMapping("/get")
     public ResultDTO getCardData(@RequestParam String token) {
         return userCardService.getCardData(token);
     }
 
+    @ResponseBody
     @PostMapping("/get-client-cards")
     public ResultDTO getClientCards() {
         return userCardService.getClientCards();
     }
 
+    @ResponseBody
     @PostMapping("/delete/{id}")
     public ResultDTO deleteClientCard(@PathVariable Long id) {
         return userCardService.deleteClientCard(id);
