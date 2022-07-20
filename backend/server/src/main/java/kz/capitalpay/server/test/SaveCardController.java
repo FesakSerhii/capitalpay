@@ -54,10 +54,29 @@ public class SaveCardController {
     }
 
     @ResponseBody
+    @PostMapping("/p2p-link")
+    public String testP2pPostLink(@RequestBody String body) {
+        LOGGER.info("PostLink body: {}", body);
+//        userCardService.completeBankCardSaving(body);
+        return "";
+    }
+
+    @ResponseBody
     @PostMapping("/send-p2p")
     public String sendP2p() {
         LOGGER.info("sendP2p()");
         userCardService.sendTestP2p();
         return "";
+    }
+
+    @PostMapping("/send-anonymous-p2p")
+    public String sendAnonymousP2p(ModelMap modelMap) {
+        LOGGER.info("sendAnonymousP2p()");
+        ResultDTO result = userCardService.sendAnonymousTestP2p();
+        Map<String, String> resultMap = (Map<String, String>) result.getData();
+        modelMap.addAttribute("xml", resultMap.get("xml"));
+        modelMap.addAttribute("backLink", resultMap.get("backLink"));
+        modelMap.addAttribute("postLink", resultMap.get("postLink"));
+        return "test_p2p";
     }
 }

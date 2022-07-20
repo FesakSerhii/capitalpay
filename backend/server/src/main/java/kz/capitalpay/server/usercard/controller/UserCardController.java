@@ -7,11 +7,13 @@ import kz.capitalpay.server.usercard.dto.RegisterUserCardDto;
 import kz.capitalpay.server.usercard.service.UserCardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Map;
 
 import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
 
@@ -33,10 +35,16 @@ public class UserCardController {
         return userCardService.registerMerchantCard(dto);
     }
 
-//    @PostMapping("/register-with-bank")
-//    public ResultDTO registerUserCard(@RequestParam Long merchantId, @RequestParam String orderId) {
-//        return userCardService.registerMerchantCardWithBank(merchantId, orderId);
-//    }
+    @GetMapping("/register-with-bank")
+    public String registerUserCardWithBank(@RequestParam Long merchantId,
+                                           ModelMap modelMap) {
+        ResultDTO result = userCardService.registerMerchantCardWithBank(merchantId);
+        Map<String, String> resultMap = (Map<String, String>) result.getData();
+        modelMap.addAttribute("xml", resultMap.get("xml"));
+        modelMap.addAttribute("backLink", resultMap.get("backLink"));
+        modelMap.addAttribute("postLink", resultMap.get("postLink"));
+        return "test_register_card";
+    }
 
     @PostMapping("/check-validity/{cardId}")
     public ResultDTO checkCardValidity(@PathVariable Long cardId,

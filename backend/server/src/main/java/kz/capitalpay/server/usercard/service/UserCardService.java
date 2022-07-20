@@ -488,4 +488,18 @@ public class UserCardService {
         LOGGER.info("p2p response {}", response.getBody());
     }
 
+    public ResultDTO sendAnonymousTestP2p() {
+        Payment payment = paymentService.generateSaveBankCardPayment();
+        String p2pXml = halykSoapService.createAnonymousP2pXml(payment.getPaySysPayId(), 663L,
+                "900000028519", new BigDecimal("100.00"));
+        LOGGER.info("p2pXml {}", p2pXml);
+
+        String encodedXml = Base64.getEncoder().encodeToString(p2pXml.getBytes());
+        Map<String, String> result = new HashMap<>();
+        result.put("xml", encodedXml);
+        result.put("backLink", "https://capitalpay.kz");
+        result.put("postLink", "https://api.capitalpay.kz/api/p2p-link");
+        return new ResultDTO(true, result, 0);
+    }
+
 }

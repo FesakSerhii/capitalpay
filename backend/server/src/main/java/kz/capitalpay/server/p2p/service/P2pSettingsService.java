@@ -7,6 +7,8 @@ import kz.capitalpay.server.p2p.dto.P2pSettingsResponseDto;
 import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
 import kz.capitalpay.server.p2p.repository.P2pSettingsRepository;
 import kz.capitalpay.server.usercard.model.UserCard;
+import kz.capitalpay.server.usercard.model.UserCardFromBank;
+import kz.capitalpay.server.usercard.repository.UserBankCardRepository;
 import kz.capitalpay.server.usercard.repository.UserCardRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,10 +23,12 @@ public class P2pSettingsService {
     private static final Logger LOGGER = LoggerFactory.getLogger(P2pSettingsService.class);
     private final P2pSettingsRepository p2pSettingsRepository;
     private final UserCardRepository userCardRepository;
+    private final UserBankCardRepository userBankCardRepository;
 
-    public P2pSettingsService(P2pSettingsRepository p2pSettingsRepository, UserCardRepository userCardRepository) {
+    public P2pSettingsService(P2pSettingsRepository p2pSettingsRepository, UserCardRepository userCardRepository, UserBankCardRepository userBankCardRepository) {
         this.p2pSettingsRepository = p2pSettingsRepository;
         this.userCardRepository = userCardRepository;
+        this.userBankCardRepository = userBankCardRepository;
     }
 
     public void createMerchantP2pSettings(Long merchantId, Long cardId) {
@@ -50,6 +54,26 @@ public class P2pSettingsService {
         }
 
         UserCard userCard = userCardRepository.findById(merchantP2pSettings.getDefaultCardId()).orElse(null);
+        if (Objects.isNull(userCard)) {
+            return ErrorDictionary.CARD_NOT_FOUND;
+        }
+        dto.setCardNumber(userCard.getCardNumber());
+        dto.setMerchantId(merchantP2pSettings.getUserId());
+        dto.setP2pAllowed(merchantP2pSettings.isP2pAllowed());
+        return new ResultDTO(true, dto, 0);
+    }
+
+    public ResultDTO getBankP2pSettingsByMerchantId(Long merchantId) {
+        MerchantP2pSettings merchantP2pSettings = p2pSettingsRepository.findByUserId(merchantId).orElse(null);
+        P2pSettingsResponseDto dto = new P2pSettingsResponseDto();
+        if (Objects.isNull(merchantP2pSettings)) {
+            dto.setCardNumber(null);
+            dto.setMerchantId(merchantId);
+            dto.setP2pAllowed(false);
+            return new ResultDTO(true, dto, 0);
+        }
+
+        UserCardFromBank userCard = userBankCardRepository.findById(merchantP2pSettings.getDefaultCardId()).orElse(null);
         if (Objects.isNull(userCard)) {
             return ErrorDictionary.CARD_NOT_FOUND;
         }

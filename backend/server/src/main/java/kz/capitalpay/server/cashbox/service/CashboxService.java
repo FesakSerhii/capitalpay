@@ -18,6 +18,8 @@ import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.repository.PaymentRepository;
 import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.usercard.model.UserCard;
+import kz.capitalpay.server.usercard.model.UserCardFromBank;
+import kz.capitalpay.server.usercard.repository.UserBankCardRepository;
 import kz.capitalpay.server.usercard.repository.UserCardRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,6 +74,9 @@ public class CashboxService {
 
     @Autowired
     PaymentRepository paymentRepository;
+
+    @Autowired
+    UserBankCardRepository userBankCardRepository;
 
     public ResultDTO createNew(Principal principal, CashboxCreateRequestDTO request) {
         try {
@@ -255,6 +260,33 @@ public class CashboxService {
         return new ResultDTO(true, cashBoxP2pDto, 0);
     }
 
+    public ResultDTO setBankCashBoxCard(SetCashBoxCardDto dto) {
+        Optional<Cashbox> optionalCashBox = cashboxRepository.findById(dto.getCashBoxId());
+        if (optionalCashBox.isEmpty()) {
+            return ErrorDictionary.CASHBOX_NOT_FOUND;
+        }
+        Cashbox cashbox = optionalCashBox.get();
+        if (!cashbox.getMerchantId().equals(dto.getMerchantId())) {
+            return ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXES;
+        }
+        UserCardFromBank userCard = userBankCardRepository.findById(dto.getCardId()).orElse(null);
+        if (Objects.isNull(userCard)) {
+            return ErrorDictionary.CARD_NOT_FOUND;
+        }
+        if (!userCard.getUserId().equals(dto.getMerchantId())) {
+            return ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOX_OWNER;
+        }
+
+        MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(cashbox.getMerchantId());
+        cashbox.setUserCardId(dto.getCardId());
+        cashbox.setUseDefaultCard(cashbox.getUserCardId().equals(merchantP2pSettings.getDefaultCardId()));
+        cashbox = cashboxRepository.save(cashbox);
+
+        CashBoxP2pDto cashBoxP2pDto = new CashBoxP2pDto(cashbox.getId(), cashbox.getMerchantId(),
+                cashbox.getUserCardId(), userCard.getCardNumber(), cashbox.isP2pAllowed(), cashbox.isUseDefaultCard());
+        return new ResultDTO(true, cashBoxP2pDto, 0);
+    }
+
     public ResultDTO getCashBoxP2pSettings(Long cashBoxId) {
         Optional<Cashbox> optionalCashBox = cashboxRepository.findById(cashBoxId);
         if (optionalCashBox.isEmpty()) {
@@ -285,6 +317,36 @@ public class CashboxService {
         return new ResultDTO(true, cashBoxP2pDto, 0);
     }
 
+    public ResultDTO getBankCashBoxP2pSettings(Long cashBoxId) {
+        Optional<Cashbox> optionalCashBox = cashboxRepository.findById(cashBoxId);
+        if (optionalCashBox.isEmpty()) {
+            return ErrorDictionary.CASHBOX_NOT_FOUND;
+        }
+
+        Cashbox cashbox = optionalCashBox.get();
+        CashBoxP2pDto cashBoxP2pDto = new CashBoxP2pDto();
+        cashBoxP2pDto.setId(cashbox.getId());
+        cashBoxP2pDto.setMerchantId(cashbox.getMerchantId());
+        cashBoxP2pDto.setP2pAllowed(cashbox.isP2pAllowed());
+        cashBoxP2pDto.setUseDefaultCard(cashbox.isUseDefaultCard());
+        if (Objects.isNull(cashbox.getUserCardId())) {
+            cashBoxP2pDto.setCardId(null);
+            cashBoxP2pDto.setCardNumber(null);
+            return new ResultDTO(true, cashBoxP2pDto, 0);
+        }
+
+        UserCardFromBank userCard = userBankCardRepository.findById(cashbox.getUserCardId()).orElse(null);
+        if (Objects.isNull(userCard)) {
+            cashBoxP2pDto.setCardId(null);
+            cashBoxP2pDto.setCardNumber(null);
+            return new ResultDTO(true, cashBoxP2pDto, 0);
+        }
+
+        cashBoxP2pDto.setCardId(userCard.getId());
+        cashBoxP2pDto.setCardNumber(userCard.getCardNumber());
+        return new ResultDTO(true, cashBoxP2pDto, 0);
+    }
+
     public ResultDTO setCashBoxP2pSettings(SetCashBoxP2pSettingsDto dto) {
         Optional<Cashbox> optionalCashBox = cashboxRepository.findById(dto.getCashBoxId());
         if (optionalCashBox.isEmpty()) {
@@ -300,6 +362,42 @@ public class CashboxService {
             userCard = userCardRepository.findById(merchantP2pSettings.getDefaultCardId()).orElse(null);
         } else {
             userCard = userCardRepository.findById(cashbox.getUserCardId()).orElse(null);
+        }
+
+        CashBoxP2pDto cashBoxP2pDto = new CashBoxP2pDto();
+        cashBoxP2pDto.setId(cashbox.getId());
+        cashBoxP2pDto.setMerchantId(cashbox.getMerchantId());
+        cashBoxP2pDto.setP2pAllowed(cashbox.isP2pAllowed());
+        cashBoxP2pDto.setUseDefaultCard(cashbox.isUseDefaultCard());
+        if (Objects.isNull(userCard)) {
+            cashBoxP2pDto.setCardId(null);
+            cashBoxP2pDto.setCardNumber(null);
+            return new ResultDTO(true, cashBoxP2pDto, 0);
+        }
+
+        cashbox.setUserCardId(userCard.getId());
+        cashboxRepository.save(cashbox);
+
+        cashBoxP2pDto.setCardId(userCard.getId());
+        cashBoxP2pDto.setCardNumber(userCard.getCardNumber());
+        return new ResultDTO(true, cashBoxP2pDto, 0);
+    }
+
+    public ResultDTO setBankCashBoxP2pSettings(SetCashBoxP2pSettingsDto dto) {
+        Optional<Cashbox> optionalCashBox = cashboxRepository.findById(dto.getCashBoxId());
+        if (optionalCashBox.isEmpty()) {
+            return ErrorDictionary.CASHBOX_NOT_FOUND;
+        }
+        Cashbox cashbox = optionalCashBox.get();
+        cashbox.setP2pAllowed(dto.isP2pAllowed());
+        cashbox.setUseDefaultCard(dto.isUseDefaultCard());
+
+        UserCardFromBank userCard = null;
+        if (dto.isUseDefaultCard()) {
+            MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(cashbox.getMerchantId());
+            userCard = userBankCardRepository.findById(merchantP2pSettings.getDefaultCardId()).orElse(null);
+        } else {
+            userCard = userBankCardRepository.findById(cashbox.getUserCardId()).orElse(null);
         }
 
         CashBoxP2pDto cashBoxP2pDto = new CashBoxP2pDto();
