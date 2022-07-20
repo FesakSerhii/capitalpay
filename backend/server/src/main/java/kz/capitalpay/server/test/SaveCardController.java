@@ -69,7 +69,7 @@ public class SaveCardController {
         return "";
     }
 
-    @PostMapping("/send-anonymous-p2p")
+    @GetMapping("/send-anonymous-p2p")
     public String sendAnonymousP2p(ModelMap modelMap) {
         LOGGER.info("sendAnonymousP2p()");
         ResultDTO result = userCardService.sendAnonymousTestP2p();
