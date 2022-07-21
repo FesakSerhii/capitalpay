@@ -64,16 +64,19 @@ public class UserCardController {
 
     @PostMapping("/list")
     public ResultDTO getClientCards(@RequestParam Long merchantId) {
-        return userCardService.getUserCards(merchantId);
+//        return userCardService.getUserCards(merchantId);
+        return userCardService.getBankUserCards(merchantId);
     }
 
     @PostMapping("/change-default-card")
     public ResultDTO changeDefaultCard(@Valid @RequestBody ChangeMerchantDefaultCardDto dto) {
-        return userCardService.changeMerchantDefaultCard(dto);
+//        return userCardService.changeMerchantDefaultCard(dto);
+        return userCardService.changeBankMerchantDefaultCard(dto);
     }
 
     @PostMapping("/delete")
     public ResultDTO delete(@Valid @RequestBody DeleteUserCardDto dto) {
-        return userCardService.deleteUserCard(dto);
+//        return userCardService.deleteUserCard(dto);
+        return userCardService.deleteBankUserCard(dto);
     }
 }

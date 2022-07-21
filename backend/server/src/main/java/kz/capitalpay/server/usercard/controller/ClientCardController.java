@@ -79,12 +79,14 @@ public class ClientCardController {
     @ResponseBody
     @PostMapping("/get-client-cards")
     public ResultDTO getClientCards() {
-        return userCardService.getClientCards();
+//        return userCardService.getClientCards();
+        return userCardService.getBankClientCards();
     }
 
     @ResponseBody
     @PostMapping("/delete/{id}")
     public ResultDTO deleteClientCard(@PathVariable Long id) {
-        return userCardService.deleteClientCard(id);
+//        return userCardService.deleteClientCard(id);
+        return userCardService.deleteBankClientCard(id);
     }
 }

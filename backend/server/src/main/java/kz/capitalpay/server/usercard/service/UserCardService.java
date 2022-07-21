@@ -231,8 +231,16 @@ public class UserCardService {
         return new ResultDTO(true, clientCardRepository.findAllByValidTrueAndDeletedFalse(), 0);
     }
 
+    public ResultDTO getBankClientCards() {
+        return new ResultDTO(true, clientBankCardRepository.findAllByValidTrueAndDeletedFalse(), 0);
+    }
+
     public ResultDTO getUserCards(Long userId) {
         return new ResultDTO(true, userCardRepository.findAllByUserIdAndValidTrueAndDeletedFalse(userId), 0);
+    }
+
+    public ResultDTO getBankUserCards(Long userId) {
+        return new ResultDTO(true, userBankCardRepository.findAllByUserIdAndValidTrueAndDeletedFalse(userId), 0);
     }
 
     public ResultDTO registerClientCard(RegisterClientCardDto dto) {
@@ -350,6 +358,43 @@ public class UserCardService {
         return new ResultDTO(true, responseDto, 0);
     }
 
+    public ResultDTO changeBankMerchantDefaultCard(ChangeMerchantDefaultCardDto dto) {
+        MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(dto.getMerchantId());
+        if (Objects.isNull(merchantP2pSettings)) {
+            return ErrorDictionary.P2P_SETTINGS_NOT_FOUND;
+        }
+        UserCardFromBank userCard = userBankCardRepository.findById(dto.getCardId()).orElse(null);
+        if (Objects.isNull(userCard)) {
+            return ErrorDictionary.CARD_NOT_FOUND;
+        }
+
+        if (!merchantP2pSettings.isP2pAllowed()) {
+            return ErrorDictionary.P2P_IS_NOT_ALLOWED;
+        }
+
+        final Long oldDefaultCardId = merchantP2pSettings.getDefaultCardId();
+        List<Cashbox> merchantCashBoxesWithDefaultCard = cashboxRepository.findByMerchantIdAndDeletedFalse(dto.getMerchantId())
+                .stream()
+                .filter(x -> x.getUserCardId().equals(oldDefaultCardId))
+                .collect(Collectors.toList());
+
+        List<Cashbox> cashBoxesWithNewDefaultCard = cashboxRepository.findByMerchantIdAndUserCardIdAndDeletedFalse(dto.getMerchantId(), dto.getCardId());
+        cashBoxesWithNewDefaultCard.forEach(x -> x.setUseDefaultCard(true));
+
+        merchantCashBoxesWithDefaultCard.forEach(cashbox -> cashbox.setUserCardId(dto.getCardId()));
+        cashboxRepository.saveAll(merchantCashBoxesWithDefaultCard);
+        cashboxRepository.saveAll(cashBoxesWithNewDefaultCard);
+        merchantP2pSettings.setDefaultCardId(dto.getCardId());
+        merchantP2pSettings = p2pSettingsService.save(merchantP2pSettings);
+
+        P2pSettingsResponseDto responseDto = new P2pSettingsResponseDto();
+        responseDto.setP2pAllowed(merchantP2pSettings.isP2pAllowed());
+        responseDto.setMerchantId(merchantP2pSettings.getUserId());
+        responseDto.setCardNumber(userCard.getCardNumber());
+
+        return new ResultDTO(true, responseDto, 0);
+    }
+
     public ResultDTO deleteUserCard(DeleteUserCardDto dto) {
         UserCard userCard = userCardRepository.findById(dto.getCardId()).orElse(null);
         if (Objects.isNull(userCard)) {
@@ -365,6 +410,26 @@ public class UserCardService {
         }
 
         userCard.setDeleted(true);
+        userCardRepository.save(userCard);
+        return new ResultDTO(true, true, 0);
+    }
+
+    public ResultDTO deleteBankUserCard(DeleteUserCardDto dto) {
+        UserCardFromBank userCard = userBankCardRepository.findById(dto.getCardId()).orElse(null);
+        if (Objects.isNull(userCard)) {
+            return ErrorDictionary.CARD_NOT_FOUND;
+        }
+        if (!userCard.getUserId().equals(dto.getMerchantId())) {
+            return ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOX_OWNER;
+        }
+
+        MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(dto.getMerchantId());
+        if (Objects.isNull(merchantP2pSettings) || !merchantP2pSettings.isP2pAllowed()) {
+            return ErrorDictionary.P2P_IS_NOT_ALLOWED;
+        }
+
+        userCard.setDeleted(true);
+        userBankCardRepository.save(userCard);
         return new ResultDTO(true, true, 0);
     }
 
@@ -385,6 +450,28 @@ public class UserCardService {
         }
 
         clientCard.setDeleted(true);
+        clientCardRepository.save(clientCard);
+        return new ResultDTO(true, true, 0);
+    }
+
+    public ResultDTO deleteBankClientCard(Long cardId) {
+        ClientCardFromBank clientCard = clientBankCardRepository.findById(cardId).orElse(null);
+        if (Objects.isNull(clientCard)) {
+            return ErrorDictionary.CARD_NOT_FOUND;
+        }
+
+        MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(clientCard.getMerchantId());
+        if (Objects.isNull(merchantP2pSettings) || !merchantP2pSettings.isP2pAllowed()) {
+            return ErrorDictionary.P2P_IS_NOT_ALLOWED;
+        }
+
+        Cashbox cashbox = cashboxService.findById(clientCard.getCashBoxId());
+        if (!cashbox.isP2pAllowed()) {
+            return ErrorDictionary.P2P_IS_NOT_ALLOWED;
+        }
+
+        clientCard.setDeleted(true);
+        clientBankCardRepository.save(clientCard);
         return new ResultDTO(true, true, 0);
     }
 
