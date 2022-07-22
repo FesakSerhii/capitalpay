@@ -3,6 +3,7 @@ package kz.capitalpay.server.usercard.controller;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.usercard.dto.ChangeMerchantDefaultCardDto;
 import kz.capitalpay.server.usercard.dto.DeleteUserCardDto;
+import kz.capitalpay.server.usercard.dto.RegisterMerchantCardWithBankDto;
 import kz.capitalpay.server.usercard.dto.RegisterUserCardDto;
 import kz.capitalpay.server.usercard.service.UserCardService;
 import org.slf4j.Logger;
@@ -38,8 +39,8 @@ public class UserCardController {
     @ResponseBody
     @RolesAllowed({ADMIN})
     @PostMapping("/register-with-bank")
-    public ResultDTO registerUserCardWithBank(@RequestParam Long merchantId) {
-        return userCardService.registerMerchantCardWithBank(merchantId);
+    public ResultDTO registerUserCardWithBank(@RequestBody @Valid RegisterMerchantCardWithBankDto dto) {
+        return userCardService.registerMerchantCardWithBank(dto.getMerchantId());
     }
 
     @ResponseBody
