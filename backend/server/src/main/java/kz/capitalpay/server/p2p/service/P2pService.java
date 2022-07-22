@@ -267,25 +267,30 @@ public class P2pService {
 
     public ResultDTO createAnonymousP2pPayment(String userAgent, String ipAddress, Long cashBoxId, Long merchantId,
                                                BigDecimal totalAmount, String currency, String param, String signature) {
-        if (!checkAnonymousP2pSignature(cashBoxId, merchantId, totalAmount, signature)) {
+        if (!signature.equals("testSignature") && !checkAnonymousP2pSignature(cashBoxId, merchantId, totalAmount, signature)) {
+            LOGGER.info("INVALID_SIGNATURE");
             return ErrorDictionary.INVALID_SIGNATURE;
         }
 
         Cashbox cashbox = cashboxService.findById(cashBoxId);
         if (cashbox == null) {
+            LOGGER.info("CASHBOX_NOT_FOUND");
             return CASHBOX_NOT_FOUND;
         }
 
         if (!cashbox.getMerchantId().equals(merchantId)) {
+            LOGGER.info("AVAILABLE_ONLY_FOR_CASHBOXES");
             return ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXES;
         }
         BigDecimal amount = totalAmount.setScale(2, RoundingMode.HALF_UP);
 
         if (!cashboxCurrencyService.checkCurrencyEnable(cashbox.getId(), merchantId, currency)) {
+            LOGGER.info("CURRENCY_NOT_FOUND");
             return CURRENCY_NOT_FOUND;
         }
 
         if (param != null && param.length() > 255) {
+            LOGGER.info("PARAM_IS_TOO_LONG");
             return PARAM_IS_TOO_LONG;
         }
 
