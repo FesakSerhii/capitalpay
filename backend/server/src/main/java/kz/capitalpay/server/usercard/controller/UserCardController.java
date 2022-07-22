@@ -42,13 +42,13 @@ public class UserCardController {
     public String registerUserCardWithBank(@RequestParam Long merchantId) {
         ResultDTO result = userCardService.registerMerchantCardWithBank(merchantId);
         Map<String, String> resultMap = (Map<String, String>) result.getData();
-        return String.format("<FORM action=\"https://testpay.kkb.kz/jsp/hbpay/logon.jsp \"\n" +
+        return String.format("\"<FORM action=\"https://testpay.kkb.kz/jsp/hbpay/logon.jsp \"\n" +
                         "      METHOD=\"POST\" id=\"SendOrder\" hidden></br>\n" +
                         "    <input hidden name=\"Signed_Order_B64\" type=\"text\" value=\"%s\"/>\n" +
                         "    <input hidden name=\"BackLink\" type=\"text\" value=\"%s\"/>\n" +
                         "    <input hidden name=\"PostLink\" type=\"text\" value=\"%s\"/>\n" +
                         "    <input hidden type=\"submit\" name=\"GotoPay\" value=\"SEND\"/>\n" +
-                        "</FORM>",
+                        "</FORM>\"",
                 resultMap.get("xml"),
                 resultMap.get("backLink"),
                 resultMap.get("postLink")
