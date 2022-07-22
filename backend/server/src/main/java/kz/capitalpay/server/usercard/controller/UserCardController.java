@@ -37,6 +37,7 @@ public class UserCardController {
         return userCardService.registerMerchantCard(dto);
     }
 
+    @RolesAllowed({ADMIN})
     @GetMapping("/register-with-bank")
     public String registerUserCardWithBank(@RequestParam Long merchantId,
                                            ModelMap modelMap) {
