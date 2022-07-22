@@ -13,6 +13,8 @@ import kz.capitalpay.server.simple.service.SimpleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
@@ -28,7 +30,7 @@ import java.util.Objects;
 import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.REDIRECT_FAILED_URL;
 import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.REDIRECT_SUCCESS_URL;
 
-@RestController
+@Controller
 @RequestMapping("/api/v1/p2p")
 public class P2pPaymentsController {
 
@@ -133,6 +135,7 @@ public class P2pPaymentsController {
         return p2pService.sendBankP2pToMerchant(dto, userAgent, ipAddress, redirectAttributes);
     }
 
+    @ResponseBody
     @PostMapping("/send-anonymous-p2p-to-merchant")
     public ResultDTO paymentCardPay(HttpServletRequest httpRequest,
                                     @Valid @RequestBody SendAnonymousP2pToMerchantDto dto) {
@@ -141,16 +144,42 @@ public class P2pPaymentsController {
                 dto.getCvv(), dto.getMonth(), dto.getPan(), dto.getYear());
     }
 
+//    @PostMapping("/anonymous-p2p-to-merchant")
+//    public RedirectView createAnonymousP2pPayment(@RequestParam Long cashBoxId,
+//                                                  @RequestParam BigDecimal totalAmount,
+//                                                  @RequestParam Long merchantId,
+//                                                  @RequestParam String currency,
+//                                                  @RequestParam String signature,
+//                                                  @RequestParam(required = false) String param,
+//                                                  HttpServletRequest httpRequest,
+//                                                  RedirectAttributes redirectAttributes) {
+//        LOGGER.info("/anonymous-p2p-to-merchant");
+//        String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
+//        if (ipAddress == null) {
+//            ipAddress = httpRequest.getRemoteAddr();
+//        }
+//        String userAgent = httpRequest.getHeader("User-Agent");
+//        ResultDTO resultDTO = p2pService.createAnonymousP2pPayment(userAgent, ipAddress, cashBoxId, merchantId,
+//                totalAmount, currency, param, signature);
+//        if (resultDTO.isResult() && resultDTO.getData() instanceof Payment) {
+//            Payment payment = (Payment) resultDTO.getData();
+//            redirectAttributes.addAttribute("id", payment.getGuid());
+//        } else {
+//            redirectAttributes.addAttribute("error", resultDTO.getError());
+//            redirectAttributes.addAttribute("data", resultDTO.getData());
+//        }
+//        return new RedirectView(paymentRedirectUrl);
+//    }
+
     @PostMapping("/anonymous-p2p-to-merchant")
-    public RedirectView createAnonymousP2pPayment(@RequestParam Long cashBoxId,
-                                                  @RequestParam BigDecimal totalAmount,
-                                                  @RequestParam Long merchantId,
-                                                  @RequestParam String currency,
-                                                  @RequestParam String signature,
-                                                  @RequestParam(required = false) String param,
-                                                  HttpServletRequest httpRequest,
-                                                  RedirectAttributes redirectAttributes
-    ) {
+    public String createAnonymousP2pPayment(@RequestParam Long cashBoxId,
+                                            @RequestParam BigDecimal totalAmount,
+                                            @RequestParam Long merchantId,
+                                            @RequestParam String currency,
+                                            @RequestParam String signature,
+                                            @RequestParam(required = false) String param,
+                                            HttpServletRequest httpRequest,
+                                            ModelMap modelMap) {
         LOGGER.info("/anonymous-p2p-to-merchant");
         String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
         if (ipAddress == null) {
@@ -159,21 +188,27 @@ public class P2pPaymentsController {
         String userAgent = httpRequest.getHeader("User-Agent");
         ResultDTO resultDTO = p2pService.createAnonymousP2pPayment(userAgent, ipAddress, cashBoxId, merchantId,
                 totalAmount, currency, param, signature);
-        if (resultDTO.isResult() && resultDTO.getData() instanceof Payment) {
-            Payment payment = (Payment) resultDTO.getData();
-            redirectAttributes.addAttribute("id", payment.getGuid());
-        } else {
-            redirectAttributes.addAttribute("error", resultDTO.getError());
-            redirectAttributes.addAttribute("data", resultDTO.getData());
-        }
-        return new RedirectView(paymentRedirectUrl);
+//        if (resultDTO.isResult() && resultDTO.getData() instanceof Payment) {
+        Payment payment = (Payment) resultDTO.getData();
+        LOGGER.info("sendAnonymousP2p()");
+        ResultDTO result = p2pService.sendBankAnonymousP2pPayment(httpRequest, payment);
+        Map<String, String> resultMap = (Map<String, String>) result.getData();
+        modelMap.addAttribute("xml", resultMap.get("xml"));
+        modelMap.addAttribute("backLink", resultMap.get("backLink"));
+        modelMap.addAttribute("postLink", resultMap.get("postLink"));
+        return "test_p2p";
+//        } else {
+//        }
+
     }
 
+    @ResponseBody
     @PostMapping("/get-payment")
     public ResultDTO getP2pPaymentData(@RequestParam String id) {
         return p2pPaymentService.getP2pPaymentDataById(id);
     }
 
+    @ResponseBody
     @PostMapping("/paysystem/listener")
     public RedirectView listener(@RequestParam String PaRes,
                                  @RequestParam String MD,

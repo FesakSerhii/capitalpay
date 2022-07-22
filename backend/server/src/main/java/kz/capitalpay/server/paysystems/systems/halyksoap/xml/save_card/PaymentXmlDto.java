@@ -19,6 +19,7 @@ public class PaymentXmlDto {
     private String sessionId;
     private String approve;
     private String cHash;
+    private String card;
 
     @XmlAttribute(name = "merchant_id")
     public String getMerchantId() {
@@ -164,6 +165,15 @@ public class PaymentXmlDto {
         this.cHash = cHash;
     }
 
+    @XmlAttribute(name = "card")
+    public String getCard() {
+        return card;
+    }
+
+    public void setCard(String card) {
+        this.card = card;
+    }
+
     @Override
     public String toString() {
         return "{" +
@@ -171,18 +181,19 @@ public class PaymentXmlDto {
                 ", amount='" + amount + '\'' +
                 ", approvalCode='" + approvalCode + '\'' +
                 ", reference='" + reference + '\'' +
-                ", response_code='" + responseCode + '\'' +
+                ", responseCode='" + responseCode + '\'' +
                 ", secure='" + secure + '\'' +
                 ", cardBin='" + cardBin + '\'' +
                 ", cardHash='" + cardHash + '\'' +
                 ", expMonth='" + expMonth + '\'' +
-                ", exp_year='" + expYear + '\'' +
+                ", expYear='" + expYear + '\'' +
                 ", cardId='" + cardId + '\'' +
                 ", abonentId='" + abonentId + '\'' +
                 ", recepient='" + recepient + '\'' +
                 ", sessionId='" + sessionId + '\'' +
                 ", approve='" + approve + '\'' +
                 ", cHash='" + cHash + '\'' +
+                ", card='" + card + '\'' +
                 '}';
     }
 }

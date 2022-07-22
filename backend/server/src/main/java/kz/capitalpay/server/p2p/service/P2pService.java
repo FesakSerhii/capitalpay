@@ -11,6 +11,8 @@ import kz.capitalpay.server.p2p.dto.AnonymousP2pPaymentResponseDto;
 import kz.capitalpay.server.p2p.dto.SendP2pToClientDto;
 import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
 import kz.capitalpay.server.payments.model.Payment;
+import kz.capitalpay.server.payments.service.PaymentService;
+import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykAnonymousP2pOrder;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import kz.capitalpay.server.usercard.dto.CardDataResponseDto;
 import kz.capitalpay.server.usercard.model.ClientCardFromBank;
@@ -28,13 +30,12 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
 import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.REDIRECT_FAILED_URL;
 import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.REDIRECT_SUCCESS_URL;
+import static kz.capitalpay.server.simple.service.SimpleService.SUCCESS;
 
 @Service
 public class P2pService {
@@ -47,6 +48,7 @@ public class P2pService {
     private final P2pPaymentService p2pPaymentService;
     private final CashboxCurrencyService cashboxCurrencyService;
     private final Gson gson;
+    private final PaymentService paymentService;
     //    private final MerchantKycService merchantKycService;
     private final CashboxSettingsService cashboxSettingsService;
 //    private final HalykOrderRepository halykOrderRepository;
@@ -61,7 +63,7 @@ public class P2pService {
     String apiAddress;
 
 
-    public P2pService(HalykSoapService halykSoapService, CashboxService cashboxService, UserCardService userCardService, P2pSettingsService p2pSettingsService, P2pPaymentService p2pPaymentService, CashboxCurrencyService cashboxCurrencyService, Gson gson, CashboxSettingsService cashboxSettingsService) {
+    public P2pService(HalykSoapService halykSoapService, CashboxService cashboxService, UserCardService userCardService, P2pSettingsService p2pSettingsService, P2pPaymentService p2pPaymentService, CashboxCurrencyService cashboxCurrencyService, Gson gson, PaymentService paymentService, CashboxSettingsService cashboxSettingsService) {
         this.halykSoapService = halykSoapService;
         this.cashboxService = cashboxService;
         this.userCardService = userCardService;
@@ -69,6 +71,7 @@ public class P2pService {
         this.p2pPaymentService = p2pPaymentService;
         this.cashboxCurrencyService = cashboxCurrencyService;
         this.gson = gson;
+        this.paymentService = paymentService;
         this.cashboxSettingsService = cashboxSettingsService;
     }
 
@@ -337,6 +340,72 @@ public class P2pService {
         } catch (Exception e) {
             e.printStackTrace();
             return ErrorDictionary.CARD_NOT_FOUND;
+        }
+    }
+
+    public ResultDTO sendBankAnonymousP2pPayment(HttpServletRequest httpRequest, Payment payment) {
+        String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
+        if (ipAddress == null) {
+            ipAddress = httpRequest.getRemoteAddr();
+        }
+        LOGGER.info("Payment ID: {}", payment.getGuid());
+        LOGGER.info("Request IP: {}", ipAddress);
+        LOGGER.info("Request User-Agent: {}", httpRequest.getHeader("User-Agent"));
+
+        try {
+            Cashbox cashbox = cashboxService.findById(payment.getCashboxId());
+            if (!cashbox.getMerchantId().equals(payment.getMerchantId())) {
+                return ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXES;
+            }
+
+            Long merchantCardId = cashboxService.findUserCardIdByCashBoxId(payment.getCashboxId());
+            if (merchantCardId.equals(0L)) {
+                return ErrorDictionary.CARD_NOT_FOUND;
+            }
+
+            MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(payment.getMerchantId());
+            if (Objects.isNull(merchantP2pSettings) || !merchantP2pSettings.isP2pAllowed()) {
+                return ErrorDictionary.P2P_IS_NOT_ALLOWED;
+            }
+
+            if (!cashbox.isP2pAllowed()) {
+                return ErrorDictionary.P2P_IS_NOT_ALLOWED;
+            }
+
+            UserCardFromBank merchantCard = userCardService.findUserCardFromBankById(merchantCardId);
+            String p2pXml = halykSoapService.createAnonymousP2pXml(payment.getPaySysPayId(),
+                    payment.getMerchantId(), merchantCard.getBankCardId(), payment.getTotalAmount());
+            LOGGER.info("p2pXml {}", p2pXml);
+
+            Map<String, String> resultUrls = cashboxSettingsService.getMerchantResultUrls(cashbox.getId());
+            String encodedXml = Base64.getEncoder().encodeToString(p2pXml.getBytes());
+            Map<String, String> result = new HashMap<>();
+            result.put("xml", encodedXml);
+            if (Objects.nonNull(resultUrls)) {
+                result.put("backLink", resultUrls.get(REDIRECT_SUCCESS_URL));
+            }
+            result.put("postLink", "https://api.capitalpay.kz/api/p2p-link");
+            return new ResultDTO(true, result, 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ErrorDictionary.CARD_NOT_FOUND;
+        }
+    }
+
+    public void completeBankAnonymousP2p(String requestBody) {
+        LOGGER.info("completeBankAnonymousP2p()");
+        if (Objects.isNull(requestBody) || requestBody.trim().isEmpty()) {
+            LOGGER.info("requestBody is NULL");
+            return;
+        }
+        String xml = requestBody.replace("response=", "");
+        HalykAnonymousP2pOrder halykAnonymousP2pOrder = halykSoapService.parseBankAnonymousP2p(xml);
+        if (Objects.isNull(halykAnonymousP2pOrder)) {
+            LOGGER.info("halykAnonymousP2pOrder is NULL");
+            return;
+        }
+        if (Objects.nonNull(halykAnonymousP2pOrder.getResponseCode()) && halykAnonymousP2pOrder.getResponseCode().equals("00")) {
+            paymentService.setStatusByPaySysPayId(halykAnonymousP2pOrder.getOrderId(), SUCCESS);
         }
     }
 

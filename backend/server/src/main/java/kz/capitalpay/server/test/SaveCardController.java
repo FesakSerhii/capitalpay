@@ -1,6 +1,7 @@
 package kz.capitalpay.server.test;
 
 import kz.capitalpay.server.dto.ResultDTO;
+import kz.capitalpay.server.p2p.service.P2pService;
 import kz.capitalpay.server.usercard.service.UserCardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,9 +17,11 @@ public class SaveCardController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SaveCardController.class);
     private final UserCardService userCardService;
+    private final P2pService p2pService;
 
-    public SaveCardController(UserCardService userCardService) {
+    public SaveCardController(UserCardService userCardService, P2pService p2pService) {
         this.userCardService = userCardService;
+        this.p2pService = p2pService;
     }
 
     @GetMapping("/register-user-card")
@@ -57,7 +60,7 @@ public class SaveCardController {
     @PostMapping("/p2p-link")
     public String testP2pPostLink(@RequestBody String body) {
         LOGGER.info("PostLink body: {}", body);
-//        userCardService.completeBankCardSaving(body);
+        p2pService.completeBankAnonymousP2p(body);
         return "";
     }
 

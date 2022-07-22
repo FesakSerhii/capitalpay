@@ -34,6 +34,7 @@ public class Payment {
     boolean p2p;
     @Column(columnDefinition = "boolean default false")
     boolean saveBankCard;
+    private String bankCardIdTo;
 
     public String getGuid() {
         return guid;
@@ -201,5 +202,13 @@ public class Payment {
 
     public void setSaveBankCard(boolean saveBankCard) {
         this.saveBankCard = saveBankCard;
+    }
+
+    public String getBankCardIdTo() {
+        return bankCardIdTo;
+    }
+
+    public void setBankCardIdTo(String bankCardIdTo) {
+        this.bankCardIdTo = bankCardIdTo;
     }
 }
