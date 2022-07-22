@@ -8,7 +8,6 @@ import kz.capitalpay.server.usercard.service.UserCardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
@@ -37,16 +36,23 @@ public class UserCardController {
         return userCardService.registerMerchantCard(dto);
     }
 
+    @ResponseBody
     @RolesAllowed({ADMIN})
     @GetMapping("/register-with-bank")
-    public String registerUserCardWithBank(@RequestParam Long merchantId,
-                                           ModelMap modelMap) {
+    public String registerUserCardWithBank(@RequestParam Long merchantId) {
         ResultDTO result = userCardService.registerMerchantCardWithBank(merchantId);
         Map<String, String> resultMap = (Map<String, String>) result.getData();
-        modelMap.addAttribute("xml", resultMap.get("xml"));
-        modelMap.addAttribute("backLink", resultMap.get("backLink"));
-        modelMap.addAttribute("postLink", resultMap.get("postLink"));
-        return "test_register_card";
+        return String.format("<FORM action=\"https://testpay.kkb.kz/jsp/hbpay/logon.jsp \"\n" +
+                        "      METHOD=\"POST\" id=\"SendOrder\" hidden></br>\n" +
+                        "    <input hidden name=\"Signed_Order_B64\" type=\"text\" value=\"%s\"/>\n" +
+                        "    <input hidden name=\"BackLink\" type=\"text\" value=\"%s\"/>\n" +
+                        "    <input hidden name=\"PostLink\" type=\"text\" value=\"%s\"/>\n" +
+                        "    <input hidden type=\"submit\" name=\"GotoPay\" value=\"SEND\"/>\n" +
+                        "</FORM>",
+                resultMap.get("xml"),
+                resultMap.get("backLink"),
+                resultMap.get("postLink")
+        );
     }
 
     @ResponseBody
