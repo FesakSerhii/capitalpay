@@ -7,6 +7,7 @@ import kz.capitalpay.server.usercard.dto.RegisterUserCardDto;
 import kz.capitalpay.server.usercard.service.UserCardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,7 @@ import java.util.Map;
 
 import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
 
-@RestController
+@Controller
 @RequestMapping(value = "/api/v1/auth/user-card", produces = "application/json;charset=UTF-8")
 public class UserCardController {
 
@@ -29,6 +30,7 @@ public class UserCardController {
         this.userCardService = userCardService;
     }
 
+    @ResponseBody
     @PostMapping("/register")
     @RolesAllowed({ADMIN})
     public ResultDTO saveUserCard(@Valid @RequestBody RegisterUserCardDto dto) {
@@ -46,6 +48,7 @@ public class UserCardController {
         return "test_register_card";
     }
 
+    @ResponseBody
     @PostMapping("/check-validity/{cardId}")
     public ResultDTO checkCardValidity(@PathVariable Long cardId,
                                        HttpServletRequest httpRequest) {
@@ -57,23 +60,27 @@ public class UserCardController {
         return userCardService.checkUserCardValidity(cardId, ipAddress, userAgent);
     }
 
+    @ResponseBody
     @PostMapping("/get")
     public ResultDTO getCardData(@RequestParam String token) {
         return userCardService.getCardData(token);
     }
 
+    @ResponseBody
     @PostMapping("/list")
     public ResultDTO getClientCards(@RequestParam Long merchantId) {
 //        return userCardService.getUserCards(merchantId);
         return userCardService.getBankUserCards(merchantId);
     }
 
+    @ResponseBody
     @PostMapping("/change-default-card")
     public ResultDTO changeDefaultCard(@Valid @RequestBody ChangeMerchantDefaultCardDto dto) {
 //        return userCardService.changeMerchantDefaultCard(dto);
         return userCardService.changeBankMerchantDefaultCard(dto);
     }
 
+    @ResponseBody
     @PostMapping("/delete")
     public ResultDTO delete(@Valid @RequestBody DeleteUserCardDto dto) {
 //        return userCardService.deleteUserCard(dto);
