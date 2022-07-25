@@ -109,7 +109,7 @@ public class UserCardService {
         userCardFromBank.setToken(UUID.randomUUID().toString());
         userBankCardRepository.save(userCardFromBank);
         String saveCardXml = halykSoapService.createSaveCardXml(payment.getPaySysPayId(), merchantId, true);
-        return registerCardFromBank(saveCardXml, null, "https://capitalpay.kz/");
+        return registerCardFromBank(saveCardXml, null, "https://admin.capitalpay.kz/");
     }
 
     public ResultDTO registerClientCardWithBank(Long merchantId, Long cashBoxId, String params) {
