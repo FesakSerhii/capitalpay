@@ -8,17 +8,22 @@ import kz.capitalpay.server.usercard.dto.RegisterUserCardDto;
 import kz.capitalpay.server.usercard.service.UserCardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.time.Duration;
+import java.time.LocalTime;
 
 import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
 
 @Controller
 @RequestMapping(value = "/api/v1/auth/user-card", produces = "application/json;charset=UTF-8")
+//@RequestMapping(value = "/api/user-card", produces = "application/json;charset=UTF-8")
 public class UserCardController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserCardController.class);
@@ -81,4 +86,5 @@ public class UserCardController {
 //        return userCardService.deleteUserCard(dto);
         return userCardService.deleteBankUserCard(dto);
     }
+
 }

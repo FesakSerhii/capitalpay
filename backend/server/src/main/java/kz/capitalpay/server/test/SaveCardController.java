@@ -5,10 +5,14 @@ import kz.capitalpay.server.p2p.service.P2pService;
 import kz.capitalpay.server.usercard.service.UserCardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.Map;
 
 @Controller
@@ -81,5 +85,16 @@ public class SaveCardController {
         modelMap.addAttribute("backLink", resultMap.get("backLink"));
         modelMap.addAttribute("postLink", resultMap.get("postLink"));
         return "test_p2p";
+    }
+
+    @GetMapping("/stream-sse")
+    public Flux<ServerSentEvent<String>> streamEvents() {
+        return Flux.interval(Duration.ofSeconds(1))
+                .map(sequence -> ServerSentEvent.<String>builder()
+                        .comment("comment")
+                        .id(String.valueOf(sequence))
+                        .event("periodic-event")
+                        .data("SSE - " + LocalTime.now().toString())
+                        .build());
     }
 }
