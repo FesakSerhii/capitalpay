@@ -44,6 +44,7 @@ public class UserCardService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserCardService.class);
     private static final String cardHoldingUrl = "http://localhost:8888";
+    private static final String REGISTER_MERCHANT_CARD_REDIRECT_URL = "https://admin.capitalpay.kz/admin-panel/card-check";
 
     private final UserCardRepository userCardRepository;
     private final RestTemplate restTemplate;
@@ -109,7 +110,12 @@ public class UserCardService {
         userCardFromBank.setToken(UUID.randomUUID().toString());
         userBankCardRepository.save(userCardFromBank);
         String saveCardXml = halykSoapService.createSaveCardXml(payment.getPaySysPayId(), merchantId, true);
-        return registerCardFromBank(saveCardXml, null, "https://admin.capitalpay.kz/");
+        return registerCardFromBank(saveCardXml, null,
+                REGISTER_MERCHANT_CARD_REDIRECT_URL.concat(String.format(
+                        "?userId=%s&orderId=%s",
+                        merchantId, payment.getPaySysPayId())
+                )
+        );
     }
 
     public ResultDTO registerClientCardWithBank(Long merchantId, Long cashBoxId, String params) {
