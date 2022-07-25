@@ -45,6 +45,7 @@ public class UserCardService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserCardService.class);
     private static final String cardHoldingUrl = "http://localhost:8888";
     private static final String REGISTER_MERCHANT_CARD_REDIRECT_URL = "https://admin.capitalpay.kz/admin-panel/card-check";
+    private static final String REGISTER_MERCHANT_CARD_ERR_URL = "https://admin.capitalpay.kz/admin-panel/card-err";
 
     private final UserCardRepository userCardRepository;
     private final RestTemplate restTemplate;
@@ -112,9 +113,8 @@ public class UserCardService {
         String saveCardXml = halykSoapService.createSaveCardXml(payment.getPaySysPayId(), merchantId, true);
         return registerCardFromBank(saveCardXml, null,
                 REGISTER_MERCHANT_CARD_REDIRECT_URL.concat(String.format(
-                        "?userId=%s&orderId=%s",
-                        merchantId, payment.getPaySysPayId())
-                )
+                        "?userId=%s&orderId=%s", merchantId, payment.getPaySysPayId())),
+                REGISTER_MERCHANT_CARD_ERR_URL
         );
     }
 
@@ -134,7 +134,7 @@ public class UserCardService {
         clientCardFromBank.setToken(UUID.randomUUID().toString());
         clientBankCardRepository.save(clientCardFromBank);
         String saveCardXml = halykSoapService.createSaveCardXml(payment.getPaySysPayId(), merchantId, false);
-        return registerCardFromBank(saveCardXml, resultUrls, null);
+        return registerCardFromBank(saveCardXml, resultUrls, null, null);
     }
 
     public void completeBankCardSaving(String requestBody) {
@@ -181,7 +181,8 @@ public class UserCardService {
         sendClientCardDataToMerchant(clientCardFromBank);
     }
 
-    private ResultDTO registerCardFromBank(String saveCardXml, Map<String, String> resultUrls, String backLink) {
+    private ResultDTO registerCardFromBank(String saveCardXml, Map<String, String> resultUrls,
+                                           String backLink, String failureBackLink) {
         LOGGER.info("saveCardXml {}", saveCardXml);
         String encodedXml = Base64.getEncoder().encodeToString(saveCardXml.getBytes());
         Map<String, String> result = new HashMap<>();
@@ -191,6 +192,7 @@ public class UserCardService {
             result.put("FailureBackLink", resultUrls.get(REDIRECT_FAILED_URL));
         } else {
             result.put("backLink", backLink);
+            result.put("FailureBackLink", failureBackLink);
         }
         result.put("postLink", "https://api.capitalpay.kz/api/save-card-link");
         result.put("action", "https://testpay.kkb.kz/jsp/hbpay/logon.jsp");
