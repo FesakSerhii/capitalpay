@@ -498,6 +498,14 @@ public class UserCardService {
         return clientBankCardRepository.findById(id).orElse(null);
     }
 
+    public ResultDTO checkBankUserCardValidation(String orderId) {
+        UserCardFromBank userCardFromBank = userBankCardRepository.findByOrderId(orderId).orElse(null);
+        if (Objects.isNull(userCardFromBank)) {
+            return ErrorDictionary.CARD_NOT_FOUND;
+        }
+        return new ResultDTO(true, true, 0);
+    }
+
     private void setDefaultCashBoxCard(UserCard userCard) {
         List<Cashbox> userCashBoxes = cashboxRepository.findByMerchantIdAndDeletedFalse(userCard.getUserId());
         boolean defaultCardExists = userCashBoxes.stream().anyMatch(x -> Objects.nonNull(x.getUserCardId()));

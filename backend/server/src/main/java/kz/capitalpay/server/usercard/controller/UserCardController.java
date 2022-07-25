@@ -8,16 +8,12 @@ import kz.capitalpay.server.usercard.dto.RegisterUserCardDto;
 import kz.capitalpay.server.usercard.service.UserCardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.time.Duration;
-import java.time.LocalTime;
 
 import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
 
@@ -85,6 +81,12 @@ public class UserCardController {
     public ResultDTO delete(@Valid @RequestBody DeleteUserCardDto dto) {
 //        return userCardService.deleteUserCard(dto);
         return userCardService.deleteBankUserCard(dto);
+    }
+
+    @ResponseBody
+    @PostMapping("/check-validation/{orderId}")
+    public ResultDTO streamEvents(@PathVariable String orderId) {
+        return userCardService.checkBankUserCardValidation(orderId);
     }
 
 }
