@@ -505,7 +505,7 @@ public class UserCardService {
         if (Objects.isNull(userCardFromBank)) {
             return ErrorDictionary.CARD_NOT_FOUND;
         }
-        return new ResultDTO(true, true, 0);
+        return new ResultDTO(true, userCardFromBank.isValid(), 0);
     }
 
     private void setDefaultCashBoxCard(UserCard userCard) {
