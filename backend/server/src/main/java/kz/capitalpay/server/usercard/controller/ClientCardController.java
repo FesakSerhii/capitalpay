@@ -35,13 +35,13 @@ public class ClientCardController {
     @GetMapping("/register")
     public String registerClientCardWithBank(@RequestParam Long merchantId,
                                              @RequestParam Long cashBoxId,
-                                             @RequestParam(required = false) String params,
+                                             @RequestParam(required = false) String parameters,
                                              ModelMap modelMap) {
         LOGGER.info("/api/v1/client-card/register");
         LOGGER.info("merchantId {}", merchantId);
         LOGGER.info("cashBoxId {}", cashBoxId);
-        LOGGER.info("params {}", params);
-        ResultDTO result = userCardService.registerClientCardWithBank(merchantId, cashBoxId, params);
+        LOGGER.info("params {}", parameters);
+        ResultDTO result = userCardService.registerClientCardWithBank(merchantId, cashBoxId, parameters);
         Map<String, String> resultMap = (Map<String, String>) result.getData();
         modelMap.addAttribute("xml", resultMap.get("xml"));
         modelMap.addAttribute("backLink", resultMap.get("backLink"));
