@@ -37,6 +37,10 @@ public class ClientCardController {
                                              @RequestParam Long cashBoxId,
                                              @RequestParam(required = false) String params,
                                              ModelMap modelMap) {
+        LOGGER.info("/api/v1/client-card/register");
+        LOGGER.info("merchantId {}", merchantId);
+        LOGGER.info("cashBoxId {}", cashBoxId);
+        LOGGER.info("params {}", params);
         ResultDTO result = userCardService.registerClientCardWithBank(merchantId, cashBoxId, params);
         Map<String, String> resultMap = (Map<String, String>) result.getData();
         modelMap.addAttribute("xml", resultMap.get("xml"));
