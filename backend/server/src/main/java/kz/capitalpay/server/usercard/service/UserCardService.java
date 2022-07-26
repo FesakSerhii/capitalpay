@@ -166,6 +166,10 @@ public class UserCardService {
         userCardFromBank.setBankCardId(halykSaveCardOrder.getCardId());
         userCardFromBank.setCardNumber(maskCardFromBank(halykSaveCardOrder.getCardHash()));
         userBankCardRepository.save(userCardFromBank);
+        setDefaultBankCashBoxCard(userCardFromBank);
+        if (!p2pSettingsService.existsByMerchantId(userCardFromBank.getUserId())) {
+            p2pSettingsService.createMerchantP2pSettings(userCardFromBank.getUserId(), userCardFromBank.getId());
+        }
     }
 
     private void setClientCardFromBankData(HalykSaveCardOrder halykSaveCardOrder) {
@@ -509,6 +513,15 @@ public class UserCardService {
     }
 
     private void setDefaultCashBoxCard(UserCard userCard) {
+        List<Cashbox> userCashBoxes = cashboxRepository.findByMerchantIdAndDeletedFalse(userCard.getUserId());
+        boolean defaultCardExists = userCashBoxes.stream().anyMatch(x -> Objects.nonNull(x.getUserCardId()));
+        if (!defaultCardExists) {
+            userCashBoxes.forEach(x -> x.setUserCardId(userCard.getId()));
+            cashboxRepository.saveAll(userCashBoxes);
+        }
+    }
+
+    private void setDefaultBankCashBoxCard(UserCardFromBank userCard) {
         List<Cashbox> userCashBoxes = cashboxRepository.findByMerchantIdAndDeletedFalse(userCard.getUserId());
         boolean defaultCardExists = userCashBoxes.stream().anyMatch(x -> Objects.nonNull(x.getUserCardId()));
         if (!defaultCardExists) {
