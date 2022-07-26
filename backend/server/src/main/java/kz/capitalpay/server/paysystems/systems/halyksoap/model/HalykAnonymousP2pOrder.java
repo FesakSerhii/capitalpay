@@ -1,9 +1,6 @@
 package kz.capitalpay.server.paysystems.systems.halyksoap.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class HalykAnonymousP2pOrder {
@@ -16,8 +13,10 @@ public class HalykAnonymousP2pOrder {
     private String merchantName;
     private String currencyCode;
     private String merchantId;
+    @Column(columnDefinition = "text")
     private String merchantSign;
     private String bankName;
+    @Column(columnDefinition = "text")
     private String bankSign;
     private String reference;
     private String responseCode;
