@@ -1,11 +1,21 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  TemplateRef,
+  ViewChild
+} from '@angular/core';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators} from '@angular/forms';
 import {P2pService} from '../../projects/admin-panel/src/app/service/p2p.service';
 import {ActivatedRoute} from '@angular/router';
 import {validateCard} from '../validators/paymentCardNumberValidator';
 import {expirationDateValidator} from '../validators/dateCompareValidator';
-
+import {environment} from '../../projects/admin-panel/src/environments/environment';
 
 @Component({
   selector: 'app-payment-card-modal',
@@ -18,7 +28,7 @@ export class PaymentCardModalComponent implements OnInit {
 
   constructor(public modalService: NgbModal,private p2pService: P2pService,private activatedRoute: ActivatedRoute,) {
   }
-
+  @ViewChild('form') form: ElementRef;
   @ViewChild('paymentCardModal', {static: false}) paymentCardModalRef: TemplateRef<any>;
   // @Output() onModalClose = new EventEmitter<any>();
   @Input() defaultPaymentCard: string = null;
@@ -32,6 +42,11 @@ export class PaymentCardModalComponent implements OnInit {
     expirationYear: new FormControl(),
     cvv2Code: new FormControl(),
   });
+  redirectForm = new FormGroup({
+    xml: new FormControl(),
+    backLink: new FormControl(),
+    postLink: new FormControl(),
+  });
   selectedCard = new FormControl();
   cardListTitles:any=null;
   cardList: [
@@ -44,6 +59,7 @@ export class PaymentCardModalComponent implements OnInit {
   ];
   userId: number;
   yearsArr: number[] = [];
+  redirectUrl: any;
 
   async ngOnInit() {
     let currentYear = new Date().getFullYear();
@@ -110,5 +126,19 @@ export class PaymentCardModalComponent implements OnInit {
         }
       }, 200);
     }
+  }
+  addNewCard() {
+    this[environment['cardRegisterFn']]();
+  }
+  registerPaymentCard(){
+    console.log('registerPaymentCard');
+    this.isAddNew=true;
+  }
+  registerPaymentCardWithBank() {
+    return this.p2pService.registerCardWithBank(this.userId).then(resp=>{
+      // this.redirectUrl = resp.data.action;
+      this.redirectForm.patchValue(resp.data)
+      this.form.nativeElement.submit();
+    });
   }
 }

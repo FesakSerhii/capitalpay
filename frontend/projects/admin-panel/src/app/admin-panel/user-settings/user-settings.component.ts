@@ -1,4 +1,4 @@
-import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
 import {UserService} from '../../service/user.service';
@@ -6,7 +6,6 @@ import {KycService} from '../../service/kyc.service';
 import {CurrencyService} from '../../service/currency.service';
 import {MassageModalComponent} from '../../../../../../common-blocks/massage-modal/massage-modal.component';
 import {PaymentsService} from '../../service/payments.service';
-import {Subscription} from 'rxjs';
 import {ExtValidators} from '../../../../../../src/app/validators/ext-validators';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {P2pService} from '../../service/p2p.service';
@@ -14,6 +13,7 @@ import {PaymentCardModalComponent} from '../../../../../../common-blocks/payment
 import {map, switchMap} from 'rxjs/operators';
 import {SortHelper} from '../../../../../../src/app/helper/sort-helper';
 import {SearchInputService} from '../../../../../../src/app/service/search-input.service';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-user-settings',
@@ -23,27 +23,13 @@ import {SearchInputService} from '../../../../../../src/app/service/search-input
 export class UserSettingsComponent implements OnInit {
   @ViewChild('massageModal', {static: false}) massageModal: MassageModalComponent;
   @ViewChild('paymentCard', {static: false}) paymentCard: PaymentCardModalComponent;
+  @ViewChild('form') form: ElementRef;
 
-  constructor(private router: Router,
-              private userService: UserService,
-              private activatedRoute: ActivatedRoute,
-              private currencyService: CurrencyService,
-              private paymentsService: PaymentsService,
-              private modalService: NgbModal,
-              private p2pService: P2pService,
-              private searchInputService: SearchInputService,
-              private kycService: KycService) {
-  }
-
-// {
-//   "id":18,
-//   "password":"blablabla",
-//   "email":"user125@gmail.com",
-//   "phone":"+77096384345",
-//   "realname":"Федоров Михаил",
-//   "active": true,
-//   "blocked": false,
-// }
+  redirectForm = new FormGroup({
+    xml: new FormControl(),
+    backLink: new FormControl(),
+    postLink: new FormControl(),
+  });
   userInfoForm = new FormGroup({
     id: new FormControl(),
     password: new FormControl(),
@@ -127,6 +113,16 @@ export class UserSettingsComponent implements OnInit {
   tableSearch = new FormControl();
   errStatusMassage: string = null;
 
+  constructor(private router: Router,
+              private userService: UserService,
+              private activatedRoute: ActivatedRoute,
+              private currencyService: CurrencyService,
+              private paymentsService: PaymentsService,
+              private modalService: NgbModal,
+              private p2pService: P2pService,
+              private searchInputService: SearchInputService,
+              private kycService: KycService) {
+  }
 
   ngOnInit(): void {
     this.activatedRoute.queryParamMap.subscribe((param) => {
@@ -139,8 +135,10 @@ export class UserSettingsComponent implements OnInit {
     this.isEditMode = false;
     this.isP2PActive.valueChanges.subscribe(v => {
       if (v && !this.defaultPaymentCard) {
-        this.addMerchantPaymentCard()
+        console.log('D');
+        this[environment['cardRegisterModalFn']]()
       } else if (this.defaultPaymentCard) {
+        console.log('F');
         this.setMerchantP2p(v)
       }
     })
@@ -410,8 +408,6 @@ export class UserSettingsComponent implements OnInit {
     }
   }
 
-  saveButton
-
   addCashBoxPaymentCard(cashBox) {
     this.paymentCard.open().then(card => {
       if (card.hasOwnProperty('token')) {
@@ -437,7 +433,13 @@ export class UserSettingsComponent implements OnInit {
       console.log(card.cardNumber === this.defaultPaymentCard);
     })
   }
+  addMerchantPaymentCardWithBank(){
+    return this.p2pService.registerCardWithBank(this.userId).then(resp=>{
+      this.redirectForm.patchValue(resp.data)
+      this.form.nativeElement.submit();
+    });;
 
+  }
   addMerchantPaymentCard() {
     this.paymentCard.open().then(modalResult => {
         if (modalResult.hasOwnProperty('token')) {

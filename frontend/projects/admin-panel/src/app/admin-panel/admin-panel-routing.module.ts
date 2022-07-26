@@ -13,6 +13,7 @@ import {ChatComponent} from './chat/chat.component';
 import {DocumentsLayoutsComponent} from './documents-layouts/documents-layouts.component';
 import {DocumentLayoutsEditorComponent} from './document-layouts-editor/document-layouts-editor.component';
 import {TransactionsRegistryComponent} from '../../../../../common-blocks/transactions-log/transactions-registry/transactions-registry.component';
+import {CardCheckComponent} from "./card-check/card-check.component";
 
 
 const routes: Routes = [
@@ -67,6 +68,14 @@ const routes: Routes = [
       {
         path: 'documents-layouts/editor',
         component: DocumentLayoutsEditorComponent
+      },
+      {
+        path: 'card-check',
+        component: CardCheckComponent
+      },
+      {
+        path: 'card-err',
+        component: CardCheckComponent
       },
     ]
   },
