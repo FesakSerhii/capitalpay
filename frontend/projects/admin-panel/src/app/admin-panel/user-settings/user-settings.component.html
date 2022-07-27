@@ -369,7 +369,7 @@
     </div>
   </div>
 </div>
-<form #form [formGroup]="redirectForm" action="https://testpay.kkb.kz/jsp/hbpay/logon.jsp"
+<form #form [formGroup]="redirectForm" [action]="this.redirectForm.value.action"
       METHOD="POST" id="SendOrder" hidden>
   <input hidden formControlName="xml" name="Signed_Order_B64" type="text"/>
   <input hidden formControlName="backLink" name="BackLink" type="text"/>

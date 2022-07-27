@@ -26,6 +26,7 @@ export class UserSettingsComponent implements OnInit {
   @ViewChild('form') form: ElementRef;
 
   redirectForm = new FormGroup({
+    action: new FormControl(),
     xml: new FormControl(),
     backLink: new FormControl(),
     postLink: new FormControl(),
@@ -436,7 +437,7 @@ export class UserSettingsComponent implements OnInit {
   addMerchantPaymentCardWithBank(){
     return this.p2pService.registerCardWithBank(this.userId).then(resp=>{
       this.redirectForm.patchValue(resp.data)
-      this.form.nativeElement.submit();
+      setTimeout(() => this.form.nativeElement.submit(), 20);
     });;
 
   }
