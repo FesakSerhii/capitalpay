@@ -1,0 +1,11 @@
+<div class="tab-pane card">
+  <ng-scrollbar class="calc400" [visibility]="'always'">
+    <p class="awaiting-massage" *ngIf="!isError">
+      ожидание подтверждения банка
+    </p>
+    <p class="awaiting-massage" *ngIf="isError">
+      во время подтверждения произошла ошибка, вы будете возвращены на страницу настроек через {{counter}}
+    </p>
+    <div class="loader" *ngIf="!isError"></div>
+  </ng-scrollbar>
+</div>

@@ -6,7 +6,9 @@ export const environment = {
   production: false,
   api: 'https://api.capitalpay.kz/api/v1/auth',
   apiV1: 'https://api.capitalpay.kz/api/v1',
-  login: 'https://api.capitalpay.kz'
+  login: 'https://api.capitalpay.kz',
+  cardRegisterFn: 'registerPaymentCardWithBank',
+  cardRegisterModalFn: 'addMerchantPaymentCardWithBank',
 };
 
 /*
