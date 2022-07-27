@@ -430,7 +430,8 @@ public class HalykSoapService {
         LOGGER.info("p2pXml {}", p2pXml);
         String encodedXml = Base64.getEncoder().encodeToString(p2pXml.getBytes());
         ResponseEntity<String> response = restTemplate.postForEntity(
-                "https://testpay.kkb.kz/jsp/hbpay/cid2cid.jsp?Signed_Order_B64=".concat(encodedXml),
+//                "https://testpay.kkb.kz/jsp/hbpay/cid2cid.jsp?Signed_Order_B64=".concat(encodedXml),
+                "https://epay.kkb.kz/jsp/hbpay/cid2cid.jsp?Signed_Order_B64=".concat(encodedXml),
                 null, String.class);
         LOGGER.info("p2p response {}", response.getBody());
 
@@ -1122,11 +1123,13 @@ public class HalykSoapService {
                         "</order>" +
                         "</merchant>",
 
-                testCertificateId,
+//                testCertificateId,
+                merchantCertificate,
                 merchantName,
                 orderId,
                 currencyCode,
-                testTerminalId,
+//                testTerminalId,
+                merchantIdEpay,
                 serviceMerchantId,
                 isMerchantCard
         );
@@ -1181,13 +1184,16 @@ public class HalykSoapService {
                         "/>" +
                         "</merchant>",
 
-                testCertificateId,
+//                testCertificateId,
+                merchantCertificate,
                 merchantName,
-                testTerminalId,
+//                testTerminalId,
+                merchantIdP2p,
                 orderId,
                 amountStr,
                 currencyCode,
-                testTerminalId,
+//                testTerminalId,
+                merchantIdEpay,
                 serviceMerchantId,
                 serviceMerchantId,
                 cardIdFrom,
@@ -1243,10 +1249,13 @@ public class HalykSoapService {
                         "ordertime=\"%s\"/>" +
                         "</merchant>",
 
-                testCertificateId,
+//                testCertificateId,
+                merchantCertificate,
                 merchantName,
-                testTerminalId,
-                testTerminalId,
+//                testTerminalId,
+                merchantIdP2p,
+//                testTerminalId,
+                merchantIdEpay,
                 cardIdTo,
                 serviceMerchantId,
                 orderId,
