@@ -199,7 +199,8 @@ public class UserCardService {
             result.put("FailureBackLink", failureBackLink);
         }
         result.put("postLink", "https://api.capitalpay.kz/api/save-card-link");
-        result.put("action", "https://testpay.kkb.kz/jsp/hbpay/logon.jsp");
+//        result.put("action", "https://testpay.kkb.kz/jsp/hbpay/logon.jsp");
+        result.put("action", "https://epay.kkb.kz/jsp/hbpay/logon.jsp");
         return new ResultDTO(true, result, 0);
     }
 
