@@ -63,6 +63,7 @@ public class SimpleService {
     // Payment Status
     public static final String NEW_PAYMENT = "NEW";
     public static final String SUCCESS = "SUCCESS";
+    public static final String SAVE_BANK_CARD = "SAVE_BANK_CARD";
     public static final String FAILED = "FAILED";
     public static final String PENDING = "PENDING";
 

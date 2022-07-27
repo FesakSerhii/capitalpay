@@ -26,7 +26,8 @@ public class P2pSettingsController {
 
     @PostMapping("/get")
     public ResultDTO getP2pSettings(@RequestParam Long merchantId) {
-        return p2pSettingsService.getP2pSettingsByMerchantId(merchantId);
+//        return p2pSettingsService.getP2pSettingsByMerchantId(merchantId);
+        return p2pSettingsService.getBankP2pSettingsByMerchantId(merchantId);
     }
 
     @PostMapping("/set")

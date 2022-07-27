@@ -66,19 +66,22 @@ public class CashboxController {
     @PostMapping("/set-card")
     @RolesAllowed({ADMIN})
     public ResultDTO setCashBoxCard(@RequestBody @Valid SetCashBoxCardDto dto) {
-        return cashboxService.setCashBoxCard(dto);
+//        return cashboxService.setCashBoxCard(dto);
+        return cashboxService.setBankCashBoxCard(dto);
     }
 
     @PostMapping("/get-p2p-settings")
     @RolesAllowed({ADMIN})
     public ResultDTO getP2pSettings(@RequestParam Long cashBoxId) {
-        return cashboxService.getCashBoxP2pSettings(cashBoxId);
+//        return cashboxService.getCashBoxP2pSettings(cashBoxId);
+        return cashboxService.getBankCashBoxP2pSettings(cashBoxId);
     }
 
     @PostMapping("/set-p2p-settings")
     @RolesAllowed({ADMIN})
     public ResultDTO setP2pSettings(@RequestBody @Valid SetCashBoxP2pSettingsDto dto) {
-        return cashboxService.setCashBoxP2pSettings(dto);
+//        return cashboxService.setCashBoxP2pSettings(dto);
+        return cashboxService.setBankCashBoxP2pSettings(dto);
     }
 
 
