@@ -11,6 +11,12 @@ export class P2pService {
   registerCard(cardNumber,expireYear,expireMonth,cvv2Code,merchantId) {
     return this.apiService.post('api','/user-card/register', {cardNumber,expireYear,expireMonth,cvv2Code,merchantId})
   }
+  registerCardWithBank(merchantId) {
+    return this.apiService.post('api','/user-card/register-with-bank',{merchantId}).toPromise()
+  }
+  bankCheckValidity(orderId) {
+    return this.apiService.post('api',`/user-card/check-validation/${orderId}`)
+  }
   cardCheckValidity(cardId) {
     return this.apiService.post('api',`/user-card/check-validity/${cardId}`).toPromise();
   }

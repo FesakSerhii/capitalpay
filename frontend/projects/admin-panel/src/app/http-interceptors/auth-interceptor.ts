@@ -33,9 +33,11 @@ export class AuthInterceptor implements HttpInterceptor {
         this.counter++;
 
         return next.handle(authReq).pipe(tap(
-            () => {
-                // this.spinnerService.hide();
-            },
+          (req:any) => {
+            if(!req?.body?.result&&req?.body&&req.type!==0){
+              this.massageServiceService.announceMassage('The problem has arisen, our specialists are already solving it')
+            }
+          },
             (err: any) => {
                 if (err instanceof HttpErrorResponse && err.status === 404) {
                   this.massageServiceService.announceMassage(err.statusText)

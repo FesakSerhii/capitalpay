@@ -56,7 +56,7 @@
     right: 0;
     z-index: 10;">
                 <a href="#" style="color: black" (click)="$event.preventDefault();deleteCashBox()">Удалить</a>
-                <a href="#" style="color: black" (click)="$event.preventDefault();cashBoxMenuOpened=!cashBoxMenuOpened;getCurrencies();cashBoxEditOpened = true">Настройки кассы</a>
+                <a href="#" style="color: black" (click)="$event.preventDefault();cashBoxMenuOpened=!cashBoxMenuOpened;getCurrencies();">Настройки кассы</a>
                 <a href="#" style="color: black" (click)="$event.preventDefault();cashBoxMenuOpened=!cashBoxMenuOpened">Вывести баланс</a>
               </div>
             </div>
@@ -130,7 +130,7 @@
               <form [formGroup]="paymentMethodsForm" >
                 <div class="togglebutton" *ngFor="let paymentMethod of paymentMethods">
                   <label>
-                    <input [class.error]="isInvalid(paymentMethodsForm,paymentMethod.name)" type="checkbox" [formControlName]="paymentMethod.name">
+                    <input [class.error]="isInvalid(paymentMethodsForm,paymentMethod.id)" type="checkbox" [formControlName]="paymentMethod.id">
                     <span class="toggle"></span>
                     {{paymentMethod.name}}
                   </label>

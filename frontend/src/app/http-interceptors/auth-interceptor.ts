@@ -3,7 +3,7 @@ import {
   HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse
 } from '@angular/common/http';
 
-import {Observable} from 'rxjs';
+import {Observable, throwError} from 'rxjs';
 import {finalize, tap} from 'rxjs/operators';
 import {Router} from '@angular/router';
 import {AuthService} from '../service/auth.service';
@@ -33,11 +33,13 @@ export class AuthInterceptor implements HttpInterceptor {
     }
     this.counter++;
     return next.handle(authReq).pipe(tap(
-      () => {
-        // this.spinnerService.hide();
+      (req:any) => {
+        if(!req?.body?.result&&req?.body&&req.type!==0){
+          this.massageServiceService.announceMassage('The problem has arisen, our specialists are already solving it')
+        }
       },
       (err: any) => {
-          if (err instanceof HttpErrorResponse && err.status === 404) {
+        if (err instanceof HttpErrorResponse && err.status === 404) {
             this.massageServiceService.announceMassage(err.statusText)
           } else if (err instanceof HttpErrorResponse && err.status === 403) {
             this.auth.tokenStateChange.next(false);

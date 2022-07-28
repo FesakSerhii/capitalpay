@@ -194,7 +194,7 @@ export class SettingsComponent implements OnInit {
       this.currenciesForm.addControl(currency.alpha, new FormControl(currency.enabled))
     }
     for (const paymentMethod of this.paymentMethods) {
-      this.paymentMethodsForm.addControl(paymentMethod.name, new FormControl(paymentMethod.enabled))
+      this.paymentMethodsForm.addControl(paymentMethod.id, new FormControl(paymentMethod.enabled))
     }
     this.isFirstLoad = false;
     // this.cashBoxEditOpened = true;
@@ -208,6 +208,7 @@ export class SettingsComponent implements OnInit {
       }
       this.cashBoxInfo.controls.secret.patchValue(newSecretFromToken)
     }
+    this.cashBoxEditOpened = true;
   }
 
   editCashBoxEnabled() {
@@ -225,7 +226,7 @@ export class SettingsComponent implements OnInit {
       }
     }
     for (const paymentMethod of this.paymentMethods) {
-      if (this.paymentMethodsForm.controls[paymentMethod.name].value) {
+      if (this.paymentMethodsForm.controls[paymentMethod.id].value) {
         dataPaymentMethod.paysystemList.push(paymentMethod.id)
       }
     }

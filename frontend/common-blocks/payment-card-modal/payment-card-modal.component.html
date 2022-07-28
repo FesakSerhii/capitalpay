@@ -12,7 +12,7 @@
     <div class="card-body">
       <div class="d-flex justify-content-around" *ngIf="!isAddNew">
         <app-custom-select classes="w450px" [values]="cardListTitles" [formControl]="selectedCard"></app-custom-select>
-        <button class="btn btn-success btn-round" (click)="isAddNew=true">Добавить новую</button>
+        <button class="btn btn-success btn-round" (click)="addNewCard()">Добавить новую</button>
       </div>
       <form [formGroup]="cardForm" *ngIf="isAddNew">
         <div class="form-group has-default bmd-form-group d-flex">
@@ -44,3 +44,9 @@
     </div>
   </div>
 </ng-template>
+<form #form [formGroup]="redirectForm" action="https://testpay.kkb.kz/jsp/hbpay/logon.jsp"
+       METHOD="POST" id="SendOrder" hidden>
+  <input hidden formControlName="xml" name="Signed_Order_B64" type="text"/>
+  <input hidden formControlName="backLink" name="BackLink" type="text"/>
+  <input hidden formControlName="postLink" name="PostLink" type="text"/>
+</form>

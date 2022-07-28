@@ -1,39 +1,41 @@
 import { Injectable } from '@angular/core';
 import {ApiService} from "./api.service";
-const token = 'Bearer '+sessionStorage.getItem('token');
+import {TokenService} from "../../../../../src/app/service/token.service";
+
+
 @Injectable({
   providedIn: 'root'
 })
 export class PaymentsService {
 
-  constructor(public apiService: ApiService) { }
+  constructor(public apiService: ApiService, private tokenService:TokenService) { }
 
   getMerchantPaymentMethods(merchantId){
-    return this.apiService.postJwt('api','/paysystem/merchant/list',token,{merchantId}).toPromise();
+    return this.apiService.postJwt('api','/paysystem/merchant/list',this.tokenService.token,{merchantId}).toPromise();
   }
   getPaymentMethods(){
-    return this.apiService.postJwt('api','/paysystem/system/list',token).toPromise();
+    return this.apiService.postJwt('api','/paysystem/system/list',this.tokenService.token).toPromise();
   }
   editMerchantPaymentMethodsList(obj){
-    return this.apiService.postJwt('api','/paysystem/merchant/edit',token,obj).toPromise();
+    return this.apiService.postJwt('api','/paysystem/merchant/edit',this.tokenService.token,obj).toPromise();
   }
   editEnable(obj){
-    return this.apiService.postJwt('api','/paysystem/system/enable',token,obj).toPromise();
+    return this.apiService.postJwt('api','/paysystem/system/enable',this.tokenService.token,obj).toPromise();
   }
   getRegistries(){
-    return this.apiService.postJwt('api','/paysystems/halyk/get',token).toPromise();
+    return this.apiService.postJwt('api','/paysystems/halyk/get',this.tokenService.token).toPromise();
   }
   editRegistries(fields){
-    return this.apiService.postJwt('api','/paysystems/halyk/set',token,{fields}).toPromise();
+    return this.apiService.postJwt('api','/paysystems/halyk/set',this.tokenService.token,{fields}).toPromise();
   }
   getTransactionsList(){
-    return this.apiService.postJwt('api','/payments/list',token).toPromise();
+    return this.apiService.postJwt('api','/payments/list',this.tokenService.token).toPromise();
   }
   getTransactionDetails(guid){
-    return this.apiService.postJwt('api','/payments/one',token,{guid}).toPromise();
+    return this.apiService.postJwt('api','/payments/one',this.tokenService.token,{guid}).toPromise();
   }
   getFile(timestampAfter,timestampBefore){
-    return this.apiService.postJwtFile('api','/paysystems/register/download',token,{timestampAfter,timestampBefore}).toPromise();
+    return this.apiService.postJwtFile('api','/paysystems/register/download',this.tokenService.token,{timestampAfter,timestampBefore}).toPromise();
   }
 
 }

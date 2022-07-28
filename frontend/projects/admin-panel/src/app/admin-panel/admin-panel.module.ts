@@ -19,11 +19,12 @@ import {NgbDateParserFormatter, NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {NgbDateCustomParserFormatter} from '../../../../../common-blocks/ngb-date-custom-parser-formatter';
 import {CKEditorModule} from '@ckeditor/ckeditor5-angular';
 import {TranslateModule} from '@ngx-translate/core';
+import { CardCheckComponent } from './card-check/card-check.component';
 // import { CKEditorModule } from '@ckeditor/ckeditor5-build-classic';
 
 
 @NgModule({
-  declarations: [DashboardComponent, SettingsComponent, HelpComponent, CurrenciesComponent, PaymentMethodsComponent, UserComponent, UserSettingsComponent, ChatComponent, DocumentsLayoutsComponent, DocumentLayoutsEditorComponent],
+  declarations: [DashboardComponent, SettingsComponent, HelpComponent, CurrenciesComponent, PaymentMethodsComponent, UserComponent, UserSettingsComponent, ChatComponent, DocumentsLayoutsComponent, DocumentLayoutsEditorComponent, CardCheckComponent],
     imports: [
         CommonModule,
         AdminPanelRoutingModule,
