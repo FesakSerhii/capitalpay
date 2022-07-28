@@ -422,6 +422,7 @@ public class HalykSoapService {
 
     public String sendSavedCardsP2p(String ipAddress, String userAgent, String cardFromId, SendP2pToClientDto dto,
                                     String cardToId, boolean toClient) {
+        LOGGER.info("sendSavedCardsP2p()");
         Payment payment = p2pPaymentService.generateP2pPayment(ipAddress, userAgent, dto.getMerchantId(),
                 dto.getAcceptedSum(), dto.getCashBoxId(), toClient, currency, dto.getParam());
 
@@ -429,9 +430,12 @@ public class HalykSoapService {
                 cardFromId, cardToId, dto.getAcceptedSum());
         LOGGER.info("p2pXml {}", p2pXml);
         String encodedXml = Base64.getEncoder().encodeToString(p2pXml.getBytes());
+        String url = "https://epay.kkb.kz/jsp/hbpay/cid2cid.jsp";
+//        String url = "https://testpay.kkb.kz/jsp/hbpay/cid2cid.jsp";
+        LOGGER.info("send p2p url {}", url);
         ResponseEntity<String> response = restTemplate.postForEntity(
-//                "https://testpay.kkb.kz/jsp/hbpay/cid2cid.jsp?Signed_Order_B64=".concat(encodedXml),
-                "https://epay.kkb.kz/jsp/hbpay/cid2cid.jsp?Signed_Order_B64=".concat(encodedXml),
+//                "?Signed_Order_B64=".concat(encodedXml),
+                url.concat("?Signed_Order_B64=").concat(encodedXml),
                 null, String.class);
         LOGGER.info("p2p response {}", response.getBody());
 
