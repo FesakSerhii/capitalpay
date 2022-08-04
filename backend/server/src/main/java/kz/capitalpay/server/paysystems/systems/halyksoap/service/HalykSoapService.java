@@ -49,6 +49,9 @@ public class HalykSoapService {
     @Value("${halyk.soap.merchant.id.epay}")
     String merchantIdEpay;
 
+    @Value("${halyk.soap.merchant.id.bank.p2p}")
+    String merchantIdBankP2p;
+
     @Value("${halyk.soap.merchant.id.p2p}")
     String merchantIdP2p;
 
@@ -430,8 +433,8 @@ public class HalykSoapService {
                 cardFromId, cardToId, dto.getAcceptedSum());
         LOGGER.info("p2pXml {}", p2pXml);
         String encodedXml = Base64.getEncoder().encodeToString(p2pXml.getBytes());
-        String url = "https://epay.kkb.kz/jsp/hbpay/cid2cid.jsp";
-//        String url = "https://testpay.kkb.kz/jsp/hbpay/cid2cid.jsp";
+//        String url = "https://epay.kkb.kz/jsp/hbpay/cid2cid.jsp";
+        String url = "https://testpay.kkb.kz/jsp/hbpay/cid2cid.jsp";
         LOGGER.info("send p2p url {}", url);
         ResponseEntity<String> response = restTemplate.postForEntity(
 //                "?Signed_Order_B64=".concat(encodedXml),
@@ -1127,13 +1130,13 @@ public class HalykSoapService {
                         "</order>" +
                         "</merchant>",
 
-//                testCertificateId,
-                merchantCertificate,
+                testCertificateId,
+//                merchantCertificate,
                 merchantName,
                 orderId,
                 currencyCode,
-//                testTerminalId,
-                merchantIdEpay,
+                testTerminalId,
+//                merchantIdEpay,
                 serviceMerchantId,
                 isMerchantCard
         );
@@ -1188,16 +1191,17 @@ public class HalykSoapService {
                         "/>" +
                         "</merchant>",
 
-//                testCertificateId,
-                merchantCertificate,
+                testCertificateId,
+//                merchantCertificate,
                 merchantName,
-//                testTerminalId,
-                merchantIdP2p,
+                testTerminalId,
+//                merchantIdP2p,
+//                merchantIdBankP2p,
                 orderId,
                 amountStr,
                 currencyCode,
-//                testTerminalId,
-                merchantIdEpay,
+                testTerminalId,
+//                merchantIdEpay,
                 serviceMerchantId,
                 serviceMerchantId,
                 cardIdFrom,
@@ -1253,13 +1257,13 @@ public class HalykSoapService {
                         "ordertime=\"%s\"/>" +
                         "</merchant>",
 
-//                testCertificateId,
-                merchantCertificate,
+                testCertificateId,
+//                merchantCertificate,
                 merchantName,
-//                testTerminalId,
-                merchantIdP2p,
-//                testTerminalId,
-                merchantIdEpay,
+                testTerminalId,
+//                merchantIdP2p,
+                testTerminalId,
+//                merchantIdEpay,
                 cardIdTo,
                 serviceMerchantId,
                 orderId,

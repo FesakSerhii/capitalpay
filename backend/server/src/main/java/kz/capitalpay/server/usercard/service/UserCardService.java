@@ -199,8 +199,8 @@ public class UserCardService {
             result.put("FailureBackLink", failureBackLink);
         }
         result.put("postLink", "https://api.capitalpay.kz/api/save-card-link");
-//        result.put("action", "https://testpay.kkb.kz/jsp/hbpay/logon.jsp");
-        result.put("action", "https://epay.kkb.kz/jsp/hbpay/logon.jsp");
+        result.put("action", "https://testpay.kkb.kz/jsp/hbpay/logon.jsp");
+//        result.put("action", "https://epay.kkb.kz/jsp/hbpay/logon.jsp");
         return new ResultDTO(true, result, 0);
     }
 
@@ -597,11 +597,11 @@ public class UserCardService {
     public void sendTestP2p() {
         Payment payment = paymentService.generateSaveBankCardPayment();
         String p2pXml = halykSoapService.createP2pXml(payment.getPaySysPayId(), 663L,
-                "900000028519", "900000028518", new BigDecimal("100.00"));
+                "800001320650", "900004624383", new BigDecimal("100.00"));
         LOGGER.info("p2pXml {}", p2pXml);
         String encodedXml = Base64.getEncoder().encodeToString(p2pXml.getBytes());
         ResponseEntity<String> response = restTemplate.postForEntity(
-                "https://testpay.kkb.kz/jsp/hbpay/cid2cid.jsp?Signed_Order_B64=".concat(encodedXml),
+                "https://epay.kkb.kz/jsp/hbpay/cid2cid.jsp?Signed_Order_B64=".concat(encodedXml),
                 null, String.class);
         LOGGER.info("p2p response {}", response.getBody());
     }
