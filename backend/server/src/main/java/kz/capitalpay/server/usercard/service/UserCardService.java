@@ -84,8 +84,7 @@ public class UserCardService {
 //            return ErrorDictionary.error134;
 //        }
 
-        ResponseEntity<String> response = restTemplate.postForEntity(cardHoldingUrl + "/card-data/register",
-                dto, String.class);
+        ResponseEntity<String> response = restTemplate.postForEntity(cardHoldingUrl + "/card-data/register", dto, String.class);
         String token = response.getBody();
         if (Objects.isNull(token) || token.trim().isEmpty()) {
             return ErrorDictionary.CARD_REGISTRATION_ERROR;
@@ -111,11 +110,7 @@ public class UserCardService {
         userCardFromBank.setToken(UUID.randomUUID().toString());
         userBankCardRepository.save(userCardFromBank);
         String saveCardXml = halykSoapService.createSaveCardXml(payment.getPaySysPayId(), merchantId, true);
-        return registerCardFromBank(saveCardXml, null,
-                REGISTER_MERCHANT_CARD_REDIRECT_URL.concat(String.format(
-                        "?userId=%s&orderId=%s", merchantId, payment.getPaySysPayId())),
-                REGISTER_MERCHANT_CARD_ERR_URL
-        );
+        return registerCardFromBank(saveCardXml, null, REGISTER_MERCHANT_CARD_REDIRECT_URL.concat(String.format("?userId=%s&orderId=%s", merchantId, payment.getPaySysPayId())), REGISTER_MERCHANT_CARD_ERR_URL);
     }
 
     public ResultDTO registerClientCardWithBank(Long merchantId, Long cashBoxId, String params) {
@@ -185,8 +180,7 @@ public class UserCardService {
         sendClientCardDataToMerchant(clientCardFromBank);
     }
 
-    private ResultDTO registerCardFromBank(String saveCardXml, Map<String, String> resultUrls,
-                                           String backLink, String failureBackLink) {
+    private ResultDTO registerCardFromBank(String saveCardXml, Map<String, String> resultUrls, String backLink, String failureBackLink) {
         LOGGER.info("saveCardXml {}", saveCardXml);
         String encodedXml = Base64.getEncoder().encodeToString(saveCardXml.getBytes());
         Map<String, String> result = new HashMap<>();
@@ -263,8 +257,7 @@ public class UserCardService {
             return ErrorDictionary.P2P_IS_NOT_ALLOWED;
         }
 
-        ResponseEntity<String> response = restTemplate.postForEntity(cardHoldingUrl + "/card-data/register",
-                dto, String.class);
+        ResponseEntity<String> response = restTemplate.postForEntity(cardHoldingUrl + "/card-data/register", dto, String.class);
         String token = response.getBody();
         if (Objects.isNull(token) || token.trim().isEmpty()) {
             return ErrorDictionary.CARD_REGISTRATION_ERROR;
@@ -350,10 +343,7 @@ public class UserCardService {
         }
 
         final Long oldDefaultCardId = merchantP2pSettings.getDefaultCardId();
-        List<Cashbox> merchantCashBoxesWithDefaultCard = cashboxRepository.findByMerchantIdAndDeletedFalse(dto.getMerchantId())
-                .stream()
-                .filter(x -> x.getUserCardId().equals(oldDefaultCardId))
-                .collect(Collectors.toList());
+        List<Cashbox> merchantCashBoxesWithDefaultCard = cashboxRepository.findByMerchantIdAndDeletedFalse(dto.getMerchantId()).stream().filter(x -> x.getUserCardId().equals(oldDefaultCardId)).collect(Collectors.toList());
 
         List<Cashbox> cashBoxesWithNewDefaultCard = cashboxRepository.findByMerchantIdAndUserCardIdAndDeletedFalse(dto.getMerchantId(), dto.getCardId());
         cashBoxesWithNewDefaultCard.forEach(x -> x.setUseDefaultCard(true));
@@ -387,10 +377,7 @@ public class UserCardService {
         }
 
         final Long oldDefaultCardId = merchantP2pSettings.getDefaultCardId();
-        List<Cashbox> merchantCashBoxesWithDefaultCard = cashboxRepository.findByMerchantIdAndDeletedFalse(dto.getMerchantId())
-                .stream()
-                .filter(x -> x.getUserCardId().equals(oldDefaultCardId))
-                .collect(Collectors.toList());
+        List<Cashbox> merchantCashBoxesWithDefaultCard = cashboxRepository.findByMerchantIdAndDeletedFalse(dto.getMerchantId()).stream().filter(x -> x.getUserCardId().equals(oldDefaultCardId)).collect(Collectors.toList());
 
         List<Cashbox> cashBoxesWithNewDefaultCard = cashboxRepository.findByMerchantIdAndUserCardIdAndDeletedFalse(dto.getMerchantId(), dto.getCardId());
         cashBoxesWithNewDefaultCard.forEach(x -> x.setUseDefaultCard(true));
@@ -510,7 +497,7 @@ public class UserCardService {
         if (Objects.isNull(userCardFromBank)) {
             return ErrorDictionary.CARD_NOT_FOUND;
         }
-        return new ResultDTO(true, userCardFromBank.isValid(), 0);
+        return new ResultDTO(true, userCardFromBank, 0);
     }
 
     private void setDefaultCashBoxCard(UserCard userCard) {
@@ -539,8 +526,7 @@ public class UserCardService {
             Map<String, Object> requestJson = new HashMap<>();
             requestJson.put("type", "registerClientCard");
             requestJson.put("data", detailsJson);
-            String response = restTemplate.postForObject(interactionUrl,
-                    requestJson, String.class, java.util.Optional.ofNullable(null));
+            String response = restTemplate.postForObject(interactionUrl, requestJson, String.class, java.util.Optional.ofNullable(null));
             LOGGER.info(response);
         } catch (Exception e) {
             e.printStackTrace();
@@ -555,8 +541,7 @@ public class UserCardService {
             Map<String, Object> requestJson = new HashMap<>();
             requestJson.put("type", "registerClientCard");
             requestJson.put("data", detailsJson);
-            String response = restTemplate.postForObject(interactionUrl,
-                    requestJson, String.class, java.util.Optional.ofNullable(null));
+            String response = restTemplate.postForObject(interactionUrl, requestJson, String.class, java.util.Optional.ofNullable(null));
             LOGGER.info(response);
         } catch (Exception e) {
             e.printStackTrace();
@@ -596,20 +581,16 @@ public class UserCardService {
 
     public void sendTestP2p() {
         Payment payment = paymentService.generateSaveBankCardPayment();
-        String p2pXml = halykSoapService.createP2pXml(payment.getPaySysPayId(), 663L,
-                "800001320650", "900004624383", new BigDecimal("100.00"));
+        String p2pXml = halykSoapService.createP2pXml(payment.getPaySysPayId(), 663L, "800001320650", "900004624383", new BigDecimal("100.00"));
         LOGGER.info("p2pXml {}", p2pXml);
         String encodedXml = Base64.getEncoder().encodeToString(p2pXml.getBytes());
-        ResponseEntity<String> response = restTemplate.postForEntity(
-                "https://epay.kkb.kz/jsp/hbpay/cid2cid.jsp?Signed_Order_B64=".concat(encodedXml),
-                null, String.class);
+        ResponseEntity<String> response = restTemplate.postForEntity("https://epay.kkb.kz/jsp/hbpay/cid2cid.jsp?Signed_Order_B64=".concat(encodedXml), null, String.class);
         LOGGER.info("p2p response {}", response.getBody());
     }
 
     public ResultDTO sendAnonymousTestP2p() {
         Payment payment = paymentService.generateSaveBankCardPayment();
-        String p2pXml = halykSoapService.createAnonymousP2pXml(payment.getPaySysPayId(), 663L,
-                "900000028519", new BigDecimal("100.00"));
+        String p2pXml = halykSoapService.createAnonymousP2pXml(payment.getPaySysPayId(), 663L, "900000028519", new BigDecimal("100.00"));
         LOGGER.info("p2pXml {}", p2pXml);
 
         String encodedXml = Base64.getEncoder().encodeToString(p2pXml.getBytes());

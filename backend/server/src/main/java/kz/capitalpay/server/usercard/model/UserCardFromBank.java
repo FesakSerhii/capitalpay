@@ -1,5 +1,7 @@
 package kz.capitalpay.server.usercard.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -12,6 +14,7 @@ public class UserCardFromBank {
     private Long userId;
     @Column(columnDefinition = "boolean default false")
     private boolean valid;
+    @JsonIgnore
     @Column(columnDefinition = "boolean default false")
     private boolean deleted;
     private String orderId;

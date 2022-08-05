@@ -18,8 +18,8 @@ import javax.validation.Valid;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
 
 @Controller
-@RequestMapping(value = "/api/v1/auth/user-card", produces = "application/json;charset=UTF-8")
-//@RequestMapping(value = "/api/user-card", produces = "application/json;charset=UTF-8")
+//@RequestMapping(value = "/api/v1/auth/user-card", produces = "application/json;charset=UTF-8")
+@RequestMapping(value = "/api/user-card", produces = "application/json;charset=UTF-8")
 public class UserCardController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserCardController.class);
@@ -38,7 +38,7 @@ public class UserCardController {
     }
 
     @ResponseBody
-    @RolesAllowed({ADMIN})
+//    @RolesAllowed({ADMIN})
     @PostMapping("/register-with-bank")
     public ResultDTO registerUserCardWithBank(@RequestBody @Valid RegisterMerchantCardWithBankDto dto) {
         return userCardService.registerMerchantCardWithBank(dto.getMerchantId());
