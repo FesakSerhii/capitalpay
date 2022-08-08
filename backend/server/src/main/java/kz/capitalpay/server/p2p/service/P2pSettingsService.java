@@ -31,12 +31,13 @@ public class P2pSettingsService {
         this.userBankCardRepository = userBankCardRepository;
     }
 
-    public void createMerchantP2pSettings(Long merchantId, Long cardId) {
+    public MerchantP2pSettings createMerchantP2pSettings(Long merchantId, Long cardId) {
         MerchantP2pSettings merchantP2pSettings = new MerchantP2pSettings();
         merchantP2pSettings.setDefaultCardId(cardId);
         merchantP2pSettings.setP2pAllowed(false);
         merchantP2pSettings.setUserId(merchantId);
-        p2pSettingsRepository.save(merchantP2pSettings);
+        merchantP2pSettings = p2pSettingsRepository.save(merchantP2pSettings);
+        return merchantP2pSettings;
     }
 
     public boolean existsByMerchantId(Long merchantId) {

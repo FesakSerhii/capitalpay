@@ -155,6 +155,7 @@ public class UserCardService {
     }
 
     private void setUserCardFromBankData(HalykSaveCardOrder halykSaveCardOrder) {
+        LOGGER.info("setUserCardFromBankData()");
         UserCardFromBank userCardFromBank = userBankCardRepository.findByOrderId(halykSaveCardOrder.getOrderId()).orElse(null);
         if (Objects.isNull(userCardFromBank)) {
             LOGGER.info("userCardFromBank is NULL");
@@ -165,14 +166,16 @@ public class UserCardService {
         userCardFromBank.setCardNumber(maskCardFromBank(halykSaveCardOrder.getCardHash()));
         userBankCardRepository.save(userCardFromBank);
         setDefaultBankCashBoxCard(userCardFromBank);
-        if (!p2pSettingsService.existsByMerchantId(userCardFromBank.getUserId())) {
-            p2pSettingsService.createMerchantP2pSettings(userCardFromBank.getUserId(), userCardFromBank.getId());
+        MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(userCardFromBank.getUserId());
+        if (Objects.isNull(merchantP2pSettings)) {
+            merchantP2pSettings = p2pSettingsService.createMerchantP2pSettings(userCardFromBank.getUserId(), userCardFromBank.getId());
         }
-        P2pSettingsDto p2pSettingsDto = new P2pSettingsDto(false, userCardFromBank.getUserId());
+        P2pSettingsDto p2pSettingsDto = new P2pSettingsDto(merchantP2pSettings.isP2pAllowed(), userCardFromBank.getUserId());
         p2pSettingsService.setP2pSettings(p2pSettingsDto);
         if (Objects.nonNull(userCardFromBank.getCashBoxId())) {
             SetCashBoxCardDto setCashBoxCardDto = new SetCashBoxCardDto(userCardFromBank.getCashBoxId(), userCardFromBank.getId(), userCardFromBank.getUserId());
-            cashboxService.setBankCashBoxCard(setCashBoxCardDto);
+            ResultDTO resultDTO = cashboxService.setBankCashBoxCard(setCashBoxCardDto);
+            LOGGER.info("setBankCashBoxCard resultDTO {}", resultDTO);
         }
     }
 

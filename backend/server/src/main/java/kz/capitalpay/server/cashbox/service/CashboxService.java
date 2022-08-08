@@ -261,6 +261,7 @@ public class CashboxService {
     }
 
     public ResultDTO setBankCashBoxCard(SetCashBoxCardDto dto) {
+        logger.info("setBankCashBoxCard()");
         Optional<Cashbox> optionalCashBox = cashboxRepository.findById(dto.getCashBoxId());
         if (optionalCashBox.isEmpty()) {
             return ErrorDictionary.CASHBOX_NOT_FOUND;
