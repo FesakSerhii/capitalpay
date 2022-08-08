@@ -8,7 +8,6 @@ export const environment = {
   apiV1: 'https://api.capitalpay.kz/api/v1',
   login: 'https://api.capitalpay.kz',
   cardRegisterFn: 'registerPaymentCardWithBank',
-  cardRegisterModalFn: 'addMerchantPaymentCardWithBank',
 };
 
 /*

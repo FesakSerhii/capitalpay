@@ -46,7 +46,9 @@ export class PaymentCardModalComponent implements OnInit {
     xml: new FormControl(),
     backLink: new FormControl(),
     postLink: new FormControl(),
+    FailureBackLink: new FormControl(),
   });
+  action: string ='';
   selectedCard = new FormControl();
   cardListTitles:any=null;
   cardList: [
@@ -59,7 +61,7 @@ export class PaymentCardModalComponent implements OnInit {
   ];
   userId: number;
   yearsArr: number[] = [];
-  redirectUrl: any;
+  cashBox: any;
 
   async ngOnInit() {
     let currentYear = new Date().getFullYear();
@@ -91,7 +93,9 @@ export class PaymentCardModalComponent implements OnInit {
     this.isAddNew = !(this.cardList.length >= 2);
   }
 
-  open(): Promise<any> {
+  open(cashBox=null): Promise<any> {
+    console.log(cashBox);
+    this.cashBox = cashBox;
    return this.getCardList().then(()=>{
       this.modal = this.modalService.open(this.paymentCardModalRef,{backdrop:false});
       return this.modal.result;
@@ -131,14 +135,32 @@ export class PaymentCardModalComponent implements OnInit {
     this[environment['cardRegisterFn']]();
   }
   registerPaymentCard(){
-    console.log('registerPaymentCard');
     this.isAddNew=true;
   }
-  registerPaymentCardWithBank() {
-    return this.p2pService.registerCardWithBank(this.userId).then(resp=>{
-      // this.redirectUrl = resp.data.action;
-      this.redirectForm.patchValue(resp.data)
-      this.form.nativeElement.submit();
-    });
+  // registerPaymentCardWithBank() {
+  //   this.modal.close(this.cashBox);
+  //   this.cashBox = null;
+  // }
+  registerPaymentCardWithBank(cashBox=null) {
+    if(cashBox){
+      sessionStorage.setItem('user-settings', JSON.stringify({
+        cashBox: cashBox,
+        userId: this.userId
+      }))
+    }else{
+      sessionStorage.setItem('user-settings', JSON.stringify({
+        userId: this.userId
+      }))
+    }
+    // return this.p2pService.registerCardWithBank(this.userId,this.cashBox).then(resp=>{
+    //   this.redirectForm.patchValue(resp.data)
+    //   console.log(this.redirectForm.value);
+    //   setTimeout(() => this.form.nativeElement.submit(), 200);
+    // });
+       this.p2pService.registerCardWithBank(this.userId,this.cashBox).then(resp=>{
+        this.redirectForm.patchValue(resp.data)
+         this.form.nativeElement.action = resp.data.action;
+         this.form.nativeElement.submit()
+       });
   }
 }
