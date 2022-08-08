@@ -2,6 +2,7 @@ package kz.capitalpay.server.usercard.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kz.capitalpay.server.cashbox.dto.SetCashBoxCardDto;
 import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.cashbox.repository.CashboxRepository;
 import kz.capitalpay.server.cashbox.service.CashboxService;
@@ -107,6 +108,7 @@ public class UserCardService {
         UserCardFromBank userCardFromBank = new UserCardFromBank();
         userCardFromBank.setOrderId(payment.getPaySysPayId());
         userCardFromBank.setUserId(merchantId);
+        userCardFromBank.setCashBoxId(merchantId);
         userCardFromBank.setToken(UUID.randomUUID().toString());
         userBankCardRepository.save(userCardFromBank);
         String saveCardXml = halykSoapService.createSaveCardXml(payment.getPaySysPayId(), merchantId, true);
@@ -162,8 +164,10 @@ public class UserCardService {
         userCardFromBank.setCardNumber(maskCardFromBank(halykSaveCardOrder.getCardHash()));
         userBankCardRepository.save(userCardFromBank);
         setDefaultBankCashBoxCard(userCardFromBank);
-        if (!p2pSettingsService.existsByMerchantId(userCardFromBank.getUserId())) {
-            p2pSettingsService.createMerchantP2pSettings(userCardFromBank.getUserId(), userCardFromBank.getId());
+        p2pSettingsService.createMerchantP2pSettings(userCardFromBank.getUserId(), userCardFromBank.getId());
+        if (Objects.nonNull(userCardFromBank.getCashBoxId())) {
+            SetCashBoxCardDto setCashBoxCardDto = new SetCashBoxCardDto(userCardFromBank.getCashBoxId(), userCardFromBank.getId(), userCardFromBank.getUserId());
+            cashboxService.setBankCashBoxCard(setCashBoxCardDto);
         }
     }
 

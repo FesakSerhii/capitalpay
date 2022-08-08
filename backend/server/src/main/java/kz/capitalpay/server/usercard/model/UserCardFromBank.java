@@ -20,6 +20,9 @@ public class UserCardFromBank {
     private String orderId;
     private String token;
 
+    @JsonIgnore
+    private Long cashBoxId;
+
     public Long getId() {
         return id;
     }
@@ -82,5 +85,13 @@ public class UserCardFromBank {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public Long getCashBoxId() {
+        return cashBoxId;
+    }
+
+    public void setCashBoxId(Long cashBoxId) {
+        this.cashBoxId = cashBoxId;
     }
 }

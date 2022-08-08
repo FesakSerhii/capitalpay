@@ -11,6 +11,12 @@ public class SetCashBoxCardDto {
     @NotNull(message = "cardId must not be null")
     private Long merchantId;
 
+    public SetCashBoxCardDto(Long cashBoxId, Long cardId, Long merchantId) {
+        this.cashBoxId = cashBoxId;
+        this.cardId = cardId;
+        this.merchantId = merchantId;
+    }
+
     public Long getCashBoxId() {
         return cashBoxId;
     }
