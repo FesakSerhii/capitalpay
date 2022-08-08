@@ -41,7 +41,7 @@ public class UserCardController {
 //    @RolesAllowed({ADMIN})
     @PostMapping("/register-with-bank")
     public ResultDTO registerUserCardWithBank(@RequestBody @Valid RegisterMerchantCardWithBankDto dto) {
-        return userCardService.registerMerchantCardWithBank(dto.getMerchantId());
+        return userCardService.registerMerchantCardWithBank(dto);
     }
 
     @ResponseBody

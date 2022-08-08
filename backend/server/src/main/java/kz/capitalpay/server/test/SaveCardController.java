@@ -24,16 +24,16 @@ public class SaveCardController {
         this.p2pService = p2pService;
     }
 
-    @GetMapping("/register-user-card")
-    public String registerUserCardWithBank(@RequestParam Long merchantId,
-                                           ModelMap modelMap) {
-        ResultDTO result = userCardService.registerMerchantCardWithBank(merchantId);
-        Map<String, String> resultMap = (Map<String, String>) result.getData();
-        modelMap.addAttribute("xml", resultMap.get("xml"));
-        modelMap.addAttribute("backLink", resultMap.get("backLink"));
-        modelMap.addAttribute("postLink", resultMap.get("postLink"));
-        return "test_register_card";
-    }
+//    @GetMapping("/register-user-card")
+//    public String registerUserCardWithBank(@RequestParam Long merchantId,
+//                                           ModelMap modelMap) {
+//        ResultDTO result = userCardService.registerMerchantCardWithBank();
+//        Map<String, String> resultMap = (Map<String, String>) result.getData();
+//        modelMap.addAttribute("xml", resultMap.get("xml"));
+//        modelMap.addAttribute("backLink", resultMap.get("backLink"));
+//        modelMap.addAttribute("postLink", resultMap.get("postLink"));
+//        return "test_register_card";
+//    }
 
     @GetMapping("/register-client-card")
     public String registerClientCardWithBank(@RequestParam Long merchantId,

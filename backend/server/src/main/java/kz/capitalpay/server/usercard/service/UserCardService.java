@@ -104,16 +104,16 @@ public class UserCardService {
         return new ResultDTO(true, userCard, 0);
     }
 
-    public ResultDTO registerMerchantCardWithBank(Long merchantId) {
+    public ResultDTO registerMerchantCardWithBank(RegisterMerchantCardWithBankDto dto) {
         Payment payment = paymentService.generateSaveBankCardPayment();
         UserCardFromBank userCardFromBank = new UserCardFromBank();
         userCardFromBank.setOrderId(payment.getPaySysPayId());
-        userCardFromBank.setUserId(merchantId);
-        userCardFromBank.setCashBoxId(merchantId);
+        userCardFromBank.setUserId(dto.getMerchantId());
+        userCardFromBank.setCashBoxId(dto.getCashBoxId());
         userCardFromBank.setToken(UUID.randomUUID().toString());
         userBankCardRepository.save(userCardFromBank);
-        String saveCardXml = halykSoapService.createSaveCardXml(payment.getPaySysPayId(), merchantId, true);
-        return registerCardFromBank(saveCardXml, null, REGISTER_MERCHANT_CARD_REDIRECT_URL.concat(String.format("?userId=%s&orderId=%s", merchantId, payment.getPaySysPayId())), REGISTER_MERCHANT_CARD_ERR_URL);
+        String saveCardXml = halykSoapService.createSaveCardXml(payment.getPaySysPayId(), dto.getMerchantId(), true);
+        return registerCardFromBank(saveCardXml, null, REGISTER_MERCHANT_CARD_REDIRECT_URL.concat(String.format("?userId=%s&orderId=%s", dto.getMerchantId(), payment.getPaySysPayId())), REGISTER_MERCHANT_CARD_ERR_URL);
     }
 
     public ResultDTO registerClientCardWithBank(Long merchantId, Long cashBoxId, String params) {
