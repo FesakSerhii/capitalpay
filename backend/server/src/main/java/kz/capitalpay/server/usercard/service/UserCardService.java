@@ -164,7 +164,7 @@ public class UserCardService {
         userCardFromBank.setValid(true);
         userCardFromBank.setBankCardId(halykSaveCardOrder.getCardId());
         userCardFromBank.setCardNumber(maskCardFromBank(halykSaveCardOrder.getCardHash()));
-        userBankCardRepository.save(userCardFromBank);
+        userCardFromBank = userBankCardRepository.save(userCardFromBank);
         setDefaultBankCashBoxCard(userCardFromBank);
         MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(userCardFromBank.getUserId());
         if (Objects.isNull(merchantP2pSettings)) {
@@ -173,6 +173,7 @@ public class UserCardService {
         P2pSettingsDto p2pSettingsDto = new P2pSettingsDto(merchantP2pSettings.isP2pAllowed(), userCardFromBank.getUserId());
         p2pSettingsService.setP2pSettings(p2pSettingsDto);
         if (Objects.nonNull(userCardFromBank.getCashBoxId())) {
+
             SetCashBoxCardDto setCashBoxCardDto = new SetCashBoxCardDto(userCardFromBank.getCashBoxId(), userCardFromBank.getId(), userCardFromBank.getUserId());
             ResultDTO resultDTO = cashboxService.setBankCashBoxCard(setCashBoxCardDto);
             LOGGER.info("setBankCashBoxCard resultDTO {}", resultDTO);
@@ -205,8 +206,8 @@ public class UserCardService {
             result.put("FailureBackLink", failureBackLink);
         }
         result.put("postLink", "https://api.capitalpay.kz/api/save-card-link");
-        result.put("action", "https://testpay.kkb.kz/jsp/hbpay/logon.jsp");
-//        result.put("action", "https://epay.kkb.kz/jsp/hbpay/logon.jsp");
+//        result.put("action", "https://testpay.kkb.kz/jsp/hbpay/logon.jsp");
+        result.put("action", "https://epay.kkb.kz/jsp/hbpay/logon.jsp");
         return new ResultDTO(true, result, 0);
     }
 
@@ -593,7 +594,7 @@ public class UserCardService {
 
     public void sendTestP2p() {
         Payment payment = paymentService.generateSaveBankCardPayment();
-        String p2pXml = halykSoapService.createP2pXml(payment.getPaySysPayId(), 663L, "800001320650", "900004624383", new BigDecimal("100.00"));
+        String p2pXml = halykSoapService.createP2pXml(payment.getPaySysPayId(), 663L, "900004624383", "800001320650", new BigDecimal("5000.00"));
         LOGGER.info("p2pXml {}", p2pXml);
         String encodedXml = Base64.getEncoder().encodeToString(p2pXml.getBytes());
         ResponseEntity<String> response = restTemplate.postForEntity("https://epay.kkb.kz/jsp/hbpay/cid2cid.jsp?Signed_Order_B64=".concat(encodedXml), null, String.class);

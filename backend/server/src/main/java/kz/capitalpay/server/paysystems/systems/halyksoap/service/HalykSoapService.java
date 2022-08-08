@@ -433,11 +433,10 @@ public class HalykSoapService {
                 cardFromId, cardToId, dto.getAcceptedSum());
         LOGGER.info("p2pXml {}", p2pXml);
         String encodedXml = Base64.getEncoder().encodeToString(p2pXml.getBytes());
-//        String url = "https://epay.kkb.kz/jsp/hbpay/cid2cid.jsp";
-        String url = "https://testpay.kkb.kz/jsp/hbpay/cid2cid.jsp";
+        String url = "https://epay.kkb.kz/jsp/hbpay/cid2cid.jsp";
+//        String url = "https://testpay.kkb.kz/jsp/hbpay/cid2cid.jsp";
         LOGGER.info("send p2p url {}", url);
         ResponseEntity<String> response = restTemplate.postForEntity(
-//                "?Signed_Order_B64=".concat(encodedXml),
                 url.concat("?Signed_Order_B64=").concat(encodedXml),
                 null, String.class);
         LOGGER.info("p2p response {}", response.getBody());
@@ -552,7 +551,11 @@ public class HalykSoapService {
         EpayServiceStub.ControlOrderForCommerceResponse response = null;
         try {
             response = stub.controlOrderForCommerce(controlOrderForCommerce);
-        } catch (RemoteException | EpayServiceSAXExceptionException | EpayServiceParserConfigurationExceptionException | EpayServiceSignatureExceptionException | EpayServiceCertificateExceptionException | EpayServiceUnrecoverableKeyExceptionException | EpayServiceKeyStoreExceptionException | EpayServiceIOExceptionException | EpayServiceNoSuchAlgorithmExceptionException | EpayServiceInvalidKeyExceptionException e) {
+        } catch (RemoteException | EpayServiceSAXExceptionException | EpayServiceParserConfigurationExceptionException |
+                 EpayServiceSignatureExceptionException | EpayServiceCertificateExceptionException |
+                 EpayServiceUnrecoverableKeyExceptionException | EpayServiceKeyStoreExceptionException |
+                 EpayServiceIOExceptionException | EpayServiceNoSuchAlgorithmExceptionException |
+                 EpayServiceInvalidKeyExceptionException e) {
             e.printStackTrace();
         }
 
@@ -610,7 +613,11 @@ public class HalykSoapService {
         EpayServiceStub.TransferOrderResponse response = null;
         try {
             response = stub.transferOrder(transferOrderE);
-        } catch (RemoteException | EpayServiceSAXExceptionException | EpayServiceParserConfigurationExceptionException | EpayServiceSignatureExceptionException | EpayServiceCertificateExceptionException | EpayServiceUnrecoverableKeyExceptionException | EpayServiceKeyStoreExceptionException | EpayServiceIOExceptionException | EpayServiceNoSuchAlgorithmExceptionException | EpayServiceInvalidKeyExceptionException e) {
+        } catch (RemoteException | EpayServiceSAXExceptionException | EpayServiceParserConfigurationExceptionException |
+                 EpayServiceSignatureExceptionException | EpayServiceCertificateExceptionException |
+                 EpayServiceUnrecoverableKeyExceptionException | EpayServiceKeyStoreExceptionException |
+                 EpayServiceIOExceptionException | EpayServiceNoSuchAlgorithmExceptionException |
+                 EpayServiceInvalidKeyExceptionException e) {
             e.printStackTrace();
         }
 
@@ -651,7 +658,11 @@ public class HalykSoapService {
         EpayServiceStub.PaymentOrderAcsResponse response = null;
         try {
             response = stub.paymentOrderAcs(paymentOrderAcs);
-        } catch (RemoteException | EpayServiceSAXExceptionException | EpayServiceInvalidKeyExceptionException | EpayServiceSignatureExceptionException | EpayServiceCertificateExceptionException | EpayServiceUnrecoverableKeyExceptionException | EpayServiceKeyStoreExceptionException | EpayServiceIOExceptionException | EpayServiceNoSuchAlgorithmExceptionException | EpayServiceParserConfigurationExceptionException e) {
+        } catch (RemoteException | EpayServiceSAXExceptionException | EpayServiceInvalidKeyExceptionException |
+                 EpayServiceSignatureExceptionException | EpayServiceCertificateExceptionException |
+                 EpayServiceUnrecoverableKeyExceptionException | EpayServiceKeyStoreExceptionException |
+                 EpayServiceIOExceptionException | EpayServiceNoSuchAlgorithmExceptionException |
+                 EpayServiceParserConfigurationExceptionException e) {
             e.printStackTrace();
         }
 
@@ -1130,13 +1141,13 @@ public class HalykSoapService {
                         "</order>" +
                         "</merchant>",
 
-                testCertificateId,
-//                merchantCertificate,
+//                testCertificateId,
+                merchantCertificate,
                 merchantName,
                 orderId,
                 currencyCode,
-                testTerminalId,
-//                merchantIdEpay,
+//                testTerminalId,
+                merchantIdEpay,
                 serviceMerchantId,
                 isMerchantCard
         );
@@ -1172,7 +1183,7 @@ public class HalykSoapService {
         KKBSign kkbSign = new KKBSign();
         String merchantName = "CAPITALPAY";
         String currencyCode = "398";
-        String amountStr = amount.setScale(2).toString().replace(".", ",");
+        String amountStr = amount.setScale(2).toString();
 
 
         String merchantStr = String.format("<merchant " +
@@ -1239,7 +1250,7 @@ public class HalykSoapService {
         KKBSign kkbSign = new KKBSign();
         String merchantName = "CAPITALPAY";
         String currencyCode = "398";
-        String amountStr = amount.setScale(2).toString().replace(".", ",");
+        String amountStr = amount.setScale(2).toString();
 
         LocalDateTime localDateTime = LocalDateTime.now().plusHours(1);
         String zonedDateTime = localDateTime.atZone(ZoneOffset.of("+06:00")).format(dateTimeFormat);
@@ -1257,13 +1268,14 @@ public class HalykSoapService {
                         "ordertime=\"%s\"/>" +
                         "</merchant>",
 
-                testCertificateId,
-//                merchantCertificate,
+//                testCertificateId,
+                merchantCertificate,
                 merchantName,
 //                testTerminalId,
 //                merchantIdP2p,
-                testTerminalId,
-//                merchantIdEpay,
+                merchantIdBankP2p,
+//                testTerminalId,
+                merchantIdEpay,
                 cardIdTo,
                 serviceMerchantId,
                 orderId,
