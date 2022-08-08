@@ -8,6 +8,11 @@ public class P2pSettingsDto {
     @NotNull(message = "merchantId must not be null")
     private Long merchantId;
 
+    public P2pSettingsDto(boolean p2pAllowed, Long merchantId) {
+        this.p2pAllowed = p2pAllowed;
+        this.merchantId = merchantId;
+    }
+
     public boolean isP2pAllowed() {
         return p2pAllowed;
     }

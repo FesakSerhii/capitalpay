@@ -9,6 +9,7 @@ import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.constants.ErrorDictionary;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
+import kz.capitalpay.server.p2p.dto.P2pSettingsDto;
 import kz.capitalpay.server.p2p.dto.P2pSettingsResponseDto;
 import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
 import kz.capitalpay.server.p2p.service.P2pSettingsService;
@@ -164,7 +165,11 @@ public class UserCardService {
         userCardFromBank.setCardNumber(maskCardFromBank(halykSaveCardOrder.getCardHash()));
         userBankCardRepository.save(userCardFromBank);
         setDefaultBankCashBoxCard(userCardFromBank);
-        p2pSettingsService.createMerchantP2pSettings(userCardFromBank.getUserId(), userCardFromBank.getId());
+        if (!p2pSettingsService.existsByMerchantId(userCardFromBank.getUserId())) {
+            p2pSettingsService.createMerchantP2pSettings(userCardFromBank.getUserId(), userCardFromBank.getId());
+        }
+        P2pSettingsDto p2pSettingsDto = new P2pSettingsDto(false, userCardFromBank.getUserId());
+        p2pSettingsService.setP2pSettings(p2pSettingsDto);
         if (Objects.nonNull(userCardFromBank.getCashBoxId())) {
             SetCashBoxCardDto setCashBoxCardDto = new SetCashBoxCardDto(userCardFromBank.getCashBoxId(), userCardFromBank.getId(), userCardFromBank.getUserId());
             cashboxService.setBankCashBoxCard(setCashBoxCardDto);
