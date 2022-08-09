@@ -61,7 +61,7 @@ public class SaveCardController {
     public String testP2pPostLink(@RequestBody String body) {
         LOGGER.info("PostLink body: {}", body);
         p2pService.completeBankAnonymousP2p(body);
-        return "";
+        return "0";
     }
 
     @ResponseBody
