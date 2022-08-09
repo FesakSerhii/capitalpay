@@ -98,6 +98,7 @@ public class PaymentService {
     }
 
     public void notifyMerchant(Payment payment) {
+        logger.info("notifyMerchant()");
         try {
             String interactionUrl = cashboxService.getInteractUrl(payment);
             PaymentDetailDTO detailsJson;
@@ -109,6 +110,7 @@ public class PaymentService {
             Map<String, Object> requestJson = new HashMap<>();
             requestJson.put("type", "paymentStatus");
             requestJson.put("data", detailsJson);
+            logger.info("unteractionURL {}", interactionUrl);
             String response = restTemplate.postForObject(interactionUrl,
                     requestJson, String.class);
             logger.info(response);
