@@ -53,7 +53,7 @@ public class SaveCardController {
     public String testPostLink(@RequestBody String body) {
         LOGGER.info("PostLink body: {}", body);
         userCardService.completeBankCardSaving(body);
-        return "";
+        return "0";
     }
 
     @ResponseBody
