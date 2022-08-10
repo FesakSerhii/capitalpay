@@ -32,7 +32,8 @@ export class PaymentCardModalComponent implements OnInit {
   @ViewChild('paymentCardModal', {static: false}) paymentCardModalRef: TemplateRef<any>;
   // @Output() onModalClose = new EventEmitter<any>();
   @Input() defaultPaymentCard: string = null;
-  isAddNew: boolean = false
+  isAddNew: boolean = false;
+  blockAddingNewCardManually: boolean = environment['blockAddingNewCardManually'];
 
 
   private modal: NgbModalRef = null;
@@ -97,8 +98,12 @@ export class PaymentCardModalComponent implements OnInit {
     console.log(cashBox);
     this.cashBox = cashBox;
    return this.getCardList().then(()=>{
+     if(this.blockAddingNewCardManually&&this.isAddNew){
+       this.addNewCard()
+     }else{
       this.modal = this.modalService.open(this.paymentCardModalRef,{backdrop:false});
       return this.modal.result;
+     }
     })
   }
   close() {

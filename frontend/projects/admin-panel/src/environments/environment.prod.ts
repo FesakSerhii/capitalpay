@@ -4,4 +4,5 @@ export const environment = {
   cardRegisterModalFn: 'addMerchantPaymentCard',
   cardBindFn: 'addCardData',
   addCashBoxPaymentCard: 'addCashBoxPaymentCard',
+  blockAddingNewCardManually:false
 };
