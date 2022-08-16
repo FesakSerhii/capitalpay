@@ -594,7 +594,7 @@ public class UserCardService {
 
     public void sendTestP2p() {
         Payment payment = paymentService.generateSaveBankCardPayment();
-        String p2pXml = halykSoapService.createP2pXml(payment.getPaySysPayId(), 663L, "900004624383", "800001320650", new BigDecimal("5000.00"));
+        String p2pXml = halykSoapService.createP2pXml(payment.getPaySysPayId(), 663L, "900004624383", "800001320650", new BigDecimal("101.00"));
         LOGGER.info("p2pXml {}", p2pXml);
         String encodedXml = Base64.getEncoder().encodeToString(p2pXml.getBytes());
         ResponseEntity<String> response = restTemplate.postForEntity("https://epay.kkb.kz/jsp/hbpay/cid2cid.jsp?Signed_Order_B64=".concat(encodedXml), null, String.class);
