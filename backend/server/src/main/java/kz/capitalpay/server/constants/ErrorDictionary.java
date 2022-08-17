@@ -41,6 +41,8 @@ public class ErrorDictionary {
     public static final ResultDTO CARD_ALREADY_EXISTS = new ResultDTO(false, "Card already exists!", 136);
     public static final ResultDTO EMPTY_FILE = new ResultDTO(false, "File is empty!", 137);
 
+    public static final ResultDTO TERMINAL_NOT_FOUND = new ResultDTO(false, "Terminal not found!", 138);
+
 
 }
 
