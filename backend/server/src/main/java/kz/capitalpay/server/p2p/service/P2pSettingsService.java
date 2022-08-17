@@ -124,6 +124,13 @@ public class P2pSettingsService {
         }
         terminal.setFree(false);
         terminalRepository.save(terminal);
+        if (Objects.nonNull(settings.getTerminalId())) {
+            Terminal oldTerminal = terminalRepository.findByIdAndDeletedFalse(settings.getTerminalId()).orElse(null);
+            if (Objects.nonNull(oldTerminal)) {
+                oldTerminal.setFree(true);
+                terminalRepository.save(oldTerminal);
+            }
+        }
         settings.setTerminalId(dto.getTerminalId());
         settings = p2pSettingsRepository.save(settings);
         return new ResultDTO(true, new MerchantTerminalSettingsDto(settings.getUserId(), settings.getTerminalId()), 0);

@@ -1,5 +1,6 @@
 package kz.capitalpay.server.terminal.service;
 
+import kz.capitalpay.server.constants.ErrorDictionary;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.terminal.dto.TerminalDto;
 import kz.capitalpay.server.terminal.mapper.TerminalMapper;
@@ -36,6 +37,9 @@ public class TerminalService {
         Terminal terminal = terminalRepository.findByIdAndDeletedFalse(id).orElse(null);
         if (Objects.isNull(terminal)) {
             return TERMINAL_NOT_FOUND;
+        }
+        if (!terminal.isFree()) {
+            return ErrorDictionary.OCCUPIED_TERMINAL;
         }
         terminal.setDeleted(true);
         terminalRepository.save(terminal);
