@@ -14,6 +14,8 @@ import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykAnonymousP2pOrder;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
+import kz.capitalpay.server.terminal.model.Terminal;
+import kz.capitalpay.server.terminal.repository.TerminalRepository;
 import kz.capitalpay.server.usercard.dto.CardDataResponseDto;
 import kz.capitalpay.server.usercard.model.ClientCardFromBank;
 import kz.capitalpay.server.usercard.model.UserCard;
@@ -51,7 +53,8 @@ public class P2pService {
     private final PaymentService paymentService;
     //    private final MerchantKycService merchantKycService;
     private final CashboxSettingsService cashboxSettingsService;
-//    private final HalykOrderRepository halykOrderRepository;
+    //    private final HalykOrderRepository halykOrderRepository;
+    private final TerminalRepository terminalRepository;
 
     @Value("${halyk.soap.p2p.termurl}")
     private String termUrl;
@@ -63,7 +66,7 @@ public class P2pService {
     String apiAddress;
 
 
-    public P2pService(HalykSoapService halykSoapService, CashboxService cashboxService, UserCardService userCardService, P2pSettingsService p2pSettingsService, P2pPaymentService p2pPaymentService, CashboxCurrencyService cashboxCurrencyService, Gson gson, PaymentService paymentService, CashboxSettingsService cashboxSettingsService) {
+    public P2pService(HalykSoapService halykSoapService, CashboxService cashboxService, UserCardService userCardService, P2pSettingsService p2pSettingsService, P2pPaymentService p2pPaymentService, CashboxCurrencyService cashboxCurrencyService, Gson gson, PaymentService paymentService, CashboxSettingsService cashboxSettingsService, TerminalRepository terminalRepository) {
         this.halykSoapService = halykSoapService;
         this.cashboxService = cashboxService;
         this.userCardService = userCardService;
@@ -73,6 +76,7 @@ public class P2pService {
         this.gson = gson;
         this.paymentService = paymentService;
         this.cashboxSettingsService = cashboxSettingsService;
+        this.terminalRepository = terminalRepository;
     }
 
     public RedirectView sendP2pToClient(SendP2pToClientDto dto, String userAgent, String ipAddress, RedirectAttributes redirectAttributes) {
@@ -110,13 +114,24 @@ public class P2pService {
                 addErrorAttributes(redirectAttributes, ErrorDictionary.P2P_IS_NOT_ALLOWED);
                 return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
             }
+            if (Objects.isNull(merchantP2pSettings.getTerminalId())) {
+                LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
+                addErrorAttributes(redirectAttributes, ErrorDictionary.MERCHANT_TERMINAL_SETTINGS_NOT_FOUND);
+                return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
+            }
+            Terminal terminal = terminalRepository.findByIdAndDeletedFalse(merchantP2pSettings.getTerminalId()).orElse(null);
+            if (Objects.isNull(terminal)) {
+                LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
+                addErrorAttributes(redirectAttributes, ErrorDictionary.MERCHANT_TERMINAL_SETTINGS_NOT_FOUND);
+                return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
+            }
 
             UserCard merchantCard = userCardService.findUserCardById(merchantCardId);
             CardDataResponseDto merchantCardData = userCardService.getCardDataFromTokenServer(merchantCard.getToken());
             CardDataResponseDto clientCardData = userCardService.getCardDataFromTokenServer(dto.getClientCardToken());
 
-            return checkReturnCode(halykSoapService.sendP2p(ipAddress, userAgent, merchantCardData, dto,
-                    clientCardData.getCardNumber(), true), resultUrls, redirectAttributes);
+            return checkReturnCode(halykSoapService.sendP2p(ipAddress, userAgent, merchantCardData, dto, clientCardData.getCardNumber(), true, terminal.getOutputTerminalId()),
+                    resultUrls, redirectAttributes);
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.info(ErrorDictionary.CARD_NOT_FOUND.toString());
@@ -160,12 +175,23 @@ public class P2pService {
                 addErrorAttributes(redirectAttributes, ErrorDictionary.P2P_IS_NOT_ALLOWED);
                 return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
             }
+            if (Objects.isNull(merchantP2pSettings.getTerminalId())) {
+                LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
+                addErrorAttributes(redirectAttributes, ErrorDictionary.MERCHANT_TERMINAL_SETTINGS_NOT_FOUND);
+                return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
+            }
+            Terminal terminal = terminalRepository.findByIdAndDeletedFalse(merchantP2pSettings.getTerminalId()).orElse(null);
+            if (Objects.isNull(terminal)) {
+                LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
+                addErrorAttributes(redirectAttributes, ErrorDictionary.MERCHANT_TERMINAL_SETTINGS_NOT_FOUND);
+                return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
+            }
 
             UserCardFromBank userCard = userCardService.findUserCardFromBankById(merchantCardId);
             ClientCardFromBank clientCard = userCardService.findClientCardFromBankByToken(dto.getClientCardToken());
 
-            return checkReturnCode(halykSoapService.sendSavedCardsP2p(ipAddress, userAgent, userCard.getBankCardId(), dto,
-                    clientCard.getBankCardId(), true), resultUrls, redirectAttributes);
+            return checkReturnCode(halykSoapService.sendSavedCardsP2p(ipAddress, userAgent, userCard.getBankCardId(), dto, clientCard.getBankCardId(), true, terminal.getInputTerminalId()),
+                    resultUrls, redirectAttributes);
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.info(ErrorDictionary.CARD_NOT_FOUND.toString());
@@ -206,12 +232,23 @@ public class P2pService {
                 addErrorAttributes(redirectAttributes, ErrorDictionary.P2P_IS_NOT_ALLOWED);
                 return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
             }
+            if (Objects.isNull(merchantP2pSettings.getTerminalId())) {
+                LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
+                addErrorAttributes(redirectAttributes, ErrorDictionary.MERCHANT_TERMINAL_SETTINGS_NOT_FOUND);
+                return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
+            }
+            Terminal terminal = terminalRepository.findByIdAndDeletedFalse(merchantP2pSettings.getTerminalId()).orElse(null);
+            if (Objects.isNull(terminal)) {
+                LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
+                addErrorAttributes(redirectAttributes, ErrorDictionary.MERCHANT_TERMINAL_SETTINGS_NOT_FOUND);
+                return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
+            }
             UserCard merchantCard = userCardService.findUserCardById(merchantCardId);
             CardDataResponseDto merchantCardData = userCardService.getCardDataFromTokenServer(merchantCard.getToken());
             CardDataResponseDto clientCardData = userCardService.getCardDataFromTokenServer(dto.getClientCardToken());
 
-            return checkReturnCode(halykSoapService.sendP2p(ipAddress, userAgent, clientCardData, dto,
-                    merchantCardData.getCardNumber(), false), resultUrls, redirectAttributes);
+            return checkReturnCode(halykSoapService.sendP2p(ipAddress, userAgent, clientCardData, dto, merchantCardData.getCardNumber(), false, terminal.getOutputTerminalId()),
+                    resultUrls, redirectAttributes);
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.info(ErrorDictionary.CARD_NOT_FOUND.toString());
@@ -252,11 +289,22 @@ public class P2pService {
                 addErrorAttributes(redirectAttributes, ErrorDictionary.P2P_IS_NOT_ALLOWED);
                 return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
             }
+            if (Objects.isNull(merchantP2pSettings.getTerminalId())) {
+                LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
+                addErrorAttributes(redirectAttributes, ErrorDictionary.MERCHANT_TERMINAL_SETTINGS_NOT_FOUND);
+                return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
+            }
+            Terminal terminal = terminalRepository.findByIdAndDeletedFalse(merchantP2pSettings.getTerminalId()).orElse(null);
+            if (Objects.isNull(terminal)) {
+                LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
+                addErrorAttributes(redirectAttributes, ErrorDictionary.MERCHANT_TERMINAL_SETTINGS_NOT_FOUND);
+                return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
+            }
             UserCardFromBank userCard = userCardService.findUserCardFromBankById(merchantCardId);
             ClientCardFromBank clientCard = userCardService.findClientCardFromBankByToken(dto.getClientCardToken());
 
-            return checkReturnCode(halykSoapService.sendSavedCardsP2p(ipAddress, userAgent, clientCard.getBankCardId(), dto,
-                    userCard.getBankCardId(), false), resultUrls, redirectAttributes);
+            return checkReturnCode(halykSoapService.sendSavedCardsP2p(ipAddress, userAgent, clientCard.getBankCardId(), dto, userCard.getBankCardId(), false, terminal.getInputTerminalId()),
+                    resultUrls, redirectAttributes);
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.info(ErrorDictionary.CARD_NOT_FOUND.toString());
@@ -265,8 +313,7 @@ public class P2pService {
         }
     }
 
-    public ResultDTO createAnonymousP2pPayment(String userAgent, String ipAddress, Long cashBoxId, Long merchantId,
-                                               BigDecimal totalAmount, String currency, String param, String signature) {
+    public ResultDTO createAnonymousP2pPayment(String userAgent, String ipAddress, Long cashBoxId, Long merchantId, BigDecimal totalAmount, String currency, String param, String signature) {
         if (!signature.equals("testSignature") && !checkAnonymousP2pSignature(cashBoxId, merchantId, totalAmount, signature)) {
             LOGGER.info("INVALID_SIGNATURE");
             return ErrorDictionary.INVALID_SIGNATURE;
@@ -298,10 +345,7 @@ public class P2pService {
         return new ResultDTO(true, p2pPayment, 0);
     }
 
-    public ResultDTO sendAnonymousP2pPayment(HttpServletRequest httpRequest, String paymentId,
-                                             String cardHolderName, String cvv,
-                                             String month, String pan, String year) {
-
+    public ResultDTO sendAnonymousP2pPayment(HttpServletRequest httpRequest, String paymentId, String cardHolderName, String cvv, String month, String pan, String year) {
         String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
         if (ipAddress == null) {
             ipAddress = httpRequest.getRemoteAddr();
@@ -334,14 +378,22 @@ public class P2pService {
             if (!cashbox.isP2pAllowed()) {
                 return ErrorDictionary.P2P_IS_NOT_ALLOWED;
             }
+            if (Objects.isNull(merchantP2pSettings.getTerminalId())) {
+                LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
+                return MERCHANT_TERMINAL_SETTINGS_NOT_FOUND;
+            }
+            Terminal terminal = terminalRepository.findByIdAndDeletedFalse(merchantP2pSettings.getTerminalId()).orElse(null);
+            if (Objects.isNull(terminal)) {
+                LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
+                return MERCHANT_TERMINAL_SETTINGS_NOT_FOUND;
+            }
 
             UserCard merchantCard = userCardService.findUserCardById(merchantCardId);
             CardDataResponseDto merchantCardData = userCardService.getCardDataFromTokenServer(merchantCard.getToken());
             CardDataResponseDto clientCardData = new CardDataResponseDto(pan, year, month, cvv);
             SendP2pToClientDto dto = new SendP2pToClientDto(p2pPayment.getMerchantId(), p2pPayment.getTotalAmount(), p2pPayment.getCashboxId());
 
-            return checkReturnCode(halykSoapService.sendP2p(ipAddress, p2pPayment.getUserAgent(), clientCardData,
-                    dto, merchantCardData.getCardNumber(), false));
+            return checkReturnCode(halykSoapService.sendP2p(ipAddress, p2pPayment.getUserAgent(), clientCardData, dto, merchantCardData.getCardNumber(), false, terminal.getOutputTerminalId()));
         } catch (Exception e) {
             e.printStackTrace();
             return ErrorDictionary.CARD_NOT_FOUND;
@@ -376,10 +428,18 @@ public class P2pService {
             if (!cashbox.isP2pAllowed()) {
                 return ErrorDictionary.P2P_IS_NOT_ALLOWED;
             }
+            if (Objects.isNull(merchantP2pSettings.getTerminalId())) {
+                LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
+                return MERCHANT_TERMINAL_SETTINGS_NOT_FOUND;
+            }
+            Terminal terminal = terminalRepository.findByIdAndDeletedFalse(merchantP2pSettings.getTerminalId()).orElse(null);
+            if (Objects.isNull(terminal)) {
+                LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
+                return MERCHANT_TERMINAL_SETTINGS_NOT_FOUND;
+            }
 
             UserCardFromBank merchantCard = userCardService.findUserCardFromBankById(merchantCardId);
-            String p2pXml = halykSoapService.createAnonymousP2pXml(payment.getPaySysPayId(),
-                    payment.getMerchantId(), merchantCard.getBankCardId(), payment.getTotalAmount());
+            String p2pXml = halykSoapService.createAnonymousP2pXml(payment.getPaySysPayId(), payment.getMerchantId(), merchantCard.getBankCardId(), payment.getTotalAmount(), terminal.getOutputTerminalId());
             LOGGER.info("p2pXml {}", p2pXml);
 
             Map<String, String> resultUrls = cashboxSettingsService.getMerchantResultUrls(cashbox.getId());
@@ -455,8 +515,7 @@ public class P2pService {
         LOGGER.info("Result: {}", paymentResult);
         try {
             LinkedHashMap<String, String> param = gson.fromJson(paymentResult, LinkedHashMap.class);
-            AnonymousP2pPaymentResponseDto dto = new AnonymousP2pPaymentResponseDto(param.get("acsUrl"),
-                    param.get("MD"), param.get("PaReq"), termUrl, true);
+            AnonymousP2pPaymentResponseDto dto = new AnonymousP2pPaymentResponseDto(param.get("acsUrl"), param.get("MD"), param.get("PaReq"), termUrl, true);
             return new ResultDTO(true, dto, 0);
         } catch (Exception e) {
             e.printStackTrace();

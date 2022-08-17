@@ -47,7 +47,7 @@ public class HalykSoapService {
     private static final Logger LOGGER = LoggerFactory.getLogger(HalykSoapService.class);
 
     @Value("${halyk.soap.merchant.id.epay}")
-    String merchantIdEpay;
+    String mainTerminalId;
 
     @Value("${halyk.soap.merchant.id.bank.p2p}")
     String merchantIdBankP2p;
@@ -283,11 +283,11 @@ public class HalykSoapService {
                                         String month, String orderId, String pan, String year) {
         try {
             HalykOrder paymentOrder = generateHalykOrder(amount, cardholderName, desc, orderId, 1,
-                    HalykOrderDictionary.PAYMENT_ORDER, merchantIdEpay);
+                    HalykOrderDictionary.PAYMENT_ORDER, mainTerminalId);
             year = year.substring(2);
 
             EpayServiceStub.PaymentOrderResponse paymentOrderResponse = sendPaymentOrderRequest(
-                    amount.toString(), currency, cvc, merchantIdEpay, month, year, orderId, pan, "1");
+                    amount.toString(), currency, cvc, mainTerminalId, month, year, orderId, pan, "1");
 
             EpayServiceStub.Result result = paymentOrderResponse.get_return();
 
@@ -303,7 +303,7 @@ public class HalykSoapService {
                 LOGGER.info("Code 00, order: {}", gson.toJson(paymentOrder));
                 String reference = result.getReference();
                 EpayServiceStub.ControlOrderForCommerceResponse controlOrderForCommerceResponse = sendControlOrderForCommerceRequest(amount.toString(),
-                        currency, merchantIdEpay, orderId, reference, "22");
+                        currency, mainTerminalId, orderId, reference, "22");
                 LOGGER.info("controlOrderForCommerceResponse");
                 LOGGER.info("Message: " + controlOrderForCommerceResponse.get_return().getMessage());
                 LOGGER.info("Approval code: " + controlOrderForCommerceResponse.get_return().getApprovalcode());
@@ -324,7 +324,7 @@ public class HalykSoapService {
     }
 
     public CheckCardValidityResponse checkCardValidity(String ipAddress, String userAgent, CardDataResponseDto cardData) {
-        CheckCardValidityPayment payment = generateCardCheckPayment(ipAddress, userAgent, Long.parseLong(merchantIdEpay),
+        CheckCardValidityPayment payment = generateCardCheckPayment(ipAddress, userAgent, Long.parseLong(mainTerminalId),
                 new BigDecimal(10));
         String orderId = payment.getOrderId();
         String pan = cardData.getCardNumber();
@@ -336,10 +336,10 @@ public class HalykSoapService {
 
         HalykOrder halykOrder = generateHalykOrder(new BigDecimal(amount),
                 "", "Check card validity payment", payment.getOrderId(), 0,
-                HalykOrderDictionary.PAYMENT_ORDER, merchantIdEpay);
+                HalykOrderDictionary.PAYMENT_ORDER, mainTerminalId);
 
         EpayServiceStub.PaymentOrderResponse paymentOrderResponse = sendPaymentOrderRequest(amount, currency,
-                cvv2, merchantIdEpay, month, year, orderId, pan, trType);
+                cvv2, mainTerminalId, month, year, orderId, pan, trType);
 
         EpayServiceStub.Result result = paymentOrderResponse.get_return();
         parseHalykOrderResponse(halykOrder, result);
@@ -362,7 +362,7 @@ public class HalykSoapService {
         if (result.getReturnCode().equals("00")) {
             String reference = result.getReference();
             EpayServiceStub.ControlOrderForCommerceResponse controlOrderForCommerceResponse = sendControlOrderForCommerceRequest(amount,
-                    currency, merchantIdEpay, orderId, reference, "22");
+                    currency, mainTerminalId, orderId, reference, "22");
             LOGGER.info("controlOrderForCommerceResponse");
             LOGGER.info("Message: " + controlOrderForCommerceResponse.get_return().getMessage());
             LOGGER.info("Approval code: " + controlOrderForCommerceResponse.get_return().getApprovalcode());
@@ -381,12 +381,12 @@ public class HalykSoapService {
     }
 
     public String sendP2p(String ipAddress, String userAgent, CardDataResponseDto payerCardData, SendP2pToClientDto dto,
-                          String paymentToPan, boolean toClient) {
+                          String paymentToPan, boolean toClient, Long terminalId) {
         Payment payment = p2pPaymentService.generateP2pPayment(ipAddress, userAgent, dto.getMerchantId(),
                 dto.getAcceptedSum(), dto.getCashBoxId(), toClient, currency, dto.getParam());
 
         HalykOrder transferOrder = generateHalykOrder(dto.getAcceptedSum(), "", "p2p",
-                payment.getPaySysPayId(), 8, HalykOrderDictionary.TRANSFER_ORDER, merchantIdP2p);
+                payment.getPaySysPayId(), 8, HalykOrderDictionary.TRANSFER_ORDER, terminalId.toString());
 
         String orderId = payment.getPaySysPayId();
         String pan = payerCardData.getCardNumber();
@@ -396,7 +396,7 @@ public class HalykSoapService {
         String amount = dto.getAcceptedSum().toString().replace(".", ",");
 
         EpayServiceStub.TransferOrderResponse transferOrderResponse = sendTransferOrderRequest(amount, currency, cvv2,
-                merchantIdP2p, month, year, orderId, pan, paymentToPan);
+                terminalId.toString(), month, year, orderId, pan, paymentToPan);
 
         LOGGER.info("transferOrderResponse");
         LOGGER.info("Message: " + transferOrderResponse.get_return().getMessage());
@@ -424,13 +424,13 @@ public class HalykSoapService {
     }
 
     public String sendSavedCardsP2p(String ipAddress, String userAgent, String cardFromId, SendP2pToClientDto dto,
-                                    String cardToId, boolean toClient) {
+                                    String cardToId, boolean toClient, Long terminalId) {
         LOGGER.info("sendSavedCardsP2p()");
         Payment payment = p2pPaymentService.generateP2pPayment(ipAddress, userAgent, dto.getMerchantId(),
                 dto.getAcceptedSum(), dto.getCashBoxId(), toClient, currency, dto.getParam());
 
         String p2pXml = createP2pXml(payment.getPaySysPayId(), dto.getMerchantId(),
-                cardFromId, cardToId, dto.getAcceptedSum());
+                cardFromId, cardToId, dto.getAcceptedSum(), terminalId);
         LOGGER.info("p2pXml {}", p2pXml);
         String encodedXml = Base64.getEncoder().encodeToString(p2pXml.getBytes());
         String url = "https://epay.kkb.kz/jsp/hbpay/cid2cid.jsp";
@@ -577,7 +577,7 @@ public class HalykSoapService {
         LOGGER.info("amount {}", amount);
         LOGGER.info("currency {}", currency);
         LOGGER.info("cvv2 {}", cvv2);
-        LOGGER.info("merchantId {}", merchantIdP2p);
+        LOGGER.info("merchantId {}", requestMerchantId);
         LOGGER.info("month {}", month);
         LOGGER.info("year {}", year);
         LOGGER.info("orderId {}", orderId);
@@ -591,7 +591,7 @@ public class HalykSoapService {
         transferOrder.setCurrency(currency);
         transferOrder.setCvc(cvv2);
         transferOrder.setDesc(" ");
-        transferOrder.setMerchantid(merchantIdP2p);
+        transferOrder.setMerchantid(requestMerchantId);
         transferOrder.setMonth(month);
         transferOrder.setTrtype(trType);
         transferOrder.setOrderid(orderId);
@@ -652,7 +652,7 @@ public class HalykSoapService {
         paymentOrderAcs.setOrder(order);
         EpayServiceStub.RequestSignature signature = new EpayServiceStub.RequestSignature();
         signature.setMerchantCertificate(merchantCertificate);
-        signature.setMerchantId(isP2p ? merchantIdP2p : merchantIdEpay);
+        signature.setMerchantId(isP2p ? merchantIdP2p : mainTerminalId);
         signature.setSignatureValue(signatureValue);
         paymentOrderAcs.setRequestSignature(signature);
         EpayServiceStub.PaymentOrderAcsResponse response = null;
@@ -1147,7 +1147,7 @@ public class HalykSoapService {
                 orderId,
                 currencyCode,
 //                testTerminalId,
-                merchantIdEpay,
+                mainTerminalId,
                 serviceMerchantId,
                 isMerchantCard
         );
@@ -1155,13 +1155,13 @@ public class HalykSoapService {
         String signatureValue = kkbSign.sign64(merchantStr, keystore, clientAlias, keypass, storepass);
 
         HalykSaveCardOrder halykSaveCardOrder = new HalykSaveCardOrder();
-        halykSaveCardOrder.setMerchantCertId(testCertificateId);
+        halykSaveCardOrder.setMerchantCertId(merchantCertificate);
         halykSaveCardOrder.setMerchantName(merchantName);
         halykSaveCardOrder.setOrderId(orderId);
         halykSaveCardOrder.setRequestServiceId(String.valueOf(isMerchantCard));
         halykSaveCardOrder.setAmount("10,00");
         halykSaveCardOrder.setCurrencyCode(currencyCode);
-        halykSaveCardOrder.setMerchantId(testTerminalId);
+        halykSaveCardOrder.setMerchantId(mainTerminalId);
         halykSaveCardOrder.setAbonentId(serviceMerchantId.toString());
         halykSaveCardOrder.setMerchantSign(signatureValue);
         halykSaveCardOrder.setApprove("0");
@@ -1179,7 +1179,7 @@ public class HalykSoapService {
     }
 
     public String createP2pXml(String orderId, Long serviceMerchantId, String cardIdFrom,
-                               String cardIdTo, BigDecimal amount) {
+                               String cardIdTo, BigDecimal amount, Long terminalId) {
         KKBSign kkbSign = new KKBSign();
         String merchantName = "CAPITALPAY";
         String currencyCode = "398";
@@ -1206,13 +1206,13 @@ public class HalykSoapService {
                 merchantCertificate,
                 merchantName,
 //                testTerminalId,
-//                merchantIdP2p,
-                merchantIdBankP2p,
+//                merchantIdBankP2p,
+                terminalId.toString(),
                 orderId,
                 amountStr,
                 currencyCode,
 //                testTerminalId,
-                merchantIdEpay,
+                mainTerminalId,
                 serviceMerchantId,
                 serviceMerchantId,
                 cardIdFrom,
@@ -1222,13 +1222,13 @@ public class HalykSoapService {
         String signatureValue = kkbSign.sign64(merchantStr, keystore, clientAlias, keypass, storepass);
 
         HalykSavedCardsP2pOrder halykSaveCardOrder = new HalykSavedCardsP2pOrder();
-        halykSaveCardOrder.setMerchantCertId(testCertificateId);
+        halykSaveCardOrder.setMerchantCertId(merchantCertificate);
         halykSaveCardOrder.setMerchantName(merchantName);
         halykSaveCardOrder.setOrderId(orderId);
         halykSaveCardOrder.setAmount(amountStr);
         halykSaveCardOrder.setCurrencyCode(currencyCode);
-        halykSaveCardOrder.setMerchantId(testTerminalId);
-        halykSaveCardOrder.setMerchantMain(testTerminalId);
+        halykSaveCardOrder.setMerchantId(terminalId.toString());
+        halykSaveCardOrder.setMerchantMain(mainTerminalId);
         halykSaveCardOrder.setAbonentIdFrom(serviceMerchantId.toString());
         halykSaveCardOrder.setAbonentIdTo(serviceMerchantId.toString());
         halykSaveCardOrder.setMerchantSign(signatureValue);
@@ -1246,7 +1246,7 @@ public class HalykSoapService {
     }
 
     public String createAnonymousP2pXml(String orderId, Long serviceMerchantId,
-                                        String cardIdTo, BigDecimal amount) {
+                                        String cardIdTo, BigDecimal amount, Long terminalId) {
         KKBSign kkbSign = new KKBSign();
         String merchantName = "CAPITALPAY";
         String currencyCode = "398";
@@ -1272,10 +1272,10 @@ public class HalykSoapService {
                 merchantCertificate,
                 merchantName,
 //                testTerminalId,
-                merchantIdP2p,
-//                merchantIdBankP2p,
+                terminalId.toString(),
+//                merchantIdP2p,
 //                testTerminalId,
-                merchantIdEpay,
+                mainTerminalId,
                 cardIdTo,
                 serviceMerchantId,
                 orderId,
@@ -1287,13 +1287,13 @@ public class HalykSoapService {
         String signatureValue = kkbSign.sign64(merchantStr, keystore, clientAlias, keypass, storepass);
 
         HalykAnonymousP2pOrder halykOrder = new HalykAnonymousP2pOrder();
-        halykOrder.setMerchantCertId(testCertificateId);
+        halykOrder.setMerchantCertId(merchantCertificate);
         halykOrder.setMerchantName(merchantName);
         halykOrder.setOrderId(orderId);
         halykOrder.setAmount(amountStr);
         halykOrder.setCurrencyCode(currencyCode);
-        halykOrder.setMerchantId(testTerminalId);
-        halykOrder.setMerchantMain(testTerminalId);
+        halykOrder.setMerchantId(terminalId.toString());
+        halykOrder.setMerchantMain(mainTerminalId);
         halykOrder.setAbonentIdTo(serviceMerchantId.toString());
         halykOrder.setMerchantSign(signatureValue);
         halykOrder.setCardIdTo(cardIdTo);

@@ -17,6 +17,7 @@ import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
 
 @RestController
 @RequestMapping("/api/v1/auth/merchant-terminal-settings")
+//@RequestMapping("/api/merchant-terminal-settings")
 public class MerchantTerminalSettingsController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MerchantTerminalSettingsController.class);

@@ -7,6 +7,8 @@ import kz.capitalpay.server.p2p.dto.P2pSettingsDto;
 import kz.capitalpay.server.p2p.dto.P2pSettingsResponseDto;
 import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
 import kz.capitalpay.server.p2p.repository.P2pSettingsRepository;
+import kz.capitalpay.server.terminal.model.Terminal;
+import kz.capitalpay.server.terminal.repository.TerminalRepository;
 import kz.capitalpay.server.usercard.model.UserCard;
 import kz.capitalpay.server.usercard.model.UserCardFromBank;
 import kz.capitalpay.server.usercard.repository.UserBankCardRepository;
@@ -26,10 +28,13 @@ public class P2pSettingsService {
     private final UserCardRepository userCardRepository;
     private final UserBankCardRepository userBankCardRepository;
 
-    public P2pSettingsService(P2pSettingsRepository p2pSettingsRepository, UserCardRepository userCardRepository, UserBankCardRepository userBankCardRepository) {
+    private final TerminalRepository terminalRepository;
+
+    public P2pSettingsService(P2pSettingsRepository p2pSettingsRepository, UserCardRepository userCardRepository, UserBankCardRepository userBankCardRepository, TerminalRepository terminalRepository) {
         this.p2pSettingsRepository = p2pSettingsRepository;
         this.userCardRepository = userCardRepository;
         this.userBankCardRepository = userBankCardRepository;
+        this.terminalRepository = terminalRepository;
     }
 
     public MerchantP2pSettings createMerchantP2pSettings(Long merchantId, Long cardId) {
@@ -110,6 +115,15 @@ public class P2pSettingsService {
         if (Objects.isNull(settings)) {
             return ErrorDictionary.MERCHANT_TERMINAL_SETTINGS_NOT_FOUND;
         }
+        Terminal terminal = terminalRepository.findByIdAndDeletedFalse(dto.getTerminalId()).orElse(null);
+        if (Objects.isNull(terminal)) {
+            return ErrorDictionary.TERMINAL_NOT_FOUND;
+        }
+        if (!terminal.isFree()) {
+            return ErrorDictionary.OCCUPIED_TERMINAL;
+        }
+        terminal.setFree(false);
+        terminalRepository.save(terminal);
         settings.setTerminalId(dto.getTerminalId());
         settings = p2pSettingsRepository.save(settings);
         return new ResultDTO(true, new MerchantTerminalSettingsDto(settings.getUserId(), settings.getTerminalId()), 0);

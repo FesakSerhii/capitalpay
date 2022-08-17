@@ -33,8 +33,6 @@ import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsServi
 @Controller
 @RequestMapping("/api/v1/p2p")
 public class P2pPaymentsController {
-
-
     private static final Logger LOGGER = LoggerFactory.getLogger(P2pPaymentsController.class);
     private final P2pService p2pService;
     private final P2pPaymentService p2pPaymentService;

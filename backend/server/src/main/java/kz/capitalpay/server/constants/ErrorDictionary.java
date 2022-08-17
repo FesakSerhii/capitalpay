@@ -40,10 +40,9 @@ public class ErrorDictionary {
     public static final ResultDTO BANK_ERROR = new ResultDTO(false, "Bank error", 135);
     public static final ResultDTO CARD_ALREADY_EXISTS = new ResultDTO(false, "Card already exists!", 136);
     public static final ResultDTO EMPTY_FILE = new ResultDTO(false, "File is empty!", 137);
-
     public static final ResultDTO TERMINAL_NOT_FOUND = new ResultDTO(false, "Terminal not found!", 138);
-
     public static final ResultDTO MERCHANT_TERMINAL_SETTINGS_NOT_FOUND = new ResultDTO(false, "Merchant terminal settings not found!", 139);
+    public static final ResultDTO OCCUPIED_TERMINAL = new ResultDTO(false, "Terminal is already occupied!", 140);
 
 
 }
