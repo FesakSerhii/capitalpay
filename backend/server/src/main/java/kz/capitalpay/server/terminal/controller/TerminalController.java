@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 
+import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
+
 @RestController
 @RequestMapping("/api/v1/auth/terminal")
 //@RequestMapping("/api/v1/terminal")
@@ -26,37 +28,37 @@ public class TerminalController {
     }
 
 
-    @RolesAllowed({"ADMIN"})
+    @RolesAllowed({ADMIN})
     @PostMapping("/create")
     public ResultDTO createTerminal(@RequestBody @Valid TerminalDto dto) {
         return terminalService.saveTerminal(dto);
     }
 
-    @RolesAllowed({"ADMIN"})
+    @RolesAllowed({ADMIN})
     @PostMapping("/edit")
     public ResultDTO editTerminal(@RequestBody @Valid TerminalDto dto) {
         return terminalService.saveTerminal(dto);
     }
 
-    @RolesAllowed({"ADMIN"})
+    @RolesAllowed({ADMIN})
     @PostMapping("/delete")
     public ResultDTO deleteTerminal(@RequestBody Long id) {
         return terminalService.deleteTerminal(id);
     }
 
-    @RolesAllowed({"ADMIN"})
+    @RolesAllowed({ADMIN})
     @PostMapping("/get")
     public ResultDTO getTerminal(@RequestBody Long id) {
         return terminalService.findTerminalById(id);
     }
 
-    @RolesAllowed({"ADMIN"})
+    @RolesAllowed({ADMIN})
     @PostMapping("/all")
     public ResultDTO getAll() {
         return terminalService.findAll();
     }
 
-    @RolesAllowed({"ADMIN"})
+    @RolesAllowed({ADMIN})
     @PostMapping("/free")
     public ResultDTO getFreeTerminals() {
         return terminalService.findFreeTerminals();

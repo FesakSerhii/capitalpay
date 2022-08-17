@@ -2,6 +2,7 @@ package kz.capitalpay.server.p2p.service;
 
 import kz.capitalpay.server.constants.ErrorDictionary;
 import kz.capitalpay.server.dto.ResultDTO;
+import kz.capitalpay.server.p2p.dto.MerchantTerminalSettingsDto;
 import kz.capitalpay.server.p2p.dto.P2pSettingsDto;
 import kz.capitalpay.server.p2p.dto.P2pSettingsResponseDto;
 import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
@@ -102,6 +103,24 @@ public class P2pSettingsService {
 
     public MerchantP2pSettings save(MerchantP2pSettings merchantP2pSettings) {
         return p2pSettingsRepository.save(merchantP2pSettings);
+    }
+
+    public ResultDTO setMerchantTerminalSettings(MerchantTerminalSettingsDto dto) {
+        MerchantP2pSettings settings = p2pSettingsRepository.findByUserId(dto.getMerchantId()).orElse(null);
+        if (Objects.isNull(settings)) {
+            return ErrorDictionary.MERCHANT_TERMINAL_SETTINGS_NOT_FOUND;
+        }
+        settings.setTerminalId(dto.getTerminalId());
+        settings = p2pSettingsRepository.save(settings);
+        return new ResultDTO(true, new MerchantTerminalSettingsDto(settings.getUserId(), settings.getTerminalId()), 0);
+    }
+
+    public ResultDTO getMerchantTerminalSettings(Long merchantId) {
+        MerchantP2pSettings settings = p2pSettingsRepository.findByUserId(merchantId).orElse(null);
+        if (Objects.isNull(settings)) {
+            return ErrorDictionary.MERCHANT_TERMINAL_SETTINGS_NOT_FOUND;
+        }
+        return new ResultDTO(true, new MerchantTerminalSettingsDto(settings.getUserId(), settings.getTerminalId()), 0);
     }
 
 }

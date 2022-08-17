@@ -14,6 +14,7 @@ public class MerchantP2pSettings {
     private Long userId;
     private boolean p2pAllowed;
     private Long defaultCardId;
+    private Long terminalId;
 
     public Long getId() {
         return id;
@@ -45,5 +46,13 @@ public class MerchantP2pSettings {
 
     public void setDefaultCardId(Long defaultCardId) {
         this.defaultCardId = defaultCardId;
+    }
+
+    public Long getTerminalId() {
+        return terminalId;
+    }
+
+    public void setTerminalId(Long terminalId) {
+        this.terminalId = terminalId;
     }
 }
