@@ -5,7 +5,6 @@ import javax.validation.constraints.NotNull;
 public class MerchantTerminalSettingsDto {
     @NotNull
     private Long merchantId;
-    @NotNull
     private Long terminalId;
 
     public MerchantTerminalSettingsDto(Long merchantId, Long terminalId) {

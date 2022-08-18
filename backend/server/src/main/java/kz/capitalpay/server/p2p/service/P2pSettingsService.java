@@ -49,6 +49,15 @@ public class P2pSettingsService {
         return merchantP2pSettings;
     }
 
+    public MerchantP2pSettings createMerchantTerminalSettings(Long merchantId, Long terminalId) {
+        MerchantP2pSettings merchantP2pSettings = new MerchantP2pSettings();
+        merchantP2pSettings.setTerminalId(terminalId);
+        merchantP2pSettings.setP2pAllowed(false);
+        merchantP2pSettings.setUserId(merchantId);
+        merchantP2pSettings = p2pSettingsRepository.save(merchantP2pSettings);
+        return merchantP2pSettings;
+    }
+
     public boolean existsByMerchantId(Long merchantId) {
         return p2pSettingsRepository.existsByUserId(merchantId);
     }
@@ -116,23 +125,26 @@ public class P2pSettingsService {
     public ResultDTO setMerchantTerminalSettings(MerchantTerminalSettingsDto dto) {
         MerchantP2pSettings settings = p2pSettingsRepository.findByUserId(dto.getMerchantId()).orElse(null);
         if (Objects.isNull(settings)) {
-            return ErrorDictionary.MERCHANT_TERMINAL_SETTINGS_NOT_FOUND;
+            settings = createMerchantTerminalSettings(dto.getMerchantId(), dto.getTerminalId());
         }
-        Terminal terminal = terminalRepository.findByIdAndDeletedFalse(dto.getTerminalId()).orElse(null);
-        if (Objects.isNull(terminal)) {
-            return ErrorDictionary.TERMINAL_NOT_FOUND;
-        }
-        if (!terminal.isFree()) {
-            return ErrorDictionary.OCCUPIED_TERMINAL;
-        }
-        terminal.setFree(false);
-        terminalRepository.save(terminal);
         if (Objects.nonNull(settings.getTerminalId())) {
             Terminal oldTerminal = terminalRepository.findByIdAndDeletedFalse(settings.getTerminalId()).orElse(null);
             if (Objects.nonNull(oldTerminal)) {
                 oldTerminal.setFree(true);
                 terminalRepository.save(oldTerminal);
             }
+        }
+        Terminal terminal = null;
+        if (Objects.nonNull(dto.getTerminalId())) {
+            terminal = terminalRepository.findByIdAndDeletedFalse(dto.getTerminalId()).orElse(null);
+            if (Objects.isNull(terminal)) {
+                return ErrorDictionary.TERMINAL_NOT_FOUND;
+            }
+            if (!terminal.isFree()) {
+                return ErrorDictionary.OCCUPIED_TERMINAL;
+            }
+            terminal.setFree(false);
+            terminalRepository.save(terminal);
         }
         settings.setTerminalId(dto.getTerminalId());
         settings = p2pSettingsRepository.save(settings);
@@ -142,7 +154,7 @@ public class P2pSettingsService {
     public ResultDTO getMerchantTerminalSettings(Long merchantId) {
         MerchantP2pSettings settings = p2pSettingsRepository.findByUserId(merchantId).orElse(null);
         if (Objects.isNull(settings)) {
-            return ErrorDictionary.MERCHANT_TERMINAL_SETTINGS_NOT_FOUND;
+            new ResultDTO(true, null, 0);
         }
         Terminal terminal = terminalRepository.findByIdAndDeletedFalse(settings.getTerminalId()).orElse(null);
         if (Objects.isNull(terminal)) {
