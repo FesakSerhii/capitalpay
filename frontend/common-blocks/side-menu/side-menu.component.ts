@@ -78,6 +78,11 @@ export class SideMenuComponent implements OnInit {
         title:'Оформление',
         icon:'description'
       },
+      {
+        route: "terminals",
+        title: "Терминалы",
+        icon: "account_balance"
+      }
     ]
   };
   roleList = {

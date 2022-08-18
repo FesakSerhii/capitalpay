@@ -14,6 +14,8 @@ import {exhaustMap, map, switchMap} from 'rxjs/operators';
 import {SortHelper} from '../../../../../../src/app/helper/sort-helper';
 import {SearchInputService} from '../../../../../../src/app/service/search-input.service';
 import {environment} from '../../../environments/environment';
+import {TerminalService} from "../../service/terminal.service";
+import {combineLatest, Observable} from "rxjs";
 
 @Component({
   selector: 'app-user-settings',
@@ -24,6 +26,10 @@ export class UserSettingsComponent implements OnInit {
   @ViewChild('massageModal', {static: false}) massageModal: MassageModalComponent;
   @ViewChild('paymentCard', {static: false}) paymentCard: PaymentCardModalComponent;
   @ViewChild('form') form: ElementRef;
+
+  freeTerminals$: Observable<any[]>;
+
+  chosenTerminal =  new FormControl(undefined, [Validators.required])
 
   redirectForm = new FormGroup({
     action: new FormControl(),
@@ -113,16 +119,41 @@ export class UserSettingsComponent implements OnInit {
   sortHelper = new SortHelper();
   tableSearch = new FormControl();
   errStatusMassage: string = null;
+  terminalData: any;
+  oldTerminalData: any;
 
-  constructor(private router: Router,
-              private userService: UserService,
-              private activatedRoute: ActivatedRoute,
-              private currencyService: CurrencyService,
-              private paymentsService: PaymentsService,
-              private modalService: NgbModal,
-              private p2pService: P2pService,
-              private searchInputService: SearchInputService,
-              private kycService: KycService) {
+  constructor(
+    private router: Router,
+    private userService: UserService,
+    private activatedRoute: ActivatedRoute,
+    private currencyService: CurrencyService,
+    private paymentsService: PaymentsService,
+    private modalService: NgbModal,
+    private p2pService: P2pService,
+    private searchInputService: SearchInputService,
+    private kycService: KycService,
+    private terminalService: TerminalService
+  ) {
+    this.updateFreeTerminals();
+  }
+
+  get sortedActions() {
+    if (this.sortHelper.sort.sortBy === null) {
+      this.cardList = this.searchInputService.filterData(this.dontTouched, this.tableSearch.value);
+      return this.cardList
+    } else {
+      let sorted = this.dontTouched.sort(
+        (a, b) => {
+          let aField = a[this.sortHelper.sort.sortBy];
+          let bField = b[this.sortHelper.sort.sortBy];
+          let res = aField == bField ? 0 : (aField > bField ? 1 : -1);
+          return this.sortHelper.sort.increase ? res : -res;
+        }
+      );
+      sorted = this.searchInputService.filterData(sorted, '');
+      this.cardList = [...sorted];
+      return this.cardList
+    }
   }
 
   ngOnInit(): void {
@@ -130,7 +161,7 @@ export class UserSettingsComponent implements OnInit {
       this.userId = +param.get('userId');
       this.getUserInfo();
       this.getCommissions();
-      this.getCardList()
+      this.getCardList();
     })
 
     this.isEditMode = false;
@@ -142,6 +173,7 @@ export class UserSettingsComponent implements OnInit {
       }
     })
   }
+
   checkSessionStorage() {
     const cardOnAdd = JSON.parse(sessionStorage.getItem('cardData'));
     // bankCardId: "900000028611"
@@ -156,7 +188,7 @@ export class UserSettingsComponent implements OnInit {
       // cashbox: casbBox, if action was adding card to cashBox, otherwise null
       // userId: this.userId
       if (loadScheme.cashBox) {
-       this.activeTab = 'tab2';
+        this.activeTab = 'tab2';
       }
     }
     return;
@@ -167,7 +199,8 @@ export class UserSettingsComponent implements OnInit {
   }
 
   getUserInfo() {
-    this.userService.getUserData(this.userId).then(resp => {
+    combineLatest([this.userService.getUserData(this.userId), this.terminalService.getMerchantTerminal(this.userId)]).subscribe(([resp, terminalData]) => {
+      this.terminalData = terminalData;
       this.userInfoForm.patchValue(resp.data, {emitEvent: false});
       const roles = resp.data.roles;
       for (const role in roles) {
@@ -235,7 +268,7 @@ export class UserSettingsComponent implements OnInit {
           useDefaultCard: new FormControl(p2pInfo['useDefaultCard'])
         });
         this.cashBoxList.controls.push(form);
-        if(loadScheme && loadScheme.cashbox === cashBox['cashBoxId']){
+        if (loadScheme && loadScheme.cashbox === cashBox['cashBoxId']) {
           this.checkSessionStorage()
         }
       })
@@ -243,8 +276,8 @@ export class UserSettingsComponent implements OnInit {
   }
 
   editUserData() {
-    if(this.merchantInfoForm.invalid||this.userInfoForm.invalid){
-      this.errStatusMassage='Заполните все необходимые поля';
+    if (this.merchantInfoForm.invalid || this.userInfoForm.invalid) {
+      this.errStatusMassage = 'Заполните все необходимые поля';
       return;
     }
     if (this.userRoles.ROLE_MERCHANT) {
@@ -254,9 +287,15 @@ export class UserSettingsComponent implements OnInit {
         this.getUserInfo()
       }).catch(err => {
         switch (err.status) {
-          case 500: this.errStatusMassage = 'Ошибка сервера, попробуйте позже'; break;
-          case 0: this.errStatusMassage = 'Отсутствие интернет соединения'; break;
-          default: this.errStatusMassage = err.statusMessage; break;
+          case 500:
+            this.errStatusMassage = 'Ошибка сервера, попробуйте позже';
+            break;
+          case 0:
+            this.errStatusMassage = 'Отсутствие интернет соединения';
+            break;
+          default:
+            this.errStatusMassage = err.statusMessage;
+            break;
         }
       })
     } else {
@@ -265,9 +304,15 @@ export class UserSettingsComponent implements OnInit {
         this.getUserInfo()
       }).catch(err => {
         switch (err.status) {
-          case 500: this.errStatusMassage = 'Ошибка сервера, попробуйте позже'; break;
-          case 0: this.errStatusMassage = 'Отсутствие интернет соединения'; break;
-          default: this.errStatusMassage = err.statusMessage; break;
+          case 500:
+            this.errStatusMassage = 'Ошибка сервера, попробуйте позже';
+            break;
+          case 0:
+            this.errStatusMassage = 'Отсутствие интернет соединения';
+            break;
+          default:
+            this.errStatusMassage = err.statusMessage;
+            break;
         }
       })
     }
@@ -434,7 +479,7 @@ export class UserSettingsComponent implements OnInit {
       if (modalResult?.hasOwnProperty('token')) {
         this.saveMethodsOnCashBoxBeforeSave(cashBox, 'setCashBoxCard', [modalResult.id, cashBox.value.cashBoxId])
         this.modalService.dismissAll(false)
-      }else {
+      } else {
         this.registerPaymentCard(modalResult.cardNumber, modalResult.expirationYear, modalResult.expirationMonth, modalResult.cvv2Code)
           .subscribe(response => {
             this.getCardList()
@@ -447,6 +492,7 @@ export class UserSettingsComponent implements OnInit {
       console.log(modalResult.cardNumber === this.defaultPaymentCard);
     })
   }
+
   addMerchantPaymentCard() {
     this.paymentCard.open().then(modalResult => {
         if (modalResult?.hasOwnProperty('token')) {
@@ -460,8 +506,8 @@ export class UserSettingsComponent implements OnInit {
               this.paymentCard.close();
               this.getCardList()
             })
-        }else{
-          this.isP2PActive.setValue(false, {emitEvent:false})
+        } else {
+          this.isP2PActive.setValue(false, {emitEvent: false})
           this.modalService.dismissAll(false)
         }
       }
@@ -530,25 +576,6 @@ export class UserSettingsComponent implements OnInit {
     this.sortHelper = sh.nextSort(field);
   }
 
-  get sortedActions() {
-    if (this.sortHelper.sort.sortBy === null) {
-      this.cardList = this.searchInputService.filterData(this.dontTouched, this.tableSearch.value);
-      return this.cardList
-    } else {
-      let sorted = this.dontTouched.sort(
-        (a, b) => {
-          let aField = a[this.sortHelper.sort.sortBy];
-          let bField = b[this.sortHelper.sort.sortBy];
-          let res = aField == bField ? 0 : (aField > bField ? 1 : -1);
-          return this.sortHelper.sort.increase ? res : -res;
-        }
-      );
-      sorted = this.searchInputService.filterData(sorted, '');
-      this.cardList = [...sorted];
-      return this.cardList
-    }
-  }
-
   deleteCard(card: any) {
     this.modalType = this.modalTypes['deleteCardConfirm']
     this.massageModal.open().then(() => {
@@ -557,7 +584,45 @@ export class UserSettingsComponent implements OnInit {
       })
     })
   }
+
   // addOrChangeCard(cashBox=null) {
   //   this[environment['addCashBoxPaymentCard']](cashBox)
   // }
+  goToTerminalEditMode() {
+    this.oldTerminalData = this.terminalData;
+    this.terminalData = undefined;
+  }
+
+  resetTerminal() {
+    this.terminalService.updateMerchantTerminal({
+      merchantId: this.userId,
+      terminalId: null
+    }).subscribe(() => {
+      this.terminalData = undefined;
+      this.updateFreeTerminals();
+    });
+  }
+
+
+  updateTerminal() {
+    if (!this.chosenTerminal.valid) {
+      return this.chosenTerminal.markAllAsTouched();
+    }
+    this.terminalService.updateMerchantTerminal({
+      merchantId: this.userId,
+      terminalId: this.chosenTerminal.value
+    }).subscribe(
+      (termData) => {
+        this.terminalData = termData;
+        this.chosenTerminal.reset();
+        this.updateFreeTerminals()
+      }
+    );
+  }
+
+  private updateFreeTerminals() {
+    this.freeTerminals$ = this.terminalService.getFreeTerminals().pipe(
+      map<any, any[]>(terminals => terminals.map(t => ({title: t.name, value: t.id})))
+    )
+  }
 }
