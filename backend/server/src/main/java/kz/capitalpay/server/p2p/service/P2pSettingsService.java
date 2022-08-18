@@ -5,6 +5,7 @@ import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.p2p.dto.MerchantTerminalSettingsDto;
 import kz.capitalpay.server.p2p.dto.P2pSettingsDto;
 import kz.capitalpay.server.p2p.dto.P2pSettingsResponseDto;
+import kz.capitalpay.server.p2p.mapper.MerchantSettingsMapper;
 import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
 import kz.capitalpay.server.p2p.repository.P2pSettingsRepository;
 import kz.capitalpay.server.terminal.model.Terminal;
@@ -29,12 +30,14 @@ public class P2pSettingsService {
     private final UserBankCardRepository userBankCardRepository;
 
     private final TerminalRepository terminalRepository;
+    private final MerchantSettingsMapper merchantSettingsMapper;
 
-    public P2pSettingsService(P2pSettingsRepository p2pSettingsRepository, UserCardRepository userCardRepository, UserBankCardRepository userBankCardRepository, TerminalRepository terminalRepository) {
+    public P2pSettingsService(P2pSettingsRepository p2pSettingsRepository, UserCardRepository userCardRepository, UserBankCardRepository userBankCardRepository, TerminalRepository terminalRepository, MerchantSettingsMapper merchantSettingsMapper) {
         this.p2pSettingsRepository = p2pSettingsRepository;
         this.userCardRepository = userCardRepository;
         this.userBankCardRepository = userBankCardRepository;
         this.terminalRepository = terminalRepository;
+        this.merchantSettingsMapper = merchantSettingsMapper;
     }
 
     public MerchantP2pSettings createMerchantP2pSettings(Long merchantId, Long cardId) {
@@ -133,7 +136,7 @@ public class P2pSettingsService {
         }
         settings.setTerminalId(dto.getTerminalId());
         settings = p2pSettingsRepository.save(settings);
-        return new ResultDTO(true, new MerchantTerminalSettingsDto(settings.getUserId(), settings.getTerminalId()), 0);
+        return new ResultDTO(true, merchantSettingsMapper.toMerchantTerminalSettingsDto(settings.getUserId(), terminal), 0);
     }
 
     public ResultDTO getMerchantTerminalSettings(Long merchantId) {
@@ -141,7 +144,11 @@ public class P2pSettingsService {
         if (Objects.isNull(settings)) {
             return ErrorDictionary.MERCHANT_TERMINAL_SETTINGS_NOT_FOUND;
         }
-        return new ResultDTO(true, new MerchantTerminalSettingsDto(settings.getUserId(), settings.getTerminalId()), 0);
+        Terminal terminal = terminalRepository.findByIdAndDeletedFalse(settings.getTerminalId()).orElse(null);
+        if (Objects.isNull(terminal)) {
+            return ErrorDictionary.TERMINAL_NOT_FOUND;
+        }
+        return new ResultDTO(true, merchantSettingsMapper.toMerchantTerminalSettingsDto(settings.getUserId(), terminal), 0);
     }
 
 }
