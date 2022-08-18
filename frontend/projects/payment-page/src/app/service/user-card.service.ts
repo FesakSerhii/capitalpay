@@ -12,6 +12,9 @@ export class UserCardService {
   registerCard(cardNumber,expireYear,expireMonth,cvv2Code,merchantId,cashBoxId,parameters) {
     return this.apiService.post('api','/client-card/register', {cardNumber,expireYear,expireMonth,cvv2Code,merchantId,cashBoxId,parameters}).toPromise();
   }
+  registerCardWithBank(merchantId) {
+    return this.apiService.post('api','/user-card/register-with-bank',{merchantId}).toPromise()
+  }
   cardCheckValidity(cardId) {
     return this.apiService.post('api',`/client-card/check-validity/${cardId}`).toPromise();
   }

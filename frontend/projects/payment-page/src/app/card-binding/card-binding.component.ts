@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {validateCard} from '../../../../../common-blocks/validators/paymentCardNumberValidator';
 import {UserCardService} from '../service/user-card.service';
@@ -7,6 +7,7 @@ import {BankErrorCodesService} from '../service/bank-error-codes.service';
 import {expirationDateValidator} from '../../../../../common-blocks/validators/dateCompareValidator';
 import {filter} from 'rxjs/operators';
 import {RedirectService} from '../service/redirect.service';
+import {environment} from "../../../../admin-panel/src/environments/environment";
 
 @Component({
   selector: 'app-card-binding',
@@ -14,6 +15,13 @@ import {RedirectService} from '../service/redirect.service';
   styleUrls: ['./card-binding.component.scss']
 })
 export class CardBindingComponent implements OnInit {
+  @ViewChild('form') form: ElementRef;
+
+  redirectForm = new FormGroup({
+    xml: new FormControl(),
+    backLink: new FormControl(),
+    postLink: new FormControl(),
+  });
 
   token: string = null;
   id: number = null;
@@ -105,12 +113,10 @@ export class CardBindingComponent implements OnInit {
     // link.target="_blank"
     link.click()
   }
-
   getErrMassage() {
     return this.bankErrorCodesService.getErrMassage(this.validityErrorCode)
   }
-
-  getCardData(event: any) {
+  addCardData(event: any) {
     this.userCardService.registerCard(event.cardNumber, event.expirationYear, event.expirationMonth, event.cvv2Code, this.merchantId, this.cashBoxId, this.parameters)
       .then(resp => {
           this.token = resp.data.token;

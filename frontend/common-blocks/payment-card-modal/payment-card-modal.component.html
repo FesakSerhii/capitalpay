@@ -40,12 +40,12 @@
     </div>
     <div class="card-footer d-flex justify-content-end">
       <button class="btn btn-default btn-round" (click)="close()">Отменить</button>
-      <button class="btn btn-success btn-round" [disabled]="cardForm.invalid" [class.disabled]="cardForm.invalid" (click)="sendResult()">Сохранить</button>
+      <button class="btn btn-success btn-round" [disabled]="cardForm.invalid&&cardForm.touched" [class.disabled]="cardForm.invalid&&cardForm.touched" (click)="sendResult()">Сохранить</button>
     </div>
   </div>
 </ng-template>
-<form #form [formGroup]="redirectForm" action="https://testpay.kkb.kz/jsp/hbpay/logon.jsp"
-       METHOD="POST" id="SendOrder" hidden>
+<form #form [formGroup]="redirectForm"
+      METHOD="POST" id="SendOrder" hidden>
   <input hidden formControlName="xml" name="Signed_Order_B64" type="text"/>
   <input hidden formControlName="backLink" name="BackLink" type="text"/>
   <input hidden formControlName="postLink" name="PostLink" type="text"/>

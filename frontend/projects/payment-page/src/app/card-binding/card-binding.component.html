@@ -1,6 +1,12 @@
-<app-payment-form (cardDataEvent)="getCardData($event)"
+<app-payment-form (cardDataEvent)="addCardData($event)"
                   (cancelEvent)="redirectFailed()"
                   [p2pEnabled]="cashBoxInfo.p2pEnabled"
                   [validityErrorCode]="validityErrorCode"
                   [validityError]="validityError"
                   [queryParamEnable]="queryParamEnable"></app-payment-form>
+<form #form [formGroup]="redirectForm" [action]="this.redirectForm.value.action"
+      METHOD="POST" id="SendOrder" hidden>
+  <input hidden formControlName="xml" name="Signed_Order_B64" type="text"/>
+  <input hidden formControlName="backLink" name="BackLink" type="text"/>
+  <input hidden formControlName="postLink" name="PostLink" type="text"/>
+</form>

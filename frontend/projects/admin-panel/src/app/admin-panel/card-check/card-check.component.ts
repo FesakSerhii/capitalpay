@@ -16,7 +16,7 @@ export class CardCheckComponent implements OnInit, OnDestroy {
   orderId: string;
   counter: number;
   sub$ = new ReplaySubject();
-  // https://admin.capitalpay.kz/admin-panel/card-check?userId=663&orderId=00000164342273
+  // http://localhost:5200/admin-panel/card-check?userId=663&orderId=00000164372337
 
   constructor(private activatedRoute: ActivatedRoute, private p2pService: P2pService, private router: Router) {
   }
