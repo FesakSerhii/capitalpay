@@ -5,6 +5,7 @@ import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.p2p.dto.MerchantTerminalSettingsDto;
 import kz.capitalpay.server.p2p.dto.P2pSettingsDto;
 import kz.capitalpay.server.p2p.dto.P2pSettingsResponseDto;
+import kz.capitalpay.server.p2p.mapper.MerchantSettingsMapper;
 import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
 import kz.capitalpay.server.p2p.repository.P2pSettingsRepository;
 import kz.capitalpay.server.terminal.model.Terminal;
@@ -29,17 +30,28 @@ public class P2pSettingsService {
     private final UserBankCardRepository userBankCardRepository;
 
     private final TerminalRepository terminalRepository;
+    private final MerchantSettingsMapper merchantSettingsMapper;
 
-    public P2pSettingsService(P2pSettingsRepository p2pSettingsRepository, UserCardRepository userCardRepository, UserBankCardRepository userBankCardRepository, TerminalRepository terminalRepository) {
+    public P2pSettingsService(P2pSettingsRepository p2pSettingsRepository, UserCardRepository userCardRepository, UserBankCardRepository userBankCardRepository, TerminalRepository terminalRepository, MerchantSettingsMapper merchantSettingsMapper) {
         this.p2pSettingsRepository = p2pSettingsRepository;
         this.userCardRepository = userCardRepository;
         this.userBankCardRepository = userBankCardRepository;
         this.terminalRepository = terminalRepository;
+        this.merchantSettingsMapper = merchantSettingsMapper;
     }
 
     public MerchantP2pSettings createMerchantP2pSettings(Long merchantId, Long cardId) {
         MerchantP2pSettings merchantP2pSettings = new MerchantP2pSettings();
         merchantP2pSettings.setDefaultCardId(cardId);
+        merchantP2pSettings.setP2pAllowed(false);
+        merchantP2pSettings.setUserId(merchantId);
+        merchantP2pSettings = p2pSettingsRepository.save(merchantP2pSettings);
+        return merchantP2pSettings;
+    }
+
+    public MerchantP2pSettings createMerchantTerminalSettings(Long merchantId, Long terminalId) {
+        MerchantP2pSettings merchantP2pSettings = new MerchantP2pSettings();
+        merchantP2pSettings.setTerminalId(terminalId);
         merchantP2pSettings.setP2pAllowed(false);
         merchantP2pSettings.setUserId(merchantId);
         merchantP2pSettings = p2pSettingsRepository.save(merchantP2pSettings);
@@ -113,17 +125,8 @@ public class P2pSettingsService {
     public ResultDTO setMerchantTerminalSettings(MerchantTerminalSettingsDto dto) {
         MerchantP2pSettings settings = p2pSettingsRepository.findByUserId(dto.getMerchantId()).orElse(null);
         if (Objects.isNull(settings)) {
-            return ErrorDictionary.MERCHANT_TERMINAL_SETTINGS_NOT_FOUND;
+            settings = createMerchantTerminalSettings(dto.getMerchantId(), dto.getTerminalId());
         }
-        Terminal terminal = terminalRepository.findByIdAndDeletedFalse(dto.getTerminalId()).orElse(null);
-        if (Objects.isNull(terminal)) {
-            return ErrorDictionary.TERMINAL_NOT_FOUND;
-        }
-        if (!terminal.isFree()) {
-            return ErrorDictionary.OCCUPIED_TERMINAL;
-        }
-        terminal.setFree(false);
-        terminalRepository.save(terminal);
         if (Objects.nonNull(settings.getTerminalId())) {
             Terminal oldTerminal = terminalRepository.findByIdAndDeletedFalse(settings.getTerminalId()).orElse(null);
             if (Objects.nonNull(oldTerminal)) {
@@ -131,17 +134,33 @@ public class P2pSettingsService {
                 terminalRepository.save(oldTerminal);
             }
         }
+        Terminal terminal = null;
+        if (Objects.nonNull(dto.getTerminalId())) {
+            terminal = terminalRepository.findByIdAndDeletedFalse(dto.getTerminalId()).orElse(null);
+            if (Objects.isNull(terminal)) {
+                return ErrorDictionary.TERMINAL_NOT_FOUND;
+            }
+            if (!terminal.isFree()) {
+                return ErrorDictionary.OCCUPIED_TERMINAL;
+            }
+            terminal.setFree(false);
+            terminalRepository.save(terminal);
+        }
         settings.setTerminalId(dto.getTerminalId());
         settings = p2pSettingsRepository.save(settings);
-        return new ResultDTO(true, new MerchantTerminalSettingsDto(settings.getUserId(), settings.getTerminalId()), 0);
+        return new ResultDTO(true, merchantSettingsMapper.toMerchantTerminalSettingsDto(settings.getUserId(), terminal), 0);
     }
 
     public ResultDTO getMerchantTerminalSettings(Long merchantId) {
         MerchantP2pSettings settings = p2pSettingsRepository.findByUserId(merchantId).orElse(null);
         if (Objects.isNull(settings)) {
-            return ErrorDictionary.MERCHANT_TERMINAL_SETTINGS_NOT_FOUND;
+            new ResultDTO(true, null, 0);
         }
-        return new ResultDTO(true, new MerchantTerminalSettingsDto(settings.getUserId(), settings.getTerminalId()), 0);
+        Terminal terminal = terminalRepository.findByIdAndDeletedFalse(settings.getTerminalId()).orElse(null);
+        if (Objects.isNull(terminal)) {
+            return ErrorDictionary.TERMINAL_NOT_FOUND;
+        }
+        return new ResultDTO(true, merchantSettingsMapper.toMerchantTerminalSettingsDto(settings.getUserId(), terminal), 0);
     }
 
 }

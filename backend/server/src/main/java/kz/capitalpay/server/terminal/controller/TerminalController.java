@@ -1,6 +1,7 @@
 package kz.capitalpay.server.terminal.controller;
 
 import kz.capitalpay.server.dto.ResultDTO;
+import kz.capitalpay.server.p2p.dto.IdDto;
 import kz.capitalpay.server.terminal.dto.TerminalDto;
 import kz.capitalpay.server.terminal.service.TerminalService;
 import org.slf4j.Logger;
@@ -48,8 +49,8 @@ public class TerminalController {
 
     @RolesAllowed({ADMIN})
     @PostMapping("/get")
-    public ResultDTO getTerminal(@RequestBody Long id) {
-        return terminalService.findTerminalById(id);
+    public ResultDTO getTerminal(@RequestBody @Valid IdDto dto) {
+        return terminalService.findTerminalById(dto.getId());
     }
 
     @RolesAllowed({ADMIN})
