@@ -65,7 +65,7 @@ public class P2pSettingsService {
     public ResultDTO getP2pSettingsByMerchantId(Long merchantId) {
         MerchantP2pSettings merchantP2pSettings = p2pSettingsRepository.findByUserId(merchantId).orElse(null);
         P2pSettingsResponseDto dto = new P2pSettingsResponseDto();
-        if (Objects.isNull(merchantP2pSettings)) {
+        if (Objects.isNull(merchantP2pSettings) || Objects.isNull(merchantP2pSettings.getDefaultCardId())) {
             dto.setCardNumber(null);
             dto.setMerchantId(merchantId);
             dto.setP2pAllowed(false);
@@ -85,7 +85,7 @@ public class P2pSettingsService {
     public ResultDTO getBankP2pSettingsByMerchantId(Long merchantId) {
         MerchantP2pSettings merchantP2pSettings = p2pSettingsRepository.findByUserId(merchantId).orElse(null);
         P2pSettingsResponseDto dto = new P2pSettingsResponseDto();
-        if (Objects.isNull(merchantP2pSettings)) {
+        if (Objects.isNull(merchantP2pSettings) || Objects.isNull(merchantP2pSettings.getDefaultCardId())) {
             dto.setCardNumber(null);
             dto.setMerchantId(merchantId);
             dto.setP2pAllowed(false);
