@@ -1,6 +1,7 @@
 package kz.capitalpay.server.p2p.controller;
 
 import kz.capitalpay.server.dto.ResultDTO;
+import kz.capitalpay.server.p2p.dto.IdDto;
 import kz.capitalpay.server.p2p.dto.MerchantTerminalSettingsDto;
 import kz.capitalpay.server.p2p.service.P2pSettingsService;
 import org.slf4j.Logger;
@@ -35,7 +36,7 @@ public class MerchantTerminalSettingsController {
 
     @RolesAllowed({ADMIN})
     @PostMapping("/get")
-    public ResultDTO getMerchantTerminalSettings(@RequestBody Long merchantId) {
-        return p2pSettingsService.getMerchantTerminalSettings(merchantId);
+    public ResultDTO getMerchantTerminalSettings(@RequestBody @Valid IdDto dto) {
+        return p2pSettingsService.getMerchantTerminalSettings(dto.getId());
     }
 }
