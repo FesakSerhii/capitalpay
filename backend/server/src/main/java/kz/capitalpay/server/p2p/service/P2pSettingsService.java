@@ -65,7 +65,7 @@ public class P2pSettingsService {
     public ResultDTO getP2pSettingsByMerchantId(Long merchantId) {
         MerchantP2pSettings merchantP2pSettings = p2pSettingsRepository.findByUserId(merchantId).orElse(null);
         P2pSettingsResponseDto dto = new P2pSettingsResponseDto();
-        if (Objects.isNull(merchantP2pSettings)) {
+        if (Objects.isNull(merchantP2pSettings) || Objects.isNull(merchantP2pSettings.getDefaultCardId())) {
             dto.setCardNumber(null);
             dto.setMerchantId(merchantId);
             dto.setP2pAllowed(false);
@@ -85,7 +85,7 @@ public class P2pSettingsService {
     public ResultDTO getBankP2pSettingsByMerchantId(Long merchantId) {
         MerchantP2pSettings merchantP2pSettings = p2pSettingsRepository.findByUserId(merchantId).orElse(null);
         P2pSettingsResponseDto dto = new P2pSettingsResponseDto();
-        if (Objects.isNull(merchantP2pSettings)) {
+        if (Objects.isNull(merchantP2pSettings) || Objects.isNull(merchantP2pSettings.getDefaultCardId())) {
             dto.setCardNumber(null);
             dto.setMerchantId(merchantId);
             dto.setP2pAllowed(false);
@@ -104,7 +104,7 @@ public class P2pSettingsService {
 
     public ResultDTO setP2pSettings(P2pSettingsDto dto) {
         Optional<MerchantP2pSettings> optionalMerchantP2pSettings = p2pSettingsRepository.findByUserId(dto.getMerchantId());
-        if (optionalMerchantP2pSettings.isEmpty()) {
+        if (optionalMerchantP2pSettings.isEmpty() || Objects.isNull(optionalMerchantP2pSettings.get().getDefaultCardId())) {
             return ErrorDictionary.P2P_SETTINGS_NOT_FOUND;
         }
 
@@ -153,8 +153,8 @@ public class P2pSettingsService {
 
     public ResultDTO getMerchantTerminalSettings(Long merchantId) {
         MerchantP2pSettings settings = p2pSettingsRepository.findByUserId(merchantId).orElse(null);
-        if (Objects.isNull(settings)) {
-            new ResultDTO(true, null, 0);
+        if (Objects.isNull(settings) || Objects.isNull(settings.getTerminalId())) {
+            return new ResultDTO(true, null, 0);
         }
         Terminal terminal = terminalRepository.findByIdAndDeletedFalse(settings.getTerminalId()).orElse(null);
         if (Objects.isNull(terminal)) {
