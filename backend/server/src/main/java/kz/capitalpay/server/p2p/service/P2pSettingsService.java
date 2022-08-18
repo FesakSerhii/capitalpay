@@ -153,7 +153,7 @@ public class P2pSettingsService {
 
     public ResultDTO getMerchantTerminalSettings(Long merchantId) {
         MerchantP2pSettings settings = p2pSettingsRepository.findByUserId(merchantId).orElse(null);
-        if (Objects.isNull(settings)) {
+        if (Objects.isNull(settings) || Objects.isNull(settings.getTerminalId())) {
             return new ResultDTO(true, null, 0);
         }
         Terminal terminal = terminalRepository.findByIdAndDeletedFalse(settings.getTerminalId()).orElse(null);

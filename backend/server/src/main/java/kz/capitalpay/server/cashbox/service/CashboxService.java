@@ -162,7 +162,7 @@ public class CashboxService {
             return cashboxRepository.findCardById(cashBoxId);
         }
         MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(cashbox.getMerchantId());
-        if (Objects.isNull(merchantP2pSettings)) {
+        if (Objects.isNull(merchantP2pSettings) || Objects.isNull(merchantP2pSettings.getDefaultCardId())) {
             return 0L;
         }
         return merchantP2pSettings.getDefaultCardId();
