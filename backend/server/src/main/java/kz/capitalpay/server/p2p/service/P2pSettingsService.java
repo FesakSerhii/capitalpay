@@ -104,7 +104,7 @@ public class P2pSettingsService {
 
     public ResultDTO setP2pSettings(P2pSettingsDto dto) {
         Optional<MerchantP2pSettings> optionalMerchantP2pSettings = p2pSettingsRepository.findByUserId(dto.getMerchantId());
-        if (optionalMerchantP2pSettings.isEmpty()) {
+        if (optionalMerchantP2pSettings.isEmpty() || Objects.isNull(optionalMerchantP2pSettings.get().getDefaultCardId())) {
             return ErrorDictionary.P2P_SETTINGS_NOT_FOUND;
         }
 
