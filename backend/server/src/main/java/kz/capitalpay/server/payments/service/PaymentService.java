@@ -162,7 +162,7 @@ public class PaymentService {
             if (applicationUser == null) {
                 return USER_NOT_FOUND;
             }
-            List<Payment> paymentList = new ArrayList<>();
+            List<Payment> paymentList;
             if (applicationUser.getRoles().contains(applicationRoleService.getRole(OPERATOR))
                     || applicationUser.getRoles().contains(applicationRoleService.getRole(ADMIN))) {
                 paymentList = paymentRepository.findAll();
