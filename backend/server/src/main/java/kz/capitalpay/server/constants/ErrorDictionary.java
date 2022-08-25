@@ -43,6 +43,7 @@ public class ErrorDictionary {
     public static final ResultDTO TERMINAL_NOT_FOUND = new ResultDTO(false, "Terminal not found!", 138);
     public static final ResultDTO MERCHANT_TERMINAL_SETTINGS_NOT_FOUND = new ResultDTO(false, "Merchant terminal settings not found!", 139);
     public static final ResultDTO OCCUPIED_TERMINAL = new ResultDTO(false, "Terminal is already occupied!", 140);
+    public static final ResultDTO FEE_NOT_SET = new ResultDTO(false, "Fee does not set", 141);
 
 
 }

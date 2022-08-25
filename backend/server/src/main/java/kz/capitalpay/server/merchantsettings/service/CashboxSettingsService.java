@@ -2,6 +2,7 @@ package kz.capitalpay.server.merchantsettings.service;
 
 import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.cashbox.repository.CashboxRepository;
+import kz.capitalpay.server.constants.ErrorDictionary;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.service.ApplicationRoleService;
@@ -61,13 +62,10 @@ public class CashboxSettingsService {
     public ResultDTO setOrUpdateCashboxSettings(Principal principal, CashBoxSettingDTO request) {
         try {
             ApplicationUser admin = applicationUserService.getUserByLogin(principal.getName());
-            if (admin.getRoles().contains(applicationRoleService.getRole(ADMIN))
-                    || admin.getRoles().contains(applicationRoleService.getRole(OPERATOR))
-                    || admin.getRoles().contains(applicationRoleService.getRole(MERCHANT))) {
+            if (admin.getRoles().contains(applicationRoleService.getRole(ADMIN)) || admin.getRoles().contains(applicationRoleService.getRole(OPERATOR)) || admin.getRoles().contains(applicationRoleService.getRole(MERCHANT))) {
                 for (CashBoxSettingFieldDTO field : request.getFields()) {
                     if (field.getFieldName().equalsIgnoreCase(CLIENT_FEE)) {
-                        ResultDTO resultDTO = savedClientFee(field.getCashBoxId(), field.getFieldName(),
-                                field.getFieldValue());
+                        ResultDTO resultDTO = savedClientFee(field.getCashBoxId(), field.getFieldName(), field.getFieldValue());
                         if (!resultDTO.isResult()) {
                             return resultDTO;
                         }
@@ -88,9 +86,7 @@ public class CashboxSettingsService {
     public ResultDTO getCashboxSettings(Principal principal, CashBoxSettingDTO cashBoxDTO) {
         try {
             ApplicationUser admin = applicationUserService.getUserByLogin(principal.getName());
-            if (admin.getRoles().contains(applicationRoleService.getRole(ADMIN))
-                    || admin.getRoles().contains(applicationRoleService.getRole(OPERATOR))
-                    || admin.getRoles().contains(applicationRoleService.getRole(MERCHANT))) {
+            if (admin.getRoles().contains(applicationRoleService.getRole(ADMIN)) || admin.getRoles().contains(applicationRoleService.getRole(OPERATOR)) || admin.getRoles().contains(applicationRoleService.getRole(MERCHANT))) {
                 Map<String, String> result = new HashMap<>();
                 result.put(CASHBOX_CURRENCY_LIST, getField(cashBoxDTO.getCashBoxId(), CASHBOX_CURRENCY_LIST));
                 result.put(CASHBOX_PAYSYSTEM_LIST, getField(cashBoxDTO.getCashBoxId(), CASHBOX_PAYSYSTEM_LIST));
@@ -128,10 +124,8 @@ public class CashboxSettingsService {
     public ResultDTO deleteCashboxSettings(Principal principal, CashBoxSettingFieldDTO request) {
         try {
             ApplicationUser admin = applicationUserService.getUserByLogin(principal.getName());
-            if (admin.getRoles().contains(applicationRoleService.getRole(ADMIN))
-                    || admin.getRoles().contains(applicationRoleService.getRole(OPERATOR))) {
-                CashboxSettings cashboxSettings = cashboxSettingsRepository.findTopByFieldNameAndCashboxId(request.getFieldName(),
-                        request.getCashBoxId());
+            if (admin.getRoles().contains(applicationRoleService.getRole(ADMIN)) || admin.getRoles().contains(applicationRoleService.getRole(OPERATOR))) {
+                CashboxSettings cashboxSettings = cashboxSettingsRepository.findTopByFieldNameAndCashboxId(request.getFieldName(), request.getCashBoxId());
                 cashboxSettingsRepository.delete(cashboxSettings);
                 return new ResultDTO(true, "settings was deleted", 0);
             } else {
@@ -156,8 +150,7 @@ public class CashboxSettingsService {
     }
 
     public void setField(Long cashboxId, String fieldName, String fieldValue) {
-        CashboxSettings cashboxSettings = cashboxSettingsRepository.
-                findTopByFieldNameAndCashboxId(fieldName, cashboxId);
+        CashboxSettings cashboxSettings = cashboxSettingsRepository.findTopByFieldNameAndCashboxId(fieldName, cashboxId);
         if (cashboxSettings == null) {
             cashboxSettings = new CashboxSettings();
             cashboxSettings.setFieldName(fieldName);
@@ -169,7 +162,17 @@ public class CashboxSettingsService {
 
     public ResultDTO savedClientFee(Long cashboxId, String fieldName, String fieldValue) {
         Cashbox cashbox = cashboxRepository.findById(cashboxId).orElse(null);
-        double total_fee = Double.parseDouble(merchantKycService.getField(cashbox.getMerchantId(), TOTAL_FEE));
+        if (Objects.isNull(cashbox)) {
+            return CASHBOX_NOT_FOUND;
+        }
+        String feeStr = merchantKycService.getField(cashbox.getMerchantId(), TOTAL_FEE);
+//        if (Objects.isNull(feeStr) || feeStr.trim().isEmpty()) {
+//            return FEE_NOT_SET;
+//        }
+        double total_fee = 0;
+        if (!Objects.isNull(feeStr) && !feeStr.trim().isEmpty()) {
+            total_fee = Double.parseDouble(feeStr);
+        }
         if (Double.parseDouble(fieldValue) > total_fee) {
             return CLIENT_FEE_GREATER_THAN_TOTAL_FEE;
         }
