@@ -57,7 +57,6 @@ public class MerchantKycService {
     public static final String BANKNAME = "bankname";
     public static final String IIK = "iik";
     public static final String BIK = "bik";
-    public static final String TOTAL_FEE = "total_fee";
 
     public ResultDTO setKyc(Principal principal, MerchantKycDTO request) {
         try {
@@ -78,8 +77,7 @@ public class MerchantKycService {
                 setField(applicationUser.getId(), field);
             }
             ApplicationUser admin = applicationUserService.getUserByLogin(principal.getName());
-            systemEventsLogsService.addNewOperatorAction(admin.getUsername(), EDIT_MERCHANT_KYC,
-                    gson.toJson(request), applicationUser.getId().toString());
+            systemEventsLogsService.addNewOperatorAction(admin.getUsername(), EDIT_MERCHANT_KYC, gson.toJson(request), applicationUser.getId().toString());
             return new ResultDTO(true, request.getFields(), 0);
         } catch (Exception e) {
             e.printStackTrace();
@@ -88,8 +86,7 @@ public class MerchantKycService {
     }
 
     private void setField(Long merchantId, MerchantKycFieldDTO field) {
-        MerchantKyc merchantKyc = merchantKycRepository.
-                findTopByFieldNameAndMerchantId(field.getFieldName(), merchantId);
+        MerchantKyc merchantKyc = merchantKycRepository.findTopByFieldNameAndMerchantId(field.getFieldName(), merchantId);
         if (merchantKyc == null) {
             merchantKyc = new MerchantKyc();
             merchantKyc.setFieldName(field.getFieldName());
@@ -106,9 +103,7 @@ public class MerchantKycService {
                 return USER_NOT_FOUND;
             }
             ApplicationUser operator = applicationUserService.getUserByLogin(principal.getName());
-            if (!operator.getRoles().contains(applicationRoleService.getRole(ADMIN)) &&
-                    !operator.getRoles().contains(applicationRoleService.getRole(OPERATOR)) &&
-                    !operator.getId().equals(merchant.getId())) {
+            if (!operator.getRoles().contains(applicationRoleService.getRole(ADMIN)) && !operator.getRoles().contains(applicationRoleService.getRole(OPERATOR)) && !operator.getId().equals(merchant.getId())) {
                 return NOT_ENOUGH_RIGHTS;
             }
             if (!merchant.getRoles().contains(applicationRoleService.getRole(MERCHANT))) {
@@ -125,7 +120,6 @@ public class MerchantKycService {
             result.put(BANKNAME, getField(merchant.getId(), BANKNAME));
             result.put(IIK, getField(merchant.getId(), IIK));
             result.put(BIK, getField(merchant.getId(), BIK));
-            result.put(TOTAL_FEE, getField(merchant.getId(), TOTAL_FEE));
             LOGGER.info(gson.toJson(result));
             return new ResultDTO(true, result, 0);
         } catch (Exception e) {

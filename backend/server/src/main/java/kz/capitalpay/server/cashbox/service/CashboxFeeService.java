@@ -15,8 +15,6 @@ import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.CLIENT_FEE;
-
 @Service
 public class CashboxFeeService {
     @Autowired
@@ -34,10 +32,7 @@ public class CashboxFeeService {
     public ResultDTO getCashBoxFeeList(CashBoxFeeDto feeDto) {
         try {
             List<Cashbox> cashboxList = cashboxRepository.findByMerchantIdAndDeletedFalse(feeDto.getMerchantId());
-            List<CashBoxFeeListDto> result = cashboxList.stream()
-                    .map(o -> new CashBoxFeeListDto(o.getId(), o.getName(), getTotalFee(o.getMerchantId()),
-                            getClientFee(o.getId()), getMerchantFee(o.getMerchantId(), o.getId())))
-                    .collect(Collectors.toList());
+            List<CashBoxFeeListDto> result = cashboxList.stream().map(o -> new CashBoxFeeListDto(o.getId(), o.getName(), getTotalFee(o.getMerchantId()), getClientFee(o.getId()), getMerchantFee(o.getMerchantId(), o.getId()))).collect(Collectors.toList());
             return new ResultDTO(true, result, 0);
         } catch (Exception e) {
             e.printStackTrace();
@@ -47,9 +42,9 @@ public class CashboxFeeService {
 
     public ResultDTO saveCashBoxFeeList(CashBoxFeeDto feeDto, Principal principal) {
         try {
-            for (CashBoxFeeListDto data : feeDto.getFeeList()) {
-                cashboxSettingsService.setField(data.getCashBoxId(), CLIENT_FEE, data.getClientFee());
-            }
+//            for (CashBoxFeeListDto data : feeDto.getFeeList()) {
+//                cashboxSettingsService.setField(data.getCashBoxId(), CLIENT_FEE, data.getClientFee());
+//            }
             return getCashBoxFeeList(feeDto);
         } catch (Exception e) {
             e.printStackTrace();
@@ -58,13 +53,12 @@ public class CashboxFeeService {
     }
 
     private String getClientFee(Long cashBoxId) {
-        String clientFee = cashboxSettingsService.getField(cashBoxId, CLIENT_FEE);
-        return clientFee.equals("") ? "0.0" : clientFee;
+//        String clientFee = cashboxSettingsService.getField(cashBoxId, CLIENT_FEE);
+        return "0.0";
     }
 
     private String getTotalFee(Long merchantId) {
-        String totalFee = merchantKycService.getField(merchantId, MerchantKycService.TOTAL_FEE);
-        return totalFee.equals("") ? "0.0" : totalFee;
+        return "0.0";
     }
 
     private String getMerchantFee(Long merchantId, Long cashBoxId) {

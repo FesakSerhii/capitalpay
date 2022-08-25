@@ -2,7 +2,6 @@ package kz.capitalpay.server.merchantsettings.service;
 
 import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.cashbox.repository.CashboxRepository;
-import kz.capitalpay.server.constants.ErrorDictionary;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.service.ApplicationRoleService;
@@ -19,14 +18,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
-import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
-import static kz.capitalpay.server.merchantsettings.service.MerchantKycService.TOTAL_FEE;
 
 @Service
 public class CashboxSettingsService {
@@ -54,7 +51,6 @@ public class CashboxSettingsService {
     public static final String REDIRECT_FAILED_URL = "redirectfailed";
     public static final String REDIRECT_PENDING_URL = "redirectpending";
     public static final String SECRET = "secret";
-    public static final String CLIENT_FEE = "client_fee";
     public static final String MERCHANT_ID = "merchantId";
     public static final String CASHBOX_ID = "cashboxId";
 
@@ -64,13 +60,6 @@ public class CashboxSettingsService {
             ApplicationUser admin = applicationUserService.getUserByLogin(principal.getName());
             if (admin.getRoles().contains(applicationRoleService.getRole(ADMIN)) || admin.getRoles().contains(applicationRoleService.getRole(OPERATOR)) || admin.getRoles().contains(applicationRoleService.getRole(MERCHANT))) {
                 for (CashBoxSettingFieldDTO field : request.getFields()) {
-                    if (field.getFieldName().equalsIgnoreCase(CLIENT_FEE)) {
-                        ResultDTO resultDTO = savedClientFee(field.getCashBoxId(), field.getFieldName(), field.getFieldValue());
-                        if (!resultDTO.isResult()) {
-                            return resultDTO;
-                        }
-                        continue;
-                    }
                     setField(field.getCashBoxId(), field.getFieldName(), field.getFieldValue());
                 }
                 return new ResultDTO(true, request.getFields(), 0);
@@ -96,7 +85,6 @@ public class CashboxSettingsService {
                 result.put(REDIRECT_FAILED_URL, getField(cashBoxDTO.getCashBoxId(), REDIRECT_FAILED_URL));
                 result.put(REDIRECT_PENDING_URL, getField(cashBoxDTO.getCashBoxId(), REDIRECT_PENDING_URL));
                 result.put(SECRET, getField(cashBoxDTO.getCashBoxId(), SECRET));
-                result.put(CLIENT_FEE, getField(cashBoxDTO.getCashBoxId(), CLIENT_FEE));
                 result.put(MERCHANT_ID, admin.getId().toString());
                 result.put(CASHBOX_ID, String.valueOf(cashBoxDTO.getCashBoxId()));
                 return new ResultDTO(true, result, 0);
@@ -158,32 +146,6 @@ public class CashboxSettingsService {
         }
         cashboxSettings.setFieldValue(fieldValue);
         cashboxSettingsRepository.save(cashboxSettings);
-    }
-
-    public ResultDTO savedClientFee(Long cashboxId, String fieldName, String fieldValue) {
-        Cashbox cashbox = cashboxRepository.findById(cashboxId).orElse(null);
-        if (Objects.isNull(cashbox)) {
-            return CASHBOX_NOT_FOUND;
-        }
-        String feeStr = merchantKycService.getField(cashbox.getMerchantId(), TOTAL_FEE);
-//        if (Objects.isNull(feeStr) || feeStr.trim().isEmpty()) {
-//            return FEE_NOT_SET;
-//        }
-        double total_fee = 0;
-        if (!Objects.isNull(feeStr) && !feeStr.trim().isEmpty()) {
-            total_fee = Double.parseDouble(feeStr);
-        }
-        if (Double.parseDouble(fieldValue) > total_fee) {
-            return CLIENT_FEE_GREATER_THAN_TOTAL_FEE;
-        }
-        if (fieldValue.trim().isEmpty()) {
-            fieldValue = "0.0";
-        }
-        String pattern = "#.###";
-        DecimalFormat decimalFormat = new DecimalFormat(pattern);
-        fieldValue = decimalFormat.format(Double.parseDouble(fieldValue)).replace(",", ".");
-        setField(cashboxId, fieldName, fieldValue);
-        return new ResultDTO(true, "Client fee saved!", 0);
     }
 
     private ResultDTO getPublicCashBoxSettings(Long cashBoxId) {

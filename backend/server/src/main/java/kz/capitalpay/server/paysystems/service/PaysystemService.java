@@ -1,7 +1,6 @@
 package kz.capitalpay.server.paysystems.service;
 
 import com.google.gson.Gson;
-import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.cashbox.service.CashboxPaysystemService;
 import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.dto.ResultDTO;
@@ -30,7 +29,6 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.security.Principal;
 import java.util.*;
@@ -38,8 +36,6 @@ import java.util.*;
 import static kz.capitalpay.server.constants.ErrorDictionary.PAYMENT_NOT_FOUND;
 import static kz.capitalpay.server.constants.ErrorDictionary.PAYSYSTEM_NOT_FOUND;
 import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.ACTIVATE_PAYSYSTEM;
-import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.CLIENT_FEE;
-import static kz.capitalpay.server.merchantsettings.service.MerchantKycService.TOTAL_FEE;
 
 @Service
 public class PaysystemService {
@@ -161,7 +157,7 @@ public class PaysystemService {
     private BillPaymentDto createBill(Payment payment, HttpServletRequest httpRequest, String cardHolderName, String pan, String result) {
         BillPaymentDto billPaymentDto = new BillPaymentDto();
         billPaymentDto.setResultPayment(result);
-        setAmountFields(payment.getCashboxId(), payment.getTotalAmount(), billPaymentDto, payment.getCurrency());
+        setAmountFields(payment.getTotalAmount(), billPaymentDto, payment.getCurrency());
         billPaymentDto.setMerchantName(payment.getMerchantName());
         billPaymentDto.setNumberTransaction(payment.getPaySysPayId());
         billPaymentDto.setOrderId(payment.getBillId());
@@ -178,23 +174,8 @@ public class PaysystemService {
         return billPaymentDto;
     }
 
-    private void setAmountFields(Long cashboxId, BigDecimal totalAmount, BillPaymentDto billPaymentDto, String currency) {
-        BigDecimal oneHundred = new BigDecimal(100);
-        Cashbox cashbox = cashboxService.findById(cashboxId);
-        BigDecimal totalFee = BigDecimal.valueOf(Long.parseLong(merchantKycService.getField(cashbox.getMerchantId(),
-                TOTAL_FEE)));
-        BigDecimal clientFee = BigDecimal.valueOf(Long.parseLong(cashboxSettingsService
-                .getField(cashboxId, CLIENT_FEE)));
-
+    private void setAmountFields(BigDecimal totalAmount, BillPaymentDto billPaymentDto, String currency) {
         BigDecimal amountWithoutClientFee = totalAmount
-                .divide((BigDecimal.ONE
-                                .subtract(clientFee
-                                        .divide(oneHundred, MathContext.DECIMAL128))
-                                .divide(BigDecimal.ONE
-                                                .subtract(totalFee
-                                                        .divide(oneHundred, MathContext.DECIMAL128)),
-                                        MathContext.DECIMAL128)),
-                        MathContext.DECIMAL128)
                 .setScale(0, RoundingMode.HALF_UP);
         billPaymentDto.setTotalAmount(totalAmount.toString(), currency);
         billPaymentDto.setAmountPayment(amountWithoutClientFee.toString(), currency);

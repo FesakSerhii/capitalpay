@@ -22,14 +22,11 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
-import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.CLIENT_FEE;
-import static kz.capitalpay.server.merchantsettings.service.MerchantKycService.TOTAL_FEE;
 
 @Service
 public class SimpleService {
@@ -138,7 +135,7 @@ public class SimpleService {
             request.setUserAgent(httpRequest.getHeader("User-Agent"));
             request.setCashboxid(cashboxid);
             request.setBillid(billid);
-            request.setTotalamount(adjustmentPriceForClientByClientFee(cashboxid, totalamount));
+            request.setTotalamount(totalamount);
             request.setCurrency(currency);
             request.setDescription(description);
             request.setParam(param);
@@ -151,28 +148,6 @@ public class SimpleService {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }
-    }
-
-    private BigDecimal adjustmentPriceForClientByClientFee(Long cashboxId, BigDecimal totalAmount) {
-        BigDecimal oneHundred = new BigDecimal(100);
-        Cashbox cashbox = cashboxService.findById(cashboxId);
-        BigDecimal totalFee = BigDecimal.valueOf(Long.parseLong(merchantKycService.getField(cashbox.getMerchantId(),
-                TOTAL_FEE)));
-        BigDecimal clientFee = BigDecimal.valueOf(Long.parseLong(cashboxSettingsService
-                .getField(cashboxId, CLIENT_FEE)));
-
-        BigDecimal percentMerchantWantPaySystem = totalFee.subtract(clientFee);
-        BigDecimal totalAmountThatMerchantWantReceived = totalAmount
-                .subtract(totalAmount
-                        .multiply(percentMerchantWantPaySystem
-                                .divide(oneHundred)));
-        BigDecimal finalPriceCustomerAfterAdjustmentInPenny = totalAmountThatMerchantWantReceived
-                .divide(new BigDecimal("1")
-                        .subtract(totalFee
-                                .divide(oneHundred, MathContext.DECIMAL128)), MathContext.DECIMAL128)
-                .multiply(oneHundred);
-
-        return finalPriceCustomerAfterAdjustmentInPenny.setScale(0, RoundingMode.HALF_UP);
     }
 
     // Signature: SHA256(cashboxid + billid + secret)
