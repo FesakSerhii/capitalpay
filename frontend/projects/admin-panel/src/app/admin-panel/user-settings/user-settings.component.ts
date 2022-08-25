@@ -10,10 +10,12 @@ import {ExtValidators} from '../../../../../../src/app/validators/ext-validators
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {P2pService} from '../../service/p2p.service';
 import {PaymentCardModalComponent} from '../../../../../../common-blocks/payment-card-modal/payment-card-modal.component';
-import {map, switchMap} from 'rxjs/operators';
+import {exhaustMap, map, switchMap} from 'rxjs/operators';
 import {SortHelper} from '../../../../../../src/app/helper/sort-helper';
 import {SearchInputService} from '../../../../../../src/app/service/search-input.service';
 import {environment} from '../../../environments/environment';
+import {TerminalService} from "../../service/terminal.service";
+import {combineLatest, Observable} from "rxjs";
 
 @Component({
   selector: 'app-user-settings',
@@ -24,6 +26,10 @@ export class UserSettingsComponent implements OnInit {
   @ViewChild('massageModal', {static: false}) massageModal: MassageModalComponent;
   @ViewChild('paymentCard', {static: false}) paymentCard: PaymentCardModalComponent;
   @ViewChild('form') form: ElementRef;
+
+  freeTerminals$: Observable<any[]>;
+
+  chosenTerminal =  new FormControl(undefined, [Validators.required])
 
   redirectForm = new FormGroup({
     action: new FormControl(),
@@ -113,16 +119,41 @@ export class UserSettingsComponent implements OnInit {
   sortHelper = new SortHelper();
   tableSearch = new FormControl();
   errStatusMassage: string = null;
+  terminalData: any;
+  oldTerminalData: any;
 
-  constructor(private router: Router,
-              private userService: UserService,
-              private activatedRoute: ActivatedRoute,
-              private currencyService: CurrencyService,
-              private paymentsService: PaymentsService,
-              private modalService: NgbModal,
-              private p2pService: P2pService,
-              private searchInputService: SearchInputService,
-              private kycService: KycService) {
+  constructor(
+    private router: Router,
+    private userService: UserService,
+    private activatedRoute: ActivatedRoute,
+    private currencyService: CurrencyService,
+    private paymentsService: PaymentsService,
+    private modalService: NgbModal,
+    private p2pService: P2pService,
+    private searchInputService: SearchInputService,
+    private kycService: KycService,
+    private terminalService: TerminalService
+  ) {
+    this.updateFreeTerminals();
+  }
+
+  get sortedActions() {
+    if (this.sortHelper.sort.sortBy === null) {
+      this.cardList = this.searchInputService.filterData(this.dontTouched, this.tableSearch.value);
+      return this.cardList
+    } else {
+      let sorted = this.dontTouched.sort(
+        (a, b) => {
+          let aField = a[this.sortHelper.sort.sortBy];
+          let bField = b[this.sortHelper.sort.sortBy];
+          let res = aField == bField ? 0 : (aField > bField ? 1 : -1);
+          return this.sortHelper.sort.increase ? res : -res;
+        }
+      );
+      sorted = this.searchInputService.filterData(sorted, '');
+      this.cardList = [...sorted];
+      return this.cardList
+    }
   }
 
   ngOnInit(): void {
@@ -130,19 +161,37 @@ export class UserSettingsComponent implements OnInit {
       this.userId = +param.get('userId');
       this.getUserInfo();
       this.getCommissions();
-      this.getCardList()
-    });
+      this.getCardList();
+    })
 
     this.isEditMode = false;
     this.isP2PActive.valueChanges.subscribe(v => {
       if (v && !this.defaultPaymentCard) {
-        console.log('D');
-        this[environment['cardRegisterModalFn']]()
+        this.addMerchantPaymentCard()
       } else if (this.defaultPaymentCard) {
-        console.log('F');
         this.setMerchantP2p(v)
       }
     })
+  }
+
+  checkSessionStorage() {
+    const cardOnAdd = JSON.parse(sessionStorage.getItem('cardData'));
+    // bankCardId: "900000028611"
+    // cardNumber: "535511******2412"
+    // id: 72
+    // orderId: "00000164372324"
+    // token: "fc436979-74be-4c34-9827-57abc5259ae6"
+    // userId: 663
+    // valid: true
+    if (cardOnAdd) {
+      const loadScheme = JSON.parse(sessionStorage.getItem('user-settings'));
+      // cashbox: casbBox, if action was adding card to cashBox, otherwise null
+      // userId: this.userId
+      if (loadScheme.cashBox) {
+        this.activeTab = 'tab2';
+      }
+    }
+    return;
   }
 
   navigateToSettings() {
@@ -150,7 +199,8 @@ export class UserSettingsComponent implements OnInit {
   }
 
   getUserInfo() {
-    this.userService.getUserData(this.userId).then(resp => {
+    combineLatest([this.userService.getUserData(this.userId), this.terminalService.getMerchantTerminal(this.userId)]).subscribe(([resp, terminalData]) => {
+      this.terminalData = terminalData;
       this.userInfoForm.patchValue(resp.data, {emitEvent: false});
       const roles = resp.data.roles;
       for (const role in roles) {
@@ -202,9 +252,10 @@ export class UserSettingsComponent implements OnInit {
   async getCommissions() {
     this.cardListMethods = []
     this.cashBoxList = new FormArray([])
+    const loadScheme = JSON.parse(sessionStorage.getItem('user-settings'));
     const data = {...await this.userService.getUsersCommissions(this.userId)}.data
-    for (const cashBox of data) {
-      this.p2pService.getCashBoxP2pInfo(cashBox['cashBoxId']).then(resp => {
+    data.forEach(cashBox => {
+      this.p2pService.getCashBoxP2pInfo(cashBox['cashBoxId']).subscribe(resp => {
         const p2pInfo = resp.data
         const form = new FormGroup({
           cashBoxId: new FormControl(cashBox['cashBoxId']),
@@ -217,13 +268,16 @@ export class UserSettingsComponent implements OnInit {
           useDefaultCard: new FormControl(p2pInfo['useDefaultCard'])
         });
         this.cashBoxList.controls.push(form);
+        if (loadScheme && loadScheme.cashbox === cashBox['cashBoxId']) {
+          this.checkSessionStorage()
+        }
       })
-    }
+    })
   }
 
   editUserData() {
-    if(this.merchantInfoForm.invalid||this.userInfoForm.invalid){
-      this.errStatusMassage='Заполните все необходимые поля';
+    if (this.merchantInfoForm.invalid || this.userInfoForm.invalid) {
+      this.errStatusMassage = 'Заполните все необходимые поля';
       return;
     }
     if (this.userRoles.ROLE_MERCHANT) {
@@ -233,9 +287,15 @@ export class UserSettingsComponent implements OnInit {
         this.getUserInfo()
       }).catch(err => {
         switch (err.status) {
-          case 500: this.errStatusMassage = 'Ошибка сервера, попробуйте позже'; break;
-          case 0: this.errStatusMassage = 'Отсутствие интернет соединения'; break;
-          default: this.errStatusMassage = err.statusMessage; break;
+          case 500:
+            this.errStatusMassage = 'Ошибка сервера, попробуйте позже';
+            break;
+          case 0:
+            this.errStatusMassage = 'Отсутствие интернет соединения';
+            break;
+          default:
+            this.errStatusMassage = err.statusMessage;
+            break;
         }
       })
     } else {
@@ -244,9 +304,15 @@ export class UserSettingsComponent implements OnInit {
         this.getUserInfo()
       }).catch(err => {
         switch (err.status) {
-          case 500: this.errStatusMassage = 'Ошибка сервера, попробуйте позже'; break;
-          case 0: this.errStatusMassage = 'Отсутствие интернет соединения'; break;
-          default: this.errStatusMassage = err.statusMessage; break;
+          case 500:
+            this.errStatusMassage = 'Ошибка сервера, попробуйте позже';
+            break;
+          case 0:
+            this.errStatusMassage = 'Отсутствие интернет соединения';
+            break;
+          default:
+            this.errStatusMassage = err.statusMessage;
+            break;
         }
       })
     }
@@ -379,7 +445,6 @@ export class UserSettingsComponent implements OnInit {
           if (cashBox['value'].p2pAllowed) {
             cashBox['controls'].p2pAllowed.patchValue(false)
             this.saveMethodsOnCashBoxBeforeSave(cashBox, 'setCashBoxP2p', {...cashBox.value})
-            // this.setCashBoxP2p(cashBox.value)
           }
         })
       } else {
@@ -410,42 +475,29 @@ export class UserSettingsComponent implements OnInit {
   }
 
   addCashBoxPaymentCard(cashBox) {
-    this.paymentCard.open().then(card => {
-      if (card.hasOwnProperty('token')) {
-        this.saveMethodsOnCashBoxBeforeSave(cashBox, 'setCashBoxCard', [card.id, cashBox.value.cashBoxId])
-        // this.setCashBoxCard(card.id, cashBox.value.cashBoxId).subscribe(() => {
-        //   this.getCommissions()
+    this.paymentCard.open(cashBox.value.cashBoxId).then(modalResult => {
+      if (modalResult?.hasOwnProperty('token')) {
+        this.saveMethodsOnCashBoxBeforeSave(cashBox, 'setCashBoxCard', [modalResult.id, cashBox.value.cashBoxId])
         this.modalService.dismissAll(false)
-        // })
       } else {
-        this.registerPaymentCard(card.cardNumber, card.expirationYear, card.expirationMonth, card.cvv2Code)
+        this.registerPaymentCard(modalResult.cardNumber, modalResult.expirationYear, modalResult.expirationMonth, modalResult.cvv2Code)
           .subscribe(response => {
             this.getCardList()
             this.saveMethodsOnCashBoxBeforeSave(cashBox, 'setCashBoxCard', [response.data.cardId, cashBox.value.cashBoxId])
-            // this.setCashBoxCard(response.data.cardId, cashBox.value.cashBoxId).subscribe(()=>{
-            //   this.getCommissions()
-            //   this.modalService.dismissAll(false)
-            // })
             this.modalService.dismissAll(false)
           })
       }
-      cashBox.controls.useDefaultCard.setValue(card.cardNumber === this.defaultPaymentCard)
-      cashBox.controls.cardNumber.setValue(card.cardNumber)
-      console.log(card.cardNumber === this.defaultPaymentCard);
+      cashBox.controls.useDefaultCard.setValue(modalResult.cardNumber === this.defaultPaymentCard)
+      cashBox.controls.cardNumber.setValue(modalResult.cardNumber)
+      console.log(modalResult.cardNumber === this.defaultPaymentCard);
     })
   }
-  addMerchantPaymentCardWithBank(){
-    return this.p2pService.registerCardWithBank(this.userId).then(resp=>{
-      this.redirectForm.patchValue(resp.data)
-      setTimeout(() => this.form.nativeElement.submit(), 20);
-    });;
 
-  }
   addMerchantPaymentCard() {
     this.paymentCard.open().then(modalResult => {
-        if (modalResult.hasOwnProperty('token')) {
+        if (modalResult?.hasOwnProperty('token')) {
           this.setDefaultCard(modalResult.id)
-        } else if (modalResult) {
+        } else if (modalResult?.hasOwnProperty('cardNumber')) {
           this.registerPaymentCard(modalResult.cardNumber, modalResult.expirationYear, modalResult.expirationMonth, modalResult.cvv2Code)
             .subscribe(response => {
               if (response) {
@@ -455,7 +507,7 @@ export class UserSettingsComponent implements OnInit {
               this.getCardList()
             })
         } else {
-          this.isP2PActive.setValue(false, {emitEvent:false})
+          this.isP2PActive.setValue(false, {emitEvent: false})
           this.modalService.dismissAll(false)
         }
       }
@@ -493,29 +545,17 @@ export class UserSettingsComponent implements OnInit {
     this.dontTouched = {...await this.p2pService.clientCardList(this.userId)}.data;
   }
 
-  logData(data1, data2) {
-    console.log(data1);
-    console.log(data2);
-    console.log(data1 === data2);
-  }
-
   onUseDefaultCard(cashBox) {
     if (!cashBox.value.useDefaultCard) {
       cashBox.controls.cardNumber.reset();
     } else {
       cashBox.controls.cardNumber.setValue(this.defaultPaymentCard)
       this.saveMethodsOnCashBoxBeforeSave(cashBox, 'setCashBoxP2p', {...cashBox.value})
-      // this.setCashBoxP2p(cashBox.value,true)
     }
 
   }
 
   saveCashBoxSettings(cashBox) {
-    //{cashBoxId:string,
-    // methodsArr:[{
-    // method: function,
-    // args: []
-    // }]}
     this.cardListMethods.forEach(el => {
       if (el.cashBoxId === cashBox.cashBoxId) {
         const promises = []
@@ -536,25 +576,6 @@ export class UserSettingsComponent implements OnInit {
     this.sortHelper = sh.nextSort(field);
   }
 
-  get sortedActions() {
-    if (this.sortHelper.sort.sortBy === null) {
-      this.cardList = this.searchInputService.filterData(this.dontTouched, this.tableSearch.value);
-      return this.cardList
-    } else {
-      let sorted = this.dontTouched.sort(
-        (a, b) => {
-          let aField = a[this.sortHelper.sort.sortBy];
-          let bField = b[this.sortHelper.sort.sortBy];
-          let res = aField == bField ? 0 : (aField > bField ? 1 : -1);
-          return this.sortHelper.sort.increase ? res : -res;
-        }
-      );
-      sorted = this.searchInputService.filterData(sorted, '');
-      this.cardList = [...sorted];
-      return this.cardList
-    }
-  }
-
   deleteCard(card: any) {
     this.modalType = this.modalTypes['deleteCardConfirm']
     this.massageModal.open().then(() => {
@@ -562,5 +583,46 @@ export class UserSettingsComponent implements OnInit {
         this.getCardList()
       })
     })
+  }
+
+  // addOrChangeCard(cashBox=null) {
+  //   this[environment['addCashBoxPaymentCard']](cashBox)
+  // }
+  goToTerminalEditMode() {
+    this.oldTerminalData = this.terminalData;
+    this.terminalData = undefined;
+  }
+
+  resetTerminal() {
+    this.terminalService.updateMerchantTerminal({
+      merchantId: this.userId,
+      terminalId: null
+    }).subscribe(() => {
+      this.terminalData = undefined;
+      this.updateFreeTerminals();
+    });
+  }
+
+
+  updateTerminal() {
+    if (!this.chosenTerminal.valid) {
+      return this.chosenTerminal.markAllAsTouched();
+    }
+    this.terminalService.updateMerchantTerminal({
+      merchantId: this.userId,
+      terminalId: this.chosenTerminal.value
+    }).subscribe(
+      (termData) => {
+        this.terminalData = termData;
+        this.chosenTerminal.reset();
+        this.updateFreeTerminals()
+      }
+    );
+  }
+
+  private updateFreeTerminals() {
+    this.freeTerminals$ = this.terminalService.getFreeTerminals().pipe(
+      map<any, any[]>(terminals => terminals.map(t => ({title: t.name, value: t.id})))
+    )
   }
 }

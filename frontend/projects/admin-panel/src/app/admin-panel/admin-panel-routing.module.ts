@@ -14,6 +14,7 @@ import {DocumentsLayoutsComponent} from './documents-layouts/documents-layouts.c
 import {DocumentLayoutsEditorComponent} from './document-layouts-editor/document-layouts-editor.component';
 import {TransactionsRegistryComponent} from '../../../../../common-blocks/transactions-log/transactions-registry/transactions-registry.component';
 import {CardCheckComponent} from "./card-check/card-check.component";
+import {TerminalsComponent} from "./terminals/terminals.component";
 
 
 const routes: Routes = [
@@ -77,6 +78,10 @@ const routes: Routes = [
         path: 'card-err',
         component: CardCheckComponent
       },
+      {
+        path: "terminals",
+        component: TerminalsComponent
+      }
     ]
   },
 ];

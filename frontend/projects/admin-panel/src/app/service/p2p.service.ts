@@ -11,8 +11,8 @@ export class P2pService {
   registerCard(cardNumber,expireYear,expireMonth,cvv2Code,merchantId) {
     return this.apiService.post('api','/user-card/register', {cardNumber,expireYear,expireMonth,cvv2Code,merchantId})
   }
-  registerCardWithBank(merchantId) {
-    return this.apiService.post('api','/user-card/register-with-bank',{merchantId}).toPromise()
+  registerCardWithBank(merchantId,cashBoxId) {
+    return this.apiService.post('api','/user-card/register-with-bank',{merchantId,cashBoxId}).toPromise()
   }
   bankCheckValidity(orderId) {
     return this.apiService.post('api',`/user-card/check-validation/${orderId}`)
@@ -42,7 +42,7 @@ export class P2pService {
     return this.apiService.post('api',`/user-card/list?merchantId=${merchantId}`).toPromise();
   }
   getCashBoxP2pInfo(cashBoxId) {
-    return this.apiService.post('api',`/cashbox/get-p2p-settings?cashBoxId=${cashBoxId}`).toPromise();
+    return this.apiService.post('api',`/cashbox/get-p2p-settings?cashBoxId=${cashBoxId}`);
   }
   deleteMerchantCard(cardId,merchantId) {
     return this.apiService.post('api',`/user-card/delete`,{cardId,merchantId}).toPromise();

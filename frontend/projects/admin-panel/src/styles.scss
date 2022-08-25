@@ -21,3 +21,6 @@
 //.ng-scrollbar.calc400{
 //  height: calc(100vh - 200px)!important;
 //}
+.form-control.ng-touched.ng-invalid {
+    border-bottom: 1px solid #ff0000;
+}

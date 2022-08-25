@@ -79,9 +79,28 @@
                     </button>
                   </div>
                 </form>
-                <button class="btn slim btn-success btn-round"
-                        (click)="$event.preventDefault();">Сохранить
-                </button>
+                <hr>
+                <h4>Терминал</h4>
+                <div class="card" *ngIf="terminalData; else chooseTerminal">
+                  <div class="card-header card-header-info">Выбраный терминал</div>
+                  <div class="card-body">
+                    <strong>{{terminalData.terminalName}}</strong><br>
+                    № входящего терминала {{terminalData.inputTerminalId}}<br>
+                    № выходящего терминала {{terminalData.outputTerminalId}}<br>
+                    <button type="button" class="btn btn-success btn-round" (click)="goToTerminalEditMode()">Сменить</button>
+                    <button type="button" class="btn btn-success btn-round" (click)="resetTerminal()">Сбросить</button>
+                  </div>
+                </div>
+                <ng-template #chooseTerminal>
+                  <div class="card">
+                    <div class="card-header-primary">Выбрать терминал</div>
+                    <div class="card-body">
+                      <app-custom-select [values]="freeTerminals$ | async" [formControl]="chosenTerminal"></app-custom-select>
+                      <button class="btn btn-success btn-round" (click)="updateTerminal();">Обновить</button>
+                      <button class="btn btn-success btn-round" (click)="terminalData = oldTerminalData">Отменить</button>
+                    </div>
+                  </div>
+                </ng-template>
                 <hr>
               </ng-container>
               <h4 class="title">Информация</h4>
