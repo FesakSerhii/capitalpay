@@ -4,7 +4,7 @@ import kz.capitalpay.server.dto.ResultDTO;
 
 public class ErrorDictionary {
 
-    public static final ResultDTO INVALID_SIGNATURE = new ResultDTO(false, "Invalid signature", -1);
+    public static final ResultDTO INVALID_SIGNATURE = new ResultDTO(false, "Invalid signature", -2);
     public static final ResultDTO EMAIL_USED = new ResultDTO(false, "Email used", 101);
     public static final ResultDTO CONFIRM_CODE_NOT_FOUND = new ResultDTO(false, "Confirm code not found or used", 102);
     public static final ResultDTO PHONE_USED = new ResultDTO(false, "Phone used", 103);

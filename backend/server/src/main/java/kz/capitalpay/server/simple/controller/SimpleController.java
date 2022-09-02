@@ -44,13 +44,11 @@ public class SimpleController {
         ResultDTO resultDTO = simpleService.createPayment(httpRequest, cashboxid, billid, totalamount, currency, description, param);
         if (resultDTO.isResult() && resultDTO.getData() instanceof Payment) {
             Payment payment = (Payment) resultDTO.getData();
-
             modelMap.addAttribute("paymentid", payment.getGuid());
             modelMap.addAttribute("billid", payment.getBillId());
             modelMap.addAttribute("totalamount", payment.getTotalAmount());
             modelMap.addAttribute("currency", payment.getCurrency());
             modelMap.addAttribute("description", payment.getDescription());
-
             return "paysystems/cardpay";
         } else {
             modelMap.addAttribute("message", resultDTO.getData());

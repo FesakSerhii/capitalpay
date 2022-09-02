@@ -43,6 +43,9 @@ public class P2pPaymentsController {
     @Value("${payment.p2p.redirect.url}")
     private String paymentRedirectUrl;
 
+    @Value("${payment.p2p.anonymous.url}")
+    private String anonymousP2pPageUrl;
+
     @Value("${kkbsign.send.order.action.link}")
     String actionLink;
 
@@ -170,14 +173,14 @@ public class P2pPaymentsController {
 //    }
 
     @PostMapping("/anonymous-p2p-to-merchant")
-    public String createAnonymousP2pPayment(@RequestParam Long cashBoxId,
-                                            @RequestParam BigDecimal totalAmount,
-                                            @RequestParam Long merchantId,
-                                            @RequestParam String currency,
-                                            @RequestParam String signature,
-                                            @RequestParam(required = false) String param,
-                                            HttpServletRequest httpRequest,
-                                            ModelMap modelMap) {
+    public RedirectView createAnonymousP2pPayment(@RequestParam Long cashBoxId,
+                                                  @RequestParam BigDecimal totalAmount,
+                                                  @RequestParam Long merchantId,
+                                                  @RequestParam String currency,
+                                                  @RequestParam String signature,
+                                                  @RequestParam(required = false) String param,
+                                                  HttpServletRequest httpRequest,
+                                                  RedirectAttributes redirectAttributes) {
         LOGGER.info("/anonymous-p2p-to-merchant");
         String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
         if (ipAddress == null) {
@@ -186,18 +189,31 @@ public class P2pPaymentsController {
         String userAgent = httpRequest.getHeader("User-Agent");
         ResultDTO resultDTO = p2pService.createAnonymousP2pPayment(userAgent, ipAddress, cashBoxId, merchantId,
                 totalAmount, currency, param, signature);
-//        if (resultDTO.isResult() && resultDTO.getData() instanceof Payment) {
-        Payment payment = (Payment) resultDTO.getData();
-        LOGGER.info("sendAnonymousP2p()");
-        ResultDTO result = p2pService.sendBankAnonymousP2pPayment(httpRequest, payment);
-        Map<String, String> resultMap = (Map<String, String>) result.getData();
-        modelMap.addAttribute("xml", resultMap.get("xml"));
-        modelMap.addAttribute("backLink", resultMap.get("backLink"));
-        modelMap.addAttribute("postLink", resultMap.get("postLink"));
-        return "test_p2p";
-//        } else {
-//        }
+        if (resultDTO.isResult() && resultDTO.getData() instanceof Payment) {
+            Payment payment = (Payment) resultDTO.getData();
+            LOGGER.info("sendAnonymousP2p()");
+            ResultDTO result = p2pService.sendBankAnonymousP2pPayment(httpRequest, payment);
+            Map<String, String> resultMap = (Map<String, String>) result.getData();
+            redirectAttributes.addAttribute("xml", resultMap.get("xml"));
+            redirectAttributes.addAttribute("backLink", resultMap.get("backLink"));
+            redirectAttributes.addAttribute("postLink", resultMap.get("postLink"));
+            return new RedirectView(anonymousP2pPageUrl);
+        } else {
+            redirectAttributes.addAttribute("error", resultDTO.getError());
+            redirectAttributes.addAttribute("data", resultDTO.getData());
+            return new RedirectView(paymentRedirectUrl);
+        }
+    }
 
+    @GetMapping("/anonymous-p2p-page")
+    public String toAnonymousP2pPage(@RequestParam String xml,
+                                     @RequestParam String backLink,
+                                     @RequestParam String postLink,
+                                     ModelMap modelMap) {
+        modelMap.addAttribute("xml", xml);
+        modelMap.addAttribute("backLink", backLink);
+        modelMap.addAttribute("postLink", postLink);
+        return "test_p2p";
     }
 
     @ResponseBody
