@@ -1252,7 +1252,7 @@ public class HalykSoapService {
         String currencyCode = "398";
         String amountStr = amount.setScale(2).toString();
 
-        LocalDateTime localDateTime = LocalDateTime.now().plusHours(1);
+        LocalDateTime localDateTime = LocalDateTime.now().plusHours(3);
         String zonedDateTime = localDateTime.atZone(ZoneOffset.of("+06:00")).format(dateTimeFormat);
         String merchantStr = String.format("<merchant " +
                         "cert_id=\"%s\" " +
