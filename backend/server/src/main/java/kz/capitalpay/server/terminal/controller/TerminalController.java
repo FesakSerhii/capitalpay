@@ -43,8 +43,8 @@ public class TerminalController {
 
     @RolesAllowed({ADMIN})
     @PostMapping("/delete")
-    public ResultDTO deleteTerminal(@RequestBody Long id) {
-        return terminalService.deleteTerminal(id);
+    public ResultDTO deleteTerminal(@RequestBody @Valid IdDto dto) {
+        return terminalService.deleteTerminal(dto);
     }
 
     @RolesAllowed({ADMIN})

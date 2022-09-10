@@ -2,6 +2,7 @@ package kz.capitalpay.server.terminal.service;
 
 import kz.capitalpay.server.constants.ErrorDictionary;
 import kz.capitalpay.server.dto.ResultDTO;
+import kz.capitalpay.server.p2p.dto.IdDto;
 import kz.capitalpay.server.terminal.dto.TerminalDto;
 import kz.capitalpay.server.terminal.mapper.TerminalMapper;
 import kz.capitalpay.server.terminal.model.Terminal;
@@ -9,7 +10,9 @@ import kz.capitalpay.server.terminal.repository.TerminalRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,8 +36,8 @@ public class TerminalService {
         return new ResultDTO(true, terminal, 0);
     }
 
-    public ResultDTO deleteTerminal(Long id) {
-        Terminal terminal = terminalRepository.findByIdAndDeletedFalse(id).orElse(null);
+    public ResultDTO deleteTerminal(IdDto dto) {
+        Terminal terminal = terminalRepository.findByIdAndDeletedFalse(dto.getId()).orElse(null);
         if (Objects.isNull(terminal)) {
             return TERMINAL_NOT_FOUND;
         }
