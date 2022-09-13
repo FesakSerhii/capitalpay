@@ -13,6 +13,7 @@ import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykAnonymousP2pOrder;
+import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykPurchaseOrder;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import kz.capitalpay.server.terminal.model.Terminal;
 import kz.capitalpay.server.terminal.repository.TerminalRepository;
@@ -471,6 +472,23 @@ public class P2pService {
         }
         if (Objects.nonNull(halykAnonymousP2pOrder.getResponseCode()) && halykAnonymousP2pOrder.getResponseCode().equals("00")) {
             paymentService.setStatusByPaySysPayId(halykAnonymousP2pOrder.getOrderId(), SUCCESS);
+        }
+    }
+
+    public void completeBankPurchase(String requestBody) {
+        LOGGER.info("completeBankPurchase()");
+        if (Objects.isNull(requestBody) || requestBody.trim().isEmpty()) {
+            LOGGER.info("requestBody is NULL");
+            return;
+        }
+        String xml = requestBody.replace("response=", "");
+        HalykPurchaseOrder halykPurchaseOrder = halykSoapService.parseBankPurchaseOrder(xml);
+        if (Objects.isNull(halykPurchaseOrder)) {
+            LOGGER.info("halykAnonymousP2pOrder is NULL");
+            return;
+        }
+        if (Objects.nonNull(halykPurchaseOrder.getResponseCode()) && halykPurchaseOrder.getResponseCode().equals("00")) {
+            paymentService.setStatusByPaySysPayId(halykPurchaseOrder.getOrderId(), SUCCESS);
         }
     }
 

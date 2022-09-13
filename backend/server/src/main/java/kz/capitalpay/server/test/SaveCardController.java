@@ -45,7 +45,7 @@ public class SaveCardController {
         modelMap.addAttribute("xml", resultMap.get("xml"));
         modelMap.addAttribute("backLink", resultMap.get("backLink"));
         modelMap.addAttribute("postLink", resultMap.get("postLink"));
-        return "test_register_card";
+        return "register_card";
     }
 
     @ResponseBody
@@ -65,6 +65,14 @@ public class SaveCardController {
     }
 
     @ResponseBody
+    @PostMapping("/purchase-link")
+    public String purchasePostLink(@RequestBody String body) {
+        LOGGER.info("PostLink body: {}", body);
+        p2pService.completeBankPurchase(body);
+        return "0";
+    }
+
+    @ResponseBody
     @PostMapping("/send-p2p")
     public String sendP2p() {
         LOGGER.info("sendP2p()");
@@ -80,7 +88,18 @@ public class SaveCardController {
         modelMap.addAttribute("xml", resultMap.get("xml"));
         modelMap.addAttribute("backLink", resultMap.get("backLink"));
         modelMap.addAttribute("postLink", resultMap.get("postLink"));
-        return "test_p2p";
+        return "p2p";
+    }
+
+    @GetMapping("/buy-something")
+    public String sendPurchaseRequest(ModelMap modelMap) {
+        LOGGER.info("sendPurchaseRequest()");
+        ResultDTO result = userCardService.sendTestPurchase();
+        Map<String, String> resultMap = (Map<String, String>) result.getData();
+        modelMap.addAttribute("xml", resultMap.get("xml"));
+        modelMap.addAttribute("backLink", resultMap.get("backLink"));
+        modelMap.addAttribute("postLink", resultMap.get("postLink"));
+        return "purchase";
     }
 
 //    @GetMapping("/stream-sse")

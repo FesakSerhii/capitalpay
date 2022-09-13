@@ -614,4 +614,17 @@ public class UserCardService {
         return new ResultDTO(true, result, 0);
     }
 
+    public ResultDTO sendTestPurchase() {
+        Payment payment = paymentService.generateSaveBankCardPayment();
+        String purchaseXml = halykSoapService.createPurchaseXml(payment.getPaySysPayId(), new BigDecimal("100.00"), 98830654L);
+        LOGGER.info("purchaseXml {}", purchaseXml);
+
+        String encodedXml = Base64.getEncoder().encodeToString(purchaseXml.getBytes());
+        Map<String, String> result = new HashMap<>();
+        result.put("xml", encodedXml);
+        result.put("backLink", "https://capitalpay.kz");
+        result.put("postLink", "https://api.capitalpay.kz/api/purchase-link");
+        return new ResultDTO(true, result, 0);
+    }
+
 }
