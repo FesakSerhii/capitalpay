@@ -505,10 +505,9 @@ public class P2pService {
                     halykPurchaseOrder.getAmount(), 92061102L, halykPurchaseOrder.getReference(),
                     HalykControlOrderCommandTypeDictionary.COMPLETE);
 
-//            String url = bankTestUrl + "/jsp/remote/control.jsp" + controlOrderXml;
-            String url = bankTestUrl + "/jsp/remote/control.jsp";
+            String url = bankTestUrl + "/jsp/remote/control.jsp?" + controlOrderXml;
             LOGGER.info("controlOrder url {}", url);
-            ResponseEntity<String> response = restTemplate.postForEntity(url, controlOrderXml, String.class);
+            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
             LOGGER.info("halykBankControlOrder response body {}", response.getBody());
             HalykBankControlOrder halykBankControlOrder = halykSoapService.parseBankControlOrder(response.getBody().replace("response=", ""));
 
