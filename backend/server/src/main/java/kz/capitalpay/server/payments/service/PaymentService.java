@@ -205,12 +205,12 @@ public class PaymentService {
 
     }
 
-    public Payment generateSaveBankCardPayment() {
+    public Payment generateEmptyPayment(String status) {
         Payment payment = new Payment();
         payment.setSaveBankCard(true);
         payment.setTimestamp(System.currentTimeMillis());
         payment.setGuid(UUID.randomUUID().toString());
-        payment.setStatus(SAVE_BANK_CARD);
+        payment.setStatus(status);
 //        payment.setPaySysPayId(orderId);
         payment.setPaySysPayId(p2pPaymentService.generateOrderId());
         return paymentRepository.save(payment);

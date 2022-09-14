@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/payment/simple", produces = "application/json;charset=UTF-8")
@@ -29,6 +30,50 @@ public class SimpleController {
     @Autowired
     SimpleService simpleService;
 
+//    @PostMapping("/pay")
+//    String pay(@RequestParam Long cashboxid,
+//               @RequestParam String billid,
+//               @RequestParam BigDecimal totalamount,
+//               @RequestParam String currency,
+//               @RequestParam(defaultValue = "") String description,
+//               @RequestParam(required = false) String param,
+//               HttpServletRequest httpRequest,
+//               ModelMap modelMap
+//    ) {
+//
+//
+//        ResultDTO resultDTO = simpleService.createPayment(httpRequest, cashboxid, billid, totalamount, currency, description, param);
+//        if (resultDTO.isResult() && resultDTO.getData() instanceof Payment) {
+//            Payment payment = (Payment) resultDTO.getData();
+//            modelMap.addAttribute("paymentid", payment.getGuid());
+//            modelMap.addAttribute("billid", payment.getBillId());
+//            modelMap.addAttribute("totalamount", payment.getTotalAmount());
+//            modelMap.addAttribute("currency", payment.getCurrency());
+//            modelMap.addAttribute("description", payment.getDescription());
+//            return "paysystems/cardpay";
+//        } else {
+//            modelMap.addAttribute("message", resultDTO.getData());
+//            return "paysystems/error";
+//        }
+//        /*
+//        if (result.isResult() && result.getData() != null && result.getData() instanceof Payment) {
+//            Payment payment = (Payment) result.getData();
+//            httpServletResponse.setHeader("Location",
+//                    "https://api.capitalpay.kz/paysystems/page?paymentid=" + payment.getGuid());
+//            httpServletResponse.setStatus(302);
+//        } else {
+//
+//           httpServletResponse.setContentType(MediaType.APPLICATION_JSON.toString());
+//           try {
+//               httpServletResponse.getWriter().write(gson.toJson(result));
+//           }catch (Exception e){
+//               e.printStackTrace();
+//           }
+//        }
+//
+//         */
+//    }
+
     @PostMapping("/pay")
     String pay(@RequestParam Long cashboxid,
                @RequestParam String billid,
@@ -37,40 +82,18 @@ public class SimpleController {
                @RequestParam(defaultValue = "") String description,
                @RequestParam(required = false) String param,
                HttpServletRequest httpRequest,
-               ModelMap modelMap
-    ) {
-
-
-        ResultDTO resultDTO = simpleService.createPayment(httpRequest, cashboxid, billid, totalamount, currency, description, param);
-        if (resultDTO.isResult() && resultDTO.getData() instanceof Payment) {
-            Payment payment = (Payment) resultDTO.getData();
-            modelMap.addAttribute("paymentid", payment.getGuid());
-            modelMap.addAttribute("billid", payment.getBillId());
-            modelMap.addAttribute("totalamount", payment.getTotalAmount());
-            modelMap.addAttribute("currency", payment.getCurrency());
-            modelMap.addAttribute("description", payment.getDescription());
-            return "paysystems/cardpay";
+               ModelMap modelMap) {
+        ResultDTO resultDTO = simpleService.createBankPayment(httpRequest, cashboxid, billid, totalamount, currency, description, param);
+        if (resultDTO.isResult()) {
+            Map<String, String> resultMap = (Map<String, String>) resultDTO.getData();
+            modelMap.addAttribute("xml", resultMap.get("xml"));
+            modelMap.addAttribute("backLink", resultMap.get("backLink"));
+            modelMap.addAttribute("postLink", resultMap.get("postLink"));
+            return "purchase";
         } else {
             modelMap.addAttribute("message", resultDTO.getData());
             return "paysystems/error";
         }
-        /*
-        if (result.isResult() && result.getData() != null && result.getData() instanceof Payment) {
-            Payment payment = (Payment) result.getData();
-            httpServletResponse.setHeader("Location",
-                    "https://api.capitalpay.kz/paysystems/page?paymentid=" + payment.getGuid());
-            httpServletResponse.setStatus(302);
-        } else {
-
-           httpServletResponse.setContentType(MediaType.APPLICATION_JSON.toString());
-           try {
-               httpServletResponse.getWriter().write(gson.toJson(result));
-           }catch (Exception e){
-               e.printStackTrace();
-           }
-        }
-
-         */
     }
 
     // Signature: SHA256(cashboxid + billid + secret)

@@ -42,6 +42,7 @@ import java.util.*;
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
 import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.REDIRECT_FAILED_URL;
 import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.REDIRECT_SUCCESS_URL;
+import static kz.capitalpay.server.simple.service.SimpleService.COMPLETE_PURCHASE;
 import static kz.capitalpay.server.simple.service.SimpleService.SUCCESS;
 
 @Service
@@ -500,16 +501,30 @@ public class P2pService {
             return;
         }
         if (Objects.nonNull(halykPurchaseOrder.getResponseCode()) && halykPurchaseOrder.getResponseCode().equals("00")) {
-            Payment payment = paymentService.generateSaveBankCardPayment();
+            Payment payment = paymentService.generateEmptyPayment(COMPLETE_PURCHASE);
+            MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(payment.getMerchantId());
+            if (Objects.isNull(merchantP2pSettings.getTerminalId())) {
+                LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
+                return;
+            }
+            Terminal terminal = terminalRepository.findByIdAndDeletedFalse(merchantP2pSettings.getTerminalId()).orElse(null);
+            if (Objects.isNull(terminal)) {
+                LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
+                return;
+            }
+
             String controlOrderXml = halykSoapService.createPurchaseControlXml(payment.getPaySysPayId(),
-                    halykPurchaseOrder.getAmount(), 92061102L, halykPurchaseOrder.getReference(),
+                    halykPurchaseOrder.getAmount(),
+                    92061102L,
+//                    terminal.getOutputTerminalId(),
+                    halykPurchaseOrder.getReference(),
                     HalykControlOrderCommandTypeDictionary.COMPLETE);
 
             String url = bankTestUrl + "/jsp/remote/control.jsp?" + controlOrderXml;
             LOGGER.info("controlOrder url {}", url);
             ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
             LOGGER.info("halykBankControlOrder response body {}", response.getBody());
-            HalykBankControlOrder halykBankControlOrder = halykSoapService.parseBankControlOrder(response.getBody().replace("response=", ""));
+            HalykBankControlOrder halykBankControlOrder = halykSoapService.parseBankControlOrder(response.getBody());
 
             if (Objects.nonNull(halykBankControlOrder.getResponseCode()) && halykBankControlOrder.getResponseCode().equals("00")) {
                 paymentService.setStatusByPaySysPayId(halykPurchaseOrder.getOrderId(), SUCCESS);
