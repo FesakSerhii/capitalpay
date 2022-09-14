@@ -36,10 +36,7 @@ public class SaveCardController {
 //    }
 
     @GetMapping("/register-client-card")
-    public String registerClientCardWithBank(@RequestParam Long merchantId,
-                                             @RequestParam Long cashBoxId,
-                                             @RequestParam(required = false) String params,
-                                             ModelMap modelMap) {
+    public String registerClientCardWithBank(@RequestParam Long merchantId, @RequestParam Long cashBoxId, @RequestParam(required = false) String params, ModelMap modelMap) {
         ResultDTO result = userCardService.registerClientCardWithBank(merchantId, cashBoxId, params);
         Map<String, String> resultMap = (Map<String, String>) result.getData();
         modelMap.addAttribute("xml", resultMap.get("xml"));
@@ -59,6 +56,7 @@ public class SaveCardController {
     @ResponseBody
     @PostMapping("/p2p-link")
     public String testP2pPostLink(@RequestBody String body) {
+        LOGGER.info("/p2p-link");
         LOGGER.info("PostLink body: {}", body);
         p2pService.completeBankAnonymousP2p(body);
         return "0";
@@ -67,6 +65,7 @@ public class SaveCardController {
     @ResponseBody
     @PostMapping("/purchase-link")
     public String purchasePostLink(@RequestBody String body) {
+        LOGGER.info("/purchase-link");
         LOGGER.info("PostLink body: {}", body);
         p2pService.completeBankPurchase(body);
         return "0";

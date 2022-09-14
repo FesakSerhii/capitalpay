@@ -5,6 +5,7 @@ import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.cashbox.service.CashboxCurrencyService;
 import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.constants.ErrorDictionary;
+import kz.capitalpay.server.constants.HalykControlOrderCommandTypeDictionary;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.p2p.dto.AnonymousP2pPaymentResponseDto;
@@ -13,6 +14,7 @@ import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykAnonymousP2pOrder;
+import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykBankControlOrder;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykPurchaseOrder;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import kz.capitalpay.server.terminal.model.Terminal;
@@ -26,7 +28,9 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -56,6 +60,7 @@ public class P2pService {
     private final CashboxSettingsService cashboxSettingsService;
     //    private final HalykOrderRepository halykOrderRepository;
     private final TerminalRepository terminalRepository;
+    private final RestTemplate restTemplate;
 
     @Value("${halyk.soap.p2p.termurl}")
     private String termUrl;
@@ -63,11 +68,17 @@ public class P2pService {
     @Value("${halyk.soap.currency}")
     private String currency;
 
+    @Value("${bank.url}")
+    private String bankUrl;
+
+    @Value("${bank.url.test}")
+    private String bankTestUrl;
+
     @Value("${remote.api.addres}")
     String apiAddress;
 
 
-    public P2pService(HalykSoapService halykSoapService, CashboxService cashboxService, UserCardService userCardService, P2pSettingsService p2pSettingsService, P2pPaymentService p2pPaymentService, CashboxCurrencyService cashboxCurrencyService, Gson gson, PaymentService paymentService, CashboxSettingsService cashboxSettingsService, TerminalRepository terminalRepository) {
+    public P2pService(HalykSoapService halykSoapService, CashboxService cashboxService, UserCardService userCardService, P2pSettingsService p2pSettingsService, P2pPaymentService p2pPaymentService, CashboxCurrencyService cashboxCurrencyService, Gson gson, PaymentService paymentService, CashboxSettingsService cashboxSettingsService, TerminalRepository terminalRepository, RestTemplate restTemplate) {
         this.halykSoapService = halykSoapService;
         this.cashboxService = cashboxService;
         this.userCardService = userCardService;
@@ -78,6 +89,7 @@ public class P2pService {
         this.paymentService = paymentService;
         this.cashboxSettingsService = cashboxSettingsService;
         this.terminalRepository = terminalRepository;
+        this.restTemplate = restTemplate;
     }
 
     public RedirectView sendP2pToClient(SendP2pToClientDto dto, String userAgent, String ipAddress, RedirectAttributes redirectAttributes) {
@@ -450,7 +462,7 @@ public class P2pService {
             if (Objects.nonNull(resultUrls)) {
                 result.put("backLink", resultUrls.get(REDIRECT_SUCCESS_URL));
             }
-            result.put("postLink", "https://api.capitalpay.kz/api/p2p-link");
+            result.put("postLink", apiAddress + "/api/p2p-link");
             return new ResultDTO(true, result, 0);
         } catch (Exception e) {
             e.printStackTrace();
@@ -488,7 +500,19 @@ public class P2pService {
             return;
         }
         if (Objects.nonNull(halykPurchaseOrder.getResponseCode()) && halykPurchaseOrder.getResponseCode().equals("00")) {
-            paymentService.setStatusByPaySysPayId(halykPurchaseOrder.getOrderId(), SUCCESS);
+            Payment payment = paymentService.generateSaveBankCardPayment();
+            String controlOrderXml = halykSoapService.createPurchaseControlXml(payment.getPaySysPayId(),
+                    halykPurchaseOrder.getAmount(), 92061102L, halykPurchaseOrder.getReference(),
+                    HalykControlOrderCommandTypeDictionary.COMPLETE);
+
+            String url = bankTestUrl + "/jsp/remote/control.jsp" + controlOrderXml;
+            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+            LOGGER.info("halykBankControlOrder response body {}", response.getBody());
+            HalykBankControlOrder halykBankControlOrder = halykSoapService.parseBankControlOrder(response.getBody().replace("response=", ""));
+
+            if (Objects.nonNull(halykBankControlOrder.getResponseCode()) && halykBankControlOrder.getResponseCode().equals("00")) {
+                paymentService.setStatusByPaySysPayId(halykPurchaseOrder.getOrderId(), SUCCESS);
+            }
         }
     }
 

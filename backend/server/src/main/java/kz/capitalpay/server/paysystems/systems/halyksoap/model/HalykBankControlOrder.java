@@ -19,10 +19,9 @@ public class HalykBankControlOrder {
     private String bankSign;
     private String reference;
     private String responseCode;
-    private String approvalCode;
-    private String command;
     private String reason;
     private String remainingAmount;
+    private String commandType;
 
     public Long getId() {
         return id;
@@ -112,22 +111,6 @@ public class HalykBankControlOrder {
         this.responseCode = responseCode;
     }
 
-    public String getApprovalCode() {
-        return approvalCode;
-    }
-
-    public void setApprovalCode(String approvalCode) {
-        this.approvalCode = approvalCode;
-    }
-
-    public String getCommand() {
-        return command;
-    }
-
-    public void setCommand(String command) {
-        this.command = command;
-    }
-
     public String getReason() {
         return reason;
     }
@@ -142,5 +125,13 @@ public class HalykBankControlOrder {
 
     public void setRemainingAmount(String remainingAmount) {
         this.remainingAmount = remainingAmount;
+    }
+
+    public String getCommandType() {
+        return commandType;
+    }
+
+    public void setCommandType(String commandType) {
+        this.commandType = commandType;
     }
 }
