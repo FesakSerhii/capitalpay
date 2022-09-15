@@ -293,14 +293,14 @@ public class HalykSoapService {
 //    }
 
     public String getPaymentOrderResult(BigDecimal amount, String cardholderName, String cvc, String desc,
-                                        String month, String orderId, String pan, String year) {
+                                        String month, String orderId, String pan, String year, Long terminalId) {
         try {
             HalykOrder paymentOrder = generateHalykOrder(amount, cardholderName, desc, orderId, 1,
-                    HalykOrderDictionary.PAYMENT_ORDER, mainTerminalId);
+                    HalykOrderDictionary.PAYMENT_ORDER, String.valueOf(terminalId));
             year = year.substring(2);
 
             EpayServiceStub.PaymentOrderResponse paymentOrderResponse = sendPaymentOrderRequest(
-                    amount.toString(), currency, cvc, mainTerminalId, month, year, orderId, pan, "1");
+                    amount.toString(), currency, cvc, String.valueOf(terminalId), month, year, orderId, pan, "1");
 
             EpayServiceStub.Result result = paymentOrderResponse.get_return();
 
