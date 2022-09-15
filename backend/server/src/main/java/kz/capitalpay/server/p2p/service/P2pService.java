@@ -487,8 +487,9 @@ public class P2pService {
             return;
         }
         if (Objects.nonNull(halykPurchaseOrder.getResponseCode()) && halykPurchaseOrder.getResponseCode().equals("00")) {
-            Payment payment = paymentService.generateEmptyPayment(COMPLETE_PURCHASE);
-            MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(payment.getMerchantId());
+            Payment controlOrderPayment = paymentService.generateEmptyPayment(COMPLETE_PURCHASE);
+            Payment mainPayment = paymentService.findByPaySysPayId(halykPurchaseOrder.getOrderId());
+            MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(mainPayment.getMerchantId());
             if (Objects.isNull(merchantP2pSettings.getTerminalId())) {
                 LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
                 return;
@@ -498,7 +499,7 @@ public class P2pService {
                 LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
                 return;
             }
-            String controlOrderXml = halykSoapService.createPurchaseControlXml(payment.getPaySysPayId(),
+            String controlOrderXml = halykSoapService.createPurchaseControlXml(controlOrderPayment.getPaySysPayId(),
                     halykPurchaseOrder.getAmount(),
                     92061102L,
 //                    terminal.getOutputTerminalId(),
