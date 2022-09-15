@@ -184,7 +184,7 @@ public class SimpleService {
             }
             Payment payment = (Payment) paymentResult.getData();
             MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(payment.getMerchantId());
-            if (Objects.isNull(merchantP2pSettings.getTerminalId())) {
+            if (Objects.isNull(merchantP2pSettings) || Objects.isNull(merchantP2pSettings.getTerminalId())) {
                 LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
                 return MERCHANT_TERMINAL_SETTINGS_NOT_FOUND;
             }
