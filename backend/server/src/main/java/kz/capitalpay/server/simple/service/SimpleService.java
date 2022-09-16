@@ -196,8 +196,8 @@ public class SimpleService {
             Cashbox cashbox = cashboxService.findById(payment.getCashboxId());
             Map<String, String> resultUrls = cashboxSettingsService.getMerchantResultUrls(cashbox.getId());
             String purchaseXml = halykSoapService.createPurchaseXml(payment.getPaySysPayId(), totalamount,
-                    92061102L
-//                    terminal.getOutputTerminalId()
+//                    92061102L
+                    terminal.getOutputTerminalId()
             );
             LOGGER.info("purchaseXml {}", purchaseXml);
 

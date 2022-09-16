@@ -501,8 +501,8 @@ public class P2pService {
             }
             String controlOrderXml = halykSoapService.createPurchaseControlXml(controlOrderPayment.getPaySysPayId(),
                     halykPurchaseOrder.getAmount(),
-                    92061102L,
-//                    terminal.getOutputTerminalId(),
+//                    92061102L,
+                    terminal.getOutputTerminalId(),
                     halykPurchaseOrder.getReference(),
                     HalykControlOrderCommandTypeDictionary.COMPLETE);
 
