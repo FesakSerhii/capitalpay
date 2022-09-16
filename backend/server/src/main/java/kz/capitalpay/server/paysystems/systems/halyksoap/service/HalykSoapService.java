@@ -1407,9 +1407,9 @@ public class HalykSoapService {
         halykOrder.setCommandType(commandType);
         halykBankControlOrderRepository.save(halykOrder);
 
-        return String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?><document>%s" +
+        return String.format("<xml><document>%s" +
                         "<merchant_sign type=\"RSA\" cert_id=\"%s\">%s</merchant_sign>" +
-                        "</document>",
+                        "</document></xml>",
 
                 merchantStr,
                 merchantCertificate,
