@@ -1334,10 +1334,10 @@ public class HalykSoapService {
                         "<order " +
                         "order_id=\"%s\" " +
                         "amount=\"%s\" " +
-                        "currency=\"%s\"> " +
+                        "currency=\"%s\">" +
                         "<department " +
                         "merchant_id=\"%s\" " +
-                        "amount=\"%s\"/> " +
+                        "amount=\"%s\"/>" +
                         "</order>" +
                         "</merchant>",
 
@@ -1377,14 +1377,14 @@ public class HalykSoapService {
         String currencyCode = "398";
 
         String merchantStr = String.format("<merchant " +
-                        "id=\"%s\"> " +
-                        "<command type=\"%s\"/> " +
+                        "id=\"%s\">" +
+                        "<command type=\"%s\"/>" +
                         "<payment " +
                         "reference=\"%s\" " +
                         "approval_code=\"00\" " +
                         "orderid=\"%s\" " +
                         "amount=\"%s\" " +
-                        "currency_code=\"%s\"/> " +
+                        "currency_code=\"%s\"/>" +
                         "</merchant>",
 
                 terminalId,
