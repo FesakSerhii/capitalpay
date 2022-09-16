@@ -504,8 +504,7 @@ public class P2pService {
 //                    92061102L,
                     terminal.getOutputTerminalId(),
                     halykPurchaseOrder.getReference(),
-                    HalykControlOrderCommandTypeDictionary.COMPLETE,
-                    halykPurchaseOrder.getApprovalCode());
+                    HalykControlOrderCommandTypeDictionary.COMPLETE);
 
             String url = bankUrl + "/jsp/remote/control.jsp?" + controlOrderXml;
             LOGGER.info("controlOrder url {}", url);

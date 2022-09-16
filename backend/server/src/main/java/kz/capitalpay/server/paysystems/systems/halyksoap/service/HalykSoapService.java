@@ -1373,7 +1373,7 @@ public class HalykSoapService {
     }
 
     public String createPurchaseControlXml(String orderId, String amount, Long terminalId,
-                                           String reference, String commandType, String approvalCode) {
+                                           String reference, String commandType) {
         KKBSign kkbSign = new KKBSign();
         String currencyCode = "398";
 
@@ -1382,7 +1382,7 @@ public class HalykSoapService {
                         "<command type=\"%s\"/>" +
                         "<payment " +
                         "reference=\"%s\" " +
-                        "approval_code=\"%s\" " +
+                        "approval_code=\"00\" " +
                         "orderid=\"%s\" " +
                         "amount=\"%s\" " +
                         "currency_code=\"%s\"/>" +
@@ -1391,7 +1391,6 @@ public class HalykSoapService {
                 terminalId,
                 commandType,
                 reference,
-                approvalCode,
                 orderId,
                 amount,
                 currencyCode
@@ -1407,6 +1406,7 @@ public class HalykSoapService {
         halykOrder.setMerchantId(terminalId.toString());
         halykOrder.setMerchantSign(signatureValue);
         halykOrder.setCommandType(commandType);
+        halykOrder.setReference(reference);
         halykBankControlOrderRepository.save(halykOrder);
 
         return String.format("<document>%s" +

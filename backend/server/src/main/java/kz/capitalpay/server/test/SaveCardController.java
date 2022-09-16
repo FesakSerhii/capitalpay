@@ -1,27 +1,34 @@
 package kz.capitalpay.server.test;
 
+import kz.capitalpay.server.constants.HalykControlOrderCommandTypeDictionary;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.p2p.service.P2pService;
+import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import kz.capitalpay.server.usercard.service.UserCardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
 
 @Controller
-@RequestMapping("/api")
+@RequestMapping(value = "/api", produces = "application/json;charset=UTF-8")
 public class SaveCardController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SaveCardController.class);
     private final UserCardService userCardService;
     private final P2pService p2pService;
+    private final HalykSoapService halykSoapService;
+    private final RestTemplate restTemplate;
 
-    public SaveCardController(UserCardService userCardService, P2pService p2pService) {
+    public SaveCardController(UserCardService userCardService, P2pService p2pService, HalykSoapService halykSoapService, RestTemplate restTemplate) {
         this.userCardService = userCardService;
         this.p2pService = p2pService;
+        this.halykSoapService = halykSoapService;
+        this.restTemplate = restTemplate;
     }
 
 //    @GetMapping("/register-user-card")
@@ -99,6 +106,16 @@ public class SaveCardController {
         modelMap.addAttribute("backLink", resultMap.get("backLink"));
         modelMap.addAttribute("postLink", resultMap.get("postLink"));
         return "purchase";
+    }
+
+    @ResponseBody
+    @GetMapping("/test-control-order")
+    public String testControlOrder(@RequestParam String orderId,
+                                   @RequestParam String amount,
+                                   @RequestParam String reference) {
+        String url = "https://epay.kkb.kz/jsp/remote/control.jsp?" + halykSoapService.createPurchaseControlXml(
+                orderId, amount, 98830654L, reference, HalykControlOrderCommandTypeDictionary.COMPLETE);
+        return restTemplate.getForEntity(url, String.class).getBody();
     }
 
 //    @GetMapping("/stream-sse")
