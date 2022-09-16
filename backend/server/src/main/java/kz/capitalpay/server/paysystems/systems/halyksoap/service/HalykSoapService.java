@@ -1341,16 +1341,17 @@ public class HalykSoapService {
                         "</order>" +
                         "</merchant>",
 
-                testCertificateId,
+//                testCertificateId,
+                merchantCertificate,
                 merchantName,
                 orderId,
                 amountStr,
                 currencyCode,
-                testTerminalId,
+                terminalId,
                 amountStr
         );
 
-        String signatureValue = kkbSign.sign64(merchantStr, testKeystore, clientAlias, testKeypass, testStorepass);
+        String signatureValue = kkbSign.sign64(merchantStr, keystore, clientAlias, keypass, storepass);
 
         HalykPurchaseOrder halykOrder = new HalykPurchaseOrder();
         halykOrder.setMerchantCertId(merchantCertificate);
@@ -1386,7 +1387,7 @@ public class HalykSoapService {
                         "currency_code=\"%s\"/> " +
                         "</merchant>",
 
-                testTerminalId,
+                terminalId,
                 commandType,
                 reference,
                 orderId,
@@ -1394,7 +1395,7 @@ public class HalykSoapService {
                 currencyCode
         );
 
-        String signatureValue = kkbSign.sign64(merchantStr, testKeystore, clientAlias, testKeypass, testStorepass);
+        String signatureValue = kkbSign.sign64(merchantStr, keystore, clientAlias, keypass, storepass);
 
         HalykBankControlOrder halykOrder = new HalykBankControlOrder();
         halykOrder.setMerchantCertId(merchantCertificate);
@@ -1411,7 +1412,7 @@ public class HalykSoapService {
                         "</document>",
 
                 merchantStr,
-                testCertificateId,
+                merchantCertificate,
                 signatureValue
         );
     }
