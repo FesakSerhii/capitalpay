@@ -550,6 +550,7 @@ public class UserCardService {
     private void sendClientCardDataToMerchant(ClientCardFromBank clientCard) {
         try {
             String interactionUrl = cashboxService.getInteractUrl(clientCard.getCashBoxId());
+            LOGGER.info("interactionUrl {}", interactionUrl);
 //            String interactionUrl = "http://localhost:8080/testshop/listener";
             CardDataForMerchantDto detailsJson = generateClientCardResponseDto(clientCard);
             Map<String, Object> requestJson = new HashMap<>();

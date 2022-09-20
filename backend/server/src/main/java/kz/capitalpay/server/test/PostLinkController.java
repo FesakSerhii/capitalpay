@@ -4,6 +4,7 @@ import kz.capitalpay.server.constants.HalykControlOrderCommandTypeDictionary;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.p2p.service.P2pService;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
+import kz.capitalpay.server.simple.service.SimpleService;
 import kz.capitalpay.server.usercard.service.UserCardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,19 +17,21 @@ import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/api", produces = "application/json;charset=UTF-8")
-public class SaveCardController {
+public class PostLinkController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SaveCardController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PostLinkController.class);
     private final UserCardService userCardService;
     private final P2pService p2pService;
     private final HalykSoapService halykSoapService;
     private final RestTemplate restTemplate;
+    private final SimpleService simpleService;
 
-    public SaveCardController(UserCardService userCardService, P2pService p2pService, HalykSoapService halykSoapService, RestTemplate restTemplate) {
+    public PostLinkController(UserCardService userCardService, P2pService p2pService, HalykSoapService halykSoapService, RestTemplate restTemplate, SimpleService simpleService) {
         this.userCardService = userCardService;
         this.p2pService = p2pService;
         this.halykSoapService = halykSoapService;
         this.restTemplate = restTemplate;
+        this.simpleService = simpleService;
     }
 
 //    @GetMapping("/register-user-card")
@@ -74,7 +77,7 @@ public class SaveCardController {
     public String purchasePostLink(@RequestBody String body) {
         LOGGER.info("/purchase-link");
         LOGGER.info("PostLink body: {}", body);
-        p2pService.completeBankPurchase(body);
+        simpleService.completeBankPurchase(body);
         return "0";
     }
 

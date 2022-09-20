@@ -63,9 +63,6 @@ public class P2pService {
     private final CashboxSettingsService cashboxSettingsService;
     //    private final HalykOrderRepository halykOrderRepository;
     private final TerminalRepository terminalRepository;
-    private final RestTemplate restTemplate;
-    private final HalykPurchaseOrderRepository halykPurchaseOrderRepository;
-    private final HalykBankControlOrderRepository halykBankControlOrderRepository;
 
     @Value("${halyk.soap.p2p.termurl}")
     private String termUrl;
@@ -73,17 +70,11 @@ public class P2pService {
     @Value("${halyk.soap.currency}")
     private String currency;
 
-    @Value("${bank.url}")
-    private String bankUrl;
-
-    @Value("${bank.url.test}")
-    private String bankTestUrl;
-
     @Value("${remote.api.addres}")
     String apiAddress;
 
 
-    public P2pService(HalykSoapService halykSoapService, CashboxService cashboxService, UserCardService userCardService, P2pSettingsService p2pSettingsService, P2pPaymentService p2pPaymentService, CashboxCurrencyService cashboxCurrencyService, Gson gson, PaymentService paymentService, CashboxSettingsService cashboxSettingsService, TerminalRepository terminalRepository, RestTemplate restTemplate, HalykPurchaseOrderRepository halykPurchaseOrderRepository, HalykBankControlOrderRepository halykBankControlOrderRepository) {
+    public P2pService(HalykSoapService halykSoapService, CashboxService cashboxService, UserCardService userCardService, P2pSettingsService p2pSettingsService, P2pPaymentService p2pPaymentService, CashboxCurrencyService cashboxCurrencyService, Gson gson, PaymentService paymentService, CashboxSettingsService cashboxSettingsService, TerminalRepository terminalRepository) {
         this.halykSoapService = halykSoapService;
         this.cashboxService = cashboxService;
         this.userCardService = userCardService;
@@ -94,9 +85,6 @@ public class P2pService {
         this.paymentService = paymentService;
         this.cashboxSettingsService = cashboxSettingsService;
         this.terminalRepository = terminalRepository;
-        this.restTemplate = restTemplate;
-        this.halykPurchaseOrderRepository = halykPurchaseOrderRepository;
-        this.halykBankControlOrderRepository = halykBankControlOrderRepository;
     }
 
     public RedirectView sendP2pToClient(SendP2pToClientDto dto, String userAgent, String ipAddress, RedirectAttributes redirectAttributes) {
@@ -477,50 +465,6 @@ public class P2pService {
         }
         if (Objects.nonNull(halykAnonymousP2pOrder.getResponseCode()) && halykAnonymousP2pOrder.getResponseCode().equals("00")) {
             paymentService.setStatusByPaySysPayId(halykAnonymousP2pOrder.getOrderId(), SUCCESS);
-        }
-    }
-
-    public void completeBankPurchase(String requestBody) {
-        LOGGER.info("completeBankPurchase()");
-        if (Objects.isNull(requestBody) || requestBody.trim().isEmpty()) {
-            LOGGER.info("requestBody is NULL");
-            return;
-        }
-        String xml = requestBody.replace("response=", "");
-        HalykPurchaseOrder halykPurchaseOrder = halykSoapService.parseBankPurchaseOrder(xml);
-        if (Objects.isNull(halykPurchaseOrder)) {
-            LOGGER.info("halykAnonymousP2pOrder is NULL");
-            return;
-        }
-        halykPurchaseOrderRepository.save(halykPurchaseOrder);
-        if (Objects.nonNull(halykPurchaseOrder.getResponseCode()) && halykPurchaseOrder.getResponseCode().equals("00")) {
-            Payment mainPayment = paymentService.findByPaySysPayId(halykPurchaseOrder.getOrderId());
-            MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(mainPayment.getMerchantId());
-            if (Objects.isNull(merchantP2pSettings.getTerminalId())) {
-                LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
-                return;
-            }
-            Terminal terminal = terminalRepository.findByIdAndDeletedFalse(merchantP2pSettings.getTerminalId()).orElse(null);
-            if (Objects.isNull(terminal)) {
-                LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
-                return;
-            }
-            String controlOrderXml = halykSoapService.createPurchaseControlXml(halykPurchaseOrder.getOrderId(),
-                    halykPurchaseOrder.getAmount(),
-//                    92061102L,
-                    terminal.getOutputTerminalId(),
-                    halykPurchaseOrder.getReference(),
-                    HalykControlOrderCommandTypeDictionary.COMPLETE);
-
-            String url = bankUrl + "/jsp/remote/control.jsp?" + controlOrderXml;
-            LOGGER.info("controlOrder url {}", url);
-            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-            LOGGER.info("halykBankControlOrder response body {}", response.getBody());
-            HalykBankControlOrder halykBankControlOrder = halykSoapService.parseBankControlOrder(response.getBody());
-            halykBankControlOrderRepository.save(halykBankControlOrder);
-            if (Objects.nonNull(halykBankControlOrder.getResponseCode()) && halykBankControlOrder.getResponseCode().equals("00")) {
-                paymentService.setStatusByPaySysPayId(halykPurchaseOrder.getOrderId(), SUCCESS);
-            }
         }
     }
 

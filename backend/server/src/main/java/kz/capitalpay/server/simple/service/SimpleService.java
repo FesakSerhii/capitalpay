@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.cashbox.service.CashboxCurrencyService;
 import kz.capitalpay.server.cashbox.service.CashboxService;
+import kz.capitalpay.server.constants.HalykControlOrderCommandTypeDictionary;
 import kz.capitalpay.server.currency.service.CurrencyService;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.login.model.ApplicationUser;
@@ -14,6 +15,10 @@ import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
 import kz.capitalpay.server.p2p.service.P2pSettingsService;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
+import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykBankControlOrder;
+import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykPurchaseOrder;
+import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykBankControlOrderRepository;
+import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykPurchaseOrderRepository;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import kz.capitalpay.server.simple.dto.PaymentDetailDTO;
 import kz.capitalpay.server.simple.dto.SimpleRequestDTO;
@@ -24,7 +29,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -74,8 +81,21 @@ public class SimpleService {
     @Autowired
     P2pSettingsService p2pSettingsService;
 
+    @Autowired
+    RestTemplate restTemplate;
+    @Autowired
+    HalykPurchaseOrderRepository halykPurchaseOrderRepository;
+    @Autowired
+    HalykBankControlOrderRepository halykBankControlOrderRepository;
+
     @Value("${remote.api.addres}")
     String apiAddress;
+
+    @Value("${bank.url}")
+    private String bankUrl;
+
+    @Value("${bank.url.test}")
+    private String bankTestUrl;
 
     // Payment Status
     public static final String NEW_PAYMENT = "NEW";
@@ -248,6 +268,50 @@ public class SimpleService {
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
+        }
+    }
+
+    public void completeBankPurchase(String requestBody) {
+        LOGGER.info("completeBankPurchase()");
+        if (Objects.isNull(requestBody) || requestBody.trim().isEmpty()) {
+            LOGGER.info("requestBody is NULL");
+            return;
+        }
+        String xml = requestBody.replace("response=", "");
+        HalykPurchaseOrder halykPurchaseOrder = halykSoapService.parseBankPurchaseOrder(xml);
+        if (Objects.isNull(halykPurchaseOrder)) {
+            LOGGER.info("halykAnonymousP2pOrder is NULL");
+            return;
+        }
+        halykPurchaseOrderRepository.save(halykPurchaseOrder);
+        if (Objects.nonNull(halykPurchaseOrder.getResponseCode()) && halykPurchaseOrder.getResponseCode().equals("00")) {
+            Payment mainPayment = paymentService.findByPaySysPayId(halykPurchaseOrder.getOrderId());
+            MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(mainPayment.getMerchantId());
+            if (Objects.isNull(merchantP2pSettings.getTerminalId())) {
+                LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
+                return;
+            }
+            Terminal terminal = terminalRepository.findByIdAndDeletedFalse(merchantP2pSettings.getTerminalId()).orElse(null);
+            if (Objects.isNull(terminal)) {
+                LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
+                return;
+            }
+            String controlOrderXml = halykSoapService.createPurchaseControlXml(halykPurchaseOrder.getOrderId(),
+                    halykPurchaseOrder.getAmount(),
+//                    92061102L,
+                    terminal.getOutputTerminalId(),
+                    halykPurchaseOrder.getReference(),
+                    HalykControlOrderCommandTypeDictionary.COMPLETE);
+
+            String url = bankUrl + "/jsp/remote/control.jsp?" + controlOrderXml;
+            LOGGER.info("controlOrder url {}", url);
+            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+            LOGGER.info("halykBankControlOrder response body {}", response.getBody());
+            HalykBankControlOrder halykBankControlOrder = halykSoapService.parseBankControlOrder(response.getBody());
+            halykBankControlOrderRepository.save(halykBankControlOrder);
+            if (Objects.nonNull(halykBankControlOrder.getResponseCode()) && halykBankControlOrder.getResponseCode().equals("00")) {
+                paymentService.setStatusByPaySysPayId(halykPurchaseOrder.getOrderId(), SUCCESS);
+            }
         }
     }
 }
