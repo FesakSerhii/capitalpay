@@ -19,7 +19,9 @@ public interface PaymentRepository extends JpaRepository<Payment, String> {
 
     Payment findTopByPaySysPayId(String paySysPayId);
 
-    List<Payment> findByMerchantIdAndAndSaveBankCardFalse(Long merchantId);
+    List<Payment> findByMerchantIdAndSaveBankCardFalse(Long merchantId);
+
+    List<Payment> findBySaveBankCardFalse();
 
     List<Payment> findByCashboxIdAndStatus(Long cashboxId, String status);
 

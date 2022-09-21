@@ -164,9 +164,9 @@ public class PaymentService {
             List<Payment> paymentList;
             if (applicationUser.getRoles().contains(applicationRoleService.getRole(OPERATOR))
                     || applicationUser.getRoles().contains(applicationRoleService.getRole(ADMIN))) {
-                paymentList = paymentRepository.findAll();
+                paymentList = paymentRepository.findBySaveBankCardFalse();
             } else {
-                paymentList = paymentRepository.findByMerchantIdAndAndSaveBankCardFalse(applicationUser.getId());
+                paymentList = paymentRepository.findByMerchantIdAndSaveBankCardFalse(applicationUser.getId());
             }
             paymentList.sort((o1, o2) -> o2.getTimestamp().compareTo(o1.getTimestamp()));
             return new ResultDTO(true, paymentList, 0);
