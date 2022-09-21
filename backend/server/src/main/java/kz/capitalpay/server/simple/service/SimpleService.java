@@ -122,8 +122,8 @@ public class SimpleService {
                 return BILL_ID_ALREADY_EXISTS;
             }
             String merchantName = merchantKycService.getField(merchant.getId(), MerchantKycService.MNAME);
-            BigDecimal totalAmount = request.getTotalamount()
-                    .movePointLeft(2).setScale(2, RoundingMode.HALF_UP);
+//            BigDecimal totalAmount = request.getTotalamount()
+//                    .movePointLeft(2).setScale(2, RoundingMode.HALF_UP);
 
             if (!cashboxCurrencyService.checkCurrencyEnable(cashbox.getId(), merchant.getId(), request.getCurrency())) {
                 return CURRENCY_NOT_FOUND;
@@ -142,7 +142,7 @@ public class SimpleService {
             payment.setBillId(request.getBillid());
             payment.setPaySysPayId(String.format("%1$14s", lastPaymentId++)
                     .replace(' ', '0'));
-            payment.setTotalAmount(totalAmount);
+            payment.setTotalAmount(request.getTotalamount());
             payment.setCurrency(request.getCurrency());
             payment.setDescription(request.getDescription());
             payment.setParam(request.getParam());
