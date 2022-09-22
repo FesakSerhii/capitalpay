@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -91,8 +92,9 @@ public class HalykRegisterPaymentsService {
 
     private void divideMoneyBetweenMerchantAndHalyk(long cashBoxId, BigDecimal amount, RegisterPaymentsHalykDTO halyk,
                                                     RegisterPaymentsMerchantDTO merchant) {
+        LOGGER.info("divideMoneyBetweenMerchantAndHalyk amount {}", amount);
 //        String percentForHalyk = merchantKycService.getField(cashBoxId, TOTAL_FEE);
-        BigDecimal percent = BigDecimal.ZERO;
+        BigDecimal percent = BigDecimal.TEN.divide(new BigDecimal("100"));
 //        try {
 //            percent = BigDecimal.valueOf(Double.parseDouble(percentForHalyk));
 //        } catch (Exception e) {
@@ -103,6 +105,8 @@ public class HalykRegisterPaymentsService {
         BigDecimal currentHalykMoney = halyk.getAmount() == null ? BigDecimal.ZERO : halyk.getAmount();
         BigDecimal moneyForHalyk = amount.multiply(percent);
         BigDecimal moneyForMerchant = amount.subtract(moneyForHalyk);
+        LOGGER.info("moneyForHalyk {}", moneyForHalyk);
+        LOGGER.info("moneyForMerchant {}", moneyForMerchant);
         halyk.setAmount(currentHalykMoney.add(moneyForHalyk));
         merchant.setAmount(moneyForMerchant);
     }

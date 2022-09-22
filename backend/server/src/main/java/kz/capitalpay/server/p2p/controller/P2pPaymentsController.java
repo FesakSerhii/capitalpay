@@ -213,7 +213,7 @@ public class P2pPaymentsController {
         modelMap.addAttribute("xml", xml);
         modelMap.addAttribute("backLink", backLink);
         modelMap.addAttribute("postLink", postLink);
-        return "test_p2p";
+        return "p2p";
     }
 
     @ResponseBody

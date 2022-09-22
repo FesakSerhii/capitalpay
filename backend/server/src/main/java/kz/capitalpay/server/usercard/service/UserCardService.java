@@ -40,6 +40,7 @@ import java.util.stream.Collectors;
 
 import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.REDIRECT_FAILED_URL;
 import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.REDIRECT_SUCCESS_URL;
+import static kz.capitalpay.server.simple.service.SimpleService.SAVE_BANK_CARD;
 
 @Service
 public class UserCardService {
@@ -105,7 +106,7 @@ public class UserCardService {
     }
 
     public ResultDTO registerMerchantCardWithBank(RegisterMerchantCardWithBankDto dto) {
-        Payment payment = paymentService.generateSaveBankCardPayment();
+        Payment payment = paymentService.generateEmptyPayment(SAVE_BANK_CARD);
         UserCardFromBank userCardFromBank = new UserCardFromBank();
         userCardFromBank.setOrderId(payment.getPaySysPayId());
         userCardFromBank.setUserId(dto.getMerchantId());
@@ -123,7 +124,7 @@ public class UserCardService {
         }
         Map<String, String> resultUrls = cashboxSettingsService.getMerchantResultUrls(cashbox.getId());
 
-        Payment payment = paymentService.generateSaveBankCardPayment();
+        Payment payment = paymentService.generateEmptyPayment(SAVE_BANK_CARD);
         ClientCardFromBank clientCardFromBank = new ClientCardFromBank();
         clientCardFromBank.setOrderId(payment.getPaySysPayId());
         clientCardFromBank.setCashBoxId(cashBoxId);
@@ -549,6 +550,7 @@ public class UserCardService {
     private void sendClientCardDataToMerchant(ClientCardFromBank clientCard) {
         try {
             String interactionUrl = cashboxService.getInteractUrl(clientCard.getCashBoxId());
+            LOGGER.info("interactionUrl {}", interactionUrl);
 //            String interactionUrl = "http://localhost:8080/testshop/listener";
             CardDataForMerchantDto detailsJson = generateClientCardResponseDto(clientCard);
             Map<String, Object> requestJson = new HashMap<>();
@@ -593,7 +595,7 @@ public class UserCardService {
 
 
     public void sendTestP2p() {
-        Payment payment = paymentService.generateSaveBankCardPayment();
+        Payment payment = paymentService.generateEmptyPayment(SAVE_BANK_CARD);
         String p2pXml = halykSoapService.createP2pXml(payment.getPaySysPayId(), 663L, "900004624383", "800001320650", new BigDecimal("101.00"), 98830652L);
         LOGGER.info("p2pXml {}", p2pXml);
         String encodedXml = Base64.getEncoder().encodeToString(p2pXml.getBytes());
@@ -602,7 +604,7 @@ public class UserCardService {
     }
 
     public ResultDTO sendAnonymousTestP2p() {
-        Payment payment = paymentService.generateSaveBankCardPayment();
+        Payment payment = paymentService.generateEmptyPayment(SAVE_BANK_CARD);
         String p2pXml = halykSoapService.createAnonymousP2pXml(payment.getPaySysPayId(), 663L, "900000028519", new BigDecimal("100.00"), 98830654L);
         LOGGER.info("p2pXml {}", p2pXml);
 
@@ -611,6 +613,19 @@ public class UserCardService {
         result.put("xml", encodedXml);
         result.put("backLink", "https://capitalpay.kz");
         result.put("postLink", "https://api.capitalpay.kz/api/p2p-link");
+        return new ResultDTO(true, result, 0);
+    }
+
+    public ResultDTO sendTestPurchase() {
+        Payment payment = paymentService.generateEmptyPayment(SAVE_BANK_CARD);
+        String purchaseXml = halykSoapService.createPurchaseXml(payment.getPaySysPayId(), new BigDecimal("100.00"), 98830654L);
+        LOGGER.info("purchaseXml {}", purchaseXml);
+
+        String encodedXml = Base64.getEncoder().encodeToString(purchaseXml.getBytes());
+        Map<String, String> result = new HashMap<>();
+        result.put("xml", encodedXml);
+        result.put("backLink", "https://capitalpay.kz");
+        result.put("postLink", "https://api.capitalpay.kz/api/purchase-link");
         return new ResultDTO(true, result, 0);
     }
 

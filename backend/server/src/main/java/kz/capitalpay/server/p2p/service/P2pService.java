@@ -5,6 +5,7 @@ import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.cashbox.service.CashboxCurrencyService;
 import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.constants.ErrorDictionary;
+import kz.capitalpay.server.constants.HalykControlOrderCommandTypeDictionary;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.p2p.dto.AnonymousP2pPaymentResponseDto;
@@ -13,6 +14,10 @@ import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykAnonymousP2pOrder;
+import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykBankControlOrder;
+import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykPurchaseOrder;
+import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykBankControlOrderRepository;
+import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykPurchaseOrderRepository;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import kz.capitalpay.server.terminal.model.Terminal;
 import kz.capitalpay.server.terminal.repository.TerminalRepository;
@@ -25,7 +30,9 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -37,6 +44,7 @@ import java.util.*;
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
 import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.REDIRECT_FAILED_URL;
 import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.REDIRECT_SUCCESS_URL;
+import static kz.capitalpay.server.simple.service.SimpleService.COMPLETE_PURCHASE;
 import static kz.capitalpay.server.simple.service.SimpleService.SUCCESS;
 
 @Service
@@ -318,29 +326,24 @@ public class P2pService {
             LOGGER.info("INVALID_SIGNATURE");
             return ErrorDictionary.INVALID_SIGNATURE;
         }
-
         Cashbox cashbox = cashboxService.findById(cashBoxId);
         if (cashbox == null) {
             LOGGER.info("CASHBOX_NOT_FOUND");
             return CASHBOX_NOT_FOUND;
         }
-
         if (!cashbox.getMerchantId().equals(merchantId)) {
             LOGGER.info("AVAILABLE_ONLY_FOR_CASHBOXES");
             return ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXES;
         }
         BigDecimal amount = totalAmount.setScale(2, RoundingMode.HALF_UP);
-
         if (!cashboxCurrencyService.checkCurrencyEnable(cashbox.getId(), merchantId, currency)) {
             LOGGER.info("CURRENCY_NOT_FOUND");
             return CURRENCY_NOT_FOUND;
         }
-
         if (param != null && param.length() > 255) {
             LOGGER.info("PARAM_IS_TOO_LONG");
             return PARAM_IS_TOO_LONG;
         }
-
         Payment p2pPayment = p2pPaymentService.generateP2pPayment(ipAddress, userAgent, merchantId, amount, cashBoxId, false, currency, param);
         return new ResultDTO(true, p2pPayment, 0);
     }
@@ -364,17 +367,14 @@ public class P2pService {
             if (!cashbox.getMerchantId().equals(p2pPayment.getMerchantId())) {
                 return ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXES;
             }
-
             Long merchantCardId = cashboxService.findUserCardIdByCashBoxId(p2pPayment.getCashboxId());
             if (merchantCardId.equals(0L)) {
                 return ErrorDictionary.CARD_NOT_FOUND;
             }
-
             MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(p2pPayment.getMerchantId());
             if (Objects.isNull(merchantP2pSettings) || !merchantP2pSettings.isP2pAllowed()) {
                 return ErrorDictionary.P2P_IS_NOT_ALLOWED;
             }
-
             if (!cashbox.isP2pAllowed()) {
                 return ErrorDictionary.P2P_IS_NOT_ALLOWED;
             }
@@ -387,12 +387,10 @@ public class P2pService {
                 LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
                 return MERCHANT_TERMINAL_SETTINGS_NOT_FOUND;
             }
-
             UserCard merchantCard = userCardService.findUserCardById(merchantCardId);
             CardDataResponseDto merchantCardData = userCardService.getCardDataFromTokenServer(merchantCard.getToken());
             CardDataResponseDto clientCardData = new CardDataResponseDto(pan, year, month, cvv);
             SendP2pToClientDto dto = new SendP2pToClientDto(p2pPayment.getMerchantId(), p2pPayment.getTotalAmount(), p2pPayment.getCashboxId());
-
             return checkReturnCode(halykSoapService.sendP2p(ipAddress, p2pPayment.getUserAgent(), clientCardData, dto, merchantCardData.getCardNumber(), false, terminal.getOutputTerminalId()));
         } catch (Exception e) {
             e.printStackTrace();
@@ -414,17 +412,14 @@ public class P2pService {
             if (!cashbox.getMerchantId().equals(payment.getMerchantId())) {
                 return ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXES;
             }
-
             Long merchantCardId = cashboxService.findUserCardIdByCashBoxId(payment.getCashboxId());
             if (merchantCardId.equals(0L)) {
                 return ErrorDictionary.CARD_NOT_FOUND;
             }
-
             MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(payment.getMerchantId());
             if (Objects.isNull(merchantP2pSettings) || !merchantP2pSettings.isP2pAllowed()) {
                 return ErrorDictionary.P2P_IS_NOT_ALLOWED;
             }
-
             if (!cashbox.isP2pAllowed()) {
                 return ErrorDictionary.P2P_IS_NOT_ALLOWED;
             }
@@ -437,7 +432,6 @@ public class P2pService {
                 LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
                 return MERCHANT_TERMINAL_SETTINGS_NOT_FOUND;
             }
-
             UserCardFromBank merchantCard = userCardService.findUserCardFromBankById(merchantCardId);
             String p2pXml = halykSoapService.createAnonymousP2pXml(payment.getPaySysPayId(), payment.getMerchantId(), merchantCard.getBankCardId(), payment.getTotalAmount(), terminal.getOutputTerminalId());
             LOGGER.info("p2pXml {}", p2pXml);
@@ -449,7 +443,7 @@ public class P2pService {
             if (Objects.nonNull(resultUrls)) {
                 result.put("backLink", resultUrls.get(REDIRECT_SUCCESS_URL));
             }
-            result.put("postLink", "https://api.capitalpay.kz/api/p2p-link");
+            result.put("postLink", apiAddress + "/api/p2p-link");
             return new ResultDTO(true, result, 0);
         } catch (Exception e) {
             e.printStackTrace();
@@ -506,11 +500,9 @@ public class P2pService {
         if (("OK").equals(paymentResult)) {
             return new ResultDTO(true, "Successful payment", 0);
         }
-
         if ("FAIL".equals(paymentResult)) {
             return ErrorDictionary.BANK_ERROR;
         }
-
         LOGGER.info("Redirect to 3DS");
         LOGGER.info("Result: {}", paymentResult);
         try {
@@ -531,7 +523,6 @@ public class P2pService {
             addErrorAttributes(redirectAttributes, ErrorDictionary.BANK_ERROR);
             return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
         }
-
         LOGGER.info("Redirect to 3DS");
         LOGGER.info("Result: {}", paymentResult);
         try {

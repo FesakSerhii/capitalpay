@@ -27,7 +27,6 @@ import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.OPERATOR;
 import static kz.capitalpay.server.payments.service.PaymentLogService.CHANGE_STATUS_PAYMENT;
 import static kz.capitalpay.server.payments.service.PaymentLogService.CREATE_NEW_PAYMENT;
-import static kz.capitalpay.server.simple.service.SimpleService.SAVE_BANK_CARD;
 import static kz.capitalpay.server.simple.service.SimpleService.SUCCESS;
 
 @Service
@@ -165,9 +164,9 @@ public class PaymentService {
             List<Payment> paymentList;
             if (applicationUser.getRoles().contains(applicationRoleService.getRole(OPERATOR))
                     || applicationUser.getRoles().contains(applicationRoleService.getRole(ADMIN))) {
-                paymentList = paymentRepository.findAll();
+                paymentList = paymentRepository.findBySaveBankCardFalse();
             } else {
-                paymentList = paymentRepository.findByMerchantId(applicationUser.getId());
+                paymentList = paymentRepository.findByMerchantIdAndSaveBankCardFalse(applicationUser.getId());
             }
             paymentList.sort((o1, o2) -> o2.getTimestamp().compareTo(o1.getTimestamp()));
             return new ResultDTO(true, paymentList, 0);
@@ -205,12 +204,12 @@ public class PaymentService {
 
     }
 
-    public Payment generateSaveBankCardPayment() {
+    public Payment generateEmptyPayment(String status) {
         Payment payment = new Payment();
         payment.setSaveBankCard(true);
         payment.setTimestamp(System.currentTimeMillis());
         payment.setGuid(UUID.randomUUID().toString());
-        payment.setStatus(SAVE_BANK_CARD);
+        payment.setStatus(status);
 //        payment.setPaySysPayId(orderId);
         payment.setPaySysPayId(p2pPaymentService.generateOrderId());
         return paymentRepository.save(payment);

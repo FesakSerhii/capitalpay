@@ -9,6 +9,8 @@ import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.service.ApplicationUserService;
 import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.merchantsettings.service.MerchantKycService;
+import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
+import kz.capitalpay.server.p2p.service.P2pSettingsService;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.paysystems.dto.ActivatePaysystemDTO;
@@ -19,6 +21,8 @@ import kz.capitalpay.server.paysystems.model.PaysystemInfo;
 import kz.capitalpay.server.paysystems.repository.PaysystemInfoRepository;
 import kz.capitalpay.server.paysystems.systems.PaySystem;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
+import kz.capitalpay.server.terminal.model.Terminal;
+import kz.capitalpay.server.terminal.repository.TerminalRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +37,8 @@ import java.math.RoundingMode;
 import java.security.Principal;
 import java.util.*;
 
-import static kz.capitalpay.server.constants.ErrorDictionary.PAYMENT_NOT_FOUND;
-import static kz.capitalpay.server.constants.ErrorDictionary.PAYSYSTEM_NOT_FOUND;
+import static kz.capitalpay.server.constants.ErrorDictionary.*;
+import static kz.capitalpay.server.constants.ErrorDictionary.MERCHANT_TERMINAL_SETTINGS_NOT_FOUND;
 import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.ACTIVATE_PAYSYSTEM;
 
 @Service
@@ -62,6 +66,10 @@ public class PaysystemService {
     List<PaySystem> paySystemList;
     @Autowired
     CashboxService cashboxService;
+    @Autowired
+    P2pSettingsService p2pSettingsService;
+    @Autowired
+    TerminalRepository terminalRepository;
 
 
     @Value("${remote.api.addres}")
@@ -229,8 +237,19 @@ public class PaysystemService {
         LOGGER.info("Request User-Agent: {}", httpRequest.getHeader("User-Agent"));
 
         Payment payment = paymentService.addPhoneAndEmail(paymentid, phone, email);
+        MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(payment.getMerchantId());
+        if (Objects.isNull(merchantP2pSettings.getTerminalId())) {
+            LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
+            return null;
+        }
+        Terminal terminal = terminalRepository.findByIdAndDeletedFalse(merchantP2pSettings.getTerminalId()).orElse(null);
+        if (Objects.isNull(terminal)) {
+            LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
+            return null;
+        }
         String result = halykSoapService.getPaymentOrderResult(payment.getTotalAmount(),
-                cardHolderName, cvv, payment.getDescription(), month, payment.getPaySysPayId(), pan, year);
+                cardHolderName, cvv, payment.getDescription(), month, payment.getPaySysPayId(),
+                pan, year, terminal.getInputTerminalId());
         BillPaymentDto bill = createBill(payment, httpRequest, cardHolderName, pan, result);
         return redirectAfterPay(httpResponse, bill);
     }

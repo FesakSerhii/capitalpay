@@ -46,7 +46,7 @@ public class ClientCardController {
         modelMap.addAttribute("xml", resultMap.get("xml"));
         modelMap.addAttribute("backLink", resultMap.get("backLink"));
         modelMap.addAttribute("postLink", resultMap.get("postLink"));
-        return "test_register_card";
+        return "register_card";
     }
 
 //    @GetMapping("/register")

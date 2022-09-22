@@ -1,27 +1,37 @@
 package kz.capitalpay.server.test;
 
+import kz.capitalpay.server.constants.HalykControlOrderCommandTypeDictionary;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.p2p.service.P2pService;
+import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
+import kz.capitalpay.server.simple.service.SimpleService;
 import kz.capitalpay.server.usercard.service.UserCardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
 
 @Controller
-@RequestMapping("/api")
-public class SaveCardController {
+@RequestMapping(value = "/api", produces = "application/json;charset=UTF-8")
+public class PostLinkController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SaveCardController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PostLinkController.class);
     private final UserCardService userCardService;
     private final P2pService p2pService;
+    private final HalykSoapService halykSoapService;
+    private final RestTemplate restTemplate;
+    private final SimpleService simpleService;
 
-    public SaveCardController(UserCardService userCardService, P2pService p2pService) {
+    public PostLinkController(UserCardService userCardService, P2pService p2pService, HalykSoapService halykSoapService, RestTemplate restTemplate, SimpleService simpleService) {
         this.userCardService = userCardService;
         this.p2pService = p2pService;
+        this.halykSoapService = halykSoapService;
+        this.restTemplate = restTemplate;
+        this.simpleService = simpleService;
     }
 
 //    @GetMapping("/register-user-card")
@@ -36,16 +46,13 @@ public class SaveCardController {
 //    }
 
     @GetMapping("/register-client-card")
-    public String registerClientCardWithBank(@RequestParam Long merchantId,
-                                             @RequestParam Long cashBoxId,
-                                             @RequestParam(required = false) String params,
-                                             ModelMap modelMap) {
+    public String registerClientCardWithBank(@RequestParam Long merchantId, @RequestParam Long cashBoxId, @RequestParam(required = false) String params, ModelMap modelMap) {
         ResultDTO result = userCardService.registerClientCardWithBank(merchantId, cashBoxId, params);
         Map<String, String> resultMap = (Map<String, String>) result.getData();
         modelMap.addAttribute("xml", resultMap.get("xml"));
         modelMap.addAttribute("backLink", resultMap.get("backLink"));
         modelMap.addAttribute("postLink", resultMap.get("postLink"));
-        return "test_register_card";
+        return "register_card";
     }
 
     @ResponseBody
@@ -59,8 +66,18 @@ public class SaveCardController {
     @ResponseBody
     @PostMapping("/p2p-link")
     public String testP2pPostLink(@RequestBody String body) {
+        LOGGER.info("/p2p-link");
         LOGGER.info("PostLink body: {}", body);
         p2pService.completeBankAnonymousP2p(body);
+        return "0";
+    }
+
+    @ResponseBody
+    @PostMapping("/purchase-link")
+    public String purchasePostLink(@RequestBody String body) {
+        LOGGER.info("/purchase-link");
+        LOGGER.info("PostLink body: {}", body);
+        simpleService.completeBankPurchase(body);
         return "0";
     }
 
@@ -80,7 +97,28 @@ public class SaveCardController {
         modelMap.addAttribute("xml", resultMap.get("xml"));
         modelMap.addAttribute("backLink", resultMap.get("backLink"));
         modelMap.addAttribute("postLink", resultMap.get("postLink"));
-        return "test_p2p";
+        return "p2p";
+    }
+
+    @GetMapping("/buy-something")
+    public String sendPurchaseRequest(ModelMap modelMap) {
+        LOGGER.info("sendPurchaseRequest()");
+        ResultDTO result = userCardService.sendTestPurchase();
+        Map<String, String> resultMap = (Map<String, String>) result.getData();
+        modelMap.addAttribute("xml", resultMap.get("xml"));
+        modelMap.addAttribute("backLink", resultMap.get("backLink"));
+        modelMap.addAttribute("postLink", resultMap.get("postLink"));
+        return "purchase";
+    }
+
+    @ResponseBody
+    @GetMapping("/test-control-order")
+    public String testControlOrder(@RequestParam String orderId,
+                                   @RequestParam String amount,
+                                   @RequestParam String reference) {
+        String url = "https://epay.kkb.kz/jsp/remote/control.jsp?" + halykSoapService.createPurchaseControlXml(
+                orderId, amount, 98830654L, reference, HalykControlOrderCommandTypeDictionary.COMPLETE);
+        return restTemplate.getForEntity(url, String.class).getBody();
     }
 
 //    @GetMapping("/stream-sse")
