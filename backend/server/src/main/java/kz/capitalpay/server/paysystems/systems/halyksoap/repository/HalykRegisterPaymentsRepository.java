@@ -23,6 +23,7 @@ public interface HalykRegisterPaymentsRepository extends CrudRepository<Payment,
             " FROM Payment p " +
             " WHERE p.timestamp >= ?2 AND p.timestamp <= ?1 " +
             " AND p.status = 'SUCCESS' AND p.p2p is false " +
+            " AND p.saveBankCard is false " +
             " GROUP BY p.merchantId, p.currency ")
     List<RegisterPaymentsStatistic> findAllByTimestampAfterAndTimestampBeforeAndStatus(Long before, Long after);
 }
