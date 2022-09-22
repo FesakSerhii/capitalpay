@@ -34,7 +34,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
         return next.handle(authReq).pipe(tap(
           (req:any) => {
-            if(!req?.body?.result&&req?.body&&req.type!==0){
+            if(req.type!==0 && req?.body && !(req?.body instanceof Blob) &&  !req?.body?.result) {
               this.massageServiceService.announceMassage('The problem has arisen, our specialists are already solving it')
             }
           },
