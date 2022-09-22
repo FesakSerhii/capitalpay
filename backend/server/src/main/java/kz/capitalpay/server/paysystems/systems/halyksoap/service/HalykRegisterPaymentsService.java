@@ -93,7 +93,7 @@ public class HalykRegisterPaymentsService {
                                                     RegisterPaymentsMerchantDTO merchant) {
         LOGGER.info("divideMoneyBetweenMerchantAndHalyk amount {}", amount);
 //        String percentForHalyk = merchantKycService.getField(cashBoxId, TOTAL_FEE);
-        BigDecimal percent = BigDecimal.ZERO;
+        BigDecimal percent = BigDecimal.TEN;
 //        try {
 //            percent = BigDecimal.valueOf(Double.parseDouble(percentForHalyk));
 //        } catch (Exception e) {
