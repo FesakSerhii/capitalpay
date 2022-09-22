@@ -64,8 +64,7 @@ public class HalykRegisterPaymentsService {
             RegisterPaymentsMerchantDTO merchant = new RegisterPaymentsMerchantDTO();
             setIndividualDataForMerchant(merchant, Long.parseLong(data.getMerchantId()));
             setHalykCommonDataForMerchant(merchant, commonMerchantFields);
-            divideMoneyBetweenMerchantAndHalyk(Long.parseLong(data.getMerchantId()),
-                    data.getTotalAmount(), halyk, merchant);
+            divideMoneyBetweenMerchantAndHalyk(data.getTotalAmount(), halyk, merchant);
             register.add(merchant);
         }
         setIndividualInfoForHalyk(halyk);
@@ -90,7 +89,7 @@ public class HalykRegisterPaymentsService {
         halyk.setPlatel(halykSettingsService.getFieldValue(PLATEL));
     }
 
-    private void divideMoneyBetweenMerchantAndHalyk(long cashBoxId, BigDecimal amount, RegisterPaymentsHalykDTO halyk,
+    private void divideMoneyBetweenMerchantAndHalyk(BigDecimal amount, RegisterPaymentsHalykDTO halyk,
                                                     RegisterPaymentsMerchantDTO merchant) {
         LOGGER.info("divideMoneyBetweenMerchantAndHalyk amount {}", amount);
 //        String percentForHalyk = merchantKycService.getField(cashBoxId, TOTAL_FEE);
