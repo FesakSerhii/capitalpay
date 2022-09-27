@@ -4,10 +4,10 @@ import java.util.List;
 
 public class SupportRequestDTO {
 
-    String theme;
-    String subject;
-    String text;
-    List<Long> fileList;
+    private String theme;
+    private String subject;
+    private String text;
+    private List<Long> fileList;
 
     public String getTheme() {
         return theme;

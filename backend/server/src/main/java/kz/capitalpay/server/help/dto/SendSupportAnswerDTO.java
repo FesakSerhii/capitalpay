@@ -3,9 +3,9 @@ package kz.capitalpay.server.help.dto;
 import java.util.List;
 
 public class SendSupportAnswerDTO {
-    Long requestId;
-    String text;
-    List<Long> fileList;
+    private Long requestId;
+    private String text;
+    private List<Long> fileList;
 
     public Long getRequestId() {
         return requestId;

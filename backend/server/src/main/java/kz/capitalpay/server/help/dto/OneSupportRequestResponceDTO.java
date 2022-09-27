@@ -7,20 +7,20 @@ import java.util.List;
 
 public class OneSupportRequestResponceDTO {
 
-    Long id;
+    private Long id;
 
-    ApplicationUser author;
+    private ApplicationUser author;
 
-    String theme;
-    String subject;
+    private String theme;
+    private String subject;
 
-    String text;
+    private String text;
 
-    List<FileStorage> fileList;
+    private List<FileStorage> fileList;
 
-    String status;
+    private String status;
 
-    List<SupportAnswerDTO> supportAnswer;
+    private List<SupportAnswerDTO> supportAnswer;
 
     public Long getId() {
         return id;

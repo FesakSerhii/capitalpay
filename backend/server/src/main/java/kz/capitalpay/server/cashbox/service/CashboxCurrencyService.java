@@ -36,7 +36,6 @@ public class CashboxCurrencyService {
 
     Logger logger = LoggerFactory.getLogger(CashboxCurrencyService.class);
 
-
     @Autowired
     Gson gson;
 

@@ -1,7 +1,7 @@
 package kz.capitalpay.server.help.dto;
 
 public class OneRequestDTO {
-    Long id;
+    private Long id;
 
     public Long getId() {
         return id;

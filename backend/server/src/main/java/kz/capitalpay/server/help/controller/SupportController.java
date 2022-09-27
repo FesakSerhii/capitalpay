@@ -26,7 +26,7 @@ import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
 @RequestMapping(value = "/api/v1/auth/support", produces = "application/json;charset=UTF-8")
 public class SupportController {
 
-    Logger logger = LoggerFactory.getLogger(SupportController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SupportController.class);
 
     @Autowired
     Gson gson;
@@ -41,21 +41,21 @@ public class SupportController {
     @PostMapping("/request")
     @RolesAllowed({MERCHANT})
     ResultDTO supportRequest(Principal principal, @RequestBody SupportRequestDTO request) {
-        logger.info(gson.toJson(request));
+        LOGGER.info(gson.toJson(request));
         return supportService.supportRequest(principal, request);
     }
 
     @PostMapping("/list")
     @RolesAllowed({OPERATOR, ADMIN})
     ResultDTO requestList() {
-        logger.info("Support request list");
+        LOGGER.info("Support request list");
         return supportService.requestList();
     }
 
     @PostMapping("/list-by-merchantid")
     @RolesAllowed({OPERATOR, ADMIN})
     ResultDTO getRequestsByMerchantId(HttpServletRequest request) {
-        logger.info("Support request list");
+        LOGGER.info("Support request list");
         Long merchantId = applicationUserService.getMerchantIdFromToken(request);
         return supportService.getRequestsByMerchantId(merchantId);
     }
@@ -64,7 +64,7 @@ public class SupportController {
     @PostMapping("/one")
     @RolesAllowed({OPERATOR, ADMIN})
     ResultDTO oneRequest(@RequestBody OneRequestDTO request) {
-        logger.info("Support request list");
+        LOGGER.info("Support request list");
         return supportService.oneRequest(request);
     }
 
@@ -72,7 +72,7 @@ public class SupportController {
     @PostMapping("/status")
     @RolesAllowed({OPERATOR, ADMIN})
     ResultDTO changeStatus(Principal principal, @RequestBody ChangeStatusSupportRequestDTO request) {
-        logger.info(gson.toJson(request));
+        LOGGER.info(gson.toJson(request));
         return supportService.changeStatus(principal, request);
     }
 
@@ -80,7 +80,7 @@ public class SupportController {
     @PostMapping("/answer")
     @RolesAllowed({OPERATOR, ADMIN})
     ResultDTO sendAnswer(Principal principal, @RequestBody SendSupportAnswerDTO request) {
-        logger.info(gson.toJson(request));
+        LOGGER.info(gson.toJson(request));
         return supportService.sendSupportAnswer(principal, request);
     }
 }

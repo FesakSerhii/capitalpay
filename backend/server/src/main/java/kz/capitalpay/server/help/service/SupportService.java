@@ -30,8 +30,7 @@ import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.CHAN
 @Service
 public class SupportService {
 
-    Logger logger = LoggerFactory.getLogger(SupportService.class);
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(SupportService.class);
     public static final String NEW_SUPPORT_REQUEST = "new";
     public static final String PROCESSED = "processed";
     public static final String CLOSED = "closed";
@@ -153,7 +152,7 @@ public class SupportService {
             responceDTO.setFileList(new ArrayList<>());
             if (supportRequest.getFileIdList() != null || supportRequest.getFileIdList().length() != 0) {
                 List<Double> doubleList = gson.fromJson(supportRequest.getFileIdList(), List.class);
-                logger.info(gson.toJson(doubleList));
+                LOGGER.info(gson.toJson(doubleList));
                 List<Long> filesIdList = new ArrayList<>();
                 doubleList.forEach(aDouble -> {
                     if (Objects.nonNull(aDouble)) {

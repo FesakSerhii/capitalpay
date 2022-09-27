@@ -17,8 +17,8 @@ import org.springframework.stereotype.Service;
 import java.security.Principal;
 import java.util.*;
 
-import static kz.capitalpay.server.constants.ErrorDictionary.USER_NOT_FOUND;
 import static kz.capitalpay.server.constants.ErrorDictionary.CURRENCY_NOT_FOUND;
+import static kz.capitalpay.server.constants.ErrorDictionary.USER_NOT_FOUND;
 import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.EDIT_MERCHANT_CURRENCY;
 import static kz.capitalpay.server.merchantsettings.service.MerchantSettingsService.MERCHANT_CURRENCY_LIST;
 
@@ -123,8 +123,7 @@ public class MerchantCurrencyService {
             String currencyJson = gson.toJson(request.getCurrencyList());
             logger.info(currencyJson);
 
-            systemEventsLogsService.addNewOperatorAction(operator.getUsername(),
-                    EDIT_MERCHANT_CURRENCY, gson.toJson(request), merchant.getId().toString());
+            systemEventsLogsService.addNewOperatorAction(operator.getUsername(), EDIT_MERCHANT_CURRENCY, gson.toJson(request), merchant.getId().toString());
 
             merchantSettingsService.setField(merchant.getId(), MERCHANT_CURRENCY_LIST, currencyJson);
 

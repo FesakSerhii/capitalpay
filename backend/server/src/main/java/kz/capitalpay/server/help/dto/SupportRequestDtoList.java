@@ -1,17 +1,17 @@
 package kz.capitalpay.server.help.dto;
 
 public class SupportRequestDtoList {
-    Long id;
-    Long authorId;
-    Long timestamp;
-    String email;
-    String username;
-    String theme;
-    String subject;
-    String text;
-    String fileIdList;
-    String status;
-    boolean important;
+    private Long id;
+    private Long authorId;
+    private Long timestamp;
+    private String email;
+    private String username;
+    private String theme;
+    private String subject;
+    private String text;
+    private String fileIdList;
+    private String status;
+    private boolean important;
 
     public SupportRequestDtoList() {
     }

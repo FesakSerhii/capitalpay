@@ -10,19 +10,18 @@ public class SupportRequest {
 
     @Id
     @GeneratedValue
-    Long id;
+    private Long id;
+    private Long authorId;
+    private Long timestamp;
 
-    Long authorId;
-    Long timestamp;
-
-    String theme;
-    String subject;
+    private String theme;
+    private String subject;
     @Column(length = 16383)
-    String text;
+    private String text;
 
-    String fileIdList;
+    private String fileIdList;
 
-    String status;
+    private String status;
     @Column(name = "important", columnDefinition = "boolean default false", nullable = false)
     boolean important;
 

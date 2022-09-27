@@ -1,9 +1,9 @@
 package kz.capitalpay.server.help.dto;
 
 public class ChangeStatusSupportRequestDTO {
-    Long requestId;
-    Long status;
-    boolean important;
+    private Long requestId;
+    private Long status;
+    private boolean important;
 
     public Long getRequestId() {
         return requestId;

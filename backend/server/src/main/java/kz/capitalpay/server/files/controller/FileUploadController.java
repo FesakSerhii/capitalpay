@@ -19,7 +19,7 @@ import java.security.Principal;
 @RequestMapping("/api/v1/auth/file")
 public class FileUploadController {
 
-    Logger logger = LoggerFactory.getLogger(FileUploadController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileUploadController.class);
 
     @Autowired
     Gson gson;
@@ -29,8 +29,8 @@ public class FileUploadController {
 
     @PostMapping(value = "/upload")
     ResultDTO uploadFile(Principal principal, @RequestParam MultipartFile multipartFile) {
-        logger.info("\n\n\n I'm here ");
-        logger.info(" original name " + multipartFile.getOriginalFilename());
+        LOGGER.info("\n\n\n I'm here ");
+        LOGGER.info(" original name " + multipartFile.getOriginalFilename());
         return fileStorageService.uploadFile(multipartFile, principal);
     }
 }

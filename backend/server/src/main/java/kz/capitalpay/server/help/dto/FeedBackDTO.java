@@ -2,11 +2,11 @@ package kz.capitalpay.server.help.dto;
 
 public class FeedBackDTO {
 
-    String companyName;
-    String name;
-    String phone;
-    String email;
-    String text;
+    private String companyName;
+    private String name;
+    private String phone;
+    private String email;
+    private String text;
 
     public String getCompanyName() {
         return companyName;

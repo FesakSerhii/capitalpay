@@ -8,11 +8,11 @@ import javax.persistence.Id;
 public class SupportAnswer {
     @Id
     @GeneratedValue
-    Long Id;
-    Long requestId;
-    Long operatorId;
-    String text;
-    String fileIdList;
+    private Long Id;
+    private Long requestId;
+    private Long operatorId;
+    private String text;
+    private String fileIdList;
 
     public Long getId() {
         return Id;

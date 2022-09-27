@@ -9,20 +9,19 @@ public class FileStorage {
 
     @Id
     @GeneratedValue
-    Long id;
-    Long authorId;
-    String filename;
-    String type;
-    String hash;
-    String path;
-    Long size;
-    String extension;
+    private Long id;
+    private Long authorId;
+    private String filename;
+    private String type;
+    private String hash;
+    private String path;
+    private Long size;
+    private String extension;
 
     public FileStorage() {
     }
 
     public FileStorage(Long authorId, String filename, String type, String hash, String path, Long size, String extension) {
-        this.id = id;
         this.authorId = authorId;
         this.filename = filename;
         this.type = type;

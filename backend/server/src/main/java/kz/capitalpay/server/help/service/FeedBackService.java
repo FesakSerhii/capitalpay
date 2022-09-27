@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class FeedBackService {
 
-    Logger logger = LoggerFactory.getLogger(FeedBackService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FeedBackService.class);
 
     String email = "test@capitalpay.kz";
 
@@ -35,7 +35,7 @@ public class FeedBackService {
                     request.getEmail(),
                     request.getText());
 
-            logger.info(text);
+            LOGGER.info(text);
             sendEmailService.sendMail(email, "CapitalPay: feedback", text);
             return new ResultDTO(true, "Mail sent", 0);
         } catch (Exception e) {

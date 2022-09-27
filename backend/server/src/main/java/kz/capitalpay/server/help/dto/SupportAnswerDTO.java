@@ -5,10 +5,10 @@ import kz.capitalpay.server.files.model.FileStorage;
 import java.util.List;
 
 public class SupportAnswerDTO {
-    Long Id;
-    Long operatorId;
-    String text;
-    List<FileStorage> fileList;
+    private Long Id;
+    private Long operatorId;
+    private String text;
+    private List<FileStorage> fileList;
 
     public Long getId() {
         return Id;

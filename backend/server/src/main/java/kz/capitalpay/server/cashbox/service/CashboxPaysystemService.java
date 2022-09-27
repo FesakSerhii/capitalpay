@@ -34,7 +34,6 @@ public class CashboxPaysystemService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CashboxPaysystemService.class);
 
-
     @Autowired
     Gson gson;
 

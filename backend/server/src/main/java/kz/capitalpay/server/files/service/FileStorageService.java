@@ -59,8 +59,7 @@ public class FileStorageService {
             MessageDigest shaDigest = MessageDigest.getInstance("SHA-256");
             String shaChecksum = getFileChecksum(shaDigest, copyLocation.toFile());
             Path newName = Paths.get(fileStoragePath + File.separator + shaChecksum + fileExtension);
-            FileStorage newFile = new FileStorage(user.getId(), originalFilename, contentType, shaChecksum,
-                    shaChecksum + fileExtension, size, fileExtension);
+            FileStorage newFile = new FileStorage(user.getId(), originalFilename, contentType, shaChecksum, shaChecksum + fileExtension, size, fileExtension);
             if (newName.toFile().exists()) {
                 logger.info("{} exists", newName.toString());
                 Files.delete(copyLocation);
@@ -78,9 +77,7 @@ public class FileStorageService {
     }
 
     private Optional<String> getExtensionByStringHandling(String filename) {
-        return Optional.ofNullable(filename)
-                .filter(f -> f.contains("."))
-                .map(f -> f.substring(filename.lastIndexOf(".")));
+        return Optional.ofNullable(filename).filter(f -> f.contains(".")).map(f -> f.substring(filename.lastIndexOf(".")));
     }
 
 
@@ -110,7 +107,6 @@ public class FileStorageService {
         for (byte aByte : bytes) {
             sb.append(Integer.toString((aByte & 0xff) + 0x100, 16).substring(1));
         }
-
         //return complete hash
         return sb.toString();
     }
