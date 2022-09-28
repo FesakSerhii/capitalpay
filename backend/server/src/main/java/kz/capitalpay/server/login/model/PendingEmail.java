@@ -7,11 +7,11 @@ import javax.persistence.Id;
 @Entity
 public class PendingEmail {
     @Id
-    String email;
+    private String email;
     @Column(name = "confirm_code", nullable = false, unique = true)
-    String confirmCode;
-    String status;
-    Long timestamp;
+    private String confirmCode;
+    private String status;
+    private Long timestamp;
 
     public String getEmail() {
         return email;

@@ -4,7 +4,7 @@ import javax.validation.constraints.NotBlank;
 
 public class DeleteDTO {
     @NotBlank
-    String tag;
+    private String tag;
 
     public String getTag() {
         return tag;

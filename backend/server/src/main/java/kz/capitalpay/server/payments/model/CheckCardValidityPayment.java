@@ -8,17 +8,17 @@ import java.time.LocalDateTime;
 public class CheckCardValidityPayment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-    LocalDateTime localDateTime;
-    Long merchantId;
-    String orderId;
+    private Long id;
+    private LocalDateTime localDateTime;
+    private Long merchantId;
+    private String orderId;
     @Column(precision = 30, scale = 2)
-    BigDecimal totalAmount;
-    String currency;
-    String description;
-    String ipAddress;
-    String userAgent;
-    String status;
+    private BigDecimal totalAmount;
+    private String currency;
+    private String description;
+    private String ipAddress;
+    private String userAgent;
+    private String status;
 
     public Long getId() {
         return id;

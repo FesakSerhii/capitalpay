@@ -13,12 +13,6 @@ public class MerchantSettingsMapper {
         if (Objects.isNull(terminal)) {
             return null;
         }
-        return new MerchantTerminalSettingsDto(
-                terminal.getId(),
-                terminal.getInputTerminalId(),
-                terminal.getOutputTerminalId(),
-                terminal.getName(),
-                merchantId
-        );
+        return new MerchantTerminalSettingsDto(terminal.getId(), terminal.getInputTerminalId(), terminal.getOutputTerminalId(), terminal.getName(), merchantId);
     }
 }

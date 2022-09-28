@@ -1,7 +1,7 @@
 package kz.capitalpay.server.login.dto;
 
 public class TwoFactorAuthDTO {
-    boolean enable;
+    private boolean enable;
 
     public boolean isEnable() {
         return enable;

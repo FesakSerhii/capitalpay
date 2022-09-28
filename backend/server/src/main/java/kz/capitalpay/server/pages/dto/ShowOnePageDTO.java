@@ -4,9 +4,9 @@ import javax.validation.constraints.NotBlank;
 
 public class ShowOnePageDTO {
     @NotBlank
-    String language;
+    private String language;
     @NotBlank
-    String tag;
+    private String tag;
 
     public String getLanguage() {
         return language;

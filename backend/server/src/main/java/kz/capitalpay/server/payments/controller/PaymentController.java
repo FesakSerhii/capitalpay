@@ -21,7 +21,6 @@ import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
 public class PaymentController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PaymentController.class);
-
     private final PaymentService paymentService;
     private final ValidationUtil validationUtil;
 

@@ -3,8 +3,8 @@ package kz.capitalpay.server.login.dto;
 import java.util.List;
 
 public class ChangeRolesDTO {
-    Long userId;
-    List<String> roleList;
+    private Long userId;
+    private List<String> roleList;
 
     public Long getUserId() {
         return userId;

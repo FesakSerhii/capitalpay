@@ -9,14 +9,13 @@ import javax.persistence.Id;
 public class PaymentLog {
     @Id
     @GeneratedValue
-    Long id;
-    Long timestamp;
-    String paymentID;
-    String who;
-    String action;
+    private Long id;
+    private Long timestamp;
+    private String paymentID;
+    private String who;
+    private String action;
     @Column(length = 16383)
-    String details;
-
+    private String details;
 
     public Long getId() {
         return id;

@@ -8,10 +8,10 @@ import javax.persistence.Id;
 public class TrustIp {
     @Id
     @GeneratedValue
-    Long id;
-    String ip;
-    Long userId;
-    boolean enable;
+    private Long id;
+    private String ip;
+    private Long userId;
+    private boolean enable;
 
     public Long getId() {
         return id;

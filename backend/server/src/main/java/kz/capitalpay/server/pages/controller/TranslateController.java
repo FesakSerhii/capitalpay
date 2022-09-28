@@ -18,7 +18,6 @@ import javax.validation.Valid;
 public class TranslateController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TranslateController.class);
-
     private final Gson gson;
     private final TranslateService translateService;
     private final ValidationUtil validationUtil;

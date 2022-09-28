@@ -9,19 +9,19 @@ public class ApplicationUser implements Serializable, Cloneable {
 
     @Id
     @GeneratedValue
-    Long id;
-    String username;
-    String password;
-    String realname;
-    String email;
-    Long timestamp;
+    private Long id;
+    private String username;
+    private String password;
+    private String realname;
+    private String email;
+    private Long timestamp;
     @Column(name = "active", columnDefinition = "boolean default false", nullable = false)
-    boolean active;
+    private boolean active;
     @Column(name = "blocked", columnDefinition = "boolean default false", nullable = false)
-    boolean blocked;
+    private boolean blocked;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    Set<ApplicationRole> roles;
+    private Set<ApplicationRole> roles;
 
     public Long getTimestamp() {
         return timestamp;

@@ -9,20 +9,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/auth/password")
 public class PasswordController {
 
-    Logger logger = LoggerFactory.getLogger(PasswordController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PasswordController.class);
 
     @Autowired
     Gson gson;
@@ -35,7 +32,7 @@ public class PasswordController {
 
     @PostMapping("/new")
     ResultDTO newPassword(@Valid @RequestBody NewPasswordRequestDTO request, Principal principal) {
-        logger.info(gson.toJson(request));
+        LOGGER.info(gson.toJson(request));
         return passwordService.setNewPassword(principal, request);
     }
 

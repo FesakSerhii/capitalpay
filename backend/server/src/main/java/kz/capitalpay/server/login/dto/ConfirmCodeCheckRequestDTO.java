@@ -4,7 +4,7 @@ import javax.validation.constraints.NotBlank;
 
 public class ConfirmCodeCheckRequestDTO {
     @NotBlank
-    String code;
+    private String code;
 
     public String getCode() {
         return code;

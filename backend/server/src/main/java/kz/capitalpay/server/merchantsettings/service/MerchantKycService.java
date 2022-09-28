@@ -28,7 +28,6 @@ import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
 public class MerchantKycService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MerchantKycService.class);
-
     @Autowired
     private Gson gson;
 

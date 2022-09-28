@@ -6,11 +6,9 @@ import javax.persistence.Id;
 @Entity
 public class TwoFactorAuth {
     @Id
-    Long userId;
-
-    String smscode;
-
-    String checkSms;
+    private Long userId;
+    private String smscode;
+    private String checkSms;
 
     public Long getUserId() {
         return userId;

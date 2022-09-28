@@ -36,8 +36,7 @@ public class MerchantSettingsService {
 
 
     public void setField(Long merchantId, String fieldName, String fieldValue) {
-        MerchantSettings merchantSettings = merchantSettingsRepository.
-                findTopByFieldNameAndMerchantId(fieldName, merchantId);
+        MerchantSettings merchantSettings = merchantSettingsRepository.findTopByFieldNameAndMerchantId(fieldName, merchantId);
         if (merchantSettings == null) {
             merchantSettings = new MerchantSettings();
             merchantSettings.setFieldName(fieldName);

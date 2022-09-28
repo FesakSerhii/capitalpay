@@ -4,8 +4,7 @@ import javax.validation.constraints.NotNull;
 
 public class OneUserDTO {
     @NotNull
-    Long id;
-
+    private Long id;
 
     public Long getId() {
         return id;

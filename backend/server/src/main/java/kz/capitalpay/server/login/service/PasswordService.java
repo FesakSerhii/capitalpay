@@ -13,7 +13,7 @@ import java.security.Principal;
 @Service
 public class PasswordService {
 
-    Logger logger = LoggerFactory.getLogger(PasswordService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PasswordService.class);
 
     @Autowired
     Gson gson;
@@ -22,7 +22,7 @@ public class PasswordService {
     ApplicationUserService applicationUserService;
 
     public ResultDTO setNewPassword(Principal principal, NewPasswordRequestDTO request) {
-        logger.info(gson.toJson(principal));
+        LOGGER.info(gson.toJson(principal));
         String userLogin = principal.getName();
         return applicationUserService.setNewPassword(userLogin,
                 request.getOldPassword(),

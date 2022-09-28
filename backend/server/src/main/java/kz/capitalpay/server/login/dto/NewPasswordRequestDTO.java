@@ -4,9 +4,9 @@ import javax.validation.constraints.NotBlank;
 
 public class NewPasswordRequestDTO {
     @NotBlank
-    String oldPassword;
+    private String oldPassword;
     @NotBlank
-    String newPassword;
+    private String newPassword;
 
     public String getOldPassword() {
         return oldPassword;

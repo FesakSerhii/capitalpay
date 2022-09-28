@@ -9,11 +9,11 @@ import javax.persistence.Id;
 public class CashboxSettings {
     @Id
     @GeneratedValue
-    Long id;
-    Long cashboxId;
-    String fieldName;
+    private Long id;
+    private Long cashboxId;
+    private String fieldName;
     @Column(length = 16383)
-    String fieldValue;
+    private String fieldValue;
 
     public Long getId() {
         return id;

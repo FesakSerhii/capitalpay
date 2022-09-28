@@ -7,13 +7,13 @@ import java.util.Set;
 
 public class ApplicationUserResponseDto {
 
-    Long id;
-    String username;
-    String realname;
-    String email;
-    Long timestamp;
-    Status status;
-    Set<ApplicationRole> roles;
+    private Long id;
+    private String username;
+    private String realname;
+    private String email;
+    private Long timestamp;
+    private Status status;
+    private Set<ApplicationRole> roles;
 
     public Long getId() {
         return id;

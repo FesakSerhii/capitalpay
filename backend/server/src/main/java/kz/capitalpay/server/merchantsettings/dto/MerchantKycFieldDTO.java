@@ -4,9 +4,9 @@ import javax.validation.constraints.NotBlank;
 
 public class MerchantKycFieldDTO {
     @NotBlank
-    String fieldName;
+    private String fieldName;
     @NotBlank
-    String fieldValue;
+    private String fieldValue;
 
     public String getFieldName() {
         return fieldName;

@@ -4,7 +4,7 @@ import javax.validation.constraints.NotNull;
 
 public class OnePaymentDetailsRequestDTO {
     @NotNull
-    String guid;
+    private String guid;
 
     public String getGuid() {
         return guid;

@@ -7,15 +7,15 @@ import javax.persistence.Id;
 @Entity
 public class PendingPhone {
     @Id
-    String phone;
+    private String phone;
     @Column(name = "email", nullable = false, unique = true)
-    String email;
+    private String email;
     @Column(name = "password_hash", nullable = false, unique = true)
-    String passwordHash;
+    private String passwordHash;
     @Column(name = "confirm_code", nullable = false, unique = true)
-    String confirmCode;
-    String status;
-    Long timestamp;
+    private String confirmCode;
+    private String status;
+    private Long timestamp;
 
     public String getPhone() {
         return phone;

@@ -29,7 +29,6 @@ import static kz.capitalpay.server.simple.service.SimpleService.NEW_PAYMENT;
 public class P2pPaymentService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(P2pPaymentService.class);
-
     private final PaymentRepository paymentRepository;
     private final PaymentLogService paymentLogService;
     private final Gson gson;
@@ -44,8 +43,7 @@ public class P2pPaymentService {
         this.restTemplate = restTemplate;
     }
 
-    public Payment generateP2pPayment(String ipAddress, String userAgent, Long merchantId, BigDecimal totalAmount,
-                                      Long cashBoxId, boolean toClient, String currency, String param) {
+    public Payment generateP2pPayment(String ipAddress, String userAgent, Long merchantId, BigDecimal totalAmount, Long cashBoxId, boolean toClient, String currency, String param) {
         Payment payment = new Payment();
         payment.setPaySysPayId(generateOrderId());
         payment.setGuid(UUID.randomUUID().toString());
@@ -107,8 +105,7 @@ public class P2pPaymentService {
             LOGGER.info("Payment pspid: {}", payment.getPaySysPayId());
             payment.setStatus(status);
             paymentRepository.save(payment);
-            paymentLogService.newEvent(payment.getGuid(), payment.getIpAddress(), CHANGE_STATUS_PAYMENT,
-                    gson.toJson(payment));
+            paymentLogService.newEvent(payment.getGuid(), payment.getIpAddress(), CHANGE_STATUS_PAYMENT, gson.toJson(payment));
             notifyMerchant(payment);
             LOGGER.info("Change status: {}", gson.toJson(payment));
             return payment;
@@ -134,8 +131,7 @@ public class P2pPaymentService {
             Map<String, Object> requestJson = new HashMap<>();
             requestJson.put("type", "paymentStatus");
             requestJson.put("data", detailsJson);
-            String response = restTemplate.postForObject(interactionUrl,
-                    requestJson, String.class, java.util.Optional.ofNullable(null));
+            String response = restTemplate.postForObject(interactionUrl, requestJson, String.class, java.util.Optional.ofNullable(null));
             LOGGER.info(response);
         } catch (Exception e) {
             e.printStackTrace();

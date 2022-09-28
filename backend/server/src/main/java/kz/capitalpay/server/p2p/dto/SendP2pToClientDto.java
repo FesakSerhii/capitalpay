@@ -18,9 +18,7 @@ public class SendP2pToClientDto {
     private String signature;
     private String param;
 
-    public SendP2pToClientDto(String clientCardToken, Long merchantId,
-                              BigDecimal acceptedSum, Long cashBoxId,
-                              String signature, String param) {
+    public SendP2pToClientDto(String clientCardToken, Long merchantId, BigDecimal acceptedSum, Long cashBoxId, String signature, String param) {
         this.clientCardToken = clientCardToken;
         this.merchantId = merchantId;
         this.acceptedSum = acceptedSum;

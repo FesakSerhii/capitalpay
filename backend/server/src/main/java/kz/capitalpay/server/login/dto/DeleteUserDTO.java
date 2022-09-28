@@ -1,7 +1,7 @@
 package kz.capitalpay.server.login.dto;
 
 public class DeleteUserDTO {
-    Long userId;
+    private Long userId;
 
     public Long getUserId() {
         return userId;

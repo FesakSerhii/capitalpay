@@ -17,7 +17,6 @@ import javax.validation.Valid;
 public class PublicStaticPage {
 
     private static final Logger logger = LoggerFactory.getLogger(PublicStaticPage.class);
-
     private final StaticPageService staticPageService;
 
     public PublicStaticPage(StaticPageService staticPageService) {

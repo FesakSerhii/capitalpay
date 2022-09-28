@@ -8,14 +8,14 @@ import java.util.List;
 public class CreateNewUserDTO {
 
     @NotBlank
-    String password;
+    private String password;
     @Email
     @NotBlank
-    String email;
+    private String email;
     @Pattern(regexp = "[+]\\d{11}", message = "Phone number standard E.164: +77012345678")
-    String phone;
+    private String phone;
 
-    List<String> roleList;
+    private List<String> roleList;
 
 
     public String getPassword() {

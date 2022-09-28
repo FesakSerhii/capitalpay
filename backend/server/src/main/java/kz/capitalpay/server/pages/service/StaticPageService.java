@@ -66,8 +66,7 @@ public class StaticPageService {
                 staticPage.setTimestamp(System.currentTimeMillis());
                 staticPage.setName("");
                 staticPage.setContent("");
-                systemEventsLogsService.addNewOperatorAction(applicationUser.getUsername(), CREATE_STATIC_PAGE,
-                        gson.toJson(request), "all");
+                systemEventsLogsService.addNewOperatorAction(applicationUser.getUsername(), CREATE_STATIC_PAGE, gson.toJson(request), "all");
                 staticPageRepository.save(staticPage);
             }
             return new ResultDTO(true, staticPage, 0);
@@ -91,8 +90,7 @@ public class StaticPageService {
             }
             staticPage.setContent(request.getContent());
             staticPage.setName(request.getName());
-            systemEventsLogsService.addNewOperatorAction(applicationUser.getUsername(), EDIT_STATIC_PAGE,
-                    gson.toJson(request), "all");
+            systemEventsLogsService.addNewOperatorAction(applicationUser.getUsername(), EDIT_STATIC_PAGE, gson.toJson(request), "all");
             staticPageRepository.save(staticPage);
             return new ResultDTO(true, staticPage, 0);
         } catch (Exception e) {
@@ -121,8 +119,7 @@ public class StaticPageService {
             if (staticPageList == null) {
                 return PAGE_NOT_FOUND;
             }
-            systemEventsLogsService.addNewOperatorAction(applicationUser.getUsername(), DELETE_STATIC_PAGE,
-                    gson.toJson(request), "all");
+            systemEventsLogsService.addNewOperatorAction(applicationUser.getUsername(), DELETE_STATIC_PAGE, gson.toJson(request), "all");
             staticPageRepository.deleteAll(staticPageList);
             return new ResultDTO(true, staticPageList, 0);
         } catch (Exception e) {

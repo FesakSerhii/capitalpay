@@ -5,11 +5,11 @@ import javax.validation.constraints.Pattern;
 
 public class SignUpPhoneRequestDTO {
     @NotBlank
-    String code;
+    private String code;
     @Pattern(regexp = "[+]\\d{11}", message = "Phone number standard E.164: +77012345678")
-    String phone;
+    private String phone;
     @NotBlank
-    String password;
+    private String password;
 
     public String getCode() {
         return code;

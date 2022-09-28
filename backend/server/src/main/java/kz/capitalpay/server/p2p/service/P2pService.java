@@ -5,7 +5,6 @@ import kz.capitalpay.server.cashbox.model.Cashbox;
 import kz.capitalpay.server.cashbox.service.CashboxCurrencyService;
 import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.constants.ErrorDictionary;
-import kz.capitalpay.server.constants.HalykControlOrderCommandTypeDictionary;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.p2p.dto.AnonymousP2pPaymentResponseDto;
@@ -14,10 +13,6 @@ import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykAnonymousP2pOrder;
-import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykBankControlOrder;
-import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykPurchaseOrder;
-import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykBankControlOrderRepository;
-import kz.capitalpay.server.paysystems.systems.halyksoap.repository.HalykPurchaseOrderRepository;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import kz.capitalpay.server.terminal.model.Terminal;
 import kz.capitalpay.server.terminal.repository.TerminalRepository;
@@ -30,9 +25,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -44,7 +37,6 @@ import java.util.*;
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
 import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.REDIRECT_FAILED_URL;
 import static kz.capitalpay.server.merchantsettings.service.CashboxSettingsService.REDIRECT_SUCCESS_URL;
-import static kz.capitalpay.server.simple.service.SimpleService.COMPLETE_PURCHASE;
 import static kz.capitalpay.server.simple.service.SimpleService.SUCCESS;
 
 @Service
@@ -138,8 +130,7 @@ public class P2pService {
             CardDataResponseDto merchantCardData = userCardService.getCardDataFromTokenServer(merchantCard.getToken());
             CardDataResponseDto clientCardData = userCardService.getCardDataFromTokenServer(dto.getClientCardToken());
 
-            return checkReturnCode(halykSoapService.sendP2p(ipAddress, userAgent, merchantCardData, dto, clientCardData.getCardNumber(), true, terminal.getOutputTerminalId()),
-                    resultUrls, redirectAttributes);
+            return checkReturnCode(halykSoapService.sendP2p(ipAddress, userAgent, merchantCardData, dto, clientCardData.getCardNumber(), true, terminal.getOutputTerminalId()), resultUrls, redirectAttributes);
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.info(ErrorDictionary.CARD_NOT_FOUND.toString());
@@ -198,8 +189,7 @@ public class P2pService {
             UserCardFromBank userCard = userCardService.findUserCardFromBankById(merchantCardId);
             ClientCardFromBank clientCard = userCardService.findClientCardFromBankByToken(dto.getClientCardToken());
 
-            return checkReturnCode(halykSoapService.sendSavedCardsP2p(ipAddress, userAgent, userCard.getBankCardId(), dto, clientCard.getBankCardId(), true, terminal.getInputTerminalId()),
-                    resultUrls, redirectAttributes);
+            return checkReturnCode(halykSoapService.sendSavedCardsP2p(ipAddress, userAgent, userCard.getBankCardId(), dto, clientCard.getBankCardId(), true, terminal.getInputTerminalId()), resultUrls, redirectAttributes);
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.info(ErrorDictionary.CARD_NOT_FOUND.toString());
@@ -255,8 +245,7 @@ public class P2pService {
             CardDataResponseDto merchantCardData = userCardService.getCardDataFromTokenServer(merchantCard.getToken());
             CardDataResponseDto clientCardData = userCardService.getCardDataFromTokenServer(dto.getClientCardToken());
 
-            return checkReturnCode(halykSoapService.sendP2p(ipAddress, userAgent, clientCardData, dto, merchantCardData.getCardNumber(), false, terminal.getOutputTerminalId()),
-                    resultUrls, redirectAttributes);
+            return checkReturnCode(halykSoapService.sendP2p(ipAddress, userAgent, clientCardData, dto, merchantCardData.getCardNumber(), false, terminal.getOutputTerminalId()), resultUrls, redirectAttributes);
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.info(ErrorDictionary.CARD_NOT_FOUND.toString());
@@ -311,8 +300,7 @@ public class P2pService {
             UserCardFromBank userCard = userCardService.findUserCardFromBankById(merchantCardId);
             ClientCardFromBank clientCard = userCardService.findClientCardFromBankByToken(dto.getClientCardToken());
 
-            return checkReturnCode(halykSoapService.sendSavedCardsP2p(ipAddress, userAgent, clientCard.getBankCardId(), dto, userCard.getBankCardId(), false, terminal.getInputTerminalId()),
-                    resultUrls, redirectAttributes);
+            return checkReturnCode(halykSoapService.sendSavedCardsP2p(ipAddress, userAgent, clientCard.getBankCardId(), dto, userCard.getBankCardId(), false, terminal.getInputTerminalId()), resultUrls, redirectAttributes);
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.info(ErrorDictionary.CARD_NOT_FOUND.toString());

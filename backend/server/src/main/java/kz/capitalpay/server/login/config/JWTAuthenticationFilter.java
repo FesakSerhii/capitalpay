@@ -61,8 +61,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             e.printStackTrace();
         }
 
-        if (Objects.isNull(cred) || Objects.isNull(cred.getPassword()) || Objects.isNull(cred.getUsername())
-                || cred.getPassword().trim().isEmpty() || cred.getUsername().trim().isEmpty()) {
+        if (Objects.isNull(cred) || Objects.isNull(cred.getPassword()) || Objects.isNull(cred.getUsername()) || cred.getPassword().trim().isEmpty() || cred.getUsername().trim().isEmpty()) {
             throw new AuthenticationException("Fields are empty") {
             };
         }
@@ -75,11 +74,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             };
         }
 
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                cred.getUsername(),
-                cred.getPassword(),
-                new ArrayList<>()
-        );
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(cred.getUsername(), cred.getPassword(), new ArrayList<>());
         LOGGER.info("token from auth " + token);
 
         if (applicationUserService.requireTwoFactorAuth(cred.getUsername())) {
@@ -102,8 +97,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         Gson gson = new Gson();
         String[] roles = new String[authResult.getAuthorities().size()];
 
-        Set<String> roleSet = authResult.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
+        Set<String> roleSet = authResult.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
         roles = roleSet.toArray(roles);
 
         ApplicationUser applicationUser = applicationUserService.getUserByLogin(username);
@@ -113,13 +107,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             if (applicationUserService.smsNeedCheck(username)) {
                 if (applicationUserService.smsCheckResult(username)) {
                     LOGGER.info("step4");
-                    String token = JWT.create()
-                            .withSubject(username)
-                            .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                            .withArrayClaim("authorities", roles)
-                            .withClaim("merchantId", applicationUser.getId())
-                            .withJWTId(UUID.randomUUID().toString())
-                            .sign(getAlgorithm());
+                    String token = JWT.create().withSubject(username).withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME)).withArrayClaim("authorities", roles).withClaim("merchantId", applicationUser.getId()).withJWTId(UUID.randomUUID().toString()).sign(getAlgorithm());
                     response.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
                     LOGGER.info("token step4" + token);
 
@@ -130,26 +118,18 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 //                    response.getWriter().write(gson.toJson(new ResultDTO(true, "SMS sent", 0)));
                     //TODO:костыль для тестирования двухфакторной аутентификации
-                    response.getWriter().write(gson.toJson(new ResultDTO(true, "SMS sent", 0,
-                            applicationUserService.findSmsCode(applicationUser))));
+                    response.getWriter().write(gson.toJson(new ResultDTO(true, "SMS sent", 0, applicationUserService.findSmsCode(applicationUser))));
                 }
             } else {
                 LOGGER.info("step6");
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 //                response.getWriter().write(gson.toJson(new ResultDTO(true, "SMS sent", 0)));
                 //TODO:костыль для тестирования двухфакторной аутентификации
-                response.getWriter().write(gson.toJson(new ResultDTO(true, "SMS sent", 0,
-                        applicationUserService.findSmsCode(applicationUser))));
+                response.getWriter().write(gson.toJson(new ResultDTO(true, "SMS sent", 0, applicationUserService.findSmsCode(applicationUser))));
             }
         } else {
             LOGGER.info("step7");
-            String token = JWT.create()
-                    .withSubject(username)
-                    .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                    .withArrayClaim("authorities", roles)
-                    .withClaim("merchantId", applicationUser.getId())
-                    .withJWTId(UUID.randomUUID().toString())
-                    .sign(getAlgorithm());
+            String token = JWT.create().withSubject(username).withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME)).withArrayClaim("authorities", roles).withClaim("merchantId", applicationUser.getId()).withJWTId(UUID.randomUUID().toString()).sign(getAlgorithm());
             LOGGER.info("ste7 token " + token);
             response.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -158,19 +138,13 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     private Algorithm getAlgorithm() {
-        final InputStream inputStreamPriv = getClass().getClassLoader()
-                .getResourceAsStream("rsa/privatekey.pem");
+        final InputStream inputStreamPriv = getClass().getClassLoader().getResourceAsStream("rsa/privatekey.pem");
 
-        String privateKeyContent = new BufferedReader(
-                new InputStreamReader(inputStreamPriv, StandardCharsets.UTF_8)).lines()
-                .collect(Collectors.joining("\n"));
+        String privateKeyContent = new BufferedReader(new InputStreamReader(inputStreamPriv, StandardCharsets.UTF_8)).lines().collect(Collectors.joining("\n"));
 
-        final InputStream inputStreamPub = getClass().getClassLoader()
-                .getResourceAsStream("rsa/publickey.pem");
+        final InputStream inputStreamPub = getClass().getClassLoader().getResourceAsStream("rsa/publickey.pem");
 
-        String publicKeyContent = new BufferedReader(
-                new InputStreamReader(inputStreamPub, StandardCharsets.UTF_8)).lines()
-                .collect(Collectors.joining("\n"));
+        String publicKeyContent = new BufferedReader(new InputStreamReader(inputStreamPub, StandardCharsets.UTF_8)).lines().collect(Collectors.joining("\n"));
 
 
         publicKeyContent = publicKeyContent.replaceAll("\\n", "").replace("-----BEGIN PUBLIC KEY-----", "").replace("-----END PUBLIC KEY-----", "");

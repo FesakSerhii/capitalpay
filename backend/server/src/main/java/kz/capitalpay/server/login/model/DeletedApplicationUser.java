@@ -8,10 +8,10 @@ import java.io.Serializable;
 public class DeletedApplicationUser implements Serializable {
 
     @Id
-    Long id;
-    String username;
-    String password;
-    String email;
+    private Long id;
+    private String username;
+    private String password;
+    private String email;
 
     public DeletedApplicationUser() {
     }

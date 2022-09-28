@@ -4,13 +4,13 @@ import javax.validation.constraints.NotBlank;
 
 public class ApplicationUserDTO {
     @NotBlank
-    String username;
+    private String username;
     @NotBlank
-    String password;
+    private String password;
 
-    String sms;
+    private String sms;
 
-    boolean trustIp;
+    private boolean trustIp;
 
     public String getUsername() {
         return username;

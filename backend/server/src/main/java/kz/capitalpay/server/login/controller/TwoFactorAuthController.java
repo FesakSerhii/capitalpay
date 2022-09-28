@@ -19,7 +19,7 @@ import java.security.Principal;
 @RequestMapping("/api/v1/auth/twofactorauth")
 public class TwoFactorAuthController {
 
-    Logger logger = LoggerFactory.getLogger(TwoFactorAuthController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TwoFactorAuthController.class);
 
     @Autowired
     Gson gson;
@@ -32,7 +32,7 @@ public class TwoFactorAuthController {
 
     @PostMapping("/set")
     ResultDTO twoFactorAuth(@RequestBody TwoFactorAuthDTO request, Principal principal) {
-        logger.info(gson.toJson(request));
+        LOGGER.info(gson.toJson(request));
         return applicationUserService.twoFactorAuth(principal, request);
     }
 

@@ -7,7 +7,7 @@ public class SignUpEmailRequestDTO {
 
     @Email
     @NotBlank
-    String email;
+    private String email;
 
     public String getEmail() {
         return email;

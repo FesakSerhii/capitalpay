@@ -4,13 +4,13 @@ import javax.validation.constraints.NotBlank;
 
 public class SavePageDTO {
     @NotBlank
-    String language;
+    private String language;
     @NotBlank
-    String tag;
+    private String tag;
     @NotBlank
-    String name;
+    private String name;
     @NotBlank
-    String content;
+    private String content;
 
     public String getLanguage() {
         return language;

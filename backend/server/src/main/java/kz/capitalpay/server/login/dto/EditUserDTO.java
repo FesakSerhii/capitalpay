@@ -7,20 +7,17 @@ import javax.validation.constraints.Pattern;
 
 public class EditUserDTO {
     @NotNull
-    Long id;
-
-    String password;
+    private Long id;
+    private String password;
     @Email
     @NotBlank
-    String email;
+    private String email;
     @Pattern(regexp = "[+]\\d{11}", message = "Phone number standard E.164: +77012345678")
-    String phone;
-    Long timestamp;
-
-    String realname;
-    boolean active;
-
-    boolean blocked;
+    private String phone;
+    private Long timestamp;
+    private String realname;
+    private boolean active;
+    private boolean blocked;
 
     public Long getId() {
         return id;

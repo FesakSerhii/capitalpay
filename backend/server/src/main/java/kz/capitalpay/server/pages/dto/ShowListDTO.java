@@ -4,7 +4,7 @@ import javax.validation.constraints.NotBlank;
 
 public class ShowListDTO {
     @NotBlank
-    String language;
+    private String language;
 
     public String getLanguage() {
         return language;

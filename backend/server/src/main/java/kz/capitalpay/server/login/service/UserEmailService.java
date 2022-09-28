@@ -49,9 +49,7 @@ public class UserEmailService {
             pendingEmail.setTimestamp(System.currentTimeMillis());
             pendingEmailRepository.save(pendingEmail);
 
-            sendEmailService.sendMail(request.getEmail(), "CapitalPay: Confirm email",
-                    "Пожалуйста подтвердите ваш электронный адрес по ссылке:  https://capitalpay.kz/confirm?code="
-                            + pendingEmail.getConfirmCode());
+            sendEmailService.sendMail(request.getEmail(), "CapitalPay: Confirm email", "Пожалуйста подтвердите ваш электронный адрес по ссылке:  https://capitalpay.kz/confirm?code=" + pendingEmail.getConfirmCode());
 
             return new ResultDTO(true, request, 0);
         } catch (Exception e) {

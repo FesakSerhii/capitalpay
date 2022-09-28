@@ -61,14 +61,11 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         logger.info("token " + token);
         if (token != null) {
             try {
-                DecodedJWT decodedJWT = JWT.require(getAlgorithm())
-                        .build()
-                        .verify(token.replace(TOKEN_PREFIX, ""));
+                DecodedJWT decodedJWT = JWT.require(getAlgorithm()).build().verify(token.replace(TOKEN_PREFIX, ""));
 
                 String user = decodedJWT.getSubject();
                 String[] authorities = decodedJWT.getClaim("authorities").asArray(String.class);
-                Set<GrantedAuthority> roleSet = Arrays.stream(authorities).map(
-                        ApplicationRole::new).collect(Collectors.toSet());
+                Set<GrantedAuthority> roleSet = Arrays.stream(authorities).map(ApplicationRole::new).collect(Collectors.toSet());
                 if (user != null) {
                     return new UsernamePasswordAuthenticationToken(user, authorities, roleSet);
                 }
@@ -82,19 +79,13 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private Algorithm getAlgorithm() {
-        final InputStream inputStreamPriv = getClass().getClassLoader()
-                .getResourceAsStream("rsa/privatekey.pem");
+        final InputStream inputStreamPriv = getClass().getClassLoader().getResourceAsStream("rsa/privatekey.pem");
 
-        String privateKeyContent = new BufferedReader(
-                new InputStreamReader(inputStreamPriv, StandardCharsets.UTF_8)).lines()
-                .collect(Collectors.joining("\n"));
+        String privateKeyContent = new BufferedReader(new InputStreamReader(inputStreamPriv, StandardCharsets.UTF_8)).lines().collect(Collectors.joining("\n"));
 
-        final InputStream inputStreamPub = getClass().getClassLoader()
-                .getResourceAsStream("rsa/publickey.pem");
+        final InputStream inputStreamPub = getClass().getClassLoader().getResourceAsStream("rsa/publickey.pem");
 
-        String publicKeyContent = new BufferedReader(
-                new InputStreamReader(inputStreamPub, StandardCharsets.UTF_8)).lines()
-                .collect(Collectors.joining("\n"));
+        String publicKeyContent = new BufferedReader(new InputStreamReader(inputStreamPub, StandardCharsets.UTF_8)).lines().collect(Collectors.joining("\n"));
 
         publicKeyContent = publicKeyContent.replaceAll("\\n", "").replace("-----BEGIN PUBLIC KEY-----", "").replace("-----END PUBLIC KEY-----", "");
         privateKeyContent = privateKeyContent.replaceAll("\\n", "").replace("-----BEGIN PRIVATE KEY-----", "").replace("-----END PRIVATE KEY-----", "");

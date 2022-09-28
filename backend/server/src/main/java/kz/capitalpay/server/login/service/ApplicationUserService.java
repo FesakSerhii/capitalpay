@@ -31,7 +31,7 @@ import static kz.capitalpay.server.login.service.ApplicationRoleService.USER;
 @Service
 public class ApplicationUserService {
 
-    Logger logger = LoggerFactory.getLogger(ApplicationUserService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationUserService.class);
     @Autowired
     Gson gson;
 
@@ -62,17 +62,17 @@ public class ApplicationUserService {
             applicationUser.setPassword(bCryptPasswordEncoder.encode(applicationUser.getPassword()));
             Set<ApplicationRole> roles = new HashSet<>();
             if (applicationRoleService.isEmpty()) {
-                logger.info("Add admin");
+                LOGGER.info("Add admin");
                 roles.add(applicationRoleService.getRole(ADMIN));
             }
             roles.add(applicationRoleService.getRole(USER));
-            logger.info(gson.toJson(roles));
+            LOGGER.info(gson.toJson(roles));
             applicationUser.setRoles(roles);
             applicationUserRepository.save(applicationUser);
         } else {
             throw new IllegalArgumentException("User " + applicationUser.getUsername() + " exists");
         }
-        logger.info(gson.toJson(applicationUser));
+        LOGGER.info(gson.toJson(applicationUser));
     }
 
     private boolean existsUser(ApplicationUser applicationUser) {
@@ -91,11 +91,11 @@ public class ApplicationUserService {
 
         Set<ApplicationRole> roles = new HashSet<>();
         if (applicationRoleService.isEmpty()) {
-            logger.info("Add admin");
+            LOGGER.info("Add admin");
             roles.add(applicationRoleService.getRole(ADMIN));
         }
         roles.add(applicationRoleService.getRole(USER));
-        logger.info(gson.toJson(roles));
+        LOGGER.info(gson.toJson(roles));
         applicationUser.setRoles(roles);
         applicationUserRepository.save(applicationUser);
         return new ResultDTO(true, username, 0);
@@ -166,14 +166,14 @@ public class ApplicationUserService {
     public String validIpAddress(HttpServletRequest request, String username) {
         String ip = getIpAddress(request);
         String userAgent = getUserAgent(request);
-        logger.info("IP: {}", ip);
-        logger.info("User-Agent: {}", userAgent);
+        LOGGER.info("IP: {}", ip);
+        LOGGER.info("User-Agent: {}", userAgent);
 
         ApplicationUser applicationUser = applicationUserRepository.findByUsername(username);
         if (Objects.isNull(applicationUser)) {
             return null;
         }
-        logger.info(" archer id " + applicationUser.getId() + " userName " + username);
+        LOGGER.info(" archer id " + applicationUser.getId() + " userName " + username);
         return trustIpService.validIpAddress(applicationUser.getId(), ip);
     }
 

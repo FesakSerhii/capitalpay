@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 public class ApplicationRoleService {
 
-    Logger logger = LoggerFactory.getLogger(ApplicationRoleService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationRoleService.class);
 
     public static final String USER = "ROLE_USER";
     public static final String ADMIN = "ROLE_ADMIN";
@@ -25,7 +25,7 @@ public class ApplicationRoleService {
     ApplicationRoleRepository applicationRoleRepository;
 
     public ApplicationRole getRole(String authority) {
-        logger.info("Get role");
+        LOGGER.info("Get role");
         ApplicationRole role = applicationRoleRepository.findByAuthority(authority);
         if (role == null) {
             role = new ApplicationRole();
@@ -36,10 +36,10 @@ public class ApplicationRoleService {
     }
 
     public boolean isEmpty() {
-        logger.info("Is empty");
+        LOGGER.info("Is empty");
         List<ApplicationRole> roleList = applicationRoleRepository.findAll();
-        logger.info("Size: {}", roleList.size());
-        logger.info("Return {}", roleList.size() == 0);
+        LOGGER.info("Size: {}", roleList.size());
+        LOGGER.info("Return {}", roleList.size() == 0);
         return roleList.size() == 0;
     }
 }

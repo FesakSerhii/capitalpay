@@ -22,7 +22,6 @@ import java.security.Principal;
 public class StaticPageController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StaticPageController.class);
-
     private final StaticPageService staticPageService;
     private final ValidationUtil validationUtil;
 
@@ -63,8 +62,7 @@ public class StaticPageController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResultDTO handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
+    public ResultDTO handleValidationExceptions(MethodArgumentNotValidException ex) {
         return validationUtil.handleValidation(ex);
     }
 }

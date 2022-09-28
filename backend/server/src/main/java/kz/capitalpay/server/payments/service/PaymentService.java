@@ -33,7 +33,6 @@ import static kz.capitalpay.server.simple.service.SimpleService.SUCCESS;
 public class PaymentService {
 
     private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
-
     @Autowired
     Gson gson;
     @Autowired

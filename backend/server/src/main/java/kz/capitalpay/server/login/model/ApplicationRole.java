@@ -12,9 +12,9 @@ public class ApplicationRole implements GrantedAuthority {
 
     @Id
     @GeneratedValue
-    Long id;
+    private Long id;
     @Column(unique = true)
-    String authority;
+    private String authority;
 
     public ApplicationRole() {
     }

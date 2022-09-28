@@ -5,8 +5,8 @@ import java.util.List;
 
 public class MerchantKycDTO {
     @NotNull
-    Long merchantId;
-    List<MerchantKycFieldDTO> fields;
+    private Long merchantId;
+    private List<MerchantKycFieldDTO> fields;
 
     public Long getMerchantId() {
         return merchantId;

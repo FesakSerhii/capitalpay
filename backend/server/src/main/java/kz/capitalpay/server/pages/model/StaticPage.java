@@ -10,14 +10,14 @@ import java.time.LocalDateTime;
 public class StaticPage {
     @Id
     @GeneratedValue
-    Long id;
-    String language;
-    String name;
-    LocalDateTime localDateTime;
-    Long timestamp;
-    String tag;
+    private Long id;
+    private String language;
+    private String name;
+    private LocalDateTime localDateTime;
+    private Long timestamp;
+    private String tag;
     @Column(length = 16383)
-    String content;
+    private String content;
 
     public Long getId() {
         return id;

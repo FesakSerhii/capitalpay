@@ -29,11 +29,11 @@ public class Payment {
     private String userAgent;
     private String status;
     @Column(columnDefinition = "boolean default false")
-    boolean toClient;
+    private boolean toClient;
     @Column(columnDefinition = "boolean default false")
-    boolean p2p;
+    private boolean p2p;
     @Column(columnDefinition = "boolean default false")
-    boolean saveBankCard;
+    private boolean saveBankCard;
 
     public String getGuid() {
         return guid;
