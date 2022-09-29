@@ -1,7 +1,7 @@
 package kz.capitalpay.server.paysystems.dto;
 
 public class PaymentRequestDTO {
-    String paymentId;
+    private String paymentId;
 
     public String getPaymentId() {
         return paymentId;

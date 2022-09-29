@@ -36,10 +36,6 @@ public class DepartmentXmlDto {
 
     @Override
     public String toString() {
-        return "{" +
-                "merchantId='" + merchantId + '\'' +
-                ", abonentId='" + abonentId + '\'' +
-                ", serviceId='" + serviceId + '\'' +
-                '}';
+        return "{" + "merchantId='" + merchantId + '\'' + ", abonentId='" + abonentId + '\'' + ", serviceId='" + serviceId + '\'' + '}';
     }
 }

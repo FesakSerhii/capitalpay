@@ -57,12 +57,6 @@ public class CustomerXmlDto {
 
     @Override
     public String toString() {
-        return "{" +
-                "name='" + name + '\'' +
-                ", mail='" + mail + '\'' +
-                ", phone='" + phone + '\'' +
-                ", lang='" + lang + '\'' +
-                ", merchant=" + merchant +
-                '}';
+        return "{" + "name='" + name + '\'' + ", mail='" + mail + '\'' + ", phone='" + phone + '\'' + ", lang='" + lang + '\'' + ", merchant=" + merchant + '}';
     }
 }

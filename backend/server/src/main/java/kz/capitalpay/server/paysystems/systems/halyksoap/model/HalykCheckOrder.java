@@ -9,38 +9,37 @@ import java.time.LocalDateTime;
 public class HalykCheckOrder {
     @Id
     @GeneratedValue
-    Long id;
-    Long timestamp;
-    LocalDateTime localDateTime;
-
+    private Long id;
+    private Long timestamp;
+    private LocalDateTime localDateTime;
     //===Request=======
-    String merchantid;
-    String orderid;
+    private String merchantid;
+    private String orderid;
 
     //===Response======
-    String acceptReversalDate;
-    String approvalcode;
-    String cardhash;
-    String intreference;
-    String message;
-    String orderal;
-    String paidAmount;
-    String paidCurrency;
-    String payerip;
-    String payermail;
-    String payername;
-    String payerphone;
-    String reference;
-    String refundTotalAmount;
-    String resultcode;
-    String secure;
-    String sessionDate;
-    String sessionId;
-    String status;
-    String transactionDate;
+    private String acceptReversalDate;
+    private String approvalcode;
+    private String cardhash;
+    private String intreference;
+    private String message;
+    private String orderal;
+    private String paidAmount;
+    private String paidCurrency;
+    private String payerip;
+    private String payermail;
+    private String payername;
+    private String payerphone;
+    private String reference;
+    private String refundTotalAmount;
+    private String resultcode;
+    private String secure;
+    private String sessionDate;
+    private String sessionId;
+    private String status;
+    private String transactionDate;
 
     //===Signature=======
-    boolean signatureValid;
+    private boolean signatureValid;
 
 
     public Long getId() {

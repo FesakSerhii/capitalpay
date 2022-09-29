@@ -154,8 +154,7 @@ public class BillPaymentDto {
     }
 
     private static String checkPaySystem(String cardNumber) {
-        if (cardNumber.length() == 18 && cardNumber.startsWith("3") || cardNumber.startsWith("5")
-                || cardNumber.startsWith("6")) {
+        if (cardNumber.length() == 18 && cardNumber.startsWith("3") || cardNumber.startsWith("5") || cardNumber.startsWith("6")) {
             return "Maestro";
         }
         if (cardNumber.length() == 16) {

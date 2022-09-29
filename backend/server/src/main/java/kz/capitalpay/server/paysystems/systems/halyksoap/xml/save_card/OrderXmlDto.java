@@ -47,11 +47,6 @@ public class OrderXmlDto {
 
     @Override
     public String toString() {
-        return "{" +
-                "id='" + id + '\'' +
-                ", currency='" + currency + '\'' +
-                ", amount='" + amount + '\'' +
-                ", department=" + department +
-                '}';
+        return "{" + "id='" + id + '\'' + ", currency='" + currency + '\'' + ", amount='" + amount + '\'' + ", department=" + department + '}';
     }
 }

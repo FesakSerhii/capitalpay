@@ -27,9 +27,6 @@ public class ResultsXmlDto {
 
     @Override
     public String toString() {
-        return "{" +
-                "timestamp='" + timestamp + '\'' +
-                ", payment=" + payment +
-                '}';
+        return "{" + "timestamp='" + timestamp + '\'' + ", payment=" + payment + '}';
     }
 }

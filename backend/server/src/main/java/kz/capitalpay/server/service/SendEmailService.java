@@ -16,7 +16,7 @@ import java.util.Properties;
 @Service
 public class SendEmailService {
 
-    Logger logger = LoggerFactory.getLogger(SendEmailService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SendEmailService.class);
     @Value("${mail.imap.host}")
     String imapHost;
     @Value("${mail.imap.port}")
@@ -39,7 +39,7 @@ public class SendEmailService {
     @PostConstruct
     public void init() {
         try {
-            logger.info("Init Mail Server...");
+            LOGGER.info("Init Mail Server...");
             properties.put("mail.imap.host", imapHost);
             properties.put("mail.imap.port", imapPort);
             properties.put("mail.store.protocol", "imaps");
@@ -59,13 +59,11 @@ public class SendEmailService {
 
     public boolean sendMail(String email, String subj, String text) {
         try {
-            logger.info("Send message...");
-
+            LOGGER.info("Send message...");
 //            logger.error("Email temporary disabled");
-            logger.info(email);
-            logger.info(subj);
-            logger.info(text);
-
+            LOGGER.info(email);
+            LOGGER.info(subj);
+            LOGGER.info(text);
 
             Session session = Session.getInstance(properties, new Authenticator() {
                 @Override
@@ -80,20 +78,14 @@ public class SendEmailService {
                     Message.RecipientType.TO, InternetAddress.parse(email));
             message.setSubject(subj);
 
-
             MimeBodyPart mimeBodyPart = new MimeBodyPart();
             mimeBodyPart.setContent(text, "text/html; charset=utf-8");
-
             Multipart multipart = new MimeMultipart();
             multipart.addBodyPart(mimeBodyPart);
-
             message.setContent(multipart);
-
             Transport.send(message);
-
-            logger.info("Message sent!");
+            LOGGER.info("Message sent!");
             return true;
-
         } catch (Exception e) {
             e.printStackTrace();
         }

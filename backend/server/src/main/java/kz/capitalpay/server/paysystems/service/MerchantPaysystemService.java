@@ -124,11 +124,9 @@ public class MerchantPaysystemService {
                     return CURRENCY_NOT_FOUND;
                 }
             }
-
             String paysystemJson = gson.toJson(request.getPaysystemList());
             LOGGER.info(paysystemJson);
-            systemEventsLogsService.addNewOperatorAction(operator.getUsername(),
-                    EDIT_MERCHANT_PAYSYSTEM, gson.toJson(request), merchant.getId().toString());
+            systemEventsLogsService.addNewOperatorAction(operator.getUsername(), EDIT_MERCHANT_PAYSYSTEM, gson.toJson(request), merchant.getId().toString());
             merchantSettingsService.setField(merchant.getId(), MERCHANT_PAYSYSTEM_LIST, paysystemJson);
             return new ResultDTO(true, request.getPaysystemList(), 0);
         } catch (Exception e) {

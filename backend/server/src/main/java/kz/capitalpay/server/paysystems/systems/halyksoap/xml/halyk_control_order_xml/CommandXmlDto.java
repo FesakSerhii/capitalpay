@@ -17,8 +17,6 @@ public class CommandXmlDto {
 
     @Override
     public String toString() {
-        return "CommandXmlDto{" +
-                "type='" + type + '\'' +
-                '}';
+        return "CommandXmlDto{" + "type='" + type + '\'' + '}';
     }
 }

@@ -49,31 +49,17 @@ public class PublicPaysystemController {
 //
 
     @PostMapping("/pay")
-    void paymentCardPay(HttpServletRequest httpRequest,
-                        HttpServletResponse httpResponse,
-                        @RequestParam String paymentid,
-                        @RequestParam String cardHolderName,
-                        @RequestParam String cvv,
-                        @RequestParam String month,
-                        @RequestParam String pan,
-                        @RequestParam String year,
-                        @RequestParam String phone,
-                        @RequestParam String email
+    void paymentCardPay(HttpServletRequest httpRequest, HttpServletResponse httpResponse, @RequestParam String paymentid, @RequestParam String cardHolderName, @RequestParam String cvv, @RequestParam String month, @RequestParam String pan, @RequestParam String year, @RequestParam String phone, @RequestParam String email
 
     ) {
 
-        httpResponse = paysystemService.paymentPayAndRedirect(
-                httpRequest, httpResponse,
-                paymentid, cardHolderName, cvv, month, pan, year, phone, email);
+        httpResponse = paysystemService.paymentPayAndRedirect(httpRequest, httpResponse, paymentid, cardHolderName, cvv, month, pan, year, phone, email);
 
     }
 
 
     @GetMapping("/secure/redirect")
-    String secureRedirect(ModelMap modelMap, @RequestParam String acsUrl,
-                          @RequestParam String MD,
-                          @RequestParam String PaReq,
-                          @RequestParam(required = false, defaultValue = "") String bill) {
+    String secureRedirect(ModelMap modelMap, @RequestParam String acsUrl, @RequestParam String MD, @RequestParam String PaReq, @RequestParam(required = false, defaultValue = "") String bill) {
 
         String termUrl = bill.trim().isEmpty() ? p2pTermUrl : purchaseTermUrl;
         modelMap.addAttribute("acsUrl", acsUrl);

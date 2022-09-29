@@ -16,8 +16,6 @@ public class RequestXmlDto {
 
     @Override
     public String toString() {
-        return "{" +
-                "SignedOrderB64='" + signedOrderB64 + '\'' +
-                '}';
+        return "{" + "SignedOrderB64='" + signedOrderB64 + '\'' + '}';
     }
 }

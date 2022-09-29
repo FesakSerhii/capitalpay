@@ -29,9 +29,6 @@ public class Document {
 
     @Override
     public String toString() {
-        return "{" +
-                "bank=" + bank +
-                ", bankSign='" + bankSign + '\'' +
-                '}';
+        return "{" + "bank=" + bank + ", bankSign='" + bankSign + '\'' + '}';
     }
 }

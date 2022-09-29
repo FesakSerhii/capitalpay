@@ -30,20 +30,14 @@ public class HalykRegisterPaymentsController {
         this.halykRegisterPaymentsService = halykRegisterPaymentsService;
     }
 
-    @RequestMapping(value = "/download", method = RequestMethod.POST,
-            produces = "text/plain;charset=UTF-8")
+    @RequestMapping(value = "/download", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
     @RolesAllowed({ADMIN, OPERATOR})
     @ResponseBody
-    public ResponseEntity<Object> halykRegisterPaymentsDownload(@RequestBody RegisterPaymentsDateDTO dateDTO)
-            throws IOException {
+    public ResponseEntity<Object> halykRegisterPaymentsDownload(@RequestBody RegisterPaymentsDateDTO dateDTO) throws IOException {
         File file = halykRegisterPaymentsService.createTextFileForDownload(dateDTO);
         LOGGER.info("file exist with name " + file.getName());
         byte[] bytes = Files.readAllBytes(file.toPath());
         ByteArrayResource byteResource = new ByteArrayResource(bytes);
-        return ResponseEntity.ok()
-                .contentType(MediaType.TEXT_PLAIN)
-                .header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", file.getName()))
-                .header("fileName", file.getName())
-                .body(byteResource);
+        return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", file.getName())).header("fileName", file.getName()).body(byteResource);
     }
 }

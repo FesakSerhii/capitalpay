@@ -36,10 +36,6 @@ public class ResponseXmlDto {
 
     @Override
     public String toString() {
-        return "ResponseXmlDto{" +
-                "code='" + code + '\'' +
-                ", message='" + message + '\'' +
-                ", remainingAmount='" + remainingAmount + '\'' +
-                '}';
+        return "ResponseXmlDto{" + "code='" + code + '\'' + ", message='" + message + '\'' + ", remainingAmount='" + remainingAmount + '\'' + '}';
     }
 }

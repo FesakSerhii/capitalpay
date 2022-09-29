@@ -11,16 +11,14 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class RedirectUrlController {
 
-    Logger logger = LoggerFactory.getLogger(RedirectUrlController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RedirectUrlController.class);
 
     @GetMapping("/payment/simple/redirecturl")
     void getRedirectUrl(@RequestParam String paymentid,
                         @RequestParam String status,
                         HttpServletResponse httpServletResponse) {
-
-
-        logger.info(paymentid);
-        logger.info(status);
+        LOGGER.info(paymentid);
+        LOGGER.info(status);
 
 //        TestsystemPayment payment = testSystemService.setStatus(paymentid, status);
 //        String redirectUrl = testSystemService.getRedirectUrl();

@@ -176,24 +176,6 @@ public class PaymentXmlDto {
 
     @Override
     public String toString() {
-        return "{" +
-                "merchantId='" + merchantId + '\'' +
-                ", amount='" + amount + '\'' +
-                ", approvalCode='" + approvalCode + '\'' +
-                ", reference='" + reference + '\'' +
-                ", responseCode='" + responseCode + '\'' +
-                ", secure='" + secure + '\'' +
-                ", cardBin='" + cardBin + '\'' +
-                ", cardHash='" + cardHash + '\'' +
-                ", expMonth='" + expMonth + '\'' +
-                ", expYear='" + expYear + '\'' +
-                ", cardId='" + cardId + '\'' +
-                ", abonentId='" + abonentId + '\'' +
-                ", recepient='" + recepient + '\'' +
-                ", sessionId='" + sessionId + '\'' +
-                ", approve='" + approve + '\'' +
-                ", cHash='" + cHash + '\'' +
-                ", card='" + card + '\'' +
-                '}';
+        return "{" + "merchantId='" + merchantId + '\'' + ", amount='" + amount + '\'' + ", approvalCode='" + approvalCode + '\'' + ", reference='" + reference + '\'' + ", responseCode='" + responseCode + '\'' + ", secure='" + secure + '\'' + ", cardBin='" + cardBin + '\'' + ", cardHash='" + cardHash + '\'' + ", expMonth='" + expMonth + '\'' + ", expYear='" + expYear + '\'' + ", cardId='" + cardId + '\'' + ", abonentId='" + abonentId + '\'' + ", recepient='" + recepient + '\'' + ", sessionId='" + sessionId + '\'' + ", approve='" + approve + '\'' + ", cHash='" + cHash + '\'' + ", card='" + card + '\'' + '}';
     }
 }

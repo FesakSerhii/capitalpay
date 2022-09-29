@@ -21,7 +21,7 @@ public class PaysystemController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PaysystemController.class);
 
-    private final  PaysystemService paysystemService;
+    private final PaysystemService paysystemService;
     private final ValidationUtil validationUtil;
 
     public PaysystemController(PaysystemService paysystemService, ValidationUtil validationUtil) {
@@ -47,8 +47,7 @@ public class PaysystemController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResultDTO handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
+    public ResultDTO handleValidationExceptions(MethodArgumentNotValidException ex) {
         return validationUtil.handleValidation(ex);
     }
 }

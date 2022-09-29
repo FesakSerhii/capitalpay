@@ -23,7 +23,7 @@ import java.nio.charset.StandardCharsets;
 @Service
 public class SendSmsService {
 
-    Logger logger = LoggerFactory.getLogger(SendSmsService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SendSmsService.class);
 
     @Autowired
     Gson gson;
@@ -52,17 +52,16 @@ public class SendSmsService {
     public boolean sendSms(String phone, String text) {
         try {
             if (phone.contains("+77")) {
-
                 String mes = URLEncoder.encode(text, StandardCharsets.UTF_8.toString()).replace("+", "%20");
 
-                logger.info(mes);
+                LOGGER.info(mes);
                 String url = smsSendUrl +
                         "?login=" + smsSendLogin +
                         "&psw=" + smsSendPassword +
                         "&phones=" + phone.replace("+", "") +
                         "&mes=" + mes +
                         "&charset=utf-8";
-                logger.info(url);
+                LOGGER.info(url);
 
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(new URI(url))
@@ -75,9 +74,8 @@ public class SendSmsService {
                         .build()
                         .send(request, HttpResponse.BodyHandlers.ofString());
 
-                logger.info(response.body());
+                LOGGER.info(response.body());
                 return true;
-
             } else {
                 PendingPhone pendingPhone = pendingPhoneRepository.findTopByPhone(phone);
                 sendEmailService.sendMail(pendingPhone.getEmail(),

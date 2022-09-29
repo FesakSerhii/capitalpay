@@ -10,33 +10,33 @@ import java.time.LocalDateTime;
 public class HalykOrder {
     @Id
     @GeneratedValue
-    Long id;
-    Long timestamp;
-    LocalDateTime localDateTime;
+    private Long id;
+    private Long timestamp;
+    private LocalDateTime localDateTime;
 
     //===Request=======
-    String amount;
-    String cardholderName;
-    String currency;
+    private String amount;
+    private String cardholderName;
+    private String currency;
     @Column(name = "description")
-    String desc;
-    String merchantid;
-    String orderid;
-    int trtype;
+    private String desc;
+    private String merchantid;
+    private String orderid;
+    private int trtype;
 
     //===Response=======
-    String acsUrl;
-    String approvalcode;
-    String intreference;
-    boolean is3ds;
-    String md;
-    String message;
-    String pareq;
-    String reference;
-    String returnCode;
-    String sessionid;
-    String termUrl;
-    String requestType;
+    private String acsUrl;
+    private String approvalcode;
+    private String intreference;
+    private boolean is3ds;
+    private String md;
+    private String message;
+    private String pareq;
+    private String reference;
+    private String returnCode;
+    private String sessionid;
+    private String termUrl;
+    private String requestType;
 
     //===Signature=======
     boolean signatureValid;

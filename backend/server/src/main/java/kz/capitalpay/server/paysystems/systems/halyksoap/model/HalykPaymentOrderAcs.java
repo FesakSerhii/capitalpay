@@ -10,30 +10,30 @@ import java.time.LocalDateTime;
 public class HalykPaymentOrderAcs {
     @Id
     @GeneratedValue
-    Long id;
-    Long timestamp;
-    LocalDateTime localDateTime;
+    private Long id;
+    private Long timestamp;
+    private LocalDateTime localDateTime;
 
     //===Request=======
-    String md;
+    private String md;
     @Column(columnDefinition = "text")
-    String pares;
-    String sessionid;
+    private String pares;
+    private String sessionid;
 
     //===Response=======
-    String acsUrl;
-    String approvalcode;
-    String intreference;
-    boolean is3ds;
-    String message;
-    String orderid;
-    String pareq;
-    String reference;
-    String returnCode;
+    private String acsUrl;
+    private String approvalcode;
+    private String intreference;
+    private boolean is3ds;
+    private String message;
+    private String orderid;
+    private String pareq;
+    private String reference;
+    private String returnCode;
     String termUrl;
 
     //===Signature=======
-    boolean signatureValid;
+    private boolean signatureValid;
 
     public Long getId() {
         return id;

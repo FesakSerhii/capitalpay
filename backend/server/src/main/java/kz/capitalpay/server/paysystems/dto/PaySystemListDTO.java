@@ -1,9 +1,9 @@
 package kz.capitalpay.server.paysystems.dto;
 
 public class PaySystemListDTO {
-    Long id;
-    String name;
-    boolean enabled;
+    private Long id;
+    private String name;
+    private boolean enabled;
 
     public Long getId() {
         return id;

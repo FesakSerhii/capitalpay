@@ -36,10 +36,6 @@ public class BankXmlDto {
 
     @Override
     public String toString() {
-        return "{" +
-                "name='" + name + '\'' +
-                ", results=" + results +
-                ", customer=" + customer +
-                '}';
+        return "{" + "name='" + name + '\'' + ", results=" + results + ", customer=" + customer + '}';
     }
 }

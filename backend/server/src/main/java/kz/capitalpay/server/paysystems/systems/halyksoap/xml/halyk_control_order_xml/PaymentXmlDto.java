@@ -56,12 +56,6 @@ public class PaymentXmlDto {
 
     @Override
     public String toString() {
-        return "PaymentXmlDto{" +
-                "reference='" + reference + '\'' +
-                ", approvalCode='" + approvalCode + '\'' +
-                ", orderId='" + orderId + '\'' +
-                ", amount='" + amount + '\'' +
-                ", currencyCode='" + currencyCode + '\'' +
-                '}';
+        return "PaymentXmlDto{" + "reference='" + reference + '\'' + ", approvalCode='" + approvalCode + '\'' + ", orderId='" + orderId + '\'' + ", amount='" + amount + '\'' + ", currencyCode='" + currencyCode + '\'' + '}';
     }
 }

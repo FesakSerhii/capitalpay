@@ -36,10 +36,6 @@ public class ErrorXmlDto {
 
     @Override
     public String toString() {
-        return "{" +
-                "input='" + input + '\'' +
-                ", payment='" + payment + '\'' +
-                ", system='" + system + '\'' +
-                '}';
+        return "{" + "input='" + input + '\'' + ", payment='" + payment + '\'' + ", system='" + system + '\'' + '}';
     }
 }

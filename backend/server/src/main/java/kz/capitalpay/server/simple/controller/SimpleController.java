@@ -2,7 +2,6 @@ package kz.capitalpay.server.simple.controller;
 
 import com.google.gson.Gson;
 import kz.capitalpay.server.dto.ResultDTO;
-import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.simple.service.SimpleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +21,7 @@ import java.util.Map;
 @RequestMapping(value = "/payment/simple", produces = "application/json;charset=UTF-8")
 public class SimpleController {
 
-    Logger logger = LoggerFactory.getLogger(SimpleController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleController.class);
 
     @Autowired
     Gson gson;
@@ -103,11 +102,9 @@ public class SimpleController {
     ResultDTO getPaymentInfo(@RequestParam Long cashboxid, @RequestParam String billid, @RequestParam String signature,
                              HttpServletRequest httpRequest,
                              ModelMap modelMap) {
-
-
         ResultDTO resultDTO = simpleService.getPaymentInfo(httpRequest, cashboxid, billid, signature);
         if (!resultDTO.isResult()) {
-            logger.error(gson.toJson(resultDTO));
+            LOGGER.error(gson.toJson(resultDTO));
         }
         return resultDTO;
     }

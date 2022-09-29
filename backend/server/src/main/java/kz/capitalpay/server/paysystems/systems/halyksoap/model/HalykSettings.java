@@ -9,10 +9,10 @@ import javax.persistence.Id;
 public class HalykSettings {
     @Id
     @GeneratedValue
-    Long id;
-    String fieldName;
+    private Long id;
+    private String fieldName;
     @Column(length = 16383)
-    String fieldValue;
+    private String fieldValue;
 
     public Long getId() {
         return id;

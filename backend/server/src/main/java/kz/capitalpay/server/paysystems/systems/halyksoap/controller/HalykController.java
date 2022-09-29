@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class HalykController {
 
-    private static final Logger logger = LoggerFactory.getLogger(HalykController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(HalykController.class);
 
     private final Gson gson;
     private final HalykSoapService halykSoapService;
@@ -33,13 +33,10 @@ public class HalykController {
 
 
     @PostMapping("/paysystem/halyk/listener")
-    public void listener(@RequestParam String PaRes,
-                         @RequestParam String MD,
-                         @RequestParam(required = false) String TermUrl,
-                         HttpServletResponse response) {
-        logger.info("PaRes: {}", PaRes);
-        logger.info("MD: {}", MD);
-        logger.info("TermUrl: {}", TermUrl);
+    public void listener(@RequestParam String PaRes, @RequestParam String MD, @RequestParam(required = false) String TermUrl, HttpServletResponse response) {
+        LOGGER.info("PaRes: {}", PaRes);
+        LOGGER.info("MD: {}", MD);
+        LOGGER.info("TermUrl: {}", TermUrl);
 
         String sessionid;
         Payment payment;
@@ -52,8 +49,8 @@ public class HalykController {
             payment = halykSoapService.getPaymentByMd(MD);
         }
 
-        logger.info(sessionid);
-        logger.info(gson.toJson(payment));
+        LOGGER.info(sessionid);
+        LOGGER.info(gson.toJson(payment));
 
         payment = halykSoapService.paymentOrderAcs(MD, PaRes, sessionid, false);
         String redirectUrl = cashboxService.getRedirectForPayment(payment);

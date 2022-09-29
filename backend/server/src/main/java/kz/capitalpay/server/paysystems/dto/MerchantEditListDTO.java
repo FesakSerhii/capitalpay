@@ -7,10 +7,10 @@ import java.util.List;
 public class MerchantEditListDTO {
 
     @NotNull
-    Long merchantId;
+    private Long merchantId;
 
     @NotEmpty
-    List<Long> paysystemList;
+    private List<Long> paysystemList;
 
     public Long getMerchantId() {
         return merchantId;

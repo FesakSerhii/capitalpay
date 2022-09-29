@@ -37,10 +37,6 @@ public class MerchantXmlDto {
 
     @Override
     public String toString() {
-        return "{" +
-                "certId='" + certId + '\'' +
-                ", name='" + name + '\'' +
-                ", order=" + order +
-                '}';
+        return "{" + "certId='" + certId + '\'' + ", name='" + name + '\'' + ", order=" + order + '}';
     }
 }

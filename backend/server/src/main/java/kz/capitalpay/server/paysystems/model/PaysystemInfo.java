@@ -10,15 +10,13 @@ public class PaysystemInfo {
 
     @Id
     @GeneratedValue
-    Long id;
+    private Long id;
     @Column(unique = true)
-    String name;
+    private String name;
     @Column(unique = true)
-    String componentName;
-
-    Long priority;
-
-    boolean enabled;
+    private String componentName;
+    private Long priority;
+    private boolean enabled;
 
     public Long getId() {
         return id;

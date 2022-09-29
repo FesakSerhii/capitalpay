@@ -48,11 +48,6 @@ public class MerchantXmlDto {
 
     @Override
     public String toString() {
-        return "MerchantXmlDto{" +
-                "id='" + id + '\'' +
-                ", reason='" + reason + '\'' +
-                ", command=" + command.toString() +
-                ", payment=" + payment.toString() +
-                '}';
+        return "MerchantXmlDto{" + "id='" + id + '\'' + ", reason='" + reason + '\'' + ", command=" + command.toString() + ", payment=" + payment.toString() + '}';
     }
 }

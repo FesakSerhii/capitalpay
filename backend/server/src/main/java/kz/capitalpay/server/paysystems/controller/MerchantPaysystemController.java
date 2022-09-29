@@ -47,8 +47,7 @@ public class MerchantPaysystemController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResultDTO handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
+    public ResultDTO handleValidationExceptions(MethodArgumentNotValidException ex) {
         return validationUtil.handleValidation(ex);
     }
 }

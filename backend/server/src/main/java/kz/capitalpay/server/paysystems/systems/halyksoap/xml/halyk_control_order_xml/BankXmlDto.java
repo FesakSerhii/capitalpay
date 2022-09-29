@@ -48,11 +48,6 @@ public class BankXmlDto {
 
     @Override
     public String toString() {
-        return "BankXmlDto{" +
-                "name='" + name + '\'' +
-                ", merchantSign='" + merchantSign + '\'' +
-                ", merchant=" + merchant.toString() +
-                ", response=" + response.toString() +
-                '}';
+        return "BankXmlDto{" + "name='" + name + '\'' + ", merchantSign='" + merchantSign + '\'' + ", merchant=" + merchant.toString() + ", response=" + response.toString() + '}';
     }
 }

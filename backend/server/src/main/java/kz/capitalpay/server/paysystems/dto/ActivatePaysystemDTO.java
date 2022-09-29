@@ -4,9 +4,9 @@ import javax.validation.constraints.NotNull;
 
 public class ActivatePaysystemDTO {
     @NotNull
-    Long paysystemId;
+    private Long paysystemId;
     @NotNull
-    Boolean enabled;
+    private Boolean enabled;
 
     public Long getPaysystemId() {
         return paysystemId;

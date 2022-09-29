@@ -216,28 +216,6 @@ public class PaymentXmlDto {
 
     @Override
     public String toString() {
-        return "{" +
-                "ActionTime='" + actionTime + '\'' +
-                ", OrderId='" + orderId + '\'' +
-                ", MerchantID='" + merchantId + '\'' +
-                ", card_id_from='" + cardIdFrom + '\'' +
-                ", card_id_to='" + cardIdTo + '\'' +
-                ", cardHash_from='" + cardHashFrom + '\'' +
-                ", cardHash_to='" + cardHashTo + '\'' +
-                ", amount='" + amount + '\'' +
-                ", amount_with_fee='" + amountWithFee + '\'' +
-                ", fee='" + fee + '\'' +
-                ", currency='" + currency + '\'' +
-                ", wofee='" + woFee + '\'' +
-                ", exp_day_fromcard='" + expDayFromCard + '\'' +
-                ", exp_day_tocard='" + expDayToCard + '\'' +
-                ", terminal='" + terminal + '\'' +
-                ", Result='" + result + '\'' +
-                ", message='" + message + '\'' +
-                ", reference='" + reference + '\'' +
-                ", int_reference='" + intReference + '\'' +
-                ", approval_code='" + approvalCode + '\'' +
-                ", session='" + session + '\'' +
-                '}';
+        return "{" + "ActionTime='" + actionTime + '\'' + ", OrderId='" + orderId + '\'' + ", MerchantID='" + merchantId + '\'' + ", card_id_from='" + cardIdFrom + '\'' + ", card_id_to='" + cardIdTo + '\'' + ", cardHash_from='" + cardHashFrom + '\'' + ", cardHash_to='" + cardHashTo + '\'' + ", amount='" + amount + '\'' + ", amount_with_fee='" + amountWithFee + '\'' + ", fee='" + fee + '\'' + ", currency='" + currency + '\'' + ", wofee='" + woFee + '\'' + ", exp_day_fromcard='" + expDayFromCard + '\'' + ", exp_day_tocard='" + expDayToCard + '\'' + ", terminal='" + terminal + '\'' + ", Result='" + result + '\'' + ", message='" + message + '\'' + ", reference='" + reference + '\'' + ", int_reference='" + intReference + '\'' + ", approval_code='" + approvalCode + '\'' + ", session='" + session + '\'' + '}';
     }
 }

@@ -1,6 +1,5 @@
 package kz.capitalpay.server.paysystems.systems.halyksoap.repository;
 
-import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykAnonymousP2pOrder;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykBankControlOrder;
 import org.springframework.data.jpa.repository.JpaRepository;
 

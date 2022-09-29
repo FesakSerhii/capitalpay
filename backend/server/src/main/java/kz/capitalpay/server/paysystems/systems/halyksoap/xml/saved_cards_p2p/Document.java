@@ -38,10 +38,6 @@ public class Document {
 
     @Override
     public String toString() {
-        return "{" +
-                "error=" + error +
-                ", request=" + request +
-                ", payment=" + payment +
-                '}';
+        return "{" + "error=" + error + ", request=" + request + ", payment=" + payment + '}';
     }
 }

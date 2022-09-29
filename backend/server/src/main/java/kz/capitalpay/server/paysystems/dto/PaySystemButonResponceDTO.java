@@ -4,8 +4,8 @@ import kz.capitalpay.server.paysystems.model.PaysystemInfo;
 
 public class PaySystemButonResponceDTO {
 
-    PaysystemInfo paysystemInfo;
-    String paymentForm;
+    private PaysystemInfo paysystemInfo;
+    private String paymentForm;
 
     public PaysystemInfo getPaysystemInfo() {
         return paysystemInfo;

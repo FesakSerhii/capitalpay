@@ -3,14 +3,14 @@ package kz.capitalpay.server.simple.dto;
 import java.math.BigDecimal;
 
 public class SimpleRequestDTO {
-    Long cashboxid;
-    String billid;
-    BigDecimal totalamount;
-    String currency;
-    String description;
-    String param;
-    String ipAddress;
-    String userAgent;
+    private Long cashboxid;
+    private String billid;
+    private BigDecimal totalamount;
+    private String currency;
+    private String description;
+    private String param;
+    private String ipAddress;
+    private String userAgent;
 
     public Long getCashboxid() {
         return cashboxid;

@@ -38,7 +38,6 @@ import java.security.Principal;
 import java.util.*;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
-import static kz.capitalpay.server.constants.ErrorDictionary.MERCHANT_TERMINAL_SETTINGS_NOT_FOUND;
 import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.ACTIVATE_PAYSYSTEM;
 
 @Service
@@ -113,8 +112,7 @@ public class PaysystemService {
                 return PAYSYSTEM_NOT_FOUND;
             }
             paysystemInfo.setEnabled(request.getEnabled());
-            systemEventsLogsService.addNewOperatorAction(operator.getUsername(), ACTIVATE_PAYSYSTEM,
-                    gson.toJson(request), "all");
+            systemEventsLogsService.addNewOperatorAction(operator.getUsername(), ACTIVATE_PAYSYSTEM, gson.toJson(request), "all");
             paysystemInfoRepository.save(paysystemInfo);
             return new ResultDTO(true, paysystemInfo, 0);
 
@@ -144,8 +142,7 @@ public class PaysystemService {
             if (payment == null) {
                 return PAYMENT_NOT_FOUND;
             }
-            List<PaysystemInfo> availablePaysystems = cashboxPaysystemService
-                    .availablePaysystemList(payment.getCashboxId());
+            List<PaysystemInfo> availablePaysystems = cashboxPaysystemService.availablePaysystemList(payment.getCashboxId());
             availablePaysystems.sort(Comparator.comparing(PaysystemInfo::getPriority));
             LOGGER.info(gson.toJson(availablePaysystems));
             for (PaysystemInfo pi : availablePaysystems) {
@@ -183,8 +180,7 @@ public class PaysystemService {
     }
 
     private void setAmountFields(BigDecimal totalAmount, BillPaymentDto billPaymentDto, String currency) {
-        BigDecimal amountWithoutClientFee = totalAmount
-                .setScale(0, RoundingMode.HALF_UP);
+        BigDecimal amountWithoutClientFee = totalAmount.setScale(0, RoundingMode.HALF_UP);
         billPaymentDto.setTotalAmount(totalAmount.toString(), currency);
         billPaymentDto.setAmountPayment(amountWithoutClientFee.toString(), currency);
         billPaymentDto.setAmountFee(totalAmount.subtract(amountWithoutClientFee).toString(), currency);
@@ -194,8 +190,7 @@ public class PaysystemService {
         if (("OK").equals(bill.getResultPayment()) || "FAIL".equals(bill.getResultPayment())) {
             LOGGER.info("Redirect to " + bill.getResultPayment());
 
-            String url = apiAddress + "/public/paysystem/bill" +
-                    "?bill=" + gson.toJson(bill);
+            String url = apiAddress + "/public/paysystem/bill" + "?bill=" + gson.toJson(bill);
             httpResponse.setHeader("Location", url);
 
 //            String location = cashboxService.getRedirectForPayment(payment);
@@ -210,11 +205,7 @@ public class PaysystemService {
             try {
                 LinkedHashMap<String, String> param = gson.fromJson(bill.getResultPayment(), LinkedHashMap.class);
 
-                String url = apiAddress + "/public/paysystem/secure/redirect" +
-                        "?acsUrl=" + param.get("acsUrl") +
-                        "&MD=" + param.get("MD") +
-                        "&PaReq=" + param.get("PaReq") +
-                        "&bill=" + gson.toJson(bill);
+                String url = apiAddress + "/public/paysystem/secure/redirect" + "?acsUrl=" + param.get("acsUrl") + "&MD=" + param.get("MD") + "&PaReq=" + param.get("PaReq") + "&bill=" + gson.toJson(bill);
                 httpResponse.setHeader("Location", url);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -224,10 +215,7 @@ public class PaysystemService {
         return httpResponse;
     }
 
-    public HttpServletResponse paymentPayAndRedirect(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-                                                     String paymentid, String cardHolderName, String cvv,
-                                                     String month, String pan, String year,
-                                                     String phone, String email) {
+    public HttpServletResponse paymentPayAndRedirect(HttpServletRequest httpRequest, HttpServletResponse httpResponse, String paymentid, String cardHolderName, String cvv, String month, String pan, String year, String phone, String email) {
         String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
         if (ipAddress == null) {
             ipAddress = httpRequest.getRemoteAddr();
@@ -247,9 +235,7 @@ public class PaysystemService {
             LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
             return null;
         }
-        String result = halykSoapService.getPaymentOrderResult(payment.getTotalAmount(),
-                cardHolderName, cvv, payment.getDescription(), month, payment.getPaySysPayId(),
-                pan, year, terminal.getInputTerminalId());
+        String result = halykSoapService.getPaymentOrderResult(payment.getTotalAmount(), cardHolderName, cvv, payment.getDescription(), month, payment.getPaySysPayId(), pan, year, terminal.getInputTerminalId());
         BillPaymentDto bill = createBill(payment, httpRequest, cardHolderName, pan, result);
         return redirectAfterPay(httpResponse, bill);
     }

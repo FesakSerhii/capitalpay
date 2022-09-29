@@ -5,19 +5,18 @@ import java.time.LocalDateTime;
 
 public class PaymentDetailDTO {
 
-    Long timestamp;
-    LocalDateTime localDateTime;
-    String billId;
-
-    BigDecimal totalAmount;
-    String currency;
-    String description;
-    String param;
-    String status;
+    private Long timestamp;
+    private LocalDateTime localDateTime;
+    private String billId;
+    private BigDecimal totalAmount;
+    private String currency;
+    private String description;
+    private String param;
+    private String status;
 
 
     //    SHA256(cashboxId + billId + status + secret)
-    String signature;
+    private String signature;
 
 
     public Long getTimestamp() {
