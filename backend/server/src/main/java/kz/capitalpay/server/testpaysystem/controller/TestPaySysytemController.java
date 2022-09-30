@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class TestPaySysytemController {
 
-    Logger logger = LoggerFactory.getLogger(TestPaySysytemController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestPaySysytemController.class);
 
     @GetMapping("/testpaysystem/page")
     String showTemporaryPage() {

@@ -35,8 +35,7 @@ public class SchedulerService {
         requests.forEach(request -> {
             LOGGER.info("Send email for supprorRequest with id: {}", request.getId());
             ApplicationUser applicationUser = applicationUserService.getUserById(request.getAuthorId());
-            sendEmailService.sendMail(applicationUser.getEmail(), "CapitalPay", String.format("Ваше обращение в службу поддержки принято.<br/>" +
-                    "Ему присвоен номер: %s <br/>", request.getId()));
+            sendEmailService.sendMail(applicationUser.getEmail(), "CapitalPay", String.format("Ваше обращение в службу поддержки принято.<br/>" + "Ему присвоен номер: %s <br/>", request.getId()));
             request.setEmailMessageSent(true);
         });
         supportService.saveAllSupportRequests(requests);

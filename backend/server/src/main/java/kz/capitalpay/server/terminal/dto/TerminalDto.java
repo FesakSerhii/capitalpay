@@ -1,7 +1,5 @@
 package kz.capitalpay.server.terminal.dto;
 
-import org.springframework.lang.NonNull;
-
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 

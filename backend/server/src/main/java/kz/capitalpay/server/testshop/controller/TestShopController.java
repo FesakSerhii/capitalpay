@@ -14,7 +14,7 @@ import static kz.capitalpay.server.simple.service.SimpleService.*;
 @Controller
 public class TestShopController {
 
-    Logger logger = LoggerFactory.getLogger(TestShopController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestShopController.class);
 
     @Autowired
     Gson gson;
@@ -40,7 +40,6 @@ public class TestShopController {
             status = testShopService.checkPendingStatus(paymentid);
         }
 
-
         switch (status) {
             case SUCCESS:
                 modelMap.addAttribute("color", "green");
@@ -52,7 +51,6 @@ public class TestShopController {
                 modelMap.addAttribute("color", "yellow");
                 break;
         }
-
         modelMap.addAttribute("billid", billid);
         modelMap.addAttribute("paymentid", paymentid);
         modelMap.addAttribute("status", status);
@@ -81,8 +79,8 @@ public class TestShopController {
     @PostMapping("/testshop/listener")
     @ResponseBody
     String interactionUrl(@RequestBody String json) {
-        logger.info("Interaction url:");
-        logger.info(json);
+        LOGGER.info("Interaction url:");
+        LOGGER.info(json);
         return "OK";
     }
 }
