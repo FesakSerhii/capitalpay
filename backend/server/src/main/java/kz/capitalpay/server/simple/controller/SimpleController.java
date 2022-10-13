@@ -2,20 +2,21 @@ package kz.capitalpay.server.simple.controller;
 
 import com.google.gson.Gson;
 import kz.capitalpay.server.dto.ResultDTO;
+import kz.capitalpay.server.paymentlink.model.PaymentLink;
+import kz.capitalpay.server.paymentlink.service.PaymentLinkService;
 import kz.capitalpay.server.simple.service.SimpleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Objects;
 
 @Controller
 @RequestMapping(value = "/payment/simple", produces = "application/json;charset=UTF-8")
@@ -28,6 +29,9 @@ public class SimpleController {
 
     @Autowired
     SimpleService simpleService;
+
+    @Autowired
+    PaymentLinkService paymentLinkService;
 
 //    @PostMapping("/pay")
 //    String pay(@RequestParam Long cashboxid,
@@ -82,8 +86,34 @@ public class SimpleController {
                @RequestParam(required = false) String param,
                HttpServletRequest httpRequest,
                ModelMap modelMap) {
-        ResultDTO resultDTO = simpleService.createBankPayment(httpRequest, cashboxid, billid, totalamount, currency, description, param);
+        ResultDTO resultDTO = simpleService.createBankPayment(httpRequest, cashboxid, billid, totalamount,
+                currency, description, param, null);
         if (resultDTO.isResult()) {
+            Map<String, String> resultMap = (Map<String, String>) resultDTO.getData();
+            modelMap.addAttribute("xml", resultMap.get("xml"));
+            modelMap.addAttribute("backLink", resultMap.get("backLink"));
+            modelMap.addAttribute("postLink", resultMap.get("postLink"));
+            return "purchase";
+        } else {
+            modelMap.addAttribute("message", resultDTO.getData());
+            return "paysystems/error";
+        }
+    }
+
+    @PostMapping("/payment/simple/pay-with-link/{linkId}")
+    String pay(@PathVariable String linkId,
+               HttpServletRequest httpRequest,
+               ModelMap modelMap) {
+        PaymentLink paymentLink = paymentLinkService.findById(linkId);
+        if (Objects.isNull(paymentLink) || !paymentLink.getValidTill().isAfter(LocalDateTime.now())) {
+            modelMap.addAttribute("message", "Link is invalid!");
+            return "paysystems/error";
+        }
+        ResultDTO resultDTO = simpleService.createBankPayment(httpRequest, paymentLink.getCashBoxId(),
+                paymentLink.getBillId(), paymentLink.getTotalAmount(), paymentLink.getCurrency(),
+                paymentLink.getDescription(), null, paymentLink.getGuid());
+        if (resultDTO.isResult()) {
+            paymentLink.setValidTill(LocalDateTime.now());
             Map<String, String> resultMap = (Map<String, String>) resultDTO.getData();
             modelMap.addAttribute("xml", resultMap.get("xml"));
             modelMap.addAttribute("backLink", resultMap.get("backLink"));

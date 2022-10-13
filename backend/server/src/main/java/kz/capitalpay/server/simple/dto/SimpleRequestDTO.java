@@ -11,6 +11,7 @@ public class SimpleRequestDTO {
     private String param;
     private String ipAddress;
     private String userAgent;
+    private String paymentLinkId;
 
     public Long getCashboxid() {
         return cashboxid;
@@ -74,5 +75,13 @@ public class SimpleRequestDTO {
 
     public void setUserAgent(String userAgent) {
         this.userAgent = userAgent;
+    }
+
+    public String getPaymentLinkId() {
+        return paymentLinkId;
+    }
+
+    public void setPaymentLinkId(String paymentLinkId) {
+        this.paymentLinkId = paymentLinkId;
     }
 }

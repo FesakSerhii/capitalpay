@@ -13,6 +13,7 @@ import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.merchantsettings.service.MerchantKycService;
 import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
 import kz.capitalpay.server.p2p.service.P2pSettingsService;
+import kz.capitalpay.server.paymentlink.service.PaymentLinkService;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykBankControlOrder;
@@ -87,6 +88,9 @@ public class SimpleService {
     @Autowired
     HalykBankControlOrderRepository halykBankControlOrderRepository;
 
+    @Autowired
+    PaymentLinkService paymentLinkService;
+
     @Value("${remote.api.addres}")
     String apiAddress;
 
@@ -148,6 +152,7 @@ public class SimpleService {
             payment.setIpAddress(request.getIpAddress());
             payment.setUserAgent(request.getUserAgent());
             payment.setStatus(NEW_PAYMENT);
+            payment.setPaymentLinkId(request.getPaymentLinkId());
             return paymentService.newPayment(payment);
         } catch (Exception e) {
             e.printStackTrace();
@@ -156,7 +161,9 @@ public class SimpleService {
 
     }
 
-    public ResultDTO createPayment(HttpServletRequest httpRequest, Long cashboxid, String billid, BigDecimal totalamount, String currency, String description, String param) {
+    public ResultDTO createPayment(HttpServletRequest httpRequest, Long cashboxid, String billid,
+                                   BigDecimal totalamount, String currency, String description,
+                                   String param, String paymentLink) {
         try {
             SimpleRequestDTO request = new SimpleRequestDTO();
             String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
@@ -171,6 +178,7 @@ public class SimpleService {
             request.setCurrency(currency);
             request.setDescription(description);
             request.setParam(param);
+            request.setPaymentLinkId(paymentLink);
             LOGGER.info("Request: {}", gson.toJson(request));
             return newPayment(request);
         } catch (Exception e) {
@@ -181,7 +189,7 @@ public class SimpleService {
 
     public ResultDTO createBankPayment(HttpServletRequest httpRequest, Long cashboxid, String billid,
                                        BigDecimal totalamount, String currency, String description,
-                                       String param) {
+                                       String param, String paymentLink) {
         try {
             SimpleRequestDTO request = new SimpleRequestDTO();
             String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
@@ -196,6 +204,7 @@ public class SimpleService {
             request.setCurrency(currency);
             request.setDescription(description);
             request.setParam(param);
+            request.setPaymentLinkId(paymentLink);
             LOGGER.info("Request: {}", gson.toJson(request));
             ResultDTO paymentResult = newPayment(request);
             if (!(paymentResult.getData() instanceof Payment)) {
@@ -310,6 +319,9 @@ public class SimpleService {
             halykBankControlOrderRepository.save(halykBankControlOrder);
             if (Objects.nonNull(halykBankControlOrder.getResponseCode()) && halykBankControlOrder.getResponseCode().equals("00")) {
                 paymentService.setStatusByPaySysPayId(halykPurchaseOrder.getOrderId(), SUCCESS);
+                if (Objects.nonNull(mainPayment.getPaymentLinkId())) {
+                    paymentLinkService.disablePaymentLink(mainPayment.getPaymentLinkId());
+                }
             }
         }
     }

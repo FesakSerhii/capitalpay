@@ -28,6 +28,7 @@ public class Payment {
     private String ipAddress;
     private String userAgent;
     private String status;
+    private String paymentLinkId;
     @Column(columnDefinition = "boolean default false")
     private boolean toClient;
     @Column(columnDefinition = "boolean default false")
@@ -203,4 +204,11 @@ public class Payment {
         this.saveBankCard = saveBankCard;
     }
 
+    public String getPaymentLinkId() {
+        return paymentLinkId;
+    }
+
+    public void setPaymentLinkId(String paymentLinkId) {
+        this.paymentLinkId = paymentLinkId;
+    }
 }

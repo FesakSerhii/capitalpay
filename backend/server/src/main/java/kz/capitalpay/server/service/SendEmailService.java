@@ -1,5 +1,6 @@
 package kz.capitalpay.server.service;
 
+import kz.capitalpay.server.files.model.FileStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +12,9 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 
 @Service
@@ -31,6 +35,9 @@ public class SendEmailService {
     String smtpHost;
     @Value("${mail.smtp.port}")
     String smtpPort;
+
+    @Value("${filestorage.path}")
+    private String serverFilePath;
 
     Properties properties = new Properties();
     Store store = null;
@@ -56,6 +63,13 @@ public class SendEmailService {
         }
     }
 
+    private final Session session = Session.getInstance(properties, new Authenticator() {
+        @Override
+        protected PasswordAuthentication getPasswordAuthentication() {
+            return new PasswordAuthentication(user, password);
+        }
+    });
+
 
     public boolean sendMail(String email, String subj, String text) {
         try {
@@ -64,13 +78,6 @@ public class SendEmailService {
             LOGGER.info(email);
             LOGGER.info(subj);
             LOGGER.info(text);
-
-            Session session = Session.getInstance(properties, new Authenticator() {
-                @Override
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(user, password);
-                }
-            });
 
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(user));
@@ -93,4 +100,44 @@ public class SendEmailService {
 
     }
 
+    public void sendEmailWithFiles(String email, String subject, String text, List<FileStorage> files) {
+        try {
+            LOGGER.info("Send message: \nEmail: {}", email);
+
+            session.setDebug(true);
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(user));
+            message.setRecipients(
+                    Message.RecipientType.TO, InternetAddress.parse(email));
+            message.setSubject(subject);
+
+            MimeBodyPart mimeBodyPart = new MimeBodyPart();
+            mimeBodyPart.setContent(text, "text/html; charset=utf-8");
+
+            Multipart multipart = new MimeMultipart();
+            files.forEach(x -> addFile(multipart, serverFilePath + "/" + x.getPath()));
+
+            multipart.addBodyPart(mimeBodyPart);
+            message.setContent(multipart);
+            Transport.send(message);
+            LOGGER.info("Message sent!");
+        } catch (Exception e) {
+            LOGGER.info("Message send error", e);
+        }
+    }
+
+    private void addFile(Multipart multipart, String filePath) {
+        try {
+            MimeBodyPart imagePart = new MimeBodyPart();
+            imagePart.setDisposition(MimeBodyPart.INLINE);
+            try {
+                imagePart.attachFile(new File(filePath));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            multipart.addBodyPart(imagePart);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
 }
