@@ -43,6 +43,8 @@ public class ErrorDictionary {
     public static final ResultDTO TERMINAL_NOT_FOUND = new ResultDTO(false, "Terminal not found!", 138);
     public static final ResultDTO MERCHANT_TERMINAL_SETTINGS_NOT_FOUND = new ResultDTO(false, "Merchant terminal settings not found!", 139);
     public static final ResultDTO OCCUPIED_TERMINAL = new ResultDTO(false, "Terminal is already occupied!", 140);
+    public static final ResultDTO LINK_NOT_FOUND = new ResultDTO(false, "Link not found", 141);
+    public static final ResultDTO ALREADY_PAID = new ResultDTO(false, "Link payment is already successful", 142);
 
 
 }

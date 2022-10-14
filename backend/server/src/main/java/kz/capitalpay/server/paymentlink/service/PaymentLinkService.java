@@ -66,7 +66,10 @@ public class PaymentLinkService {
             paymentLink.setCashBoxId(dto.getCashBoxId());
             paymentLink.setMerchantEmail(dto.getMerchantEmail());
             paymentLink.setPayerEmail(dto.getPayerEmail());
-            paymentLink.setFileIds(dto.getFileIds().toString());
+            paymentLink.setValidHours(dto.getValidHours());
+            if (Objects.nonNull(dto.getFileIds())) {
+                paymentLink.setFileIds(dto.getFileIds().toString());
+            }
             Cashbox cashbox = cashboxService.findById(dto.getCashBoxId());
             if (Objects.isNull(cashbox)) {
                 return ErrorDictionary.CASHBOX_NOT_FOUND;
@@ -75,16 +78,8 @@ public class PaymentLinkService {
             paymentLink.setValidTill(LocalDateTime.now().plusHours(dto.getValidHours()));
             paymentLinkRepository.save(paymentLink);
 
-            List<Long> fileIds;
-            try {
-                fileIds = objectMapper.readValue(paymentLink.getFileIds(), new TypeReference<List<Long>>() {
-                });
-            } catch (Exception e) {
-                fileIds = new ArrayList<>();
-            }
-            List<FileStorage> files = fileStorageService.getFilListById(fileIds);
             String link = apiAddress + "/payment/simple/pay-with-link/" + paymentLink.getGuid();
-            sendEmailService.sendEmailWithFiles(paymentLink.getPayerEmail(), paymentLink.getEmailTitle(), paymentLink.getEmailText() + "\n\n" + link, files);
+            sendPaymentLinkEmail(paymentLink, link);
             Map<String, String> resultMap = new HashMap<>();
             resultMap.put("link", link);
             resultMap.put("qrCode", qrCodeUtil.generateQrCode(link));
@@ -122,5 +117,32 @@ public class PaymentLinkService {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);
         }
+    }
+
+    public ResultDTO renewPaymentLink(String linkId) {
+        PaymentLink paymentLink = findById(linkId);
+        if (Objects.isNull(paymentLink)) {
+            return ErrorDictionary.LINK_NOT_FOUND;
+        }
+        if (paymentLink.isSuccessfulPayment()) {
+            return ErrorDictionary.ALREADY_PAID;
+        }
+        paymentLink.setValidTill(LocalDateTime.now().plusHours(paymentLink.getValidHours()));
+        save(paymentLink);
+        String link = apiAddress + "/payment/simple/pay-with-link/" + paymentLink.getGuid();
+        sendPaymentLinkEmail(paymentLink, link);
+        return new ResultDTO(true, "SUCCESS", 0);
+    }
+
+    private void sendPaymentLinkEmail(PaymentLink paymentLink, String link) {
+        List<Long> fileIds;
+        try {
+            fileIds = objectMapper.readValue(paymentLink.getFileIds(), new TypeReference<List<Long>>() {
+            });
+        } catch (Exception e) {
+            fileIds = new ArrayList<>();
+        }
+        List<FileStorage> files = fileStorageService.getFilListById(fileIds);
+        sendEmailService.sendEmailWithFiles(paymentLink.getPayerEmail(), paymentLink.getEmailTitle(), paymentLink.getEmailText() + "\n\n" + link, files);
     }
 }

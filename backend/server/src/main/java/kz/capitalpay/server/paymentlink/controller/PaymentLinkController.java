@@ -32,4 +32,9 @@ public class PaymentLinkController {
     public ResultDTO getPaymentLinks(Principal principal) {
         return paymentLinkService.getList(principal);
     }
+
+    @PostMapping("/renew/{linkId}")
+    public ResultDTO renewPaymentLink(@PathVariable String linkId) {
+        return paymentLinkService.renewPaymentLink(linkId);
+    }
 }

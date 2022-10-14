@@ -23,6 +23,7 @@ public class PaymentLink {
     private String emailText;
     private String fileIds;
     private Long merchantId;
+    private Integer validHours;
     @Column(columnDefinition = "boolean default false")
     private boolean successfulPayment;
 
@@ -146,5 +147,13 @@ public class PaymentLink {
 
     public void setMerchantId(Long merchantId) {
         this.merchantId = merchantId;
+    }
+
+    public Integer getValidHours() {
+        return validHours;
+    }
+
+    public void setValidHours(Integer validHours) {
+        this.validHours = validHours;
     }
 }
