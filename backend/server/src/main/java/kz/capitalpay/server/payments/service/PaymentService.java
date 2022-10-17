@@ -20,7 +20,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.security.Principal;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.ADMIN;
@@ -51,8 +54,8 @@ public class PaymentService {
     P2pPaymentService p2pPaymentService;
 
 
-    public boolean checkUnic(Cashbox cashbox, String billid) {
-        List<Payment> paymentList = paymentRepository.findByCashboxIdAndBillId(cashbox.getId(), billid);
+    public boolean checkUnique(Cashbox cashbox, String billid) {
+        List<Payment> paymentList = paymentRepository.findByCashboxIdAndBillIdAndStatus(cashbox.getId(), billid, SUCCESS);
         return (paymentList == null || paymentList.size() == 0);
     }
 

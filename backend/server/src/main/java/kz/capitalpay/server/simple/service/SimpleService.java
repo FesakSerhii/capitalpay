@@ -121,7 +121,7 @@ public class SimpleService {
                 return CASHBOX_NOT_FOUND;
             }
             ApplicationUser merchant = applicationUserService.getUserById(cashbox.getMerchantId());
-            if (!paymentService.checkUnic(cashbox, request.getBillid())) {
+            if (!paymentService.checkUnique(cashbox, request.getBillid())) {
                 return BILL_ID_ALREADY_EXISTS;
             }
             String merchantName = merchantKycService.getField(merchant.getId(), MerchantKycService.MNAME);
