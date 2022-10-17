@@ -1,0 +1,150 @@
+<div class="row mr-0">
+    <div class="col-8">
+        <div class="card" style="margin-bottom: 0;">
+            <div class="card-header card-header-success card-header-icon">
+                <div class="card-icon">
+                    <i class="material-icons-outlined">insert_link</i>
+                </div>
+                <h4 class="card-title ">Виставление счета</h4>
+            </div>
+            <div class="card-body">
+                <div class="material-datatables">
+                    <div id="datatables_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                        <div class="row mr-0">
+                            <div class="col-sm-12" [formGroup]="form">
+                                <ng-scrollbar class="transactions-scroll calc200" [visibility]="'always'">
+                                    <div class="d-flex flex-column justify-content-between h-100">
+                                        <div class="d-flex flex-column">
+                                            <div class="form-group has-default bmd-form-group d-flex">
+                                                <label class="col-form-label text-left w200">Наименование товара или
+                                                    услуги</label>
+                                                <input type="text" formControlName="description" class="form-control input" [class.error]="isInvalid(form,'description')">
+                                            </div>
+                                            <div class="form-group has-default bmd-form-group d-flex">
+                                                <label class="col-form-label text-left w200">Номер Заказа</label>
+                                                <input [class.error]="isInvalid(form,'billId')" type="text" formControlName="billId" class="form-control input">
+                                            </div>
+                                            <div class="form-group has-default bmd-form-group d-flex">
+                                                <label class="col-form-label text-left w200"> Сумма к оплате</label>
+                                                <input [class.error]="isInvalid(form,'totalAmount')" type="number" step="0.01" formControlName="totalAmount" class="form-control input">
+                                            </div>
+                                            <div class="form-group has-default bmd-form-group d-flex">
+                                                <label class="col-form-label text-left w200">Время жизни ссылки</label>
+                                                <app-custom-select formControlName="validHours" classes="w100"
+                                                                   [values]="[{title: '1 час', value: 1},{title: '3 часа', value: 3}]"></app-custom-select>
+                                            </div>
+
+                                            <div class="form-group has-default bmd-form-group d-flex">
+                                                <label class="col-form-label text-left w200">ФИО продавца</label>
+                                                <input [class.error]="isInvalid(form,'merchantName')" type="text" formControlName="merchantName" class="form-control input">
+                                            </div>
+                                            <div class="form-group has-default bmd-form-group d-flex">
+                                                <label class="col-form-label text-left w200">Email продавца</label>
+                                                <input [class.error]="isInvalid(form,'merchantEmail')" type="text" formControlName="merchantEmail" class="form-control input">
+                                            </div>
+                                            <div class="card card-hover" style="margin-bottom: 0;">
+                                                <div class="card-header card-header-success card-header-icon">
+                                                    <h4 class="card-title ">Сопроводительное письмо</h4>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="form-group has-default bmd-form-group d-flex">
+                                                        <label class="col-form-label text-left w200">Отправить на почту</label>
+                                                        <input [class.error]="isInvalid(form,'payerEmail')" type="text" formControlName="payerEmail" class="form-control ">
+                                                    </div>
+                                                    <div class="form-group has-default bmd-form-group d-flex">
+                                                        <label class="col-form-label text-left w200">Заголовок</label>
+                                                        <input [class.error]="isInvalid(form,'emailTitle')" type="text" formControlName="emailTitle" class="form-control ">
+                                                    </div>
+                                                    <div class="form-group has-default bmd-form-group d-flex">
+                                                        <label class="col-form-label text-left w200">Текст письма</label>
+                                                        <input [class.error]="isInvalid(form,'emailText')" type="text" formControlName="emailText" class="form-control ">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group has-default bmd-form-group d-flex">
+                                                <label class="col-form-label text-left w200">Добавить вложение</label>
+                                                <div class="d-flex flex-column align-items-center">
+                                                    <div class="d-flex">
+                                                        <input type="file" accept="image/*" id="fileUpload"
+                                                               class="d-none"
+                                                               (change)="handleFileInput($event.target.files)">
+                                                        <label class="mb-0" for="fileUpload">Прикрепить документ<i
+                                                                class="material-icons-outlined"
+                                                                style="transform: rotate(45deg);">attach_file</i></label>
+                                                    </div>
+                                                    <div class="d-flex">
+                                                        <ng-container *ngFor="let file of fileListPreview">
+                                                            <div class="d-flex">
+                                                                <img class="mr-2"
+                                                                     [src]="'https://capitalpay.kz/files/'+file.data.path"
+                                                                     alt="" style="max-width: 250px">
+                                                                <button class="btn btn-transparent"
+                                                                        (click)="deleteFileBeforeSaving(file.data.id)">
+                                                                    <i class="material-icons-outlined">close</i>
+                                                                    <div class="ripple-container"></div>
+                                                                </button>
+
+                                                            </div>
+                                                        </ng-container>
+                                                    </div>
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-self-end mt-3">
+                                            <button class="btn btn-success btn-round btn-back ml-2"
+                                                    (click)="sendForm()">Создать
+                                            </button>
+                                        </div>
+
+                                    </div>
+
+                                </ng-scrollbar>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="card" style="margin-bottom: 0;" *ngIf="linkData">
+            <div class="card-header card-header-success card-header-icon">
+                <div class="card-icon">
+                    <i class="material-icons-outlined">insert_link</i>
+                </div>
+                <h4 class="card-title ">Ссылка на оплату</h4>
+            </div>
+            <div class="card-body">
+                <div id="datatables_wrapper1" class="dataTables_wrapper dt-bootstrap4">
+                    <ng-scrollbar class="transactions-scroll calc200" [visibility]="'always'">
+                        <div class="card card-hover" style="margin-bottom: 0;">
+                            <div class="card-header card-header-success card-header-icon">
+                                <h4 class="card-title ">QR код на оплату</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="qrcode" style='background-image: url({{linkData?.qrCode}})'></div>
+                                <button class="btn btn-success btn-round btn-back" (click)="downloadPdf()">Сохранить pdf</button>
+                                <button class="btn btn-success btn-round btn-back ml-2" (click)="copy(linkData?.qrCode, true)">Копировать</button>
+                            </div>
+                        </div>
+                        <div class="card card-hover" style="margin-bottom: 0;">
+                            <div class="card-header card-header-success card-header-icon">
+                                <h4 class="card-title">Ссылка на оплату</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group has-default bmd-form-group d-flex">
+                                    <label class="col-form-label text-left">Ссылка</label>
+                                    <input type="text" [value]="linkData?.link" readonly class="form-control input w-100">
+                                </div>
+                                <button class="btn btn-success btn-round btn-back" (click)="copy(linkData?.link)">Копировать</button>
+                            </div>
+                        </div>
+                    </ng-scrollbar>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

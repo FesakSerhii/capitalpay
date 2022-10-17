@@ -11,18 +11,23 @@ import {NgScrollbarModule} from 'ngx-scrollbar';
 import {NgbDateParserFormatter, NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {NgbDateCustomParserFormatter} from '../../../common-blocks/ngb-date-custom-parser-formatter';
 import { ChatComponent } from './chat/chat.component';
+import { PaymentLinksComponent } from './payment-links/payment-links.component';
+import {NgxPaginationModule} from "ngx-pagination";
+import { PaymentLinksShopComponent } from './payment-links/payment-links-shop/payment-links-shop.component';
+import { PaymentLinksHistoryComponent } from './payment-links/payment-links-history/payment-links-history.component';
 
 
 
 @NgModule({
-  declarations: [SettingsComponent, ToolsComponent, SupportComponent, ApiComponent, ChatComponent],
+  declarations: [SettingsComponent, ToolsComponent, SupportComponent, ApiComponent, ChatComponent, PaymentLinksComponent, PaymentLinksShopComponent, PaymentLinksHistoryComponent],
     imports: [
         CommonModule,
         MerchantPanelRoutingModule,
         CommonBlocksModule,
         NgScrollbarModule,
         ReactiveFormsModule,
-        NgbModule
+        NgbModule,
+        NgxPaginationModule
     ],
   providers: [{provide: NgbDateParserFormatter, useClass: NgbDateCustomParserFormatter}],
 })

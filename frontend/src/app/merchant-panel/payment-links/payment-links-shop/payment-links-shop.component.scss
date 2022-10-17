@@ -1,0 +1,31 @@
+.ng-scroll-content {
+  height: 100%;
+}
+
+.chat-header-info{
+  color: rgba(0, 0, 0, 0.51);
+}
+.message-title{
+  font-size: 15px;
+  color: #008D68;
+}
+.card-hover {
+  width: calc(100% - 2px);
+  transition: .3s;
+  margin-left: 1px;
+}
+.w200 {
+  width: 200px!important;
+}
+.input {
+  width: calc(100% - 200px);
+}
+
+.qrcode {
+  width: 170px;
+  height: 170px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  margin-left: -20px;
+  margin-top: -11px;
+}

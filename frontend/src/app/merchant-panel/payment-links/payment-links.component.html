@@ -1,0 +1,38 @@
+<div class="row mr-0">
+    <div class="col-12">
+        <div class="card" style="margin-bottom: 0;">
+            <div class="card-header card-header-success card-header-icon">
+                <div class="card-icon">
+                    <i class="material-icons-outlined">insert_link</i>
+                </div>
+                <h4 class="card-title">Платёжные ссылки</h4>
+            </div>
+            <div class="card-body">
+                <div class="material-datatables">
+                    <div id="datatables_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                        <ng-scrollbar class="transactions-scroll calc200" [visibility]="'always'">
+                            <div class="card card-hover" style="margin-bottom: 0;" *ngFor="let transaction of cashBoxList">
+                                <div class="card-header card-header-success card-header-icon">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <h4 class="card-title"><strong>{{transaction.name}}</strong></h4>
+                                        </div>
+                                        <div class="col-6 pt-3 d-flex justify-content-end">
+                                            <button class="btn btn-success btn-round btn-back" [routerLink]="['/merchant/payment-links', transaction.id]">Виставление счета</button>
+                                            <button class="btn btn-default btn-round btn-back ml-2" [routerLink]="['/merchant/payment-links', transaction.id, 'history']">История</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+
+                                </div>
+                            </div>
+                        </ng-scrollbar>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
