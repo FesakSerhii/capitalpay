@@ -100,7 +100,7 @@ public class SimpleController {
         }
     }
 
-    @PostMapping("/pay-with-link/{linkId}")
+    @GetMapping("/pay-with-link/{linkId}")
     String pay(@PathVariable String linkId,
                HttpServletRequest httpRequest,
                ModelMap modelMap) {
