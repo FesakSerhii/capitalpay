@@ -13,12 +13,12 @@ import {NgbDateCustomParserFormatter} from '../../../common-blocks/ngb-date-cust
 import { ChatComponent } from './chat/chat.component';
 import { PaymentLinksComponent } from './payment-links/payment-links.component';
 import {NgxPaginationModule} from "ngx-pagination";
-import { PaymentLinksShopComponent } from './payment-links/payment-links-shop/payment-links-shop.component';
+import { CreatePaymentLinkComponent } from './payment-links/create-payment-link/create-payment-link.component';
 
 
 
 @NgModule({
-  declarations: [SettingsComponent, ToolsComponent, SupportComponent, ApiComponent, ChatComponent, PaymentLinksComponent, PaymentLinksShopComponent],
+  declarations: [SettingsComponent, ToolsComponent, SupportComponent, ApiComponent, ChatComponent, PaymentLinksComponent, CreatePaymentLinkComponent],
     imports: [
         CommonModule,
         MerchantPanelRoutingModule,

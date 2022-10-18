@@ -5,6 +5,7 @@ import {SortHelper} from "../../helper/sort-helper";
 import {PaymentService} from "../../service/payment.service";
 import {FormControl} from "@angular/forms";
 import {Subscription, timer} from "rxjs";
+import {jsPDF} from "jspdf";
 
 @Component({
     selector: "app-payment-links",
@@ -119,11 +120,30 @@ export class PaymentLinksComponent implements OnInit, OnDestroy {
         }
     }
 
-    async copy(text: string) {
-        navigator.clipboard.writeText(text).then(() => {
-        }).catch(err => {
-            console.error(err.name, err.message);
-        });
+    async copy(text: string, image: boolean = false) {
+        if(image) {
+            try {
+                // @ts-ignore
+                await navigator.clipboard.write([
+                    // @ts-ignore
+                    new ClipboardItem({
+                        'image/png': fetch(text).then(res => res.blob())
+                    })
+                ]);
+            } catch (err) {
+                console.error(err.name, err.message);
+            }
+        } else {
+            navigator.clipboard.writeText(text).then(() => {}).catch(err => {
+                console.error(err.name, err.message);
+            });
+        }
+
+    }
+    downloadPdf(qrCode) {
+        const doc: any = new jsPDF();
+        doc.addImage(qrCode, 'JPG', 10, 10);
+        doc.save('capitalPay.pdf');
     }
     ngOnDestroy(): void {
         this.subscription.unsubscribe();

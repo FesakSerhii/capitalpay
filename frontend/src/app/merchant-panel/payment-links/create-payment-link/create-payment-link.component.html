@@ -5,7 +5,7 @@
                 <div class="card-icon">
                     <i class="material-icons-outlined">insert_link</i>
                 </div>
-                <h4 class="card-title ">Виставление счета</h4>
+                <h4 class="card-title ">Выставление счета</h4>
             </div>
             <div class="card-body">
                 <div class="material-datatables">
@@ -62,7 +62,8 @@
                                                     </div>
                                                     <div class="form-group has-default bmd-form-group d-flex">
                                                         <label class="col-form-label text-left w200">Текст письма</label>
-                                                        <input [class.error]="isInvalid(form,'emailText')" type="text" formControlName="emailText" class="form-control ">
+                                                        <textarea class="form-control" [class.error]="isInvalid(form,'emailText')" formControlName="emailText" placeholder="Текст письма" cols="10"
+                                                                  rows="3"></textarea>
                                                     </div>
                                                 </div>
                                             </div>

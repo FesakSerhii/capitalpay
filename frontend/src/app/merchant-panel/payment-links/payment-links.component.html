@@ -13,7 +13,6 @@
                         </div>
                         <button class="btn btn-success btn-round btn-back ml-auto mt-2" [routerLink]="['/merchant/payment-links/create']">Выставить счет</button>
                     </div>
-
                 </div>
                 <div class="card-body">
                     <div class="material-datatables">
@@ -84,13 +83,21 @@
             </div>
         </div>
         <div class="card w514 ml-3" *ngIf="historyDetails" style="margin-bottom: 0;">
-            <ng-scrollbar class="calc300" [visibility]="'always'">
+            <ng-scrollbar class="calc140" [visibility]="'always'">
                 <div class="card-header">
-                    <h4 class="card-title">Детали счета
-                        <!--        <small class="description">Horizontal Tabs</small>-->
-                    </h4>
+                    <h4 class="card-title">Детали счета</h4>
                 </div>
                 <div class="card-body">
+                    <div class="card card-hover mt-0" style="margin-bottom: 0;">
+                        <div class="card-header card-header-success card-header-icon">
+                            <h4 class="card-title ">QR код на оплату</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="qrcode" style='background-image: url({{historyDetails?.qrCode}})'></div>
+                            <button class="btn btn-success btn-round btn-back" (click)="downloadPdf(historyDetails?.qrCode)">Сохранить pdf</button>
+                            <button class="btn btn-success btn-round btn-back ml-2" (click)="copy(historyDetails?.qrCode, true)">Копировать</button>
+                        </div>
+                    </div>
                     <div class="card card-hover" style="margin-bottom: 0;">
                         <div class="card-header card-header-success card-header-icon">
                             <h4 class="card-title">Ссылка на оплату</h4>
@@ -98,9 +105,9 @@
                         <div class="card-body">
                             <div class="form-group has-default bmd-form-group d-flex">
                                 <label class="col-form-label text-left">Ссылка</label>
-                                <input type="text" [value]="'https://api.capitalpay.kz/payment/simple/pay-with-link/' + historyDetails?.guid" readonly class="form-control input w-100">
+                                <input type="text" [value]="historyDetails?.link" readonly class="form-control input w-100">
                             </div>
-                            <button class="btn btn-success btn-round btn-back" (click)="copy('https://api.capitalpay.kz/payment/simple/pay-with-link/' + historyDetails?.guid)">Копировать</button>
+                            <button class="btn btn-success btn-round btn-back" (click)="copy(historyDetails?.link)">Копировать</button>
                         </div>
                     </div>
                     <div class="card card-hover" style="margin-bottom: 0;">

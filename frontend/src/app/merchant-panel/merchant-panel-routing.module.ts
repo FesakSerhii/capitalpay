@@ -9,7 +9,7 @@ import {ToolsComponent} from './tools/tools.component';
 import {TransactionsRegistryComponent} from '../../../common-blocks/transactions-log/transactions-registry/transactions-registry.component';
 import { ChatComponent } from './chat/chat.component';
 import {PaymentLinksComponent} from "./payment-links/payment-links.component";
-import {PaymentLinksShopComponent} from "./payment-links/payment-links-shop/payment-links-shop.component";
+import {CreatePaymentLinkComponent} from "./payment-links/create-payment-link/create-payment-link.component";
 
 export const routes: Routes = [
   {
@@ -48,7 +48,7 @@ export const routes: Routes = [
         component: PaymentLinksComponent
       }, {
         path: 'payment-links/create',
-        component: PaymentLinksShopComponent
+        component: CreatePaymentLinkComponent
       }
     ]
   },
