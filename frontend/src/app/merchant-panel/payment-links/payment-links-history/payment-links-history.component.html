@@ -45,17 +45,17 @@
                                             </tr>
                                             </tfoot>
                                             <tbody *ngIf="visible">
-                                            <tr *ngFor="let transaction of cashBoxListHistory | paginate: { itemsPerPage: 10, currentPage: currentPage }" class="cursor-pointer"
-                                                [class.selectedItem]="historyDetails==transaction"
-                                                (click)="getTransactionDetails(transaction)">
-                                                <td tabindex="0" class="sorting_1">{{transaction.billId}}</td>
-                                                <td>{{transaction.description}}</td>
-                                                <td>{{transaction.totalAmount}} KZT</td>
+                                            <tr *ngFor="let item of cashBoxListHistory | paginate: { itemsPerPage: 10, currentPage: currentPage }" class="cursor-pointer"
+                                                [class.selectedItem]="historyDetails==item"
+                                                (click)="getTransactionDetails(item)">
+                                                <td tabindex="0" class="sorting_1">{{item.billId}}</td>
+                                                <td>{{item.description}}</td>
+                                                <td>{{item.totalAmount}} KZT</td>
                                                 <td>
-                                                    <i *ngIf="transaction.successfulPayment===true" placement="top" ngbTooltip="" class="material-icons material-icons-outlined text-success">check_circle_outline</i>
-                                                    <i *ngIf="transaction.successfulPayment===false" placement="top" ngbTooltip="" class="material-icons material-icons-outlined text-danger">highlight_off</i>
+                                                    <i *ngIf="item.successfulPayment===true" placement="top" ngbTooltip="" class="material-icons material-icons-outlined text-success">check_circle_outline</i>
+                                                    <i *ngIf="item.successfulPayment===false" placement="top" ngbTooltip="" class="material-icons material-icons-outlined text-danger">highlight_off</i>
                                                 </td>
-                                                <td [innerHTML]="validTill(transaction.validTill)"></td>
+                                                <td [innerHTML]="validTill(item.validTill)"></td>
                                             </tr>
                                             </tbody>
                                         </table>
