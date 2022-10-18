@@ -119,6 +119,8 @@ public class MerchantKycService {
             result.put(BANKNAME, getField(merchant.getId(), BANKNAME));
             result.put(IIK, getField(merchant.getId(), IIK));
             result.put(BIK, getField(merchant.getId(), BIK));
+            result.put("email", merchant.getEmail());
+            result.put("userName", merchant.getRealname());
             LOGGER.info(gson.toJson(result));
             return new ResultDTO(true, result, 0);
         } catch (Exception e) {

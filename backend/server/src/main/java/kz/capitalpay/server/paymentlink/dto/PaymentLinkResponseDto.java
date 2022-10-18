@@ -17,6 +17,8 @@ public class PaymentLinkResponseDto {
     private String emailText;
     private boolean successfulPayment;
     private boolean valid;
+    private String link;
+    private String qrCode;
 
     public String getGuid() {
         return guid;
@@ -120,5 +122,21 @@ public class PaymentLinkResponseDto {
 
     public void setValid(boolean valid) {
         this.valid = valid;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    public String getQrCode() {
+        return qrCode;
+    }
+
+    public void setQrCode(String qrCode) {
+        this.qrCode = qrCode;
     }
 }

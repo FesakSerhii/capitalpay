@@ -27,8 +27,7 @@ public class CreatePaymentLinkDto {
     private String emailTitle;
     @NotBlank
     private String emailText;
-    @NotNull
-    private Long validHours;
+    private Integer validHours;
     private List<Long> fileIds;
 
     public String getMerchantName() {
@@ -103,11 +102,11 @@ public class CreatePaymentLinkDto {
         this.emailText = emailText;
     }
 
-    public Long getValidHours() {
+    public Integer getValidHours() {
         return validHours;
     }
 
-    public void setValidHours(Long validHours) {
+    public void setValidHours(Integer validHours) {
         this.validHours = validHours;
     }
 

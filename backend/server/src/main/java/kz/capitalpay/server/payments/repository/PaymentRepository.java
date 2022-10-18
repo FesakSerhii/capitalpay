@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface PaymentRepository extends JpaRepository<Payment, String> {
 
-    List<Payment> findByCashboxIdAndBillId(Long cashboxId, String billId);
+    List<Payment> findByCashboxIdAndBillIdAndStatus(Long cashboxId, String billId, String status);
 
     Payment findTopByCashboxIdAndBillId(Long cashboxId, String billId);
 
