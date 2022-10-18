@@ -29,8 +29,12 @@
                                                 <input [class.error]="isInvalid(form,'totalAmount')" type="number" step="0.01" formControlName="totalAmount" class="form-control input">
                                             </div>
                                             <div class="form-group has-default bmd-form-group d-flex">
+                                                <label class="col-form-label text-left w200">Касса</label>
+                                                <app-custom-select  formControlName="cashBoxId" classes="w100 {{isInvalid(form,'cashBoxId') ? 'error' : ''}}" [values]="cashBoxListAll"></app-custom-select>
+                                            </div>
+                                            <div class="form-group has-default bmd-form-group d-flex">
                                                 <label class="col-form-label text-left w200">Время жизни ссылки</label>
-                                                <app-custom-select formControlName="validHours" classes="w100"
+                                                <app-custom-select formControlName="validHours" classes="w100 "
                                                                    [values]="[{title: '1 час', value: 1},{title: '3 часа', value: 3}]"></app-custom-select>
                                             </div>
 
@@ -42,6 +46,7 @@
                                                 <label class="col-form-label text-left w200">Email продавца</label>
                                                 <input [class.error]="isInvalid(form,'merchantEmail')" type="text" formControlName="merchantEmail" class="form-control input">
                                             </div>
+
                                             <div class="card card-hover" style="margin-bottom: 0;">
                                                 <div class="card-header card-header-success card-header-icon">
                                                     <h4 class="card-title ">Сопроводительное письмо</h4>

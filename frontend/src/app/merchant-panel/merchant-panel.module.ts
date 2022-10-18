@@ -14,12 +14,11 @@ import { ChatComponent } from './chat/chat.component';
 import { PaymentLinksComponent } from './payment-links/payment-links.component';
 import {NgxPaginationModule} from "ngx-pagination";
 import { PaymentLinksShopComponent } from './payment-links/payment-links-shop/payment-links-shop.component';
-import { PaymentLinksHistoryComponent } from './payment-links/payment-links-history/payment-links-history.component';
 
 
 
 @NgModule({
-  declarations: [SettingsComponent, ToolsComponent, SupportComponent, ApiComponent, ChatComponent, PaymentLinksComponent, PaymentLinksShopComponent, PaymentLinksHistoryComponent],
+  declarations: [SettingsComponent, ToolsComponent, SupportComponent, ApiComponent, ChatComponent, PaymentLinksComponent, PaymentLinksShopComponent],
     imports: [
         CommonModule,
         MerchantPanelRoutingModule,

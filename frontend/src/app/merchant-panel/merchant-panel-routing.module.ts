@@ -10,7 +10,6 @@ import {TransactionsRegistryComponent} from '../../../common-blocks/transactions
 import { ChatComponent } from './chat/chat.component';
 import {PaymentLinksComponent} from "./payment-links/payment-links.component";
 import {PaymentLinksShopComponent} from "./payment-links/payment-links-shop/payment-links-shop.component";
-import {PaymentLinksHistoryComponent} from "./payment-links/payment-links-history/payment-links-history.component";
 
 export const routes: Routes = [
   {
@@ -48,11 +47,8 @@ export const routes: Routes = [
         path: 'payment-links',
         component: PaymentLinksComponent
       }, {
-        path: 'payment-links/:shop-id',
+        path: 'payment-links/create',
         component: PaymentLinksShopComponent
-      }, {
-        path: 'payment-links/:shop-id/history',
-        component: PaymentLinksHistoryComponent
       }
     ]
   },

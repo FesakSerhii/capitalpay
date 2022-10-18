@@ -8,6 +8,7 @@ import {FileService} from "../../../service/file.service";
 import { jsPDF } from 'jspdf';
 import {Variable} from "@angular/compiler/src/render3/r3_ast";
 import {CheckFormInvalidService} from "../../../service/check-form-invalid.service";
+import {CashBoxService} from "../../../../../projects/admin-panel/src/app/service/cashbox.service";
 @Component({
     selector: "app-payment-links-shop",
     templateUrl: "./payment-links-shop.component.html",
@@ -18,6 +19,7 @@ export class PaymentLinksShopComponent implements OnInit {
     cashBoxId: any = null;
     linkData: any = null;
     fileList: any[] = [];
+    cashBoxListAll: any[] = [];
     fileToUpload: File = null;
     fileListPreview: any[] = [];
     form = new FormGroup({
@@ -34,12 +36,15 @@ export class PaymentLinksShopComponent implements OnInit {
         fileIds: new FormControl(null),
     });
 
-    constructor(private route: ActivatedRoute, public checkFormInvalidService:CheckFormInvalidService, private kycService: KycService, private userService: UserService, private paymentService: PaymentService, private fileService: FileService) {}
+    constructor(private route: ActivatedRoute, private cashBoxService: CashBoxService, public checkFormInvalidService:CheckFormInvalidService, private kycService: KycService, private userService: UserService, private paymentService: PaymentService, private fileService: FileService) {}
 
     ngOnInit(): void {
-        this.cashBoxId = this.route.snapshot.paramMap.get("shop-id");
-        this.form.get("cashBoxId").patchValue(this.cashBoxId);
         this.merchantId = this.userService.getUserInfo().merchantId;
+        this.cashBoxService.getCashBoxListByMerchantId(this.merchantId).then(resp => {
+            this.cashBoxListAll = resp.data.map(a => {
+                return {value: a.id, title: a?.name}
+            });
+        })
         this.getUserInfo();
 
     }
