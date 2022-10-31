@@ -1,4 +1,22 @@
-<div class="footer">
+
+<footer class="footer">
+  <div class="container-wide">
+    <div class="footer__logo">
+      <img src="../../../assets/img/logo.svg" alt="Logo" class="footer__logo-image">
+      <p class="footer__logo-copyright">{{currentYear}} ТОО «Capitalpay»</p>
+    </div>
+    <nav class="footer__nav">
+      <ul class="footer__nav-menu">
+        <li class="item"><a routerLink="#" class="item__link">Платежные решения</a></li>
+        <li class="item"><a routerLink="#" class="item__link">Решения для бизнеса</a></li>
+        <li class="item"><a routerLink="#" class="item__link">Онлайн-кассы</a></li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+
+<div class="footer" *ngIf="false">
   <div class="wrap">
     <div class="content justify-content-between">
       <div class="logo-section">
@@ -91,3 +109,4 @@
     </div>
   </div>
 </div>
+

@@ -18,13 +18,15 @@ import {NgbDateCustomParserFormatter} from './ngb-date-custom-parser-formatter';
 import {ConfirmActionModalComponent} from './confirm-action-modal/confirm-action-modal.component';
 import { PaymentCardModalComponent } from './payment-card-modal/payment-card-modal.component';
 import {NgxMaskModule} from 'ngx-mask';
+import { LoginModalComponent } from './header/login-modal/login-modal.component';
+import { RecoverPasswordModalComponent } from './header/recover-password-modal/recover-password-modal.component';
 
 
 
 
 @NgModule({
   declarations: [HeaderComponent, FooterComponent, HexagonLinkComponent,SideMenuComponent,
-    PanelHeaderComponent, CustomSelectComponent, TransactionsLogComponent, MassageModalComponent, TransactionsRegistryComponent,ConfirmActionModalComponent, PaymentCardModalComponent],
+    PanelHeaderComponent, CustomSelectComponent, TransactionsLogComponent, MassageModalComponent, TransactionsRegistryComponent,ConfirmActionModalComponent, PaymentCardModalComponent, LoginModalComponent, RecoverPasswordModalComponent],
     exports: [HeaderComponent, FooterComponent, HexagonLinkComponent, SideMenuComponent,
         PanelHeaderComponent, CustomSelectComponent, TransactionsLogComponent, MassageModalComponent, TransactionsRegistryComponent, ConfirmActionModalComponent, PaymentCardModalComponent],
     imports: [

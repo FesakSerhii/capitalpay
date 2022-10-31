@@ -1,10 +1,11 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '../../src/app/service/auth.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import {CheckFormInvalidService} from "../../src/app/service/check-form-invalid.service";
+import {AfterViewInit, Component, Input, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {AuthService} from '../../src/app/service/auth.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {CheckFormInvalidService} from '../../src/app/service/check-form-invalid.service';
+import {LoginModalComponent} from './login-modal/login-modal.component';
 
 @Component({
   selector: 'app-header',
@@ -12,18 +13,26 @@ import {CheckFormInvalidService} from "../../src/app/service/check-form-invalid.
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
-  @ViewChild('login', { static: false }) loginModal: TemplateRef<any> | undefined;
-  @ViewChild('register', { static: false }) registerModal: TemplateRef<any> | undefined;
+  @ViewChild('login', {static: false}) loginModal: TemplateRef<any> | undefined;
+  @ViewChild('register', {static: false}) registerModal: TemplateRef<any> | undefined;
   @Input() theme: string = 'white';
+
   constructor(
     public modalService: NgbModal,
     public authService: AuthService,
     private router: Router,
-    public checkFormInvalidService:CheckFormInvalidService,
-    private route: ActivatedRoute
-  ) { }
-  isDropdownOpen:boolean=false;
+    public checkFormInvalidService: CheckFormInvalidService,
+    private route: ActivatedRoute,
+  ) {
+  }
+
+  isDropdownOpen: boolean = false;
   width = 0;
+
+
+  openModalLogin() {
+    this.modalService.open(LoginModalComponent)
+  }
 
   ngAfterViewInit(): void {
     this.width = document.body.clientWidth;
@@ -65,8 +74,8 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   errStatusMassage: string = null;
 
   ngOnInit(): void {
-
   }
+
   open(modal: any) {
     this.modalService.open(modal)
   }
@@ -75,9 +84,10 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     this.modalService.dismissAll();
     this.open(modal)
   }
+
   loginAction() {
-    if(this.loginForm.invalid){
-      this.errStatusMassage='Заполните все необходимые поля';
+    if (this.loginForm.invalid) {
+      this.errStatusMassage = 'Заполните все необходимые поля';
       return;
     }
     this.authService.login(this.loginForm.value.email, this.loginForm.value.password).then(resp => {
@@ -90,10 +100,18 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }).catch(err => {
       switch (err.status) {
-        case 400: this.errStatusMassage = 'Ошибка регистрационных данных'; break;
-        case 500: this.errStatusMassage = 'Ошибка сервера, попробуйте позже'; break;
-        case 0: this.errStatusMassage = 'Отсутствие интернет соединения'; break;
-        default: this.errStatusMassage = err.statusMessage; break;
+        case 400:
+          this.errStatusMassage = 'Ошибка регистрационных данных';
+          break;
+        case 500:
+          this.errStatusMassage = 'Ошибка сервера, попробуйте позже';
+          break;
+        case 0:
+          this.errStatusMassage = 'Отсутствие интернет соединения';
+          break;
+        default:
+          this.errStatusMassage = err.statusMessage;
+          break;
       }
     })
   }
@@ -106,7 +124,22 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     })
   }
 
-  isInvalid(form: FormGroup|FormControl,field: string='') {
-    return this.checkFormInvalidService.isInvalid(form,field);
+  isInvalid(form: FormGroup | FormControl, field: string = '') {
+    return this.checkFormInvalidService.isInvalid(form, field);
   }
+
+
+  openModal(content): void {
+    console.log(content);
+    this.modalService.open(content).result.then(
+      (result) => {
+        // this.closeResult = `Closed with: ${result}`;
+      },
+      (reason) => {
+        // this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+      },
+    );
+  }
+
+
 }

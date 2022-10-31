@@ -1,4 +1,116 @@
-<div class="header">
+<header class="header">
+  <div class="container-wide">
+    <div class="header__logo">
+      <a href="./">
+        <img src="../../../assets/img/logo.svg" alt="Logo" class="header__logo-image">
+      </a>
+    </div>
+    <nav class="header__nav">
+      <ul class="header__nav-menu">
+        <li class="item"><a routerLink="#" class="item__link">Платежные решения</a></li>
+        <li class="item"><a routerLink="#" class="item__link">Решения для бизнеса</a></li>
+        <li class="item"><a routerLink="#" class="item__link">Онлайн-кассы</a></li>
+      </ul>
+    </nav>
+    <button class="button secondary btn-small" (click)="openModalLogin()">Войти</button>
+  </div>
+</header>
+
+<!--Modal-->
+<ng-template #login let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Войти</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="input-block">
+        <input
+            id="header-email"
+            class="input"
+            type="password"
+            placeholder=" ">
+        <label
+            for="header-email"
+            class="placeholder">
+          Эл. почта
+        </label>
+      </div>
+      <div class="input-block">
+        <input
+            id="header-password"
+            class="input"
+            type="password"
+            placeholder=" ">
+        <label
+            for="header-password"
+            class="placeholder">
+          Пароль
+        </label>
+      </div>
+
+      <label class="checkbox">
+        <input type="checkbox" class="checkbox__input checkboxItem">
+        <span class="checkbox__icon"></span>
+        <span class="checkbox__name">Запомнить меня</span>
+      </label>
+      <button type="submit" class="button primary btn-small">Войти</button>
+    </form>
+    <button type="button" class="button outline btn-small" (click)="openModal(recoveryPassword)">Забыли пароль?</button>
+  </div>
+</ng-template>
+
+<ng-template #recoveryPassword let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Восстановить пароль</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="input-block">
+        <input
+            inputmode="numeric"
+            id="phone1"
+            class="input"
+            type="text"
+            placeholder=" "
+            prefix="+7 "
+            mask="(000) 000-00-00">
+        <label
+            for="phone1"
+            class="placeholder">
+          Телефон
+        </label>
+      </div>
+      <div class="input-block">
+        <input
+            id="name1"
+            class="input"
+            type="password"
+            placeholder=" ">
+        <label
+            for="name1"
+            class="placeholder">
+          Фамилия и имя
+        </label>
+      </div>
+
+      <label class="checkbox">
+        <input type="checkbox" class="checkbox__input checkboxItem">
+        <span class="checkbox__icon"></span>
+        <span class="checkbox__name">Запомнить меня</span>
+      </label>
+      <button type="submit" class="button primary btn-small">Войти</button>
+    </form>
+    <button type="button" class="button outline btn-small">Забыли пароль?</button>
+  </div>
+</ng-template>
+
+
+
+
+
+<div class="header" *ngIf="false">
   <div class="container-fluid header-menu">
     <a href="#">
       <img src="../../../assets/shapes/Logo_header.svg" alt="logo" *ngIf="width>1000&&theme==='white'">

@@ -1,463 +1,769 @@
 <app-header></app-header>
-<div class="parallax" (scroll)="log($event)">
-  <div class="parallax__layer parallax__layer--back">
-    <img class="header-parallax-img" src="../../assets/shapes/3434.png">
-  </div>
-<div class="content">
-  <div id="top" style="position: absolute;
-    top: -60px;"></div>
-<!--  <app-scroll-to-top></app-scroll-to-top>-->
-<!--  <div class="d-flex start-section">-->
-    <ngb-carousel [pauseOnHover]="true" [interval]="6000">
-      <ng-template ngbSlide>
-        <div class="d-flex start-section">
-        <div class="carousel">
-          <h1 style="">Надежная система быстрых платежей</h1>
-          <p style="">Платежная система для приема карт VISA и MasterCard в Казахстане. Лучший способ приема оплаты для сайтов, микрофинансовых организаций и интернет-магазинов. Агрегатор платежей</p>
-          <a href="#" class="section-btn">Get started</a>
-        </div>
-        <div class="position-relative">
-<!--          <div style="resize: horizontal;background-size: min(600px, 100%);-->
-<!--  overflow: auto;background: url('../../assets/shapes/img/Image.png') no-repeat center"></div>-->
-          <img class="start-section__img" src="../../assets/shapes/img/Image.png">
-          <img class="phone-img" src="../../assets/shapes/img/phone.png" alt="phone">
-        </div>
-        </div>
-      </ng-template>
-<!--      <ng-template ngbSlide>-->
-<!--        <div class="d-flex start-section">-->
-<!--          <div class="carousel">-->
-<!--            <h1 style="">Надежная сиситема быстрых платежей</h1>-->
-<!--            <p style="">Платежная система для приема карт VISA и MasterCard в Казахстане. Лучший способ приема оплаты для сайтов, микрофинансовых организаций и интернет-магазинов. Агрегатор платежей</p>-->
-<!--            <a href="#" class="section-btn">Get started</a>-->
-<!--          </div>-->
-<!--          <div class="position-relative">-->
-<!--            <img class="start-section__img" src="../../assets/shapes/img/Image.png">-->
-<!--            <img class="phone-img" src="../../assets/shapes/img/phone.png" alt="phone">-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </ng-template>-->
-<!--      <ng-template ngbSlide>-->
-<!--        <div class="d-flex start-section">-->
-<!--          <div class="carousel">-->
-<!--            <h1 style="">Надежная сиситема быстрых платежей</h1>-->
-<!--            <p style="">Платежная система для приема карт VISA и MasterCard в Казахстане. Лучший способ приема оплаты для сайтов, микрофинансовых организаций и интернет-магазинов. Агрегатор платежей</p>-->
-<!--            <a href="#" class="section-btn">Get started</a>-->
-<!--          </div>-->
-<!--          <div class="position-relative">-->
-<!--            <img class="start-section__img" src="../../assets/shapes/img/Image.png">-->
-<!--            <img class="phone-img" src="../../assets/shapes/img/phone.png" alt="phone">-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </ng-template>-->
-<!--      <ng-template ngbSlide>-->
-<!--        <div class="d-flex start-section">-->
-<!--          <div class="carousel">-->
-<!--            <h1 style="">Надежная сиситема быстрых платежей</h1>-->
-<!--            <p style="">Платежная система для приема карт VISA и MasterCard в Казахстане. Лучший способ приема оплаты для сайтов, микрофинансовых организаций и интернет-магазинов. Агрегатор платежей</p>-->
-<!--            <a href="#" class="section-btn">Get started</a>-->
-<!--          </div>-->
-<!--          <div class="position-relative">-->
-<!--            <img class="start-section__img" src="../../assets/shapes/img/Image.png">-->
-<!--            <img class="phone-img" src="../../assets/shapes/img/phone.png" alt="phone">-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </ng-template>-->
-<!--      <ng-template ngbSlide>-->
-<!--        <div class="d-flex start-section">-->
-<!--          <div class="carousel">-->
-<!--            <h1 style="">Надежная сиситема быстрых платежей</h1>-->
-<!--            <p style="">Платежная система для приема карт VISA и MasterCard в Казахстане. Лучший способ приема оплаты для сайтов, микрофинансовых организаций и интернет-магазинов. Агрегатор платежей</p>-->
-<!--            <a href="#" class="section-btn">Get started</a>-->
-<!--          </div>-->
-<!--          <div class="position-relative">-->
-<!--            <img class="start-section__img" src="../../assets/shapes/img/Image.png">-->
-<!--            <img class="phone-img" src="../../assets/shapes/img/phone.png" alt="phone">-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </ng-template>-->
 
-    </ngb-carousel>
-<!--    <div class="position-relative">-->
-<!--      <img class="start-section__img" src="../../assets/shapes/img/Image.png">-->
-<!--      <img class="phone-img" src="../../assets/shapes/img/phone.png" alt="phone">-->
-<!--    </div>-->
-<!--  </div>-->
-  <div class="d-flex cards justify-content-between">
-    <div class="card">
-      <div class="card__content">
-        <h2 class="card__title">Оплата</h2>
-        <p class="card__text">Самым распространенным способом оплаты в интернете является оплата банковской картой. Так же и у нас 80% платежей проводятся через карты. Мы принимаем к оплате банковские карты Visa, Mastercard</p>
-        <a href="#" class="card__link">More Details <img src="../../assets/shapes/arrow.svg" alt=""></a>
+<main>
+  <section class="main">
+    <div class="container-wide">
+      <div class="main__left">
+        <video class="main__left-video" poster="../../../assets/img/poster.png" autoplay="autoplay" loop="loop">
+          <source src="../../../assets/video/capital-pay-animation.mp4">
+        </video>
+      </div>
+      <div class="main__right">
+        <h1 class="main__right-headline">Эффективные платежные решения для вашего бизнеса</h1>
+        <p class="main__right-description">На сайте, в мобильном приложении и социальных сетях</p>
+        <a href="page#form" class="button primary">Подключить</a>
       </div>
     </div>
-    <div  class="card">
-      <div class="card__content">
-        <h2 class="card__title">Эффективность</h2>
-        <p class="card__text">Эффективное решение по осуществлению онлайн платежей для малого и среднего бизнеса электронной коммерции. Начните принимать онлайн платежи с помощью нашего оптимального и готового к внедрению решения, которое обеспечит гибкий подход для удовлетворения растущих потребностей Вашего бизнеса.</p>
-        <a href="#" class="card__link">More Details <img src="../../assets/shapes/arrow.svg" alt=""></a>
+  </section>
+  <section class="widget">
+    <div class="container-wide">
+      <h2 class="widget__headline">Мы знаем, что нужно современным предпринимателям, и даем им это</h2>
+      <div class="widget__block item-1">
+        <div class="widget__block-left">
+          <h3 class="headline">Платежный виджет</h3>
+          <p class="description">Внешняя либо встроенная на сайт или в мобильное приложение форма оплаты. Автоматически
+            отображает доступные плательщику способы оплаты, корректно загружается и отображается на всех устройствах и
+            во всех браузерах. А также запоминает данные клиентов для оплат в один клик. С ней ваши продажи взлетят
+          </p>
+          <a href="page#form" class="button primary">Подключить</a>
+        </div>
+        <div class="widget__block-right">
+          <div class="decor"></div>
+        </div>
+      </div>
+      <div class="widget__block item-2">
+        <div class="widget__block-left">
+          <h3 class="headline">Apple Pay / GPay</h3>
+          <p class="description">Всплывающая форма оплаты для приема платежей на сайте
+            и в приложении. Виджет адаптирован под любые браузеры и мобильные устройства, и не уводит клиентов
+            из интернет-магазина.
+          </p>
+          <img src="../../../assets/img/apple-google.png" alt="apple google" class="icon">
+          <a href="page#form" class="button primary">Подключить</a>
+        </div>
+        <div class="widget__block-right">
+          <div class="decor"></div>
+        </div>
+      </div>
+      <div class="widget__block item-3">
+        <div class="widget__block-left">
+          <h3 class="headline">Формирование ссылок на оплату</h3>
+          <p class="description">Позвольте своим покупателям платить там, где им удобно. С нами вы можете присутствовать
+            онлайн и офлайн, продавая на сайте и без него.
+          </p>
+          <a href="page#form" class="button primary">Подключить</a>
+        </div>
+        <div class="widget__block-right">
+          <div class="decor"></div>
+        </div>
+      </div>
+      <div class="widget__block item-4">
+        <div class="widget__block-left">
+          <h3 class="headline">Платежи по подписке и в один клик</h3>
+          <p class="description">Сервис позволяет настраивать регулярные списания денег с карт клиентов и совершать
+            оплаты в один клик, не тратя время на ввод карточных данных
+          </p>
+          <a href="page#form" class="button primary">Подключить</a>
+        </div>
+        <div class="widget__block-right">
+          <div class="decor"></div>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="advantages cards">
-    <h2 class="advantages__title">ПРИЕМУЩЕСТВА СЕРВИСА</h2>
-    <div class="advantages__wrap">
-      <div class="advantages__container">
-        <app-hexagon-link [src]="'../../../assets/shapes/pointer.svg'"></app-hexagon-link>
-        <h4 class="advantages__item__title" >Быстрый старт</h4>
-        <p class="advantages__item__text">Попробуйте возможности сервиса сразу после регистрации. Нет необходимости в длительном подписании договоров и диалогов с менеджерами.</p>
-      </div>
-      <div class="advantages__container">
-        <app-hexagon-link [src]="'../../../assets/shapes/pointer.svg'"></app-hexagon-link>
-        <h4 class="advantages__item__title">Индивидуальный подход</h4>
-        <p class="advantages__item__text">Для каждого клиента мы подбираем индивидуальные условия и платежное решение: от индивидуального дизайна платежной страницы до реализации дополнительного функционала</p>
-      </div>
-      <div class="advantages__container">
-        <app-hexagon-link [src]="'../../../assets/shapes/pointer.svg'"></app-hexagon-link>
-        <h4 class="advantages__item__title">Эффективность платежных процессов</h4>
-        <p class="advantages__item__text">Наше модульное решение настраивается и адаптируется под нужды каждого клиента и предоставляется через масштабируемый API.</p>
-      </div>
-    </div>
-  </div>
-  <div class="main-info" >
-    <div class="main-info__wrap">
-      <ngb-tabset [activeId]="currentTabId" [justify]="'center'">
-        <ngb-tab id="0" title="Гибкое и модульное решение для эквайринга обеспечит высокую эффективность Ваших платёжных процессов">
-          <ng-template ngbTabContent>
-            <div class="d-flex main-info__tab">
-              <div class="main-info__img">
-              </div>
-<!--              <img src="../../assets/shapes/hand_with_phone.png" alt="">-->
-              <div class="main-info__content">
-                  <h4 class="main-info__title">Payment button 1</h4>
-                <p class="main-info__description">Гибкое и модульное решение для эквайринга обеспечит высокую эффективность Ваших платёжных процессов</p>
-                <p class="m-auto main-info__step">Комплекс технологически продвинутых услуг по приёму платежей в Интернете, нацеленных на оптимальное решение различных бизнес-потребностей поставщиков платежных услуг. Наше модульное решение настраивается и адаптируется под нужды каждого клиента и предоставляется через масштабируемый API.</p>
-                <a class="main-info__btn" href="#">Как это работает  <img style="margin-left: 15px;" src="../../assets/shapes/arrow_white.svg" alt=""></a>
-              </div>
+  </section>
+  <section class="advantage">
+    <div class="container-wide">
+      <h2 class="advantage__headline">Принимайте онлайн-платежи быстро, удобно и безопасно</h2>
+      <div class="advantage__block">
+        <div class="advantage__block-left">
+          <div class="item">
+            <div class="item__icon">
+              <img src="../../../assets/img/icon-1.svg" alt="icon" class="item__icon-image">
             </div>
-          </ng-template>
-        </ngb-tab>
-        <ngb-tab id="1" title="Безопасность">
-          <ng-template ngbTabContent>
-            <div class="d-flex main-info__tab">
-              <div class="main-info__img">
-              </div>
-              <!--              <img src="../../assets/shapes/hand_with_phone.png" alt="">-->
-              <div class="main-info__content">
-                <h4 class="main-info__title">Payment button 2</h4>
-                <p class="main-info__description">Безопасность</p>
-                <p class="m-auto">PCI DSS - международный стандарт безопасности данных. Постоянный мониторинг внешними аудиторами.</p>
-                <a class="main-info__btn" href="#">Как это работает  <img style="margin-left: 15px;" src="../../assets/shapes/arrow_white.svg" alt=""></a>
-              </div>
+            <div class="item__content">
+              <h3 class="item__content-headline">Простое подключение</h3>
+              <p class="item__content-description">Позвольте своим покупателям платить там, где им удобно. С нами вы
+                можете присутствовать онлайн и офлайн, продавая на сайте и без него.</p>
             </div>
-          </ng-template>
-        </ngb-tab>
-        <ngb-tab id="2" title="Интеграция">
-          <ng-template ngbTabContent>
-            <div class="d-flex main-info__tab">
-              <div class="main-info__img">
-              </div>
-              <!--              <img src="../../assets/shapes/hand_with_phone.png" alt="">-->
-              <div class="main-info__content">
-                <h4 class="main-info__title">Payment button 3</h4>
-                <p class="main-info__description">Интеграция</p>
-                <p class="m-auto">Простой API. Интеграция платежного шлюза для интернет-магазина займет не более одного рабочего дня. Модули для CMS.</p>
-                <a class="main-info__btn" href="#">Как это работает  <img style="margin-left: 15px;" src="../../assets/shapes/arrow_white.svg" alt=""></a>
-              </div>
+          </div>
+          <div class="item">
+            <div class="item__icon">
+              <img src="../../../assets/img/icon-2.svg" alt="icon" class="item__icon-image">
             </div>
-          </ng-template>
-        </ngb-tab>
-<!--        <ngb-tab id="3" title="Feature1">-->
-<!--          <ng-template ngbTabContent>-->
-<!--            <div class="d-flex main-info__tab">-->
-<!--              <div class="main-info__img">-->
-<!--              </div>-->
-<!--              &lt;!&ndash;              <img src="../../assets/shapes/hand_with_phone.png" alt="">&ndash;&gt;-->
-<!--              <div class="main-info__content">-->
-<!--                <h4 class="main-info__title">Payment button 4</h4>-->
-<!--                <p class="main-info__description">Payment forms have been worked out to the smallest detail and adapted to the screens of smartphones and tablets</p>-->
-<!--                <p class="m-auto"><span>Step 1</span>-  Register in the system</p>-->
-<!--                <p class="m-auto"><span>Step 2</span>-  Generate a button</p>-->
-<!--                <p class="m-auto"><span>Step 3</span>-  Add a payment button to your resource</p>-->
-<!--                <a class="main-info__btn" href="#">Как это работает  <img style="margin-left: 15px;" src="../../assets/shapes/arrow_white.svg" alt=""></a>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </ng-template>-->
-<!--        </ngb-tab>-->
-<!--        <ngb-tab id="4" title="Feature2">-->
-<!--          <ng-template ngbTabContent>-->
-<!--            <div class="d-flex main-info__tab">-->
-<!--              <div class="main-info__img">-->
-<!--              </div>-->
-<!--              &lt;!&ndash;              <img src="../../assets/shapes/hand_with_phone.png" alt="">&ndash;&gt;-->
-<!--              <div class="main-info__content">-->
-<!--                <h4 class="main-info__title">Payment button 5</h4>-->
-<!--                <p class="main-info__description">Payment forms have been worked out to the smallest detail and adapted to the screens of smartphones and tablets</p>-->
-<!--                <p class="m-auto"><span>Step 1</span>-  Register in the system</p>-->
-<!--                <p class="m-auto"><span>Step 2</span>-  Generate a button</p>-->
-<!--                <p class="m-auto"><span>Step 3</span>-  Add a payment button to your resource</p>-->
-<!--                <a class="main-info__btn" href="#">Как это работает  <img style="margin-left: 15px;" src="../../assets/shapes/arrow_white.svg" alt=""></a>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </ng-template>-->
-<!--        </ngb-tab>-->
-<!--        <ngb-tab id="5" title="Feature3">-->
-<!--          <ng-template ngbTabContent>-->
-<!--            <div class="d-flex main-info__tab">-->
-<!--              <div class="main-info__img">-->
-<!--              </div>-->
-<!--              &lt;!&ndash;              <img src="../../assets/shapes/hand_with_phone.png" alt="">&ndash;&gt;-->
-<!--              <div class="main-info__content">-->
-<!--                <h4 class="main-info__title">Payment button 6</h4>-->
-<!--                <p class="main-info__description">Payment forms have been worked out to the smallest detail and adapted to the screens of smartphones and tablets</p>-->
-<!--                <p class="m-auto"><span>Step 1</span>-  Register in the system</p>-->
-<!--                <p class="m-auto"><span>Step 2</span>-  Generate a button</p>-->
-<!--                <p class="m-auto"><span>Step 3</span>-  Add a payment button to your resource</p>-->
-<!--                <a class="main-info__btn" href="#">Как это работает  <img style="margin-left: 15px;" src="../../assets/shapes/arrow_white.svg" alt=""></a>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </ng-template>-->
-<!--        </ngb-tab>-->
-      </ngb-tabset>
-    </div>
-    <div>
-      <a class="main-info__prev" *ngIf="currentTabId!=='0'" href="#" (click)="$event.preventDefault();prevTab()"><img src="../../assets/shapes/Paging.svg" alt=""></a>
-      <a class="main-info__next" *ngIf="currentTabId!=='5'" href="#" (click)="$event.preventDefault();nextTab()"><img src="../../assets/shapes/Paging.svg" alt=""></a>
-    </div>
-  </div>
-  <div class="payment-methods" id="pay">
-    <div class="payment-methods__wrap">
-      <div class="payment-methods__hexas-bg" *ngIf="width>1000">
-        <div class="position-relative">
-          <div class="payment-methods__hexas-shadow"></div>
-          <div class="payment-methods__links">
-            <a href="#" class="position-absolute hexa-payment-link am-ex">
-              <img src="../../assets/shapes/hexa_medium.svg">
-              <div style="position: relative">
-                <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
-                <img style="position: absolute;left: 22px;top: -76px;" src="../../assets/shapes/hexa_animation/am-ex.svg" alt="">
-              </div>
-            </a>
-            <a href="#" class="position-absolute hexa-payment-link alfabank">
-              <img src="../../assets/shapes/hexa_medium.svg" alt="">
-              <div style="position: relative">
-                <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
-                <img style="position: absolute;left: 14px;top: -82px;" src="../../assets/shapes/hexa_animation/alfabank.svg" alt="">
-              </div>
-            </a>
-            <a href="#" class="position-absolute hexa-payment-link ebay">
-              <img src="../../assets/shapes/hexa_medium.svg" alt="">
-              <div style="position: relative">
-                <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
-                <img style="position: absolute;left: 16px;top: -65px;" src="../../assets/shapes/hexa_animation/ebay.svg" alt="">
-              </div>
-            </a>
-            <a href="#" class="position-absolute hexa-payment-link master">
-              <img src="../../assets/shapes/hexa_medium.svg" alt="">
-              <div style="position: relative">
-                <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
-                <img style="position: absolute;left: 18px;top: -73px;" src="../../assets/shapes/hexa_animation/master.svg" alt="">
-              </div>
-            </a>
-            <a href="#" class="position-absolute hexa-payment-link sberbank">
-              <img src="../../assets/shapes/hexa_medium.svg" alt="">
-              <div style="position: relative">
-                <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
-                <img style="position: absolute;left: 12px;top: -79px;" src="../../assets/shapes/hexa_animation/sberbank.svg" alt="">
-              </div>
-            </a>
-            <a href="#" class="position-absolute hexa-payment-link upay">
-              <img src="../../assets/shapes/hexa_medium.svg" alt="">
-              <div style="position: relative">
-                <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
-                <img style="position: absolute;left: 11px;top: -73px;" src="../../assets/shapes/hexa_animation/upay.svg" alt="">
-              </div>
-            </a>
-            <a href="#" class="position-absolute hexa-payment-link visa">
-              <img src="../../assets/shapes/hexa_medium.svg" alt="">
-              <div style="position: relative">
-                <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
-                <img style="position: absolute;left: 9px;top: -60px;" src="../../assets/shapes/hexa_animation/visa.svg" alt="">
-              </div>
-            </a>
-            <a href="#" class="position-absolute hexa-payment-link yandex">
-              <img src="../../assets/shapes/hexa_medium.svg" alt="">
-              <div style="position: relative">
-                <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
-                <img style="position: absolute;left: -2px;top: -73px;" src="../../assets/shapes/hexa_animation/yandex.svg" alt="">
-              </div>
-            </a>
-            <a href="#" class="position-absolute hexa-payment-link paypal">
-              <img src="../../assets/shapes/hexa_medium.svg" alt="">
-              <div style="position: relative">
-                <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
-                <img style="position: absolute;left: 13px;top: -80px;" src="../../assets/shapes/hexa_animation/Paypal.svg" alt="">
-              </div>
-            </a>
-            <a href="#" class="position-absolute hexa-payment-link maestro">
-              <img src="../../assets/shapes/hexa_medium.svg" alt="">
-              <div style="position: relative">
-                <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
-                <img style="position: absolute;left: 14px;top: -73px;" src="../../assets/shapes/hexa_animation/Maestro.svg" alt="">
-              </div>
-            </a>
-            <a href="#" class="position-absolute hexa-payment-link qiwi">
-              <img src="../../assets/shapes/hexa_medium.svg" alt="">
-              <div style="position: relative">
-                <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
-                <img style="position: absolute;left: 11px;top: -64px;" src="../../assets/shapes/hexa_animation/qiwi.svg" alt="">
-              </div>
-            </a>
-            <a href="#" class="position-absolute hexa-payment-link amazon">
-              <img src="../../assets/shapes/hexa_medium.svg" alt="">
-              <div style="position: relative">
-                <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
-                <img style="position: absolute;left: 10px;top: -56px;" src="../../assets/shapes/hexa_animation/Amazon-logo.svg" alt="">
-              </div>
-            </a>
+            <div class="item__content">
+              <h3 class="item__content-headline">Платежи со всего мира</h3>
+              <p class="item__content-description">Позвольте своим покупателям платить там, где им удобно. С нами вы
+                можете присутствовать онлайн и офлайн, продавая на сайте и без него.</p>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item__icon">
+              <img src="../../../assets/img/icon-3.svg" alt="icon" class="item__icon-image">
+            </div>
+            <div class="item__content">
+              <h3 class="item__content-headline">Открытый и доступный API</h3>
+              <p class="item__content-description">Всегда на шаг впереди - мы совершенствуем платежные решения и создаем
+                новшества. Платежная система для Вашего сайта!</p>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item__icon">
+              <img src="../../../assets/img/icon-4.svg" alt="icon" class="item__icon-image">
+            </div>
+            <div class="item__content">
+              <h3 class="item__content-headline">Прием платежей по ссылке</h3>
+              <p class="item__content-description">Предоставим возможность приема платежей в соцсетях, мессенджерах
+                и СМС</p>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item__icon">
+              <img src="../../../assets/img/icon-5.svg" alt="icon" class="item__icon-image">
+            </div>
+            <div class="item__content">
+              <h3 class="item__content-headline">Бесперебойность работы — 99,9%</h3>
+              <p class="item__content-description">24/7 служба поддержки контролирует платежи Ваших клиентов. В случае,
+                если оплата была не завершена мы связываемся с покупателем и помогаем оплатить.</p>
+            </div>
+          </div>
+        </div>
+        <div class="advantage__block-right">
+          <div class="item">
+            <div class="item__icon">
+              <img src="../../../assets/img/icon-11.svg" alt="icon" class="item__icon-image">
+            </div>
+            <div class="item__content">
+              <h3 class="item__content-headline">Модули для CMS</h3>
+              <p class="item__content-description">Подключить прием платежей на сайте с помощью платежного модуля.
+                Работаем с 16 CMS модулями.</p>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item__icon">
+              <img src="../../../assets/img/icon-12.svg" alt="icon" class="item__icon-image">
+            </div>
+            <div class="item__content">
+              <h3 class="item__content-headline">Оперативная поддержка</h3>
+              <p class="item__content-description">Закрепим за вами персонального менеджера, который поможет с
+                подключением, ответит на все вопросы и решит проблемы</p>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item__icon">
+              <img src="../../../assets/img/icon-13.svg" alt="icon" class="item__icon-image">
+            </div>
+            <div class="item__content">
+              <h3 class="item__content-headline">Личный кабинет с аналитикой</h3>
+              <p class="item__content-description">Покажем подробную статистику ваших платежей для развития бизнеса</p>
+            </div>
           </div>
         </div>
       </div>
-      <div class="payment-methods__info">
-        <h2 class="mb-0 payment-methods__title">Payment methods</h2>
-        <p class="mb-0 payment-methods__text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-        <a href="#" class="card__link">See all payment methods <img src="../../assets/shapes/arrow.svg" alt=""></a>
+    </div>
+  </section>
+  <section class="protection">
+    <div class="container-wide">
+      <h2 class="protection__headline">Платежи и карточные данные под надежной защитой</h2>
+      <p class="protection__description">Capitalpay обеспечивает максимальную безопасность всех операций</p>
+      <div class="protection__block">
+        <div class="protection__block-item">
+          <img src="../../../assets/img/icon-21.svg" alt="icon" class="icon">
+          <div class="content">
+            <h3 class="content__headline">Сертификат PCI DSS Level&nbsp;1</h3>
+            <p class="content__description">Проходим ежегодный аудит на соответствие международному стандарту
+              безопасности
+              платежных систем самого высокого уровня</p>
+          </div>
+        </div>
+        <div class="protection__block-item">
+          <img src="../../../assets/img/icon-22.svg" alt="icon" class="icon">
+          <div class="content">
+            <h3 class="content__headline">3D Secure</h3>
+            <p class="content__description">Проходим ежегодный аудит
+              на соответствие международному стандарту безопасности платежных систем самого высокого уровня</p>
+          </div>
+        </div>
+        <div class="protection__block-item">
+          <img src="../../../assets/img/icon-23.svg" alt="icon" class="icon">
+          <div class="content">
+            <h3 class="content__headline">Шифрование данных</h3>
+            <p class="content__description">Шифруем данные покупателя на транспортном уровне — TLS 1.2 и на прикладном
+              уровне алгоритмом RSA с длиной ключа 2048 бит</p>
+          </div>
+        </div>
       </div>
     </div>
+  </section>
+  <section id="form" class="form">
+    <div class="container-wide">
+      <form
+          (ngSubmit)="sendForm()"
+          [formGroup]="mainForm"
+          class="form__block">
+        <h3 class="form__block-headline">Оставьте заявку на прием онлайн-платежей с Capitalpay</h3>
+        <div class="form__block-container">
+          <div class="input-block">
+            <input
+                formControlName="phone"
+                inputmode="numeric"
+                id="phone"
+                class="input"
+                type="text"
+                placeholder=" "
+                prefix="+7 "
+                mask="(000) 000-00-00">
+            <label
+                for="phone"
+                class="placeholder">
+              Телефон
+            </label>
+          </div>
+          <div class="input-block">
+            <input
+                formControlName="name"
+                id="name"
+                class="input"
+                type="text"
+                placeholder=" ">
+            <label
+                for="name"
+                class="placeholder">
+              Фамилия и имя
+            </label>
+          </div>
+          <div class="input-block">
+            <input
+                formControlName="email"
+                id="mail"
+                class="input"
+                type="text"
+                placeholder=" ">
+            <label
+                for="mail"
+                class="placeholder"
+                placeholder=" ">
+              Электронная почта
+            </label>
+          </div>
+          <div class="button-block">
+            <p class="description">Нажимая «Отправить», вы соглашаетесь с
+              <span>Политикой конфиденциальности</span></p>
+            <button
+                [disabled]="mainForm.invalid"
+                class="button primary"
+                type="submit">
+              Подключить
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<app-footer></app-footer>
+
+
+<div class="parallax" (scroll)="log($event)" *ngIf="false">
+  <div class="parallax__layer parallax__layer--back">
+    <img class="header-parallax-img" src="../../assets/shapes/3434.png">
   </div>
-  <div class="position-relative cards" >
-    <div class="manage">
-<!--      <ng-container *ngIf="scrollValue>2270">-->
-      <h2 class="mb-0 manage__title">Payment methods</h2>
-      <p class="manage__text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-      <a class="manage__link" href="#">Sign up to explore</a>
-<!--      </ng-container>-->
-      <img class="manage__img" src="../../assets/shapes/laptop_bottom.png" alt="">
-      <div class="manage__sub-block">
-        <h2 class="manage__sub-title">Ready to get started?</h2>
-        <p class="manage__sub-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+  <div class="content">
+    <div id="top" style="position: absolute;
+    top: -60px;"></div>
+    <!--  <app-scroll-to-top></app-scroll-to-top>-->
+    <!--  <div class="d-flex start-section">-->
+    <ngb-carousel [pauseOnHover]="true" [interval]="6000">
+      <ng-template ngbSlide>
+        <div class="d-flex start-section">
+          <div class="carousel">
+            <h1 style="">Надежная система быстрых платежей</h1>
+            <p style="">Платежная система для приема карт VISA и MasterCard в Казахстане. Лучший способ приема оплаты
+              для сайтов, микрофинансовых организаций и интернет-магазинов. Агрегатор платежей</p>
+            <a href="#" class="section-btn">Get started</a>
+          </div>
+          <div class="position-relative">
+            <!--          <div style="resize: horizontal;background-size: min(600px, 100%);-->
+            <!--  overflow: auto;background: url('../../assets/shapes/img/Image.png') no-repeat center"></div>-->
+            <img class="start-section__img" src="../../assets/shapes/img/Image.png">
+            <img class="phone-img" src="../../assets/shapes/img/phone.png" alt="phone">
+          </div>
+        </div>
+      </ng-template>
+      <!--      <ng-template ngbSlide>-->
+      <!--        <div class="d-flex start-section">-->
+      <!--          <div class="carousel">-->
+      <!--            <h1 style="">Надежная сиситема быстрых платежей</h1>-->
+      <!--            <p style="">Платежная система для приема карт VISA и MasterCard в Казахстане. Лучший способ приема оплаты для сайтов, микрофинансовых организаций и интернет-магазинов. Агрегатор платежей</p>-->
+      <!--            <a href="#" class="section-btn">Get started</a>-->
+      <!--          </div>-->
+      <!--          <div class="position-relative">-->
+      <!--            <img class="start-section__img" src="../../assets/shapes/img/Image.png">-->
+      <!--            <img class="phone-img" src="../../assets/shapes/img/phone.png" alt="phone">-->
+      <!--          </div>-->
+      <!--        </div>-->
+      <!--      </ng-template>-->
+      <!--      <ng-template ngbSlide>-->
+      <!--        <div class="d-flex start-section">-->
+      <!--          <div class="carousel">-->
+      <!--            <h1 style="">Надежная сиситема быстрых платежей</h1>-->
+      <!--            <p style="">Платежная система для приема карт VISA и MasterCard в Казахстане. Лучший способ приема оплаты для сайтов, микрофинансовых организаций и интернет-магазинов. Агрегатор платежей</p>-->
+      <!--            <a href="#" class="section-btn">Get started</a>-->
+      <!--          </div>-->
+      <!--          <div class="position-relative">-->
+      <!--            <img class="start-section__img" src="../../assets/shapes/img/Image.png">-->
+      <!--            <img class="phone-img" src="../../assets/shapes/img/phone.png" alt="phone">-->
+      <!--          </div>-->
+      <!--        </div>-->
+      <!--      </ng-template>-->
+      <!--      <ng-template ngbSlide>-->
+      <!--        <div class="d-flex start-section">-->
+      <!--          <div class="carousel">-->
+      <!--            <h1 style="">Надежная сиситема быстрых платежей</h1>-->
+      <!--            <p style="">Платежная система для приема карт VISA и MasterCard в Казахстане. Лучший способ приема оплаты для сайтов, микрофинансовых организаций и интернет-магазинов. Агрегатор платежей</p>-->
+      <!--            <a href="#" class="section-btn">Get started</a>-->
+      <!--          </div>-->
+      <!--          <div class="position-relative">-->
+      <!--            <img class="start-section__img" src="../../assets/shapes/img/Image.png">-->
+      <!--            <img class="phone-img" src="../../assets/shapes/img/phone.png" alt="phone">-->
+      <!--          </div>-->
+      <!--        </div>-->
+      <!--      </ng-template>-->
+      <!--      <ng-template ngbSlide>-->
+      <!--        <div class="d-flex start-section">-->
+      <!--          <div class="carousel">-->
+      <!--            <h1 style="">Надежная сиситема быстрых платежей</h1>-->
+      <!--            <p style="">Платежная система для приема карт VISA и MasterCard в Казахстане. Лучший способ приема оплаты для сайтов, микрофинансовых организаций и интернет-магазинов. Агрегатор платежей</p>-->
+      <!--            <a href="#" class="section-btn">Get started</a>-->
+      <!--          </div>-->
+      <!--          <div class="position-relative">-->
+      <!--            <img class="start-section__img" src="../../assets/shapes/img/Image.png">-->
+      <!--            <img class="phone-img" src="../../assets/shapes/img/phone.png" alt="phone">-->
+      <!--          </div>-->
+      <!--        </div>-->
+      <!--      </ng-template>-->
+
+    </ngb-carousel>
+    <!--    <div class="position-relative">-->
+    <!--      <img class="start-section__img" src="../../assets/shapes/img/Image.png">-->
+    <!--      <img class="phone-img" src="../../assets/shapes/img/phone.png" alt="phone">-->
+    <!--    </div>-->
+    <!--  </div>-->
+    <div class="d-flex cards justify-content-between">
+      <div class="card">
+        <div class="card__content">
+          <h2 class="card__title">Оплата</h2>
+          <p class="card__text">Самым распространенным способом оплаты в интернете является оплата банковской картой.
+            Так же и у нас 80% платежей проводятся через карты. Мы принимаем к оплате банковские карты Visa,
+            Mastercard</p>
+          <a href="#" class="card__link">More Details <img src="../../assets/shapes/arrow.svg" alt=""></a>
+        </div>
       </div>
-      <a href="#" class="manage__link">Sign up</a>
+      <div class="card">
+        <div class="card__content">
+          <h2 class="card__title">Эффективность</h2>
+          <p class="card__text">Эффективное решение по осуществлению онлайн платежей для малого и среднего бизнеса
+            электронной коммерции. Начните принимать онлайн платежи с помощью нашего оптимального и готового к внедрению
+            решения, которое обеспечит гибкий подход для удовлетворения растущих потребностей Вашего бизнеса.</p>
+          <a href="#" class="card__link">More Details <img src="../../assets/shapes/arrow.svg" alt=""></a>
+        </div>
+      </div>
+    </div>
+    <div class="advantages cards">
+      <h2 class="advantages__title">ПРИЕМУЩЕСТВА СЕРВИСА</h2>
+      <div class="advantages__wrap">
+        <div class="advantages__container">
+          <app-hexagon-link [src]="'../../../assets/shapes/pointer.svg'"></app-hexagon-link>
+          <h4 class="advantages__item__title">Быстрый старт</h4>
+          <p class="advantages__item__text">Попробуйте возможности сервиса сразу после регистрации. Нет необходимости в
+            длительном подписании договоров и диалогов с менеджерами.</p>
+        </div>
+        <div class="advantages__container">
+          <app-hexagon-link [src]="'../../../assets/shapes/pointer.svg'"></app-hexagon-link>
+          <h4 class="advantages__item__title">Индивидуальный подход</h4>
+          <p class="advantages__item__text">Для каждого клиента мы подбираем индивидуальные условия и платежное решение:
+            от индивидуального дизайна платежной страницы до реализации дополнительного функционала</p>
+        </div>
+        <div class="advantages__container">
+          <app-hexagon-link [src]="'../../../assets/shapes/pointer.svg'"></app-hexagon-link>
+          <h4 class="advantages__item__title">Эффективность платежных процессов</h4>
+          <p class="advantages__item__text">Наше модульное решение настраивается и адаптируется под нужды каждого
+            клиента и предоставляется через масштабируемый API.</p>
+        </div>
+      </div>
+    </div>
+    <div class="main-info">
+      <div class="main-info__wrap">
+        <ngb-tabset [activeId]="currentTabId" [justify]="'center'">
+          <ngb-tab id="0"
+                   title="Гибкое и модульное решение для эквайринга обеспечит высокую эффективность Ваших платёжных процессов">
+            <ng-template ngbTabContent>
+              <div class="d-flex main-info__tab">
+                <div class="main-info__img">
+                </div>
+                <!--              <img src="../../assets/shapes/hand_with_phone.png" alt="">-->
+                <div class="main-info__content">
+                  <h4 class="main-info__title">Payment button 1</h4>
+                  <p class="main-info__description">Гибкое и модульное решение для эквайринга обеспечит высокую
+                    эффективность Ваших платёжных процессов</p>
+                  <p class="m-auto main-info__step">Комплекс технологически продвинутых услуг по приёму платежей в
+                    Интернете, нацеленных на оптимальное решение различных бизнес-потребностей поставщиков платежных
+                    услуг. Наше модульное решение настраивается и адаптируется под нужды каждого клиента и
+                    предоставляется через масштабируемый API.</p>
+                  <a class="main-info__btn" href="#">Как это работает <img style="margin-left: 15px;"
+                                                                           src="../../assets/shapes/arrow_white.svg"
+                                                                           alt=""></a>
+                </div>
+              </div>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab id="1" title="Безопасность">
+            <ng-template ngbTabContent>
+              <div class="d-flex main-info__tab">
+                <div class="main-info__img">
+                </div>
+                <!--              <img src="../../assets/shapes/hand_with_phone.png" alt="">-->
+                <div class="main-info__content">
+                  <h4 class="main-info__title">Payment button 2</h4>
+                  <p class="main-info__description">Безопасность</p>
+                  <p class="m-auto">PCI DSS - международный стандарт безопасности данных. Постоянный мониторинг внешними
+                    аудиторами.</p>
+                  <a class="main-info__btn" href="#">Как это работает <img style="margin-left: 15px;"
+                                                                           src="../../assets/shapes/arrow_white.svg"
+                                                                           alt=""></a>
+                </div>
+              </div>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab id="2" title="Интеграция">
+            <ng-template ngbTabContent>
+              <div class="d-flex main-info__tab">
+                <div class="main-info__img">
+                </div>
+                <!--              <img src="../../assets/shapes/hand_with_phone.png" alt="">-->
+                <div class="main-info__content">
+                  <h4 class="main-info__title">Payment button 3</h4>
+                  <p class="main-info__description">Интеграция</p>
+                  <p class="m-auto">Простой API. Интеграция платежного шлюза для интернет-магазина займет не более
+                    одного рабочего дня. Модули для CMS.</p>
+                  <a class="main-info__btn" href="#">Как это работает <img style="margin-left: 15px;"
+                                                                           src="../../assets/shapes/arrow_white.svg"
+                                                                           alt=""></a>
+                </div>
+              </div>
+            </ng-template>
+          </ngb-tab>
+          <!--        <ngb-tab id="3" title="Feature1">-->
+          <!--          <ng-template ngbTabContent>-->
+          <!--            <div class="d-flex main-info__tab">-->
+          <!--              <div class="main-info__img">-->
+          <!--              </div>-->
+          <!--              &lt;!&ndash;              <img src="../../assets/shapes/hand_with_phone.png" alt="">&ndash;&gt;-->
+          <!--              <div class="main-info__content">-->
+          <!--                <h4 class="main-info__title">Payment button 4</h4>-->
+          <!--                <p class="main-info__description">Payment forms have been worked out to the smallest detail and adapted to the screens of smartphones and tablets</p>-->
+          <!--                <p class="m-auto"><span>Step 1</span>-  Register in the system</p>-->
+          <!--                <p class="m-auto"><span>Step 2</span>-  Generate a button</p>-->
+          <!--                <p class="m-auto"><span>Step 3</span>-  Add a payment button to your resource</p>-->
+          <!--                <a class="main-info__btn" href="#">Как это работает  <img style="margin-left: 15px;" src="../../assets/shapes/arrow_white.svg" alt=""></a>-->
+          <!--              </div>-->
+          <!--            </div>-->
+          <!--          </ng-template>-->
+          <!--        </ngb-tab>-->
+          <!--        <ngb-tab id="4" title="Feature2">-->
+          <!--          <ng-template ngbTabContent>-->
+          <!--            <div class="d-flex main-info__tab">-->
+          <!--              <div class="main-info__img">-->
+          <!--              </div>-->
+          <!--              &lt;!&ndash;              <img src="../../assets/shapes/hand_with_phone.png" alt="">&ndash;&gt;-->
+          <!--              <div class="main-info__content">-->
+          <!--                <h4 class="main-info__title">Payment button 5</h4>-->
+          <!--                <p class="main-info__description">Payment forms have been worked out to the smallest detail and adapted to the screens of smartphones and tablets</p>-->
+          <!--                <p class="m-auto"><span>Step 1</span>-  Register in the system</p>-->
+          <!--                <p class="m-auto"><span>Step 2</span>-  Generate a button</p>-->
+          <!--                <p class="m-auto"><span>Step 3</span>-  Add a payment button to your resource</p>-->
+          <!--                <a class="main-info__btn" href="#">Как это работает  <img style="margin-left: 15px;" src="../../assets/shapes/arrow_white.svg" alt=""></a>-->
+          <!--              </div>-->
+          <!--            </div>-->
+          <!--          </ng-template>-->
+          <!--        </ngb-tab>-->
+          <!--        <ngb-tab id="5" title="Feature3">-->
+          <!--          <ng-template ngbTabContent>-->
+          <!--            <div class="d-flex main-info__tab">-->
+          <!--              <div class="main-info__img">-->
+          <!--              </div>-->
+          <!--              &lt;!&ndash;              <img src="../../assets/shapes/hand_with_phone.png" alt="">&ndash;&gt;-->
+          <!--              <div class="main-info__content">-->
+          <!--                <h4 class="main-info__title">Payment button 6</h4>-->
+          <!--                <p class="main-info__description">Payment forms have been worked out to the smallest detail and adapted to the screens of smartphones and tablets</p>-->
+          <!--                <p class="m-auto"><span>Step 1</span>-  Register in the system</p>-->
+          <!--                <p class="m-auto"><span>Step 2</span>-  Generate a button</p>-->
+          <!--                <p class="m-auto"><span>Step 3</span>-  Add a payment button to your resource</p>-->
+          <!--                <a class="main-info__btn" href="#">Как это работает  <img style="margin-left: 15px;" src="../../assets/shapes/arrow_white.svg" alt=""></a>-->
+          <!--              </div>-->
+          <!--            </div>-->
+          <!--          </ng-template>-->
+          <!--        </ngb-tab>-->
+        </ngb-tabset>
+      </div>
+      <div>
+        <a class="main-info__prev" *ngIf="currentTabId!=='0'" href="#" (click)="$event.preventDefault();prevTab()"><img
+            src="../../assets/shapes/Paging.svg" alt=""></a>
+        <a class="main-info__next" *ngIf="currentTabId!=='5'" href="#" (click)="$event.preventDefault();nextTab()"><img
+            src="../../assets/shapes/Paging.svg" alt=""></a>
+      </div>
+    </div>
+    <div class="payment-methods" id="pay">
+      <div class="payment-methods__wrap">
+        <div class="payment-methods__hexas-bg" *ngIf="width>1000">
+          <div class="position-relative">
+            <div class="payment-methods__hexas-shadow"></div>
+            <div class="payment-methods__links">
+              <a href="#" class="position-absolute hexa-payment-link am-ex">
+                <img src="../../assets/shapes/hexa_medium.svg">
+                <div style="position: relative">
+                  <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
+                  <img style="position: absolute;left: 22px;top: -76px;"
+                       src="../../assets/shapes/hexa_animation/am-ex.svg" alt="">
+                </div>
+              </a>
+              <a href="#" class="position-absolute hexa-payment-link alfabank">
+                <img src="../../assets/shapes/hexa_medium.svg" alt="">
+                <div style="position: relative">
+                  <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
+                  <img style="position: absolute;left: 14px;top: -82px;"
+                       src="../../assets/shapes/hexa_animation/alfabank.svg" alt="">
+                </div>
+              </a>
+              <a href="#" class="position-absolute hexa-payment-link ebay">
+                <img src="../../assets/shapes/hexa_medium.svg" alt="">
+                <div style="position: relative">
+                  <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
+                  <img style="position: absolute;left: 16px;top: -65px;"
+                       src="../../assets/shapes/hexa_animation/ebay.svg" alt="">
+                </div>
+              </a>
+              <a href="#" class="position-absolute hexa-payment-link master">
+                <img src="../../assets/shapes/hexa_medium.svg" alt="">
+                <div style="position: relative">
+                  <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
+                  <img style="position: absolute;left: 18px;top: -73px;"
+                       src="../../assets/shapes/hexa_animation/master.svg" alt="">
+                </div>
+              </a>
+              <a href="#" class="position-absolute hexa-payment-link sberbank">
+                <img src="../../assets/shapes/hexa_medium.svg" alt="">
+                <div style="position: relative">
+                  <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
+                  <img style="position: absolute;left: 12px;top: -79px;"
+                       src="../../assets/shapes/hexa_animation/sberbank.svg" alt="">
+                </div>
+              </a>
+              <a href="#" class="position-absolute hexa-payment-link upay">
+                <img src="../../assets/shapes/hexa_medium.svg" alt="">
+                <div style="position: relative">
+                  <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
+                  <img style="position: absolute;left: 11px;top: -73px;"
+                       src="../../assets/shapes/hexa_animation/upay.svg" alt="">
+                </div>
+              </a>
+              <a href="#" class="position-absolute hexa-payment-link visa">
+                <img src="../../assets/shapes/hexa_medium.svg" alt="">
+                <div style="position: relative">
+                  <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
+                  <img style="position: absolute;left: 9px;top: -60px;"
+                       src="../../assets/shapes/hexa_animation/visa.svg" alt="">
+                </div>
+              </a>
+              <a href="#" class="position-absolute hexa-payment-link yandex">
+                <img src="../../assets/shapes/hexa_medium.svg" alt="">
+                <div style="position: relative">
+                  <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
+                  <img style="position: absolute;left: -2px;top: -73px;"
+                       src="../../assets/shapes/hexa_animation/yandex.svg" alt="">
+                </div>
+              </a>
+              <a href="#" class="position-absolute hexa-payment-link paypal">
+                <img src="../../assets/shapes/hexa_medium.svg" alt="">
+                <div style="position: relative">
+                  <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
+                  <img style="position: absolute;left: 13px;top: -80px;"
+                       src="../../assets/shapes/hexa_animation/Paypal.svg" alt="">
+                </div>
+              </a>
+              <a href="#" class="position-absolute hexa-payment-link maestro">
+                <img src="../../assets/shapes/hexa_medium.svg" alt="">
+                <div style="position: relative">
+                  <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
+                  <img style="position: absolute;left: 14px;top: -73px;"
+                       src="../../assets/shapes/hexa_animation/Maestro.svg" alt="">
+                </div>
+              </a>
+              <a href="#" class="position-absolute hexa-payment-link qiwi">
+                <img src="../../assets/shapes/hexa_medium.svg" alt="">
+                <div style="position: relative">
+                  <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
+                  <img style="position: absolute;left: 11px;top: -64px;"
+                       src="../../assets/shapes/hexa_animation/qiwi.svg" alt="">
+                </div>
+              </a>
+              <a href="#" class="position-absolute hexa-payment-link amazon">
+                <img src="../../assets/shapes/hexa_medium.svg" alt="">
+                <div style="position: relative">
+                  <img class="hexa-shadow" src="../../assets/shapes/hexa_animation/hexa-shadow.png" alt="">
+                  <img style="position: absolute;left: 10px;top: -56px;"
+                       src="../../assets/shapes/hexa_animation/Amazon-logo.svg" alt="">
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="payment-methods__info">
+          <h2 class="mb-0 payment-methods__title">Payment methods</h2>
+          <p class="mb-0 payment-methods__text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+            ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+          <a href="#" class="card__link">See all payment methods <img src="../../assets/shapes/arrow.svg" alt=""></a>
+        </div>
+      </div>
+    </div>
+    <div class="position-relative cards">
+      <div class="manage">
+        <!--      <ng-container *ngIf="scrollValue>2270">-->
+        <h2 class="mb-0 manage__title">Payment methods</h2>
+        <p class="manage__text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+          incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+          laboris nisi ut aliquip ex ea commodo consequat.</p>
+        <a class="manage__link" href="#">Sign up to explore</a>
+        <!--      </ng-container>-->
+        <img class="manage__img" src="../../assets/shapes/laptop_bottom.png" alt="">
+        <div class="manage__sub-block">
+          <h2 class="manage__sub-title">Ready to get started?</h2>
+          <p class="manage__sub-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua.</p>
+        </div>
+        <a href="#" class="manage__link">Sign up</a>
+
+      </div>
+      <!--    <div class="position-relative">-->
+
+      <!--    </div>-->
 
     </div>
-<!--    <div class="position-relative">-->
-
-<!--    </div>-->
-
+    <div class="carousel-wrap" *ngIf="false">
+      <carousel *ngIf="width>=769" [height]="40" [arrowsOutside]="true" [autoplay]="true">
+        <div class="carousel-cell">
+          <img style="width: 69px;height: 33px;" [src]="getImgSrc('../../assets/shapes/carousel/3ds.')">
+        </div>
+        <div class="carousel-cell">
+          <img style="width: 69px;height: 39px;" [src]="getImgSrc('../../assets/shapes/carousel/comodo.')">
+        </div>
+        <div class="carousel-cell">
+          <img style="width: 68px;height: 26px;" [src]="getImgSrc('../../assets/shapes/carousel/pcj.')">
+        </div>
+        <div class="carousel-cell">
+          <img style="width: 69px;height: 29px;" [src]="getImgSrc('../../assets/shapes/carousel/visa.')">
+        </div>
+        <div class="carousel-cell">
+          <img style="width: 85px;height: 29px;" [src]="getImgSrc('../../assets/shapes/carousel/mastercard.')">
+        </div>
+        <div class="carousel-cell">
+          <img style="width: 100px;height: 37px;" [src]="getImgSrc('../../assets/shapes/carousel/qiwi.')">
+        </div>
+        <div class="carousel-cell">
+          <img style="width: 40px;height: 40px;" [src]="getImgSrc('../../assets/shapes/carousel/am-ex.')">
+        </div>
+        <div class="carousel-cell">
+          <img style="width: 123px;height: 25px;" [src]="getImgSrc('../../assets/shapes/carousel/alfa.')">
+        </div>
+      </carousel>
+      <carousel *ngIf="width<=769&&width>321" [width]="'66vw'" [cellWidth]="100" [height]="40" [arrowsOutside]="true"
+                [overflowCellsLimit]="3" [loop]="true" [autoplay]="true">
+        <div class="carousel-cell">
+          <img style="width: 69px;height: 33px;" [src]="getImgSrc('../../assets/shapes/carousel/3ds.')">
+        </div>
+        <div class="carousel-cell">
+          <img style="width: 69px;height: 39px;" [src]="getImgSrc('../../assets/shapes/carousel/comodo.')">
+        </div>
+        <div class="carousel-cell">
+          <img style="width: 68px;height: 26px;" [src]="getImgSrc('../../assets/shapes/carousel/pcj.')">
+        </div>
+        <div class="carousel-cell">
+          <img style="width: 69px;height: 29px;" [src]="getImgSrc('../../assets/shapes/carousel/visa.')">
+        </div>
+        <div class="carousel-cell">
+          <img style="width: 85px;height: 29px;" [src]="getImgSrc('../../assets/shapes/carousel/mastercard.')">
+        </div>
+        <div class="carousel-cell">
+          <img style="width: 100px;height: 37px;" [src]="getImgSrc('../../assets/shapes/carousel/qiwi.')">
+        </div>
+        <div class="carousel-cell">
+          <img style="width: 40px;height: 40px;" [src]="getImgSrc('../../assets/shapes/carousel/am-ex.')">
+        </div>
+        <div class="carousel-cell">
+          <img style="width: 123px;height: 25px;" [src]="getImgSrc('../../assets/shapes/carousel/alfa.')">
+        </div>
+      </carousel>
+      <carousel *ngIf="width<=320" [width]="215" [height]="40" [arrowsOutside]="true" [autoplay]="true">
+        <div class="carousel-cell">
+          <img style="width: 69px;height: 33px;" [src]="getImgSrc('../../assets/shapes/carousel/3ds.')">
+        </div>
+        <div class="carousel-cell">
+          <img style="width: 69px;height: 39px;" [src]="getImgSrc('../../assets/shapes/carousel/comodo.')">
+        </div>
+        <div class="carousel-cell">
+          <img style="width: 68px;height: 26px;" [src]="getImgSrc('../../assets/shapes/carousel/pcj.')">
+        </div>
+        <div class="carousel-cell">
+          <img style="width: 69px;height: 29px;" [src]="getImgSrc('../../assets/shapes/carousel/visa.')">
+        </div>
+        <div class="carousel-cell">
+          <img style="width: 85px;height: 29px;" [src]="getImgSrc('../../assets/shapes/carousel/mastercard.')">
+        </div>
+        <div class="carousel-cell">
+          <img style="width: 100px;height: 37px;" [src]="getImgSrc('../../assets/shapes/carousel/qiwi.')">
+        </div>
+        <div class="carousel-cell">
+          <img style="width: 40px;height: 40px;" [src]="getImgSrc('../../assets/shapes/carousel/am-ex.')">
+        </div>
+        <div class="carousel-cell">
+          <img style="width: 123px;height: 25px;" [src]="getImgSrc('../../assets/shapes/carousel/alfa.')">
+        </div>
+      </carousel>
+    </div>
+    <div class="carousel-wrap">
+      <ngx-slick-carousel class="carousel"
+                          [config]="getSlickConfig()">
+        <!--      <div ngxSlickItem *ngFor="let slide of slides" class="slide">-->
+        <!--        <img src="{{ slide.img }}" alt="" style="margin-right:20px ">-->
+        <!--      </div>-->
+        <div ngxSlickItem class="slide">
+          <img style="width: 69px;height: 33px;" [src]="getImgSrc('../../assets/shapes/carousel/3ds.')">
+        </div>
+        <div ngxSlickItem class="slide">
+          <img style="width: 69px;height: 39px;" [src]="'../../assets/shapes/carousel/comodo.svg'">
+        </div>
+        <div ngxSlickItem class="slide">
+          <img style="width: 68px;height: 26px;" [src]="'../../assets/shapes/carousel/pcj.svg'">
+        </div>
+        <div ngxSlickItem class="slide">
+          <img style="width: 69px;height: 29px;" [src]="getImgSrc('../../assets/shapes/carousel/visa.')">
+        </div>
+        <div ngxSlickItem class="slide">
+          <img style="width: 85px;height: 29px;" [src]="getImgSrc('../../assets/shapes/carousel/mastercard.')">
+        </div>
+        <div ngxSlickItem class="slide">
+          <img style="width: 100px;height: 37px;" [src]="getImgSrc('../../assets/shapes/carousel/qiwi.')">
+        </div>
+        <div ngxSlickItem class="slide">
+          <img style="width: 40px;height: 40px;" [src]="'../../assets/shapes/carousel/am-ex.svg'">
+        </div>
+        <div ngxSlickItem class="slide">
+          <img style="width: 123px;height: 25px;" [src]="getImgSrc('../../assets/shapes/carousel/alfa.')">
+        </div>
+      </ngx-slick-carousel>
+    </div>
   </div>
-  <div class="carousel-wrap" *ngIf="false">
-    <carousel *ngIf="width>=769" [height]="40" [arrowsOutside]="true" [autoplay]="true">
-      <div class="carousel-cell">
-        <img style="width: 69px;height: 33px;" [src]="getImgSrc('../../assets/shapes/carousel/3ds.')">
-      </div>
-      <div class="carousel-cell">
-        <img style="width: 69px;height: 39px;" [src]="getImgSrc('../../assets/shapes/carousel/comodo.')">
-      </div>
-      <div class="carousel-cell">
-        <img style="width: 68px;height: 26px;" [src]="getImgSrc('../../assets/shapes/carousel/pcj.')">
-      </div>
-      <div class="carousel-cell">
-        <img style="width: 69px;height: 29px;" [src]="getImgSrc('../../assets/shapes/carousel/visa.')">
-      </div>
-      <div class="carousel-cell">
-        <img style="width: 85px;height: 29px;" [src]="getImgSrc('../../assets/shapes/carousel/mastercard.')">
-      </div>
-      <div class="carousel-cell">
-        <img style="width: 100px;height: 37px;" [src]="getImgSrc('../../assets/shapes/carousel/qiwi.')">
-      </div>
-      <div class="carousel-cell">
-        <img style="width: 40px;height: 40px;" [src]="getImgSrc('../../assets/shapes/carousel/am-ex.')">
-      </div>
-      <div  class="carousel-cell">
-        <img style="width: 123px;height: 25px;" [src]="getImgSrc('../../assets/shapes/carousel/alfa.')">
-      </div>
-    </carousel>
-    <carousel *ngIf="width<=769&&width>321" [width]="'66vw'" [cellWidth]="100" [height]="40" [arrowsOutside]="true" [overflowCellsLimit]="3" [loop]="true" [autoplay]="true">
-      <div class="carousel-cell">
-        <img style="width: 69px;height: 33px;" [src]="getImgSrc('../../assets/shapes/carousel/3ds.')">
-      </div>
-      <div class="carousel-cell">
-        <img style="width: 69px;height: 39px;" [src]="getImgSrc('../../assets/shapes/carousel/comodo.')">
-      </div>
-      <div class="carousel-cell">
-        <img style="width: 68px;height: 26px;" [src]="getImgSrc('../../assets/shapes/carousel/pcj.')">
-      </div>
-      <div class="carousel-cell">
-        <img style="width: 69px;height: 29px;" [src]="getImgSrc('../../assets/shapes/carousel/visa.')">
-      </div>
-      <div class="carousel-cell">
-        <img style="width: 85px;height: 29px;" [src]="getImgSrc('../../assets/shapes/carousel/mastercard.')">
-      </div>
-      <div class="carousel-cell">
-        <img style="width: 100px;height: 37px;" [src]="getImgSrc('../../assets/shapes/carousel/qiwi.')">
-      </div>
-      <div class="carousel-cell">
-        <img style="width: 40px;height: 40px;" [src]="getImgSrc('../../assets/shapes/carousel/am-ex.')">
-      </div>
-      <div class="carousel-cell">
-        <img style="width: 123px;height: 25px;" [src]="getImgSrc('../../assets/shapes/carousel/alfa.')">
-      </div>
-    </carousel>
-    <carousel *ngIf="width<=320" [width]="215" [height]="40" [arrowsOutside]="true" [autoplay]="true">
-      <div class="carousel-cell">
-        <img style="width: 69px;height: 33px;" [src]="getImgSrc('../../assets/shapes/carousel/3ds.')">
-      </div>
-      <div class="carousel-cell">
-        <img style="width: 69px;height: 39px;" [src]="getImgSrc('../../assets/shapes/carousel/comodo.')">
-      </div>
-      <div class="carousel-cell">
-        <img style="width: 68px;height: 26px;" [src]="getImgSrc('../../assets/shapes/carousel/pcj.')">
-      </div>
-      <div class="carousel-cell">
-        <img style="width: 69px;height: 29px;" [src]="getImgSrc('../../assets/shapes/carousel/visa.')">
-      </div>
-      <div class="carousel-cell">
-        <img style="width: 85px;height: 29px;" [src]="getImgSrc('../../assets/shapes/carousel/mastercard.')">
-      </div>
-      <div class="carousel-cell">
-        <img style="width: 100px;height: 37px;" [src]="getImgSrc('../../assets/shapes/carousel/qiwi.')">
-      </div>
-      <div class="carousel-cell">
-        <img style="width: 40px;height: 40px;" [src]="getImgSrc('../../assets/shapes/carousel/am-ex.')">
-      </div>
-      <div class="carousel-cell">
-        <img style="width: 123px;height: 25px;" [src]="getImgSrc('../../assets/shapes/carousel/alfa.')">
-      </div>
-    </carousel>
-  </div>
-  <div class="carousel-wrap">
-    <ngx-slick-carousel class="carousel"
-                        [config]="getSlickConfig()">
-<!--      <div ngxSlickItem *ngFor="let slide of slides" class="slide">-->
-<!--        <img src="{{ slide.img }}" alt="" style="margin-right:20px ">-->
-<!--      </div>-->
-      <div ngxSlickItem class="slide">
-        <img style="width: 69px;height: 33px;"  [src]="getImgSrc('../../assets/shapes/carousel/3ds.')">
-      </div>
-      <div ngxSlickItem class="slide">
-        <img style="width: 69px;height: 39px;" [src]="'../../assets/shapes/carousel/comodo.svg'">
-      </div>
-      <div ngxSlickItem class="slide">
-        <img style="width: 68px;height: 26px;" [src]="'../../assets/shapes/carousel/pcj.svg'">
-      </div>
-      <div ngxSlickItem class="slide">
-        <img style="width: 69px;height: 29px;" [src]="getImgSrc('../../assets/shapes/carousel/visa.')">
-      </div>
-      <div ngxSlickItem class="slide">
-        <img style="width: 85px;height: 29px;" [src]="getImgSrc('../../assets/shapes/carousel/mastercard.')">
-      </div>
-      <div ngxSlickItem class="slide">
-        <img style="width: 100px;height: 37px;" [src]="getImgSrc('../../assets/shapes/carousel/qiwi.')">
-      </div>
-      <div ngxSlickItem class="slide">
-        <img style="width: 40px;height: 40px;" [src]="'../../assets/shapes/carousel/am-ex.svg'">
-      </div>
-      <div ngxSlickItem class="slide">
-        <img style="width: 123px;height: 25px;" [src]="getImgSrc('../../assets/shapes/carousel/alfa.')">
-      </div>
-    </ngx-slick-carousel>
-  </div>
-</div>
   <div class="parallax__layer parallax__layer--back" style="top: unset">
     <div class="position-relative parallax-wrap">
       <div class="position-relative">
@@ -465,6 +771,7 @@
       </div>
     </div>
   </div>
-  <a href="#top" class="btn-to-top" *ngIf="scrollValue>949"><img src="../../assets/shapes/Button Go Up Hover.png" alt=""></a>
+  <a href="#top" class="btn-to-top" *ngIf="scrollValue>949"><img src="../../assets/shapes/Button Go Up Hover.png"
+                                                                 alt=""></a>
   <app-footer></app-footer>
 </div>
