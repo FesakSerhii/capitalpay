@@ -8,13 +8,10 @@ import { FeedbackComponent } from './feedback/feedback.component';
 import { AuthGuard } from './service/guards/auth.guard';
 
 export const routes: Routes = [
+  {path: '**', redirectTo: 'blank'},
   {
     path: 'page',
     component: MainPageComponent
-  },
-  {
-    path: '',
-    component: BlankPageComponent
   },
   {
     path: 'register',
@@ -37,6 +34,10 @@ export const routes: Routes = [
     canLoad: [AuthGuard],
     canActivate: [AuthGuard],
     loadChildren: () => import('./merchant-panel/merchant-panel.module').then(mod => mod.MerchantPanelModule)
+  },
+  {
+    path: 'blank',
+    component: BlankPageComponent
   },
 ];
 

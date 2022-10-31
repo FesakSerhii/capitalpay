@@ -17,7 +17,7 @@ import { IConfig, NgxMaskModule } from 'ngx-mask';
 import { NgbDateCustomParserFormatter } from '../../common-blocks/ngb-date-custom-parser-formatter';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { FeedbackComponent } from './feedback/feedback.component';
-import { JwtModule } from "@auth0/angular-jwt";
+import { JwtModule } from '@auth0/angular-jwt';
 import { httpInterceptorProviders } from './http-interceptors';
 import {SlickCarouselModule} from 'ngx-slick-carousel';
 
@@ -38,7 +38,7 @@ const maskConfigFunction: () => Partial<IConfig> = () => {
     MerchantPanelComponent,
     TermsOfUseComponent,
     BlankPageComponent,
-    FeedbackComponent
+    FeedbackComponent,
   ],
   imports: [
     BrowserModule,
