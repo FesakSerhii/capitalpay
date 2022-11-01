@@ -11,6 +11,8 @@ public class TerminalDto {
     private Long inputTerminalId;
     @NotNull
     private Long outputTerminalId;
+    @NotNull
+    private boolean p2p;
 
     public String getName() {
         return name;
@@ -42,5 +44,13 @@ public class TerminalDto {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public boolean isP2p() {
+        return p2p;
+    }
+
+    public void setP2p(boolean p2p) {
+        this.p2p = p2p;
     }
 }

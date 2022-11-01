@@ -19,6 +19,8 @@ public class Terminal {
 
     @Column(columnDefinition = "boolean default true")
     private boolean free = true;
+    @Column(columnDefinition = "boolean default false")
+    private boolean p2p;
 
     public Long getId() {
         return id;
@@ -66,5 +68,13 @@ public class Terminal {
 
     public void setFree(boolean free) {
         this.free = free;
+    }
+
+    public boolean isP2p() {
+        return p2p;
+    }
+
+    public void setP2p(boolean p2p) {
+        this.p2p = p2p;
     }
 }
