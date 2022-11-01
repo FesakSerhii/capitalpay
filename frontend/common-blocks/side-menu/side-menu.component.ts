@@ -27,6 +27,11 @@ export class SideMenuComponent implements OnInit {
         icon:'sync_alt'
       },
       {
+        route:'payment-links',
+        title:'Платёжные ссылки',
+        icon:'insert_link'
+      },
+      {
         route:'settings',
         title:'Настройки',
         icon:'settings'

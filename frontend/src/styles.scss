@@ -207,8 +207,14 @@ textarea{
 .ng-scrollbar{
   height: calc(100vh - 620px)!important;
 }
+.ng-scrollbar.calc350{
+  height: calc(100vh - 350px)!important;
+}
 .ng-scrollbar.calc300{
   height: calc(100vh - 250px)!important;
+}
+.ng-scrollbar.calc140{
+  height: calc(100vh - 140px)!important;
 }
 .ng-scrollbar.calc200{
   height: calc(100vh - 200px)!important;

@@ -37,6 +37,7 @@
     "angular-responsive-carousel": "^2.0.2",
     "card-validator": "^8.1.1",
     "jquery": "^3.6.0",
+    "jspdf": "^2.5.1",
     "localize-router": "*",
     "moment": "^2.29.1",
     "ngx-mask": "^11.1.5",
