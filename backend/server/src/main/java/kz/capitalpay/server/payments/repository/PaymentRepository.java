@@ -27,9 +27,9 @@ public interface PaymentRepository extends JpaRepository<Payment, String> {
 
     @Query(value = "select * " +
             " from payment " +
-            " order by timestamp desc " +
+            " order by pay_sys_pay_id desc " +
             " limit 1 ", nativeQuery = true)
-    Optional<Payment> findLast();
+    Optional<Payment> findLastByPaySysPayId();
 
     Optional<Payment> findByPaySysPayId(String orderId);
 }

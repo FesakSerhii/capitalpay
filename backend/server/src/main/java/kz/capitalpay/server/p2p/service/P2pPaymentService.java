@@ -65,7 +65,7 @@ public class P2pPaymentService {
     }
 
     public String generateOrderId() {
-        Payment lastPayment = paymentRepository.findLast().orElse(null);
+        Payment lastPayment = paymentRepository.findLastByPaySysPayId().orElse(null);
         if (Objects.isNull(lastPayment)) {
             return "00000173801600";
         }
