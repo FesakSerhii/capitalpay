@@ -78,16 +78,8 @@ public class SimpleController {
 //    }
 
     @PostMapping("/pay")
-    String pay(@RequestParam Long cashboxid,
-               @RequestParam String billid,
-               @RequestParam BigDecimal totalamount,
-               @RequestParam String currency,
-               @RequestParam(defaultValue = "") String description,
-               @RequestParam(required = false) String param,
-               HttpServletRequest httpRequest,
-               ModelMap modelMap) {
-        ResultDTO resultDTO = simpleService.createBankPayment(httpRequest, cashboxid, billid, totalamount,
-                currency, description, param, null);
+    String pay(@RequestParam Long cashboxid, @RequestParam String billid, @RequestParam BigDecimal totalamount, @RequestParam String currency, @RequestParam(defaultValue = "") String description, @RequestParam(required = false) String param, HttpServletRequest httpRequest, ModelMap modelMap) {
+        ResultDTO resultDTO = simpleService.createBankPayment(httpRequest, cashboxid, billid, totalamount, currency, description, param, null);
         if (resultDTO.isResult()) {
             Map<String, String> resultMap = (Map<String, String>) resultDTO.getData();
             modelMap.addAttribute("xml", resultMap.get("xml"));
@@ -101,24 +93,20 @@ public class SimpleController {
     }
 
     @GetMapping("/pay-with-link/{linkId}")
-    String pay(@PathVariable String linkId,
-               HttpServletRequest httpRequest,
-               ModelMap modelMap) {
+    String payWithLink(@PathVariable String linkId, HttpServletRequest httpRequest, ModelMap modelMap) {
         PaymentLink paymentLink = paymentLinkService.findById(linkId);
         if (Objects.isNull(paymentLink) || !paymentLink.getValidTill().isAfter(LocalDateTime.now())) {
             modelMap.addAttribute("message", "Link is invalid!");
             return "paysystems/error";
         }
-        ResultDTO resultDTO = simpleService.createBankPayment(httpRequest, paymentLink.getCashBoxId(),
-                paymentLink.getBillId(), paymentLink.getTotalAmount(), paymentLink.getCurrency(),
-                paymentLink.getDescription(), null, paymentLink.getGuid());
+        ResultDTO resultDTO = simpleService.createBankPayment(httpRequest, paymentLink.getCashBoxId(), paymentLink.getBillId(), paymentLink.getTotalAmount(), paymentLink.getCurrency(), paymentLink.getDescription(), null, paymentLink.getGuid());
         if (resultDTO.isResult()) {
             paymentLink.setValidTill(LocalDateTime.now());
             Map<String, String> resultMap = (Map<String, String>) resultDTO.getData();
             modelMap.addAttribute("xml", resultMap.get("xml"));
             modelMap.addAttribute("backLink", resultMap.get("backLink"));
             modelMap.addAttribute("postLink", resultMap.get("postLink"));
-            return "purchase";
+            return resultMap.get("p2p").equals("true") ? "p2p" : "purchase";
         } else {
             modelMap.addAttribute("message", resultDTO.getData());
             return "paysystems/error";
@@ -129,9 +117,7 @@ public class SimpleController {
 
     @PostMapping("/order")
     @ResponseBody
-    ResultDTO getPaymentInfo(@RequestParam Long cashboxid, @RequestParam String billid, @RequestParam String signature,
-                             HttpServletRequest httpRequest,
-                             ModelMap modelMap) {
+    ResultDTO getPaymentInfo(@RequestParam Long cashboxid, @RequestParam String billid, @RequestParam String signature, HttpServletRequest httpRequest, ModelMap modelMap) {
         ResultDTO resultDTO = simpleService.getPaymentInfo(httpRequest, cashboxid, billid, signature);
         if (!resultDTO.isResult()) {
             LOGGER.error(gson.toJson(resultDTO));

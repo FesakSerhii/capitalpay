@@ -26,6 +26,8 @@ import kz.capitalpay.server.simple.dto.PaymentDetailDTO;
 import kz.capitalpay.server.simple.dto.SimpleRequestDTO;
 import kz.capitalpay.server.terminal.model.Terminal;
 import kz.capitalpay.server.terminal.repository.TerminalRepository;
+import kz.capitalpay.server.usercard.model.UserCardFromBank;
+import kz.capitalpay.server.usercard.service.UserCardService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,6 +93,8 @@ public class SimpleService {
 
     @Autowired
     PaymentLinkService paymentLinkService;
+    @Autowired
+    UserCardService userCardService;
 
     @Autowired
     P2pPaymentService p2pPaymentService;
@@ -224,22 +228,39 @@ public class SimpleService {
                 LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
                 return MERCHANT_TERMINAL_SETTINGS_NOT_FOUND;
             }
+
             Cashbox cashbox = cashboxService.findById(payment.getCashboxId());
             Map<String, String> resultUrls = cashboxSettingsService.getMerchantResultUrls(cashbox.getId());
-            String purchaseXml = halykSoapService.createPurchaseXml(payment.getPaySysPayId(), totalamount,
-//                    92061102L
-                    terminal.getOutputTerminalId()
-            );
-            LOGGER.info("purchaseXml {}", purchaseXml);
+            if (terminal.isP2p()) {
+                payment.setP2p(true);
+                Long merchantCardId = cashboxService.findUserCardIdByCashBoxId(payment.getCashboxId());
+                UserCardFromBank merchantCard = userCardService.findUserCardFromBankById(merchantCardId);
+                String p2pXml = halykSoapService.createAnonymousP2pXml(payment.getPaySysPayId(), payment.getMerchantId(), merchantCard.getBankCardId(), payment.getTotalAmount(), terminal.getOutputTerminalId());
+                LOGGER.info("p2pXml {}", p2pXml);
 
-            String encodedXml = Base64.getEncoder().encodeToString(purchaseXml.getBytes());
-            Map<String, String> result = new HashMap<>();
-            result.put("xml", encodedXml);
-            result.put("backLink", resultUrls.get(REDIRECT_SUCCESS_URL));
-            result.put("FailureBackLink", resultUrls.get(REDIRECT_FAILED_URL));
-            result.put("FailurePostLink", apiAddress + "/api/purchase-link");
-            result.put("postLink", apiAddress + "/api/purchase-link");
-            return new ResultDTO(true, result, 0);
+                String encodedXml = Base64.getEncoder().encodeToString(p2pXml.getBytes());
+                Map<String, String> result = new HashMap<>();
+                result.put("xml", encodedXml);
+                result.put("p2p", "true");
+                if (Objects.nonNull(resultUrls)) {
+                    result.put("backLink", resultUrls.get(REDIRECT_SUCCESS_URL));
+                }
+                result.put("postLink", apiAddress + "/api/p2p-link");
+                return new ResultDTO(true, result, 0);
+            } else {
+                String purchaseXml = halykSoapService.createPurchaseXml(payment.getPaySysPayId(), totalamount, terminal.getOutputTerminalId());
+                LOGGER.info("purchaseXml {}", purchaseXml);
+
+                String encodedXml = Base64.getEncoder().encodeToString(purchaseXml.getBytes());
+                Map<String, String> result = new HashMap<>();
+                result.put("xml", encodedXml);
+                result.put("p2p", "false");
+                result.put("backLink", resultUrls.get(REDIRECT_SUCCESS_URL));
+                result.put("FailureBackLink", resultUrls.get(REDIRECT_FAILED_URL));
+                result.put("FailurePostLink", apiAddress + "/api/purchase-link");
+                result.put("postLink", apiAddress + "/api/purchase-link");
+                return new ResultDTO(true, result, 0);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);

@@ -16,6 +16,7 @@ public class TerminalMapper {
         terminal.setInputTerminalId(dto.getInputTerminalId());
         terminal.setOutputTerminalId(dto.getOutputTerminalId());
         terminal.setName(dto.getName());
+        terminal.setP2p(dto.isP2p());
         terminal.setId(dto.getId());
         return terminal;
     }
