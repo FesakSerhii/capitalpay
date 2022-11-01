@@ -12,6 +12,7 @@ import kz.capitalpay.server.login.service.ApplicationUserService;
 import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.merchantsettings.service.MerchantKycService;
 import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
+import kz.capitalpay.server.p2p.service.P2pPaymentService;
 import kz.capitalpay.server.p2p.service.P2pSettingsService;
 import kz.capitalpay.server.paymentlink.service.PaymentLinkService;
 import kz.capitalpay.server.payments.model.Payment;
@@ -91,6 +92,9 @@ public class SimpleService {
     @Autowired
     PaymentLinkService paymentLinkService;
 
+    @Autowired
+    P2pPaymentService p2pPaymentService;
+
     @Value("${remote.api.addres}")
     String apiAddress;
 
@@ -143,8 +147,7 @@ public class SimpleService {
             payment.setCashboxId(cashbox.getId());
             payment.setCashboxName(cashbox.getName());
             payment.setBillId(request.getBillid());
-            payment.setPaySysPayId(String.format("%1$14s", lastPaymentId++)
-                    .replace(' ', '0'));
+            payment.setPaySysPayId(p2pPaymentService.generateOrderId());
             payment.setTotalAmount(request.getTotalamount());
             payment.setCurrency(request.getCurrency());
             payment.setDescription(request.getDescription());
@@ -295,7 +298,7 @@ public class SimpleService {
         if (Objects.nonNull(halykPurchaseOrder.getResponseCode()) && halykPurchaseOrder.getResponseCode().equals("00")) {
             Payment mainPayment = paymentService.findByPaySysPayId(halykPurchaseOrder.getOrderId());
             MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(mainPayment.getMerchantId());
-            if (Objects.isNull(merchantP2pSettings.getTerminalId())) {
+            if (Objects.isNull(merchantP2pSettings) || Objects.isNull(merchantP2pSettings.getTerminalId())) {
                 LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
                 return;
             }
