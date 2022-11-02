@@ -14,7 +14,8 @@ export class TerminalsComponent implements OnInit {
   terminalForm = new FormGroup({
     name: new FormControl("", [Validators.required]),
     inputTerminalId: new FormControl("", [Validators.required]),
-    outputTerminalId: new FormControl("", [Validators.required])
+    outputTerminalId: new FormControl("", [Validators.required]),
+    p2p: new FormControl(false, [Validators.required])
   });
   @ViewChild("terminalEditorModal") termModal: TemplateRef<any>;
   currentTerminalId: number;
