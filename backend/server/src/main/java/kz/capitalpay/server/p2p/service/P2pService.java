@@ -10,6 +10,7 @@ import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.p2p.dto.AnonymousP2pPaymentResponseDto;
 import kz.capitalpay.server.p2p.dto.SendP2pToClientDto;
 import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
+import kz.capitalpay.server.paymentlink.service.PaymentLinkService;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykAnonymousP2pOrder;
@@ -55,6 +56,7 @@ public class P2pService {
     private final CashboxSettingsService cashboxSettingsService;
     //    private final HalykOrderRepository halykOrderRepository;
     private final TerminalRepository terminalRepository;
+    private final PaymentLinkService paymentLinkService;
 
     @Value("${halyk.soap.p2p.termurl}")
     private String termUrl;
@@ -66,7 +68,7 @@ public class P2pService {
     String apiAddress;
 
 
-    public P2pService(HalykSoapService halykSoapService, CashboxService cashboxService, UserCardService userCardService, P2pSettingsService p2pSettingsService, P2pPaymentService p2pPaymentService, CashboxCurrencyService cashboxCurrencyService, Gson gson, PaymentService paymentService, CashboxSettingsService cashboxSettingsService, TerminalRepository terminalRepository) {
+    public P2pService(HalykSoapService halykSoapService, CashboxService cashboxService, UserCardService userCardService, P2pSettingsService p2pSettingsService, P2pPaymentService p2pPaymentService, CashboxCurrencyService cashboxCurrencyService, Gson gson, PaymentService paymentService, CashboxSettingsService cashboxSettingsService, TerminalRepository terminalRepository, PaymentLinkService paymentLinkService) {
         this.halykSoapService = halykSoapService;
         this.cashboxService = cashboxService;
         this.userCardService = userCardService;
@@ -77,6 +79,7 @@ public class P2pService {
         this.paymentService = paymentService;
         this.cashboxSettingsService = cashboxSettingsService;
         this.terminalRepository = terminalRepository;
+        this.paymentLinkService = paymentLinkService;
     }
 
     public RedirectView sendP2pToClient(SendP2pToClientDto dto, String userAgent, String ipAddress, RedirectAttributes redirectAttributes) {
@@ -453,6 +456,10 @@ public class P2pService {
         }
         if (Objects.nonNull(halykAnonymousP2pOrder.getResponseCode()) && halykAnonymousP2pOrder.getResponseCode().equals("00")) {
             paymentService.setStatusByPaySysPayId(halykAnonymousP2pOrder.getOrderId(), SUCCESS);
+            Payment payment = paymentService.findByPaySysPayId(halykAnonymousP2pOrder.getOrderId());
+            if (Objects.nonNull(payment.getPaymentLinkId())) {
+                paymentLinkService.disablePaymentLink(payment.getPaymentLinkId());
+            }
         }
     }
 
