@@ -21,8 +21,8 @@
             <td>{{t.inputTerminalId}}</td>
             <td>{{t.outputTerminalId}}</td>
             <td>
-              <i *ngIf="t.p2p" placement="top" ngbTooltip="SUCCESS" class="material-icons material-icons-outlined text-success">check_circle_outline</i>
-              <i *ngIf="!t.p2p" placement="top" ngbTooltip="DELETED" class="material-icons material-icons-outlined text-danger">highlight_off</i>
+              <i *ngIf="t.p2p" placement="top" ngbTooltip="Включено" class="material-icons material-icons-outlined text-success">check_circle_outline</i>
+              <i *ngIf="!t.p2p" placement="top" ngbTooltip="Выключено" class="material-icons material-icons-outlined text-danger">highlight_off</i>
             </td>
             <td>
               <button class="btn btn-sm btn-primary" (click)="editTerminal(t)">
