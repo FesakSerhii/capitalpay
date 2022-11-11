@@ -107,7 +107,6 @@ public class P2pSettingsService {
         if (optionalMerchantP2pSettings.isEmpty() || Objects.isNull(optionalMerchantP2pSettings.get().getDefaultCardId())) {
             return ErrorDictionary.P2P_SETTINGS_NOT_FOUND;
         }
-
         MerchantP2pSettings merchantP2pSettings = optionalMerchantP2pSettings.get();
         merchantP2pSettings.setP2pAllowed(dto.isP2pAllowed());
         merchantP2pSettings = p2pSettingsRepository.save(merchantP2pSettings);

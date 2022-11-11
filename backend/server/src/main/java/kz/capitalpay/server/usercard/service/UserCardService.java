@@ -9,7 +9,6 @@ import kz.capitalpay.server.cashbox.service.CashboxService;
 import kz.capitalpay.server.constants.ErrorDictionary;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
-import kz.capitalpay.server.p2p.dto.P2pSettingsDto;
 import kz.capitalpay.server.p2p.dto.P2pSettingsResponseDto;
 import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
 import kz.capitalpay.server.p2p.service.P2pSettingsService;
@@ -171,8 +170,10 @@ public class UserCardService {
         if (Objects.isNull(merchantP2pSettings)) {
             merchantP2pSettings = p2pSettingsService.createMerchantP2pSettings(userCardFromBank.getUserId(), userCardFromBank.getId());
         }
-        P2pSettingsDto p2pSettingsDto = new P2pSettingsDto(true, userCardFromBank.getUserId());
-        p2pSettingsService.setP2pSettings(p2pSettingsDto);
+        if (Objects.isNull(merchantP2pSettings.getDefaultCardId())) {
+            merchantP2pSettings.setDefaultCardId(userCardFromBank.getId());
+            merchantP2pSettings.setP2pAllowed(true);
+        }
         if (Objects.nonNull(userCardFromBank.getCashBoxId())) {
             SetCashBoxCardDto setCashBoxCardDto = new SetCashBoxCardDto(userCardFromBank.getCashBoxId(), userCardFromBank.getId(), userCardFromBank.getUserId());
             ResultDTO resultDTO = cashboxService.setBankCashBoxCard(setCashBoxCardDto);
