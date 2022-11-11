@@ -43,7 +43,7 @@ public class P2pSettingsService {
     public MerchantP2pSettings createMerchantP2pSettings(Long merchantId, Long cardId) {
         MerchantP2pSettings merchantP2pSettings = new MerchantP2pSettings();
         merchantP2pSettings.setDefaultCardId(cardId);
-        merchantP2pSettings.setP2pAllowed(false);
+        merchantP2pSettings.setP2pAllowed(true);
         merchantP2pSettings.setUserId(merchantId);
         merchantP2pSettings = p2pSettingsRepository.save(merchantP2pSettings);
         return merchantP2pSettings;

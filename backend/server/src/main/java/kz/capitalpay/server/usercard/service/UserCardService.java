@@ -174,7 +174,6 @@ public class UserCardService {
         P2pSettingsDto p2pSettingsDto = new P2pSettingsDto(merchantP2pSettings.isP2pAllowed(), userCardFromBank.getUserId());
         p2pSettingsService.setP2pSettings(p2pSettingsDto);
         if (Objects.nonNull(userCardFromBank.getCashBoxId())) {
-
             SetCashBoxCardDto setCashBoxCardDto = new SetCashBoxCardDto(userCardFromBank.getCashBoxId(), userCardFromBank.getId(), userCardFromBank.getUserId());
             ResultDTO resultDTO = cashboxService.setBankCashBoxCard(setCashBoxCardDto);
             LOGGER.info("setBankCashBoxCard resultDTO {}", resultDTO);
