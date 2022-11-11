@@ -11,6 +11,7 @@ import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.merchantsettings.service.CashboxSettingsService;
 import kz.capitalpay.server.p2p.dto.P2pSettingsResponseDto;
 import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
+import kz.capitalpay.server.p2p.repository.P2pSettingsRepository;
 import kz.capitalpay.server.p2p.service.P2pSettingsService;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
@@ -61,11 +62,12 @@ public class UserCardService {
     private final UserBankCardRepository userBankCardRepository;
     private final ClientBankCardRepository clientBankCardRepository;
     private final CashboxSettingsService cashboxSettingsService;
+    private final P2pSettingsRepository p2pSettingsRepository;
 
     @Value("${server.test}")
     private boolean isTestServer;
 
-    public UserCardService(UserCardRepository userCardRepository, RestTemplate restTemplate, HalykSoapService halykSoapService, ClientCardRepository clientCardRepository, ObjectMapper objectMapper, CashboxRepository cashboxRepository, CashboxService cashboxService, P2pSettingsService p2pSettingsService, PaymentService paymentService, UserBankCardRepository userBankCardRepository, ClientBankCardRepository clientBankCardRepository, CashboxSettingsService cashboxSettingsService) {
+    public UserCardService(UserCardRepository userCardRepository, RestTemplate restTemplate, HalykSoapService halykSoapService, ClientCardRepository clientCardRepository, ObjectMapper objectMapper, CashboxRepository cashboxRepository, CashboxService cashboxService, P2pSettingsService p2pSettingsService, PaymentService paymentService, UserBankCardRepository userBankCardRepository, ClientBankCardRepository clientBankCardRepository, CashboxSettingsService cashboxSettingsService, P2pSettingsRepository p2pSettingsRepository) {
         this.userCardRepository = userCardRepository;
         this.restTemplate = restTemplate;
         this.halykSoapService = halykSoapService;
@@ -78,6 +80,7 @@ public class UserCardService {
         this.userBankCardRepository = userBankCardRepository;
         this.clientBankCardRepository = clientBankCardRepository;
         this.cashboxSettingsService = cashboxSettingsService;
+        this.p2pSettingsRepository = p2pSettingsRepository;
     }
 
     public ResultDTO registerMerchantCard(RegisterUserCardDto dto) {
@@ -173,6 +176,7 @@ public class UserCardService {
         if (Objects.isNull(merchantP2pSettings.getDefaultCardId())) {
             merchantP2pSettings.setDefaultCardId(userCardFromBank.getId());
             merchantP2pSettings.setP2pAllowed(true);
+            p2pSettingsRepository.save(merchantP2pSettings);
         }
         if (Objects.nonNull(userCardFromBank.getCashBoxId())) {
             SetCashBoxCardDto setCashBoxCardDto = new SetCashBoxCardDto(userCardFromBank.getCashBoxId(), userCardFromBank.getId(), userCardFromBank.getUserId());
