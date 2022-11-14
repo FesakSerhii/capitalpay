@@ -235,7 +235,7 @@ public class SimpleService {
                 payment.setP2p(true);
                 Long merchantCardId = cashboxService.findUserCardIdByCashBoxId(payment.getCashboxId());
                 UserCardFromBank merchantCard = userCardService.findUserCardFromBankById(merchantCardId);
-                String p2pXml = halykSoapService.createAnonymousP2pXml(payment.getPaySysPayId(), payment.getMerchantId(), merchantCard.getBankCardId(), payment.getTotalAmount(), terminal.getOutputTerminalId());
+                String p2pXml = halykSoapService.createAnonymousP2pXml(payment.getPaySysPayId(), payment.getMerchantId(), merchantCard.getBankCardId(), payment.getTotalAmount(), terminal.getInputTerminalId());
                 LOGGER.info("p2pXml {}", p2pXml);
 
                 String encodedXml = Base64.getEncoder().encodeToString(p2pXml.getBytes());
@@ -248,7 +248,7 @@ public class SimpleService {
                 result.put("postLink", apiAddress + "/api/p2p-link");
                 return new ResultDTO(true, result, 0);
             } else {
-                String purchaseXml = halykSoapService.createPurchaseXml(payment.getPaySysPayId(), totalamount, terminal.getOutputTerminalId());
+                String purchaseXml = halykSoapService.createPurchaseXml(payment.getPaySysPayId(), totalamount, terminal.getInputTerminalId());
                 LOGGER.info("purchaseXml {}", purchaseXml);
 
                 String encodedXml = Base64.getEncoder().encodeToString(purchaseXml.getBytes());
@@ -331,7 +331,7 @@ public class SimpleService {
             String controlOrderXml = halykSoapService.createPurchaseControlXml(halykPurchaseOrder.getOrderId(),
                     halykPurchaseOrder.getAmount(),
 //                    92061102L,
-                    terminal.getOutputTerminalId(),
+                    terminal.getInputTerminalId(),
                     halykPurchaseOrder.getReference(),
                     HalykControlOrderCommandTypeDictionary.COMPLETE);
 

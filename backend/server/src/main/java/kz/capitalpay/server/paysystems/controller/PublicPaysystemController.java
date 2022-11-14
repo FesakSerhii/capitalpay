@@ -50,11 +50,8 @@ public class PublicPaysystemController {
 
     @PostMapping("/pay")
     void paymentCardPay(HttpServletRequest httpRequest, HttpServletResponse httpResponse, @RequestParam String paymentid, @RequestParam String cardHolderName, @RequestParam String cvv, @RequestParam String month, @RequestParam String pan, @RequestParam String year, @RequestParam String phone, @RequestParam String email
-
     ) {
-
         httpResponse = paysystemService.paymentPayAndRedirect(httpRequest, httpResponse, paymentid, cardHolderName, cvv, month, pan, year, phone, email);
-
     }
 
 
