@@ -43,7 +43,7 @@ export class LoginModalComponent implements OnInit {
 
   loginUser() {
     // This method is copied from header component
-    this.authService.login(`+${this.loginForm.value.email}`, this.loginForm.value.password).then(resp => {
+    this.authService.login(`+7${this.loginForm.value.email}`, this.loginForm.value.password).then(resp => {
       if (resp.body['data'] === "SMS sent") {
         this.isTwoFactor = true;
       } else {

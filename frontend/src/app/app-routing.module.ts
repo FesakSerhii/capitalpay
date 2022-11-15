@@ -8,11 +8,6 @@ import { FeedbackComponent } from './feedback/feedback.component';
 import { AuthGuard } from './service/guards/auth.guard';
 
 export const routes: Routes = [
-  // {path: '**', redirectTo: 'blank'},
-  {
-    path: 'page',
-    component: MainPageComponent
-  },
   {
     path: 'register',
     component: RegisterComponent
@@ -39,6 +34,11 @@ export const routes: Routes = [
     path: 'blank',
     component: BlankPageComponent
   },
+  {
+    path: '',
+    component: MainPageComponent
+  },
+  {path: '**', redirectTo: ''}
 ];
 
 @NgModule({
