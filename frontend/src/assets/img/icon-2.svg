@@ -1,9 +1,13 @@
-<svg width="80" height="81" viewBox="0 0 80 81" fill="none" xmlns="http://www.w3.org/2000/svg">
-<circle cx="50.3221" cy="57.086" r="23.637" fill="#B4F4D9"/>
-<path d="M8.79004 56.4353H27.5386" stroke="#02AB81" stroke-width="4"/>
-<path d="M18.5005 45.2012L29.7345 56.4353L18.5005 67.6693" stroke="#02AB81" stroke-width="4"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M14.8772 40.1875C16.6971 29.8556 25.7175 22.0061 36.5713 22.0061C48.7376 22.0061 58.6003 31.8688 58.6003 44.0351C58.6003 56.2014 48.7376 66.0641 36.5713 66.0641C35.4354 66.0641 34.3196 65.9781 33.23 65.8123V69.8516C34.324 69.9918 35.4392 70.0641 36.5713 70.0641C50.9467 70.0641 62.6003 58.4105 62.6003 44.0351C62.6003 29.6597 50.9467 18.0061 36.5713 18.0061C23.5032 18.0061 12.6843 27.6365 10.8247 40.1875H14.8772Z" fill="#02AB81"/>
-<path d="M61.792 43.8276L29.7343 43.8276" stroke="#02AB81" stroke-width="4" stroke-linejoin="bevel"/>
-<path d="M32.835 20.021C29.9179 22.3304 23.9742 29.7204 23.5366 40.8057" stroke="#02AB81" stroke-width="4" stroke-linejoin="bevel"/>
-<path d="M39.125 20.3857C45.3847 26.9797 54.2395 45.6372 39.5808 67.5159" stroke="#02AB81" stroke-width="4" stroke-linejoin="bevel"/>
+<svg width="81" height="80" viewBox="0 0 81 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_297_14417)">
+<circle cx="33.0282" cy="48.93" r="23.637" fill="#B4F4D9" fill-opacity="0.6"/>
+<ellipse cx="40.7023" cy="40.0002" rx="9.16667" ry="24.1667" stroke="#02AB81" stroke-width="3" stroke-linejoin="bevel"/>
+<path d="M16.5356 40H64.869" stroke="#02AB81" stroke-width="3" stroke-linejoin="bevel"/>
+<ellipse cx="40.7023" cy="40.0002" rx="24.1667" ry="24.1667" stroke="#02AB81" stroke-width="3" stroke-linejoin="bevel"/>
+</g>
+<defs>
+<clipPath id="clip0_297_14417">
+<rect width="80" height="80" fill="white" transform="translate(0.702148)"/>
+</clipPath>
+</defs>
 </svg>

@@ -8,7 +8,7 @@ import { FeedbackComponent } from './feedback/feedback.component';
 import { AuthGuard } from './service/guards/auth.guard';
 
 export const routes: Routes = [
-  {path: '**', redirectTo: 'blank'},
+  // {path: '**', redirectTo: 'blank'},
   {
     path: 'page',
     component: MainPageComponent

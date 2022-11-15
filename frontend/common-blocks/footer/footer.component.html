@@ -1,17 +1,28 @@
 
 <footer class="footer">
   <div class="container-wide">
-    <div class="footer__logo">
-      <img src="../../../assets/img/logo.svg" alt="Logo" class="footer__logo-image">
-      <p class="footer__logo-copyright">{{currentYear}} ТОО «Capitalpay»</p>
+    <div class="footer__block">
+      <div class="footer__block-logo">
+        <img src="../../../assets/img/logo.svg" alt="Logo" class="image">
+      </div>
+      <div class="footer__block-contact">
+        <div class="address">
+          <p class="address__data">Республика Казахстан Астана, ул.Калдаякова, 17-55</p>
+        </div>
+        <div class="phone">
+          <a href="tel:+7 777 610-10-33" class="phone__link">+7 777 610-10-33</a>
+          <a href="../../../assets/pdf/presentation.pdf" class="phone__present" target="_blank">Презентация сервиса</a>
+        </div>
+        <div class="instagram">
+          <a href="https://instagram.com/capitalpay.kz?igshid=YmMyMTA2M2Y=" class="instagram__link" target="_blank">
+            <img src="../../../assets/img/insta.svg" alt="Instagram" class="instagram__link-image">
+            CapitalPay
+          </a>
+        </div>
+      </div>
     </div>
-    <nav class="footer__nav">
-      <ul class="footer__nav-menu">
-        <li class="item"><a routerLink="#" class="item__link">Платежные решения</a></li>
-        <li class="item"><a routerLink="#" class="item__link">Решения для бизнеса</a></li>
-        <li class="item"><a routerLink="#" class="item__link">Онлайн-кассы</a></li>
-      </ul>
-    </nav>
+    <p class="footer__copyright">© Все права защищены. {{currentYear}}, ТОО «CapitalPay»</p>
+    <a href="#" class="footer__user-agreement">Пользовательское соглашение</a>
   </div>
 </footer>
 

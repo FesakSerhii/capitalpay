@@ -3,45 +3,93 @@
   .footer {
     padding: 60px 0;
     text-align: left;
-    .container-wide {
-      display: flex;
-      align-items: center;
+    @media screen and (max-width: 1024px){
+      padding: 40px 0;
     }
-    &__logo {
-      margin-right: 290px;
-      min-width: 170px;
-      flex-shrink: 0;
-    }
-    &__logo-image {
-      width: 150px;
-    }
-    &__logo-copyright {
-      font-family: 'MontMedium', sans-serif;
-      font-size: 14px;
-      line-height: 40px;
-      margin-bottom: 0;
-    }
-    &__nav {
-      width: 100%;
-      max-width: 530px;
-    }
-    &__nav-menu {
+    &__block {
       display: flex;
       justify-content: space-between;
-      flex-wrap: wrap;
+      @media screen and (max-width: 1024px){
+        display: block;
+      }
     }
-    .item {
-      &__link {
-        padding: 0;
-        margin: 0 0 30px 0;
-        text-transform: none;
-        font-family: 'MontMedium', sans-serif;
-        font-size: 18px;
-        line-height: 40px;
-        &:last-child {
-          margin-bottom: 0;
+    &__block-logo {
+      @media screen and (max-width: 1024px){
+        margin-bottom: 24px;
+      }
+      .image {
+        width: 200px;
+        height: 45px;
+        object-fit: contain;
+      }
+    }
+    &__block-contact {
+      width: 800px;
+      display: flex;
+      justify-content: space-between;
+      @media screen and (max-width: 1024px){
+        display: block;
+      }
+
+      .address {
+        width: 270px;
+        &__data {
+          font-family: 'MontMedium', sans-serif;
+          font-size: 18px;
+          line-height: 24px;
         }
       }
+      .phone {
+        @media screen and (max-width: 1024px){
+          margin-bottom: 24px;
+        }
+        &__link {
+          font-family: 'MontMedium', sans-serif;
+          display: block;
+          font-size: 18px;
+          line-height: 24px;
+          color: #000;
+        }
+        &__present {
+          font-family: 'MontMedium', sans-serif;
+          font-size: 18px;
+          line-height: 24px;
+          color: #02AB81;
+        }
+      }
+      .instagram {
+        @media screen and (max-width: 1024px){
+          margin-bottom: 24px;
+        }
+        &__link {
+          font-family: 'MontMedium', sans-serif;
+          font-size: 18px;
+          line-height: 24px;
+          color: #000;
+          display: flex;
+        }
+        &__link-image {
+          display: block;
+          width: 24px;
+          height: 24px;
+          margin-right: 6px;
+        }
+      }
+    }
+    &__copyright {
+      font-family: 'MontMedium', sans-serif;
+      font-size: 14px;
+      line-height: 22px;
+      color: #7D7D7D;
+      margin: 0;
+    }
+    &__user-agreement {
+      font-family: 'MontMedium', sans-serif;
+      font-size: 14px;
+      line-height: 22px;
+      color: #7D7D7D;
+      text-decoration: underline;
+      margin: 0;
     }
   }
 }
