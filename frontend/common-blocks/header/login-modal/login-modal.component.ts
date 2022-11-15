@@ -12,6 +12,10 @@ import {Router} from '@angular/router';
 })
 export class LoginModalComponent implements OnInit {
 
+  config = {
+    class: 'my-modal'
+  };
+
   loginForm: FormGroup
   isVisible = false
   inputPasswordType = 'password'
@@ -32,14 +36,14 @@ export class LoginModalComponent implements OnInit {
 
   formInit() {
     this.loginForm = new FormGroup({
-      email: new FormControl('', [Validators.required, Validators.email]),
+      email: new FormControl('', [Validators.required, Validators.required]),
       password: new FormControl('', Validators.required),
     })
   }
 
   loginUser() {
     // This method is copied from header component
-    this.authService.login(this.loginForm.value.email, this.loginForm.value.password).then(resp => {
+    this.authService.login(`+${this.loginForm.value.email}`, this.loginForm.value.password).then(resp => {
       if (resp.body['data'] === "SMS sent") {
         this.isTwoFactor = true;
       } else {
@@ -77,6 +81,6 @@ export class LoginModalComponent implements OnInit {
 
   recoveryPassword() {
     this.activeModal.close()
-    this.modalService.open(RecoverPasswordModalComponent)
+    this.modalService.open(RecoverPasswordModalComponent, { windowClass: 'lending-modal' })
   }
 }

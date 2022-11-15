@@ -1,4 +1,4 @@
-<div class="modal-header">
+<div class="modal-header1">
   <h4 class="modal-title" id="modal-basic-title">Войти</h4>
   <button
       (click)="activeModal.dismiss()"
@@ -7,7 +7,7 @@
       aria-label="Close">
   </button>
 </div>
-<div class="modal-body">
+<div class="modal-body new-modal">
   <form
       [formGroup]="loginForm"
       (ngSubmit)="loginUser()">
@@ -17,11 +17,14 @@
           id="header-email"
           class="input"
           type="text"
-          placeholder=" ">
+          placeholder=" "
+          inputmode="numeric"
+          prefix="+"
+          mask="0 (000) 000-00-00">
       <label
           for="header-email"
           class="placeholder">
-        Эл. почта
+        Телефон
       </label>
     </div>
     <div class="input-block">

@@ -28,7 +28,7 @@ html {
 body {
   h1, h2, h3, h4, h5, h6, p, ul, li {
     font-family: 'Mont', sans-serif;
-    color: #000000;
+    //color: #000000;
   }
 
   background-color: #fff !important;
@@ -208,65 +208,70 @@ ul, li {
   }
 }
 
-.modal-dialog.modal-dialog {
-  .modal-content {
-    width: 100%;
-    max-width: 550px;
-    padding: 65px 65px 18px 65px;
+.lending-modal {
+  .modal-dialog.modal-dialog {
+    background-color: #fff;
     border-radius: 20px;
-    @media screen and (max-width: 515px) {
-      padding: 64px 24px 24px 24px;
+    .modal-content {
+      width: 100%;
+      max-width: 550px;
+      padding: 65px 65px 18px 65px;
+      border-radius: 20px;
+      @media screen and (max-width: 515px) {
+        padding: 64px 24px 24px 24px;
+      }
     }
-  }
 
-  .modal-header {
-    padding: 0;
-  }
-
-  .modal-title {
-    font-family: 'MontBlack', sans-serif;
-    font-size: 32px;
-    line-height: 56px;
-    text-align: center;
-    margin-bottom: 24px;
-    @media screen and (max-width: 515px) {
-      font-size: 24px;
-      line-height: 32px;
-      margin-bottom: 16px;
+    .modal-header {
+      padding: 0;
     }
-  }
 
-  .modal-body {
-    padding: 0;
-  }
-
-  .btn-close {
-    width: 24px;
-    height: 24px;
-    display: block;
-    background-image: url("assets/img/close-modal.svg");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-    border: none;
-    background-color: transparent;
-    position: absolute;
-    top: 24px;
-    right: 24px;
-
-    &:focus {
-      outline: none;
+    .modal-title {
+      font-family: 'MontBlack', sans-serif;
+      font-size: 32px;
+      line-height: 56px;
+      text-align: center;
+      margin-bottom: 24px;
+      @media screen and (max-width: 515px) {
+        font-size: 24px;
+        line-height: 32px;
+        margin-bottom: 16px;
+      }
     }
-  }
 
-  .button {
-    width: 100%;
-  }
+    .modal-body {
+      padding: 0;
+    }
 
-  .input-block {
-    margin-bottom: 24px;
+    .btn-close {
+      width: 24px;
+      height: 24px;
+      display: block;
+      background-image: url("assets/img/close-modal.svg");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      border: none;
+      background-color: transparent;
+      position: absolute;
+      top: 24px;
+      right: 24px;
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    .button {
+      width: 100%;
+    }
+
+    .input-block {
+      margin-bottom: 24px;
+    }
   }
 }
+
 
 
 .checkbox {
@@ -310,232 +315,234 @@ ul, li {
   }
 }
 
-///* You can add global styles to this file, and also import other style files */
-//@mixin for-phone-only {
-//  @media (max-width: 599px) { @content; }
+
+
+/* You can add global styles to this file, and also import other style files */
+@mixin for-phone-only {
+  @media (max-width: 599px) { @content; }
+}
+@mixin for-tablet-portrait-up {
+  @media (min-width: 600px) { @content; }
+}
+@mixin for-tablet-landscape-up {
+  @media (min-width: 900px) { @content; }
+}
+@mixin for-desktop-up {
+  @media (min-width: 1200px) { @content; }
+}
+@mixin for-big-desktop-up {
+  @media (min-width: 1800px) { @content; }
+}
+body{
+  font-family: 'CircularStd-Book',sans-serif;
+  margin: 0;
+  padding: 0;
+  perspective: 1px;
+  transform-style: preserve-3d;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  //background: #F6FAFA!important;
+  //background: black!important;
+}
+.disabled{
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+.parallax {
+  perspective: 1px;
+  height: 100vh!important;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.parallax::-webkit-scrollbar {
+  display: none;
+}
+.parallax__layer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+input{
+  border: none;
+  border-bottom: 1px solid #d2d2d7;
+  margin-bottom: 21px;
+  &:focus{
+    outline: none;
+  }
+  &.error{
+    border-bottom: 1px solid #ff0000;
+  }
+}
+.parallax__layer--base {
+  transform: translateZ(+1px);
+}
+
+.parallax__layer--back {
+  transform: translateZ(-1px);
+  z-index: -1000;
+}
+
+.nav-tabs .nav-link.active, .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link{
+  border: none!important;
+  color: #008D68!important;
+  position: relative;
+  text-decoration: underline!important;
+  text-underline-position: under;
+  background: transparent!important;
+  font-size: 18px;
+}
+.nav-tabs .nav-link, .nav-tabs .nav-link, .nav-tabs .nav-item.show .nav-link{
+  border: none;
+  color: black!important;
+}
+.nav{
+  border: none;
+}
+.nav-tabs {
+  border-bottom: none!important;
+}
+.carousel-cell img {
+  filter: grayscale(100%);
+  -webkit-filter: grayscale(100%);
+  -moz-filter: grayscale(100%);
+  -o-filter: grayscale(100%);
+  -webkit-filter: grayscale(1);
+}
+.carousel-arrow.carousel-arrow-next{
+  background-image: url('assets/shapes/carousel/iconmonstr-arrow-63.svg')!important;
+  background-color: transparent!important;
+  box-shadow: none!important;
+  &.carousel-arrow-disabled{
+    opacity: 0.5;
+  }
+}
+//carousel-arrow-disabled
+.carousel-arrow.carousel-arrow-prev{
+  background-image: url('assets/shapes/carousel/iconmonstr-arrow-64.svg')!important;
+  background-color: transparent!important;
+  box-shadow: none!important;
+  &.carousel-arrow-disabled{
+    opacity: 0.5;
+  }
+}
+.carousel-indicators li {
+  background-color: #1e7e34!important;
+}
+.carousel-indicators .active {
+  background-color: #ffff99;
+}
+.carousel-inner{
+  width: 100vw!important;
+  @include for-desktop-up {
+    margin-left: 32px;
+  }
+  @include for-big-desktop-up {
+    margin-left: -32px;
+  }
+}
+@media(max-width: 321px){
+  //.carousel-cells{
+  //  width:400px!important;
+  //}
+}
+
+//.modal{
+//  top:30%!important;
 //}
-//@mixin for-tablet-portrait-up {
-//  @media (min-width: 600px) { @content; }
-//}
-//@mixin for-tablet-landscape-up {
-//  @media (min-width: 900px) { @content; }
-//}
-//@mixin for-desktop-up {
-//  @media (min-width: 1200px) { @content; }
-//}
-//@mixin for-big-desktop-up {
-//  @media (min-width: 1800px) { @content; }
-//}
-//body{
-//  font-family: 'CircularStd-Book',sans-serif;
-//  margin: 0;
-//  padding: 0;
-//  perspective: 1px;
-//  transform-style: preserve-3d;
-//  overflow-y: scroll;
-//  overflow-x: hidden;
-//  background: #F6FAFA!important;
-//  //background: black!important;
-//}
-//.disabled{
-//  pointer-events: none;
-//  cursor: not-allowed;
-//  opacity: 0.7;
-//}
-//.parallax {
-//  perspective: 1px;
-//  height: 100vh!important;
-//  overflow-x: hidden;
-//  overflow-y: auto;
-//}
-//.parallax::-webkit-scrollbar {
-//  display: none;
-//}
-//.parallax__layer {
-//  position: absolute;
-//  top: 0;
-//  right: 0;
-//  bottom: 0;
-//  left: 0;
-//}
-//input{
-//  border: none;
-//  border-bottom: 1px solid #d2d2d7;
-//  margin-bottom: 21px;
-//  &:focus{
-//    outline: none;
-//  }
-//  &.error{
-//    border-bottom: 1px solid #ff0000;
-//  }
-//}
-//.parallax__layer--base {
-//  transform: translateZ(+1px);
-//}
-//
-//.parallax__layer--back {
-//  transform: translateZ(-1px);
-//  z-index: -1000;
-//}
-//
-//.nav-tabs .nav-link.active, .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link{
-//  border: none!important;
-//  color: #008D68!important;
-//  position: relative;
-//  text-decoration: underline!important;
-//  text-underline-position: under;
-//  background: transparent!important;
-//  font-size: 18px;
-//}
-//.nav-tabs .nav-link, .nav-tabs .nav-link, .nav-tabs .nav-item.show .nav-link{
-//  border: none;
-//  color: black!important;
-//}
-//.nav{
-//  border: none;
-//}
-//.nav-tabs {
-//  border-bottom: none!important;
-//}
-//.carousel-cell img {
-//  filter: grayscale(100%);
-//  -webkit-filter: grayscale(100%);
-//  -moz-filter: grayscale(100%);
-//  -o-filter: grayscale(100%);
-//  -webkit-filter: grayscale(1);
-//}
-//.carousel-arrow.carousel-arrow-next{
-//  background-image: url('assets/shapes/carousel/iconmonstr-arrow-63.svg')!important;
-//  background-color: transparent!important;
-//  box-shadow: none!important;
-//  &.carousel-arrow-disabled{
-//    opacity: 0.5;
-//  }
-//}
-////carousel-arrow-disabled
-//.carousel-arrow.carousel-arrow-prev{
-//  background-image: url('assets/shapes/carousel/iconmonstr-arrow-64.svg')!important;
-//  background-color: transparent!important;
-//  box-shadow: none!important;
-//  &.carousel-arrow-disabled{
-//    opacity: 0.5;
-//  }
-//}
-//.carousel-indicators li {
-//  background-color: #1e7e34!important;
-//}
-//.carousel-indicators .active {
-//  background-color: #ffff99;
-//}
-//.carousel-inner{
-//  width: 100vw!important;
-//  @include for-desktop-up {
-//    margin-left: 32px;
-//  }
-//  @include for-big-desktop-up {
-//    margin-left: -32px;
-//  }
-//}
-//@media(max-width: 321px){
-//  //.carousel-cells{
-//  //  width:400px!important;
-//  //}
-//}
-//
-////.modal{
-////  top:30%!important;
-////}
-//.modal-content{
-//  background: transparent!important;
-//  border: none!important;
-//}
-//.modal-header{
-//  border-bottom: none!important;
-//}
-//.modal-footer{
-//  border-top: none!important;
-//  padding: 0 0 46px 0 !important;
-//}
-//textarea{
-//  border-color: #ddd;
-//  &::placeholder{
-//    color: rgba(0, 0, 0, 0.5);
-//  }
-//}
-//.sidebar-mini{
-//  .wrapper{
-//    .sidebar{
-//      .no-collapse{
-//        display: none;
-//      }
-//      .collapse{
-//        display: block;
-//      }
-//    }
-//    .sidebar:hover{
-//      .no-collapse{
-//        display: block;
-//      }
-//      .collapse{
-//        display: none;
-//      }
-//    }
-//  }
-//}
-//.wrapper{
-//  .sidebar{
-//    .collapse{
-//      display: none;
-//    }
-//  }
-//}
-//.cursor-pointer{
-//  cursor: pointer!important;
-//}
-//.ng-scrollbar .ng-scrollbar-wrapper[deactivated=false][dir=ltr]>scrollbar-y.scrollbar-control{
-//  position: absolute;
-//  right: -20px;
-//}
-//.ng-scrollbar{
-//  height: calc(100vh - 620px)!important;
-//}
-//.ng-scrollbar.calc300{
-//  height: calc(100vh - 349px)!important;
-//}
-//.ng-scrollbar.user{
-//  height: calc(100vh - 515px)!important;
-//}
-//.stselect ul .ng-scrollbar{
-//  height: unset!important;
-//}
-///* You can add global styles to this file, and also import other style files */
-//.cursor-pointer{
-//  cursor: pointer!important;
-//}
-//.ng-scrollbar .ng-scrollbar-wrapper[deactivated=false][dir=ltr]>scrollbar-y.scrollbar-control{
-//  position: absolute;
-//  right: -20px;
-//}
-//.ng-scrollbar{
-//  height: calc(100vh - 620px)!important;
-//}
-//.ng-scrollbar.calc300{
-//  height: calc(100vh - 250px)!important;
-//}
-//.ng-scrollbar.calc200{
-//  height: calc(100vh - 200px)!important;
-//}
-//.ng-scrollbar.calc100{
-//  height: calc(100vh - 160px)!important;
-//}
-//.icon-color{
-//  color: #008E67;
-//}
-//.api-container{
-//  p{
-//    margin: 0!important;
-//  }
-//}
-//.carousel-indicators{
-//  width: 70vw!important;
-//}
+.modal-content{
+  background: transparent!important;
+  border: none!important;
+}
+.modal-header{
+  border-bottom: none!important;
+}
+.modal-footer{
+  border-top: none!important;
+  padding: 0 0 46px 0 !important;
+}
+textarea{
+  border-color: #ddd;
+  &::placeholder{
+    color: rgba(0, 0, 0, 0.5);
+  }
+}
+.sidebar-mini{
+  .wrapper{
+    .sidebar{
+      .no-collapse{
+        display: none;
+      }
+      .collapse{
+        display: block;
+      }
+    }
+    .sidebar:hover{
+      .no-collapse{
+        display: block;
+      }
+      .collapse{
+        display: none;
+      }
+    }
+  }
+}
+.wrapper{
+  .sidebar{
+    .collapse{
+      display: none;
+    }
+  }
+}
+.cursor-pointer{
+  cursor: pointer!important;
+}
+.ng-scrollbar .ng-scrollbar-wrapper[deactivated=false][dir=ltr]>scrollbar-y.scrollbar-control{
+  position: absolute;
+  right: -20px;
+}
+.ng-scrollbar{
+  height: calc(100vh - 620px)!important;
+}
+.ng-scrollbar.calc300{
+  height: calc(100vh - 349px)!important;
+}
+.ng-scrollbar.user{
+  height: calc(100vh - 515px)!important;
+}
+.stselect ul .ng-scrollbar{
+  height: unset!important;
+}
+/* You can add global styles to this file, and also import other style files */
+.cursor-pointer{
+  cursor: pointer!important;
+}
+.ng-scrollbar .ng-scrollbar-wrapper[deactivated=false][dir=ltr]>scrollbar-y.scrollbar-control{
+  position: absolute;
+  right: -20px;
+}
+.ng-scrollbar{
+  height: calc(100vh - 620px)!important;
+}
+.ng-scrollbar.calc300{
+  height: calc(100vh - 250px)!important;
+}
+.ng-scrollbar.calc200{
+  height: calc(100vh - 200px)!important;
+}
+.ng-scrollbar.calc100{
+  height: calc(100vh - 160px)!important;
+}
+.icon-color{
+  color: #008E67;
+}
+.api-container{
+  p{
+    margin: 0!important;
+  }
+}
+.carousel-indicators{
+  width: 70vw!important;
+}

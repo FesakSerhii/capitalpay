@@ -31,7 +31,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
   openModalLogin() {
-    this.modalService.open(LoginModalComponent)
+    this.modalService.open(LoginModalComponent, { windowClass: 'lending-modal' })
   }
 
   ngAfterViewInit(): void {
