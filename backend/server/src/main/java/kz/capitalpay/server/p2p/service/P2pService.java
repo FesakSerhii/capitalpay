@@ -303,7 +303,7 @@ public class P2pService {
             UserCardFromBank userCard = userCardService.findUserCardFromBankById(merchantCardId);
             ClientCardFromBank clientCard = userCardService.findClientCardFromBankByToken(dto.getClientCardToken());
 
-            return checkReturnCode(halykSoapService.sendSavedCardsP2p(ipAddress, userAgent, clientCard.getBankCardId(), dto, userCard.getBankCardId(), false, terminal.getOutputTerminalId()), resultUrls, redirectAttributes);
+            return checkReturnCode(halykSoapService.sendSavedCardsP2p(ipAddress, userAgent, clientCard.getBankCardId(), dto, userCard.getBankCardId(), false, terminal.getInputTerminalId()), resultUrls, redirectAttributes);
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.info(ErrorDictionary.CARD_NOT_FOUND.toString());
