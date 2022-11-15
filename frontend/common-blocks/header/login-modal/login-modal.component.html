@@ -1,0 +1,64 @@
+<div class="modal-header1">
+  <h4 class="modal-title" id="modal-basic-title">Войти</h4>
+  <button
+      (click)="activeModal.dismiss()"
+      type="button"
+      class="btn-close"
+      aria-label="Close">
+  </button>
+</div>
+<div class="modal-body new-modal">
+  <form
+      [formGroup]="loginForm"
+      (ngSubmit)="loginUser()">
+    <div class="input-block">
+      <input
+          formControlName="email"
+          id="header-email"
+          class="input"
+          type="text"
+          placeholder=" "
+          inputmode="numeric"
+          prefix="+7"
+          mask="(000) 000-00-00">
+      <label
+          for="header-email"
+          class="placeholder">
+        Телефон
+      </label>
+    </div>
+    <div class="input-block">
+      <input
+          formControlName="password"
+          id="header-password"
+          class="input"
+          type="{{inputPasswordType}}"
+          placeholder=" ">
+      <label
+          for="header-password"
+          class="placeholder">
+        Пароль
+      </label>
+      <button
+          [class.active]="isVisible"
+          (click)="visibilityPassword()"
+          class="input-block__visibility-btn">
+      </button>
+    </div>
+
+    <label class="checkbox">
+      <input
+          type="checkbox"
+          class="checkbox__input checkboxItem">
+      <span class="checkbox__icon"></span>
+      <span class="checkbox__name">Запомнить меня</span>
+    </label>
+    <button
+        [disabled]="loginForm.invalid"
+        type="submit"
+        class="button primary btn-small">
+      Войти
+    </button>
+  </form>
+  <button type="button" class="button outline btn-small" (click)="recoveryPassword()">Забыли пароль?</button>
+</div>

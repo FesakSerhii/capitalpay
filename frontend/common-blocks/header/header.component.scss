@@ -1,3 +1,56 @@
+
+:host {
+  .header-new {
+    height: 96px;
+    .container-wide {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    &__logo {
+
+    }
+
+    &__logo-image {
+
+    }
+
+    &__nav {
+
+
+    }
+
+    &__nav-menu {
+      display: flex;
+      align-items: center;
+      margin: 0;
+    }
+
+    .item {
+      margin-right: 85px;
+      &:last-child {
+        margin-right: 0;
+      }
+      &__link {
+        font-family: 'MontMedium', sans-serif;
+        font-size: 18px;
+        line-height: 40px;
+        color: #000000;
+      }
+    }
+
+    .btn {
+
+    }
+  }
+}
+
+
+
+
+// Old styles
+
 @mixin for-phone-only {
   @media (max-width: 599px) { @content; }
 }
