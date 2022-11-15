@@ -1,3 +1,322 @@
+@font-face {
+  font-family: Mont;
+  src: url(assets/fonts/Mont-Regular.ttf);
+  font-style: normal;
+}
+
+@font-face {
+  font-family: MontMedium;
+  src: url(assets/fonts/Mont-SemiBold.ttf);
+  font-style: normal;
+}
+
+@font-face {
+  font-family: MontBlack;
+  src: url(assets/fonts/Mont-Bold.ttf);
+  font-style: normal;
+}
+
+
+html {
+  text-rendering: optimizeLegibility;
+  min-width: 320px;
+  overflow: hidden;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+body {
+  h1, h2, h3, h4, h5, h6, p, ul, li {
+    font-family: 'Mont', sans-serif;
+    //color: #000000;
+  }
+
+  background-color: #fff !important;
+}
+
+* {
+  box-sizing: border-box;
+  outline: none;
+
+  &:after,
+  &:before {
+    box-sizing: inherit;
+    transition: inherit;
+  }
+}
+
+h1, h2, h3, h4, h5, h6, p, ul, li {
+  margin: 0;
+  padding: 0;
+}
+
+.container-wide {
+  width: 100%;
+  max-width: 1340px;
+  padding: 0 20px;
+  margin: 0 auto;
+}
+
+ul, li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.button {
+  font-family: 'MontMedium', sans-serif;
+  font-size: 18px;
+  line-height: 40px;
+  border-radius: 12px;
+  transition: .3s all;
+  border: none;
+  padding: 8px 38px;
+  display: inline-block;
+
+  &:focus {
+    outline: none;
+  }
+
+  &.primary {
+    background-color: #02AB81;
+    color: #ffffff;
+
+    &:hover {
+      background-color: #159473;
+    }
+
+    &:active {
+      background-color: #02AB81;
+    }
+
+    &:disabled {
+      background-color: rgba(0, 0, 0, 0.12);
+      color: rgba(0, 0, 0, 0.4);
+    }
+  }
+
+  &.secondary {
+    background-color: #FFFFFF;
+    border: 1px solid #02AB81;
+    color: #02AB81;
+
+    &:hover {
+      background-color: #E8F7F4;
+      border: 1px solid #CFF3EB;
+    }
+
+    &:active {
+      background-color: #159473;
+      border: 1px solid #159473;
+      color: #fff;
+    }
+
+    &:disabled {
+      background-color: rgba(0, 0, 0, 0.12);
+      color: rgba(0, 0, 0, 0.4);
+    }
+  }
+
+  &.outline {
+    background-color: #FFFFFF;
+    color: #02AB81;
+
+    &:hover {
+      background-color: #E8F7F4;
+    }
+
+    &:active {
+      background-color: #159473;
+      color: #fff;
+    }
+
+    &:disabled {
+      background-color: rgba(0, 0, 0, 0.12);
+      color: rgba(0, 0, 0, 0.4);
+    }
+  }
+
+  &.btn-small {
+    padding: 4px 24px;
+  }
+}
+
+.button-block {
+  display: flex;
+  align-items: center;
+}
+
+.input-block {
+  height: 50px;
+  position: relative;
+  width: 100%;
+
+  .input {
+    font-size: 16px;
+    line-height: 24px;
+    height: 100%;
+    outline: 0;
+    padding: 4px 12px;
+    width: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.23);
+    border-radius: 12px;
+    background-color: #fff;
+  }
+
+  .placeholder {
+    position: absolute;
+    top: 18px;
+    left: 20px;
+    color: rgba(0, 0, 0, 0.6);
+    line-height: 14px;
+    pointer-events: none;
+    transform-origin: 0 50%;
+    transition: transform 200ms, color 200ms;
+    padding: 0 4px;
+    background-color: #fff;
+  }
+
+  .input:focus ~ .placeholder,
+  .input:not(:placeholder-shown) ~ .placeholder {
+    transform: translateY(-25px) scale(0.85);
+  }
+
+  .input:not(:placeholder-shown) ~ .placeholder {
+    color: #808097;
+  }
+
+  &__visibility-btn {
+    width: 22px;
+    height: 22px;
+    display: block;
+    border: none;
+    background-color: transparent;
+    background-image: url("assets/img/invisible.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    position: absolute;
+    top: 50%;
+    right: 24px;
+    transform: translateY(-50%);
+    &.active {
+      background-image: url("assets/img/visible.svg");
+    }
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
+.lending-modal {
+  .modal-dialog.modal-dialog {
+    background-color: #fff;
+    border-radius: 20px;
+    .modal-content {
+      width: 100%;
+      max-width: 550px;
+      padding: 65px 65px 18px 65px;
+      border-radius: 20px;
+      @media screen and (max-width: 515px) {
+        padding: 64px 24px 24px 24px;
+      }
+    }
+
+    .modal-header {
+      padding: 0;
+    }
+
+    .modal-title {
+      font-family: 'MontBlack', sans-serif;
+      font-size: 32px;
+      line-height: 56px;
+      text-align: center;
+      margin-bottom: 24px;
+      @media screen and (max-width: 515px) {
+        font-size: 24px;
+        line-height: 32px;
+        margin-bottom: 16px;
+      }
+    }
+
+    .modal-body {
+      padding: 0;
+    }
+
+    .btn-close {
+      width: 24px;
+      height: 24px;
+      display: block;
+      background-image: url("assets/img/close-modal.svg");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      border: none;
+      background-color: transparent;
+      position: absolute;
+      top: 24px;
+      right: 24px;
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    .button {
+      width: 100%;
+    }
+
+    .input-block {
+      margin-bottom: 24px;
+    }
+  }
+}
+
+
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-bottom: 24px;
+
+  &__input {
+    position: absolute;
+    appearance: none;
+
+    &:checked {
+      & + .checkbox__icon {
+        background-image: url("assets/img/checkbox-checked.svg");
+      }
+    }
+  }
+
+  &__icon {
+    width: 18px;
+    height: 18px;
+    display: block;
+    background-image: url("assets/img/checkbox.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+  }
+
+  &__name {
+    margin-left: 8px;
+    margin-top: 2px;
+    font-family: 'MontMedium', sans-serif;
+    font-size: 18px;
+    line-height: 18px;
+    color: #000;
+    @media screen and (max-width: 515px) {
+      font-size: 16px;
+      line-height: 24px;
+    }
+  }
+}
+
+
+
 /* You can add global styles to this file, and also import other style files */
 @mixin for-phone-only {
   @media (max-width: 599px) { @content; }
@@ -20,9 +339,9 @@ body{
   padding: 0;
   perspective: 1px;
   transform-style: preserve-3d;
-  overflow-y: scroll;
+  //overflow-y: scroll;
   overflow-x: hidden;
-  background: #F6FAFA!important;
+  //background: #F6FAFA!important;
   //background: black!important;
 }
 .disabled{

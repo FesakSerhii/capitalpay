@@ -1,5 +1,7 @@
 import {Component, HostListener, NgModule, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {NgbCarouselConfig, NgbTabset} from '@ng-bootstrap/ng-bootstrap';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {validate} from "codelyzer/walkerFactory/walkerFn";
 
 
 @Component({
@@ -10,10 +12,13 @@ import {NgbCarouselConfig, NgbTabset} from '@ng-bootstrap/ng-bootstrap';
 })
 export class MainPageComponent implements OnInit {
   currentTabId = '0';
-  width:number = 0;
+  width: number = 0;
   activeAnimation = false;
   scrollValue = 0;
-  constructor() { }
+  mainForm: FormGroup
+
+  constructor() {
+  }
 
   ngOnInit(): void {
     this.width = document.body.clientWidth;
@@ -22,15 +27,28 @@ export class MainPageComponent implements OnInit {
     // }, 500);
 
     // this.tabset.select('1');
+
+    this.formInit()
   }
-  nextTab(): void{
+
+  formInit() {
+    this.mainForm = new FormGroup({
+      phone: new FormControl('', Validators.required),
+      name: new FormControl('', Validators.required),
+      email: new FormControl('', [Validators.required, Validators.email])
+    })
+  }
+
+  nextTab(): void {
     // this.tab.select(String(+this.currentTabId+1));
     this.currentTabId = String(+this.currentTabId + 1);
   }
-  prevTab(): void{
+
+  prevTab(): void {
     // this.tab.select(String(+this.currentTabId-1));
     this.currentTabId = String(+this.currentTabId - 1);
   }
+
   // isInViewport(elem: any): boolean {
   //   const bounding = elem.getBoundingClientRect();
   //   return (
@@ -51,21 +69,30 @@ export class MainPageComponent implements OnInit {
     {img: this.getImgSrc('../../assets/shapes/carousel/am-ex.')},
     {img: this.getImgSrc('../../assets/shapes/carousel/alfa.')},
   ];
+
   log(event: any): void {
     this.scrollValue = event.target.scrollTop;
     console.log(event.target.scrollTop);
   }
-  getImgSrc(str){
-    const fileType = this.width<1200?'png':'svg';
-    return str+fileType;
+
+  getImgSrc(str) {
+    const fileType = this.width < 1200 ? 'png' : 'svg';
+    return str + fileType;
   }
 
   getSlickConfig() {
-    if(this.width<=320||(this.width<=769&&this.width>321)){
-      return {slidesToShow: 2, slidesToScroll: 1,infinite: true,autoplay:true}
+    if (this.width <= 320 || (this.width <= 769 && this.width > 321)) {
+      return {slidesToShow: 2, slidesToScroll: 1, infinite: true, autoplay: true}
+    } else if (this.width >= 769) {
+      return {slidesToShow: 5, slidesToScroll: 1, infinite: true, dots: true, autoplay: true}
     }
-    else if(this.width>=769){
-      return {slidesToShow: 5, slidesToScroll: 1,infinite: true,dots: true,autoplay:true}
-    }
+  }
+
+  sendForm(): void {
+    const formData = {...this.mainForm.value};
+    //  TODO Method of sending an application by mail
+    alert('Тут должен быть метод для отправки заявки на подключение на почту')
+
+    this.mainForm.reset()
   }
 }

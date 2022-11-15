@@ -7,9 +7,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BlankPageComponent implements OnInit {
 
+  currentYear: string | undefined
+
   constructor() { }
 
   ngOnInit(): void {
+    this.setCurrentYear()
+  }
+
+  setCurrentYear(): void {
+    this.currentYear = new Date().getFullYear().toString()
   }
 
 }

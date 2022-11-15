@@ -1,5 +1,8 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": "411c90f6-e9a4-40dd-aaee-ea84490814c7"
+  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
@@ -31,6 +34,7 @@
               "src/assets"
             ],
             "styles": [
+              "src/normalize.css",
               "src/styles.scss",
               "src/assets/plugins/fontawesome-free/css/all.min.css",
               "src/assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css",
