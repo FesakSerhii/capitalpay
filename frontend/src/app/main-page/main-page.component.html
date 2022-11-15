@@ -4,7 +4,7 @@
   <section class="main">
     <div class="container-wide">
       <div class="main__left">
-        <video class="main__left-video" poster="../../../assets/img/poster.png" autoplay="autoplay" loop="loop">
+        <video class="main__left-video" poster="../../../assets/img/poster.png" autoplay="autoplay" loop="loop" oncanplay="this.play()" onloadedmetadata="this.muted = true">
           <source src="../../../assets/video/capital-pay-animation.mp4">
         </video>
       </div>
