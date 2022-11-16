@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/help")
+@RequestMapping("/api/v1/help")
 public class FeedBackController {
 
     Logger logger = LoggerFactory.getLogger(FeedBackController.class);
