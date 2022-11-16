@@ -2,6 +2,7 @@ import {Component, HostListener, NgModule, OnInit, TemplateRef, ViewChild} from 
 import {NgbCarouselConfig, NgbTabset} from '@ng-bootstrap/ng-bootstrap';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {validate} from "codelyzer/walkerFactory/walkerFn";
+import {SupportService} from "../service/support.service";
 
 
 @Component({
@@ -16,8 +17,8 @@ export class MainPageComponent implements OnInit {
   activeAnimation = false;
   scrollValue = 0;
   mainForm: FormGroup
-
-  constructor() {
+  successStatusMassage: any = null
+  constructor(private supportService: SupportService) {
   }
 
   ngOnInit(): void {
@@ -90,9 +91,14 @@ export class MainPageComponent implements OnInit {
 
   sendForm(): void {
     const formData = {...this.mainForm.value};
-    //  TODO Method of sending an application by mail
-    alert('Тут должен быть метод для отправки заявки на подключение на почту')
-
-    this.mainForm.reset()
+    this.supportService.sendFeedback(formData).then(resp => {
+      if(resp.result === true) {
+        this.mainForm.reset()
+        this.successStatusMassage = 'Заявка успешно отправлена'
+        setTimeout(() => {
+          this.successStatusMassage = null;
+        }, 5000)
+      }
+    })
   }
 }
