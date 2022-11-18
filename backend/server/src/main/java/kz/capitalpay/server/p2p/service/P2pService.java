@@ -560,6 +560,7 @@ public class P2pService {
         payment.setReceiverEmail(receiverEmail);
         payment.setReceiverPhone(receiverPhone);
         payment.setReceiverName(receiverName);
+        paymentService.save(payment);
     }
 
     private void setPaymentReceiverData(Payment payment, String receiverPan, String receiverPhone, String receiverEmail, String receiverName) {
@@ -567,6 +568,7 @@ public class P2pService {
         payment.setReceiverEmail(receiverEmail);
         payment.setReceiverPhone(receiverPhone);
         payment.setReceiverName(receiverName);
+        paymentService.save(payment);
     }
 
 //    private BillPaymentDto createBill(P2pPayment payment, HttpServletRequest httpRequest, String cardHolderName, String pan, String result) {

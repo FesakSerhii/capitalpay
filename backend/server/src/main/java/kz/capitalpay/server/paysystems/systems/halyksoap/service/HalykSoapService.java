@@ -436,6 +436,7 @@ public class HalykSoapService {
         LOGGER.info(gson.toJson(order));
         if (Objects.nonNull(order)) {
             payment.setRrn(order.getReference());
+            paymentService.save(payment);
             if (order.getResult().equals("00")) {
                 paymentService.setStatusByPaySysPayId(order.getOrderId(), SUCCESS);
 //            payment.setStatus(SUCCESS);
