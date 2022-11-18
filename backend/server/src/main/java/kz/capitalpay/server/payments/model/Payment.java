@@ -1,5 +1,7 @@
 package kz.capitalpay.server.payments.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -22,7 +24,9 @@ public class Payment {
     private BigDecimal totalAmount;
     private String currency;
     private String description;
+    @JsonIgnore
     private String phone;
+    @JsonIgnore
     private String email;
     private String param;
     private String ipAddress;
