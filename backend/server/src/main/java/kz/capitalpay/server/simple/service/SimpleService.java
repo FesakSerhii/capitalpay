@@ -353,7 +353,7 @@ public class SimpleService {
                 mainPayment.setPayerEmail(halykPurchaseOrder.getEmail());
                 mainPayment.setPayerName(halykPurchaseOrder.getBankName());
                 mainPayment.setPayerPhone(halykPurchaseOrder.getPhone());
-                String payerPan = Objects.nonNull(halykPurchaseOrder.getCardHash()) ? halykPurchaseOrder.getCardHash().replace("-", "").replace("X", "*") : "";
+                String payerPan = Objects.nonNull(halykPurchaseOrder.getCardHash()) ? halykPurchaseOrder.getCardHash().replace("-", "").replace("X", "*") : null;
                 mainPayment.setPayerPan(payerPan);
                 paymentService.save(mainPayment);
                 if (Objects.nonNull(mainPayment.getPaymentLinkId())) {
