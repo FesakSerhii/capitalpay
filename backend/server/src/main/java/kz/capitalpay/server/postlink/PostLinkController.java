@@ -45,15 +45,15 @@ public class PostLinkController {
 //        return "test_register_card";
 //    }
 
-    @GetMapping("/register-client-card")
-    public String registerClientCardWithBank(@RequestParam Long merchantId, @RequestParam Long cashBoxId, @RequestParam(required = false) String params, ModelMap modelMap) {
-        ResultDTO result = userCardService.registerClientCardWithBank(merchantId, cashBoxId, params);
-        Map<String, String> resultMap = (Map<String, String>) result.getData();
-        modelMap.addAttribute("xml", resultMap.get("xml"));
-        modelMap.addAttribute("backLink", resultMap.get("backLink"));
-        modelMap.addAttribute("postLink", resultMap.get("postLink"));
-        return "register_card";
-    }
+//    @GetMapping("/register-client-card")
+//    public String registerClientCardWithBank(@RequestParam Long merchantId, @RequestParam Long cashBoxId, @RequestParam(required = false) String params, ModelMap modelMap) {
+//        ResultDTO result = userCardService.registerClientCardWithBank(merchantId, cashBoxId, params);
+//        Map<String, String> resultMap = (Map<String, String>) result.getData();
+//        modelMap.addAttribute("xml", resultMap.get("xml"));
+//        modelMap.addAttribute("backLink", resultMap.get("backLink"));
+//        modelMap.addAttribute("postLink", resultMap.get("postLink"));
+//        return "register_card";
+//    }
 
     @ResponseBody
     @PostMapping("/save-card-link")

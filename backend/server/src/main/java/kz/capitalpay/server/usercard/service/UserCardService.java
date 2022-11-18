@@ -166,6 +166,9 @@ public class UserCardService {
         }
         userCardFromBank.setValid(true);
         userCardFromBank.setBankCardId(halykSaveCardOrder.getCardId());
+        userCardFromBank.setEmail(halykSaveCardOrder.getEmail());
+        userCardFromBank.setName(halykSaveCardOrder.getUserName());
+        userCardFromBank.setPhone(halykSaveCardOrder.getPhone());
         userCardFromBank.setCardNumber(maskCardFromBank(halykSaveCardOrder.getCardHash()));
         userCardFromBank = userBankCardRepository.save(userCardFromBank);
         setDefaultBankCashBoxCard(userCardFromBank);
@@ -192,6 +195,9 @@ public class UserCardService {
             return;
         }
         clientCardFromBank.setValid(true);
+        clientCardFromBank.setEmail(halykSaveCardOrder.getEmail());
+        clientCardFromBank.setName(halykSaveCardOrder.getUserName());
+        clientCardFromBank.setPhone(halykSaveCardOrder.getPhone());
         clientCardFromBank.setBankCardId(halykSaveCardOrder.getCardId());
         clientCardFromBank.setCardNumber(maskCardFromBank(halykSaveCardOrder.getCardHash()));
         clientCardFromBank = clientBankCardRepository.save(clientCardFromBank);
