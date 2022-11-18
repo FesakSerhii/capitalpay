@@ -191,7 +191,7 @@
 <!--              <button class="btn btn-success btn-round btn-back">Отмена</button>-->
               <button class="btn slim btn-success btn-round btn-back" *ngIf="isAdmin">Проверить статус</button>
           <div class="form-group has-default bmd-form-group d-flex" *ngFor="let item of transactionDetails">
-            <label class="col-form-label text-left w160">{{item.field}}</label>
+            <label class="col-form-label text-left w160">{{item.label || item.field}}</label>
             <input type="text" class="form-control" readonly [value]="item.value">
           </div>
         </div>
