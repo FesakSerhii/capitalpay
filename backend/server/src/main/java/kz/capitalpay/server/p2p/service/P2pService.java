@@ -467,7 +467,9 @@ public class P2pService {
             payment.setPayerEmail(halykAnonymousP2pOrder.getEmail());
             payment.setPayerName(halykAnonymousP2pOrder.getBankName());
             payment.setPayerPhone(halykAnonymousP2pOrder.getPhone());
-            payment.setPayerPan(halykAnonymousP2pOrder.getCardHash().replace("-", "").replace("X", "*"));
+            String payerPan = Objects.nonNull(halykAnonymousP2pOrder.getCardHash()) ? halykAnonymousP2pOrder.getCardHash().replace("-", "").replace("X", "*") : "";
+            payment.setPayerPan(payerPan);
+            paymentService.save(payment);
             if (Objects.nonNull(payment.getPaymentLinkId())) {
                 paymentLinkService.disablePaymentLink(payment.getPaymentLinkId());
             }
