@@ -36,6 +36,14 @@ public class Payment {
     @Column(columnDefinition = "boolean default false")
     private boolean saveBankCard;
     private String rrn;
+    private String payerPan;
+    private String payerPhone;
+    private String payerEmail;
+    private String payerName;
+    private String receiverPan;
+    private String receiverPhone;
+    private String receiverEmail;
+    private String receiverName;
 
     public String getGuid() {
         return guid;
@@ -219,5 +227,69 @@ public class Payment {
 
     public void setRrn(String rrn) {
         this.rrn = rrn;
+    }
+
+    public String getPayerPan() {
+        return payerPan;
+    }
+
+    public void setPayerPan(String payerPan) {
+        this.payerPan = payerPan;
+    }
+
+    public String getPayerPhone() {
+        return payerPhone;
+    }
+
+    public void setPayerPhone(String payerPhone) {
+        this.payerPhone = payerPhone;
+    }
+
+    public String getPayerEmail() {
+        return payerEmail;
+    }
+
+    public void setPayerEmail(String payerEmail) {
+        this.payerEmail = payerEmail;
+    }
+
+    public String getPayerName() {
+        return payerName;
+    }
+
+    public void setPayerName(String payerName) {
+        this.payerName = payerName;
+    }
+
+    public String getReceiverPan() {
+        return receiverPan;
+    }
+
+    public void setReceiverPan(String receiverPan) {
+        this.receiverPan = receiverPan;
+    }
+
+    public String getReceiverPhone() {
+        return receiverPhone;
+    }
+
+    public void setReceiverPhone(String receiverPhone) {
+        this.receiverPhone = receiverPhone;
+    }
+
+    public String getReceiverEmail() {
+        return receiverEmail;
+    }
+
+    public void setReceiverEmail(String receiverEmail) {
+        this.receiverEmail = receiverEmail;
+    }
+
+    public String getReceiverName() {
+        return receiverName;
+    }
+
+    public void setReceiverName(String receiverName) {
+        this.receiverName = receiverName;
     }
 }

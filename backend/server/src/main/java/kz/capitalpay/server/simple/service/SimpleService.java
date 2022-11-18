@@ -344,6 +344,10 @@ public class SimpleService {
             if (Objects.nonNull(halykBankControlOrder.getResponseCode()) && halykBankControlOrder.getResponseCode().equals("00")) {
                 paymentService.setStatusByPaySysPayId(halykPurchaseOrder.getOrderId(), SUCCESS);
                 mainPayment.setRrn(halykPurchaseOrder.getReference());
+                mainPayment.setPayerEmail(halykPurchaseOrder.getEmail());
+                mainPayment.setPayerName(halykPurchaseOrder.getBankName());
+                mainPayment.setPayerPhone(halykPurchaseOrder.getPhone());
+                mainPayment.setPayerPan(halykPurchaseOrder.getCardHash().replace("-", "").replace("X", "*"));
                 if (Objects.nonNull(mainPayment.getPaymentLinkId())) {
                     paymentLinkService.disablePaymentLink(mainPayment.getPaymentLinkId());
                 }

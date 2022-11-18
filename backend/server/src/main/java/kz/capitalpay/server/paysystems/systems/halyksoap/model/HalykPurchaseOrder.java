@@ -27,6 +27,7 @@ public class HalykPurchaseOrder {
     private String email;
     private String userName;
     private String phone;
+    private String cardHash;
 
 
     public Long getId() {
@@ -179,5 +180,13 @@ public class HalykPurchaseOrder {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getCardHash() {
+        return cardHash;
+    }
+
+    public void setCardHash(String cardPan) {
+        this.cardHash = cardPan;
     }
 }

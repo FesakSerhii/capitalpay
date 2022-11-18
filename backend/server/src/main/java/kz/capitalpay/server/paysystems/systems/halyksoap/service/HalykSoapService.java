@@ -421,10 +421,8 @@ public class HalykSoapService {
         return check3ds(result, transferOrder.getOrderid());
     }
 
-    public String sendSavedCardsP2p(String ipAddress, String userAgent, String cardFromId, SendP2pToClientDto dto, String cardToId, boolean toClient, Long terminalId) {
+    public String sendSavedCardsP2p(String cardFromId, SendP2pToClientDto dto, String cardToId, Payment payment, Long terminalId) {
         LOGGER.info("sendSavedCardsP2p()");
-        Payment payment = p2pPaymentService.generateP2pPayment(ipAddress, userAgent, dto.getMerchantId(), dto.getAcceptedSum(), dto.getCashBoxId(), toClient, currency, dto.getParam());
-
         String p2pXml = createP2pXml(payment.getPaySysPayId(), dto.getMerchantId(), cardFromId, cardToId, dto.getAcceptedSum(), terminalId);
         LOGGER.info("p2pXml {}", p2pXml);
         String encodedXml = Base64.getEncoder().encodeToString(p2pXml.getBytes());
@@ -1363,6 +1361,7 @@ public class HalykSoapService {
                     halykOrder.setUserName(document.getBank().getCustomer().getName());
                     halykOrder.setEmail(document.getBank().getCustomer().getMail());
                     halykOrder.setPhone(document.getBank().getCustomer().getPhone());
+                    halykOrder.setCardHash(document.getBank().getResults().getPayment().getCard());
                     halykPurchaseOrderRepository.save(halykOrder);
                     return halykOrder;
                 }

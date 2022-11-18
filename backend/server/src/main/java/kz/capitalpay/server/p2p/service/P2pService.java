@@ -192,7 +192,9 @@ public class P2pService {
             UserCardFromBank userCard = userCardService.findUserCardFromBankById(merchantCardId);
             ClientCardFromBank clientCard = userCardService.findClientCardFromBankByToken(dto.getClientCardToken());
 
-            return checkReturnCode(halykSoapService.sendSavedCardsP2p(ipAddress, userAgent, userCard.getBankCardId(), dto, clientCard.getBankCardId(), true, terminal.getOutputTerminalId()), resultUrls, redirectAttributes);
+            Payment payment = p2pPaymentService.generateP2pPayment(ipAddress, userAgent, dto.getMerchantId(), dto.getAcceptedSum(), dto.getCashBoxId(), true, currency, dto.getParam());
+            setPaymentUsersData(payment, userCard.getCardNumber(), userCard.getPhone(), userCard.getEmail(), userCard.getName(), clientCard.getCardNumber(), clientCard.getPhone(), clientCard.getEmail(), clientCard.getName());
+            return checkReturnCode(halykSoapService.sendSavedCardsP2p(userCard.getBankCardId(), dto, clientCard.getBankCardId(), payment, terminal.getOutputTerminalId()), resultUrls, redirectAttributes);
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.info(ErrorDictionary.CARD_NOT_FOUND.toString());
@@ -303,8 +305,9 @@ public class P2pService {
             UserCardFromBank userCard = userCardService.findUserCardFromBankById(merchantCardId);
             ClientCardFromBank clientCard = userCardService.findClientCardFromBankByToken(dto.getClientCardToken());
 
-            return checkReturnCode(halykSoapService.sendSavedCardsP2p(ipAddress, userAgent, clientCard.getBankCardId(),
-                    dto, userCard.getBankCardId(), false, terminal.getOutputTerminalId()), resultUrls, redirectAttributes);
+            Payment payment = p2pPaymentService.generateP2pPayment(ipAddress, userAgent, dto.getMerchantId(), dto.getAcceptedSum(), dto.getCashBoxId(), false, currency, dto.getParam());
+            setPaymentUsersData(payment, clientCard.getCardNumber(), clientCard.getPhone(), clientCard.getEmail(), clientCard.getName(), userCard.getCardNumber(), userCard.getPhone(), userCard.getEmail(), userCard.getName());
+            return checkReturnCode(halykSoapService.sendSavedCardsP2p(clientCard.getBankCardId(), dto, userCard.getBankCardId(), payment, terminal.getOutputTerminalId()), resultUrls, redirectAttributes);
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.info(ErrorDictionary.CARD_NOT_FOUND.toString());
@@ -349,21 +352,21 @@ public class P2pService {
         LOGGER.info("Request IP: {}", ipAddress);
         LOGGER.info("Request User-Agent: {}", httpRequest.getHeader("User-Agent"));
 
-        Payment p2pPayment = p2pPaymentService.findById(paymentId);
+        Payment payment = p2pPaymentService.findById(paymentId);
 
-//        String result = halykSoapService.getPaymentOrderResult(p2pPayment.getTotalAmount(),
-//                cardHolderName, cvv, "P2p payment to merchant", month, p2pPayment.getPaySysPayId(), pan, year);
+//        String result = halykSoapService.getPaymentOrderResult(payment.getTotalAmount(),
+//                cardHolderName, cvv, "P2p payment to merchant", month, payment.getPaySysPayId(), pan, year);
 
         try {
-            Cashbox cashbox = cashboxService.findById(p2pPayment.getCashboxId());
-            if (!cashbox.getMerchantId().equals(p2pPayment.getMerchantId())) {
+            Cashbox cashbox = cashboxService.findById(payment.getCashboxId());
+            if (!cashbox.getMerchantId().equals(payment.getMerchantId())) {
                 return ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXES;
             }
-            Long merchantCardId = cashboxService.findUserCardIdByCashBoxId(p2pPayment.getCashboxId());
+            Long merchantCardId = cashboxService.findUserCardIdByCashBoxId(payment.getCashboxId());
             if (merchantCardId.equals(0L)) {
                 return ErrorDictionary.CARD_NOT_FOUND;
             }
-            MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(p2pPayment.getMerchantId());
+            MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(payment.getMerchantId());
             if (Objects.isNull(merchantP2pSettings) || !merchantP2pSettings.isP2pAllowed()) {
                 return ErrorDictionary.P2P_IS_NOT_ALLOWED;
             }
@@ -382,8 +385,8 @@ public class P2pService {
             UserCard merchantCard = userCardService.findUserCardById(merchantCardId);
             CardDataResponseDto merchantCardData = userCardService.getCardDataFromTokenServer(merchantCard.getToken());
             CardDataResponseDto clientCardData = new CardDataResponseDto(pan, year, month, cvv);
-            SendP2pToClientDto dto = new SendP2pToClientDto(p2pPayment.getMerchantId(), p2pPayment.getTotalAmount(), p2pPayment.getCashboxId());
-            return checkReturnCode(halykSoapService.sendP2p(ipAddress, p2pPayment.getUserAgent(), clientCardData, dto, merchantCardData.getCardNumber(), false, terminal.getInputTerminalId()));
+            SendP2pToClientDto dto = new SendP2pToClientDto(payment.getMerchantId(), payment.getTotalAmount(), payment.getCashboxId());
+            return checkReturnCode(halykSoapService.sendP2p(ipAddress, payment.getUserAgent(), clientCardData, dto, merchantCardData.getCardNumber(), false, terminal.getInputTerminalId()));
         } catch (Exception e) {
             e.printStackTrace();
             return ErrorDictionary.CARD_NOT_FOUND;
@@ -428,6 +431,8 @@ public class P2pService {
             String p2pXml = halykSoapService.createAnonymousP2pXml(payment.getPaySysPayId(), payment.getMerchantId(), merchantCard.getBankCardId(), payment.getTotalAmount(), terminal.getInputTerminalId());
             LOGGER.info("p2pXml {}", p2pXml);
 
+            setPaymentReceiverData(payment, merchantCard.getCardNumber(), merchantCard.getPhone(), merchantCard.getEmail(), merchantCard.getName());
+
             Map<String, String> resultUrls = cashboxSettingsService.getMerchantResultUrls(cashbox.getId());
             String encodedXml = Base64.getEncoder().encodeToString(p2pXml.getBytes());
             Map<String, String> result = new HashMap<>();
@@ -459,6 +464,10 @@ public class P2pService {
             paymentService.setStatusByPaySysPayId(halykAnonymousP2pOrder.getOrderId(), SUCCESS);
             Payment payment = paymentService.findByPaySysPayId(halykAnonymousP2pOrder.getOrderId());
             payment.setRrn(halykAnonymousP2pOrder.getReference());
+            payment.setPayerEmail(halykAnonymousP2pOrder.getEmail());
+            payment.setPayerName(halykAnonymousP2pOrder.getBankName());
+            payment.setPayerPhone(halykAnonymousP2pOrder.getPhone());
+            payment.setPayerPan(halykAnonymousP2pOrder.getCardHash().replace("-", "").replace("X", "*"));
             if (Objects.nonNull(payment.getPaymentLinkId())) {
                 paymentLinkService.disablePaymentLink(payment.getPaymentLinkId());
             }
@@ -538,6 +547,24 @@ public class P2pService {
     private void addErrorAttributes(RedirectAttributes redirectAttributes, ResultDTO error) {
         redirectAttributes.addAttribute("errorCode", error.getError());
         redirectAttributes.addAttribute("errorDescription", error.getData());
+    }
+
+    private void setPaymentUsersData(Payment payment, String payerPan, String payerPhone, String payerEmail, String payerName, String receiverPan, String receiverPhone, String receiverEmail, String receiverName) {
+        payment.setPayerPan(payerPan);
+        payment.setPayerPhone(payerPhone);
+        payment.setPayerName(payerName);
+        payment.setPayerEmail(payerEmail);
+        payment.setReceiverPan(receiverPan);
+        payment.setReceiverEmail(receiverEmail);
+        payment.setReceiverPhone(receiverPhone);
+        payment.setReceiverName(receiverName);
+    }
+
+    private void setPaymentReceiverData(Payment payment, String receiverPan, String receiverPhone, String receiverEmail, String receiverName) {
+        payment.setReceiverPan(receiverPan);
+        payment.setReceiverEmail(receiverEmail);
+        payment.setReceiverPhone(receiverPhone);
+        payment.setReceiverName(receiverName);
     }
 
 //    private BillPaymentDto createBill(P2pPayment payment, HttpServletRequest httpRequest, String cardHolderName, String pan, String result) {
