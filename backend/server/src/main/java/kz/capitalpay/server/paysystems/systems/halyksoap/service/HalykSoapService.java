@@ -292,15 +292,12 @@ public class HalykSoapService {
 //        return "FAIL";
 //    }
 
-    public String getPaymentOrderResult(BigDecimal amount, String cardholderName, String cvc, String desc,
-                                        String month, String orderId, String pan, String year, Long terminalId) {
+    public String getPaymentOrderResult(BigDecimal amount, String cardholderName, String cvc, String desc, String month, String orderId, String pan, String year, Long terminalId) {
         try {
-            HalykOrder paymentOrder = generateHalykOrder(amount, cardholderName, desc, orderId, 1,
-                    HalykOrderDictionary.PAYMENT_ORDER, String.valueOf(terminalId));
+            HalykOrder paymentOrder = generateHalykOrder(amount, cardholderName, desc, orderId, 1, HalykOrderDictionary.PAYMENT_ORDER, String.valueOf(terminalId));
             year = year.substring(2);
 
-            EpayServiceStub.PaymentOrderResponse paymentOrderResponse = sendPaymentOrderRequest(
-                    amount.toString(), currency, cvc, String.valueOf(terminalId), month, year, orderId, pan, "1");
+            EpayServiceStub.PaymentOrderResponse paymentOrderResponse = sendPaymentOrderRequest(amount.toString(), currency, cvc, String.valueOf(terminalId), month, year, orderId, pan, "1");
 
             EpayServiceStub.Result result = paymentOrderResponse.get_return();
 
@@ -315,8 +312,7 @@ public class HalykSoapService {
                 LOGGER.info("paymentOrder.getOrderid(): {}", paymentOrder.getOrderid());
                 LOGGER.info("Code 00, order: {}", gson.toJson(paymentOrder));
                 String reference = result.getReference();
-                EpayServiceStub.ControlOrderForCommerceResponse controlOrderForCommerceResponse = sendControlOrderForCommerceRequest(amount.toString(),
-                        currency, mainTerminalId, orderId, reference, "22");
+                EpayServiceStub.ControlOrderForCommerceResponse controlOrderForCommerceResponse = sendControlOrderForCommerceRequest(amount.toString(), currency, mainTerminalId, orderId, reference, "22");
                 LOGGER.info("controlOrderForCommerceResponse");
                 LOGGER.info("Message: " + controlOrderForCommerceResponse.get_return().getMessage());
                 LOGGER.info("Approval code: " + controlOrderForCommerceResponse.get_return().getApprovalcode());
@@ -337,8 +333,7 @@ public class HalykSoapService {
     }
 
     public CheckCardValidityResponse checkCardValidity(String ipAddress, String userAgent, CardDataResponseDto cardData) {
-        CheckCardValidityPayment payment = generateCardCheckPayment(ipAddress, userAgent, Long.parseLong(mainTerminalId),
-                new BigDecimal(10));
+        CheckCardValidityPayment payment = generateCardCheckPayment(ipAddress, userAgent, Long.parseLong(mainTerminalId), new BigDecimal(10));
         String orderId = payment.getOrderId();
         String pan = cardData.getCardNumber();
         String trType = "0";
@@ -347,12 +342,9 @@ public class HalykSoapService {
         String cvv2 = cardData.getCvv2Code();
         String amount = "10";
 
-        HalykOrder halykOrder = generateHalykOrder(new BigDecimal(amount),
-                "", "Check card validity payment", payment.getOrderId(), 0,
-                HalykOrderDictionary.PAYMENT_ORDER, mainTerminalId);
+        HalykOrder halykOrder = generateHalykOrder(new BigDecimal(amount), "", "Check card validity payment", payment.getOrderId(), 0, HalykOrderDictionary.PAYMENT_ORDER, mainTerminalId);
 
-        EpayServiceStub.PaymentOrderResponse paymentOrderResponse = sendPaymentOrderRequest(amount, currency,
-                cvv2, mainTerminalId, month, year, orderId, pan, trType);
+        EpayServiceStub.PaymentOrderResponse paymentOrderResponse = sendPaymentOrderRequest(amount, currency, cvv2, mainTerminalId, month, year, orderId, pan, trType);
 
         EpayServiceStub.Result result = paymentOrderResponse.get_return();
         parseHalykOrderResponse(halykOrder, result);
@@ -367,15 +359,12 @@ public class HalykSoapService {
         LOGGER.info("Md: " + result.getMd());
         LOGGER.info("AcsUrl: " + result.getAcsUrl());
 
-        if ((result.getReturnCode() == null || result.getReturnCode().equals("null"))
-                && (result.getAcsUrl() != null && !result.getAcsUrl().equals("null"))
-                && (result.getPareq() != null && !result.getPareq().equals("null"))) {
+        if ((result.getReturnCode() == null || result.getReturnCode().equals("null")) && (result.getAcsUrl() != null && !result.getAcsUrl().equals("null")) && (result.getPareq() != null && !result.getPareq().equals("null"))) {
             return new CheckCardValidityResponse(true, result.getReturnCode());
         }
         if (result.getReturnCode().equals("00")) {
             String reference = result.getReference();
-            EpayServiceStub.ControlOrderForCommerceResponse controlOrderForCommerceResponse = sendControlOrderForCommerceRequest(amount,
-                    currency, mainTerminalId, orderId, reference, "22");
+            EpayServiceStub.ControlOrderForCommerceResponse controlOrderForCommerceResponse = sendControlOrderForCommerceRequest(amount, currency, mainTerminalId, orderId, reference, "22");
             LOGGER.info("controlOrderForCommerceResponse");
             LOGGER.info("Message: " + controlOrderForCommerceResponse.get_return().getMessage());
             LOGGER.info("Approval code: " + controlOrderForCommerceResponse.get_return().getApprovalcode());
@@ -393,13 +382,10 @@ public class HalykSoapService {
         return new CheckCardValidityResponse(false, result.getReturnCode());
     }
 
-    public String sendP2p(String ipAddress, String userAgent, CardDataResponseDto payerCardData, SendP2pToClientDto dto,
-                          String paymentToPan, boolean toClient, Long terminalId) {
-        Payment payment = p2pPaymentService.generateP2pPayment(ipAddress, userAgent, dto.getMerchantId(),
-                dto.getAcceptedSum(), dto.getCashBoxId(), toClient, currency, dto.getParam());
+    public String sendP2p(String ipAddress, String userAgent, CardDataResponseDto payerCardData, SendP2pToClientDto dto, String paymentToPan, boolean toClient, Long terminalId) {
+        Payment payment = p2pPaymentService.generateP2pPayment(ipAddress, userAgent, dto.getMerchantId(), dto.getAcceptedSum(), dto.getCashBoxId(), toClient, currency, dto.getParam());
 
-        HalykOrder transferOrder = generateHalykOrder(dto.getAcceptedSum(), "", "p2p",
-                payment.getPaySysPayId(), 8, HalykOrderDictionary.TRANSFER_ORDER, terminalId.toString());
+        HalykOrder transferOrder = generateHalykOrder(dto.getAcceptedSum(), "", "p2p", payment.getPaySysPayId(), 8, HalykOrderDictionary.TRANSFER_ORDER, terminalId.toString());
 
         String orderId = payment.getPaySysPayId();
         String pan = payerCardData.getCardNumber();
@@ -408,8 +394,7 @@ public class HalykSoapService {
         String cvv2 = payerCardData.getCvv2Code();
         String amount = dto.getAcceptedSum().toString().replace(".", ",");
 
-        EpayServiceStub.TransferOrderResponse transferOrderResponse = sendTransferOrderRequest(amount, currency, cvv2,
-                terminalId.toString(), month, year, orderId, pan, paymentToPan);
+        EpayServiceStub.TransferOrderResponse transferOrderResponse = sendTransferOrderRequest(amount, currency, cvv2, terminalId.toString(), month, year, orderId, pan, paymentToPan);
 
         LOGGER.info("transferOrderResponse");
         LOGGER.info("Message: " + transferOrderResponse.get_return().getMessage());
@@ -436,41 +421,36 @@ public class HalykSoapService {
         return check3ds(result, transferOrder.getOrderid());
     }
 
-    public String sendSavedCardsP2p(String ipAddress, String userAgent, String cardFromId, SendP2pToClientDto dto,
-                                    String cardToId, boolean toClient, Long terminalId) {
+    public String sendSavedCardsP2p(String ipAddress, String userAgent, String cardFromId, SendP2pToClientDto dto, String cardToId, boolean toClient, Long terminalId) {
         LOGGER.info("sendSavedCardsP2p()");
-        Payment payment = p2pPaymentService.generateP2pPayment(ipAddress, userAgent, dto.getMerchantId(),
-                dto.getAcceptedSum(), dto.getCashBoxId(), toClient, currency, dto.getParam());
+        Payment payment = p2pPaymentService.generateP2pPayment(ipAddress, userAgent, dto.getMerchantId(), dto.getAcceptedSum(), dto.getCashBoxId(), toClient, currency, dto.getParam());
 
-        String p2pXml = createP2pXml(payment.getPaySysPayId(), dto.getMerchantId(),
-                cardFromId, cardToId, dto.getAcceptedSum(), terminalId);
+        String p2pXml = createP2pXml(payment.getPaySysPayId(), dto.getMerchantId(), cardFromId, cardToId, dto.getAcceptedSum(), terminalId);
         LOGGER.info("p2pXml {}", p2pXml);
         String encodedXml = Base64.getEncoder().encodeToString(p2pXml.getBytes());
         String url = "https://epay.kkb.kz/jsp/hbpay/cid2cid.jsp";
 //        String url = "https://testpay.kkb.kz/jsp/hbpay/cid2cid.jsp";
         LOGGER.info("send p2p url {}", url);
-        ResponseEntity<String> response = restTemplate.postForEntity(
-                url.concat("?Signed_Order_B64=").concat(encodedXml),
-                null, String.class);
+        ResponseEntity<String> response = restTemplate.postForEntity(url.concat("?Signed_Order_B64=").concat(encodedXml), null, String.class);
         LOGGER.info("p2p response {}", response.getBody());
 
         HalykSavedCardsP2pOrder order = parseSavedCardsP2pXml(response.getBody());
         LOGGER.info(gson.toJson(order));
-
-        if (Objects.nonNull(order) && order.getResult().equals("00")) {
-            paymentService.setStatusByPaySysPayId(order.getOrderId(), SUCCESS);
+        if (Objects.nonNull(order)) {
+            payment.setRrn(order.getReference());
+            if (order.getResult().equals("00")) {
+                paymentService.setStatusByPaySysPayId(order.getOrderId(), SUCCESS);
 //            payment.setStatus(SUCCESS);
 //            paymentLogService.newEvent(payment.getGuid(), ipAddress, SUCCESS, gson.toJson(payment));
 //            paymentRepository.save(payment);
-            return "OK";
+                return "OK";
+            }
         }
         paymentService.setStatusByPaySysPayId(payment.getPaySysPayId(), FAILED);
         return "FAIL";
     }
 
-    private EpayServiceStub.PaymentOrderResponse sendPaymentOrderRequest(String amount, String currency, String cvv2,
-                                                                         String requestMerchantId, String month, String year,
-                                                                         String orderId, String pan, String trType) {
+    private EpayServiceStub.PaymentOrderResponse sendPaymentOrderRequest(String amount, String currency, String cvv2, String requestMerchantId, String month, String year, String orderId, String pan, String trType) {
         EpayServiceStub stub = null;
         try {
             stub = new EpayServiceStub();
@@ -503,8 +483,7 @@ public class HalykSoapService {
         LOGGER.info("trType: {}", trType);
         LOGGER.info("year: {}", year);
 
-        String concatString = orderId + amount + currency +
-                trType + pan + requestMerchantId;
+        String concatString = orderId + amount + currency + trType + pan + requestMerchantId;
         KKBSign kkbSign = new KKBSign();
         String signatureValue = kkbSign.sign64(concatString, keystore, clientAlias, keypass, storepass);
 
@@ -527,12 +506,7 @@ public class HalykSoapService {
         return response;
     }
 
-    private EpayServiceStub.ControlOrderForCommerceResponse sendControlOrderForCommerceRequest(String amount,
-                                                                                               String currency,
-                                                                                               String requestMerchantId,
-                                                                                               String orderId,
-                                                                                               String reference,
-                                                                                               String trType) {
+    private EpayServiceStub.ControlOrderForCommerceResponse sendControlOrderForCommerceRequest(String amount, String currency, String requestMerchantId, String orderId, String reference, String trType) {
         EpayServiceStub stub = null;
         try {
             stub = new EpayServiceStub();
@@ -550,8 +524,7 @@ public class HalykSoapService {
         controlOrder.setTrtype(trType);
 
 
-        String concatString = orderId + amount + currency +
-                trType + requestMerchantId;
+        String concatString = orderId + amount + currency + trType + requestMerchantId;
         KKBSign kkbSign = new KKBSign();
         String signatureValue = kkbSign.sign64(concatString, keystore, clientAlias, keypass, storepass);
 
@@ -575,9 +548,7 @@ public class HalykSoapService {
         return response;
     }
 
-    private EpayServiceStub.TransferOrderResponse sendTransferOrderRequest(String amount, String currency, String cvv2,
-                                                                           String requestMerchantId, String month, String year,
-                                                                           String orderId, String senderPan, String paymentToPan) {
+    private EpayServiceStub.TransferOrderResponse sendTransferOrderRequest(String amount, String currency, String cvv2, String requestMerchantId, String month, String year, String orderId, String senderPan, String paymentToPan) {
         EpayServiceStub stub = null;
         try {
             stub = new EpayServiceStub();
@@ -612,8 +583,7 @@ public class HalykSoapService {
         transferOrder.setYear(year);
         transferOrder.setPaymentto(paymentToPan);
 
-        String concatString = orderId + amount + currency +
-                trType + senderPan + requestMerchantId;
+        String concatString = orderId + amount + currency + trType + senderPan + requestMerchantId;
         KKBSign kkbSign = new KKBSign();
         String signatureValue = kkbSign.sign64(concatString, keystore, clientAlias, keypass, storepass);
 
@@ -682,8 +652,7 @@ public class HalykSoapService {
         return response;
     }
 
-    private CheckCardValidityPayment generateCardCheckPayment(String ipAddress, String userAgent, Long merchantId,
-                                                              BigDecimal totalAmount) {
+    private CheckCardValidityPayment generateCardCheckPayment(String ipAddress, String userAgent, Long merchantId, BigDecimal totalAmount) {
         CheckCardValidityPayment payment = new CheckCardValidityPayment();
         payment.setOrderId(p2pPaymentService.generateOrderId());
         payment.setCurrency("KZT");
@@ -699,8 +668,7 @@ public class HalykSoapService {
     }
 
     private String check3ds(EpayServiceStub.Result response, String orderId) {
-        if (response.getPareq() != null && !response.getPareq().equals("null")
-                && response.getMd() != null && !response.getMd().equals("null")) {
+        if (response.getPareq() != null && !response.getPareq().equals("null") && response.getMd() != null && !response.getMd().equals("null")) {
             Map<String, String> param = new HashMap<>();
             param.put("acsUrl", response.getAcsUrl());
             param.put("MD", response.getMd());
@@ -714,8 +682,7 @@ public class HalykSoapService {
         return "FAIL";
     }
 
-    private HalykOrder generateHalykOrder(BigDecimal amount, String cardholderName, String desc, String orderId, int trType,
-                                          String requestType, String merchantId) {
+    private HalykOrder generateHalykOrder(BigDecimal amount, String cardholderName, String desc, String orderId, int trType, String requestType, String merchantId) {
         HalykOrder paymentOrder = new HalykOrder();
         paymentOrder.setTimestamp(System.currentTimeMillis());
         paymentOrder.setLocalDateTime(LocalDateTime.now());
@@ -949,8 +916,7 @@ public class HalykSoapService {
 
             halykPaymentOrderAcsRepository.save(paymentOrderAcs);
 
-            EpayServiceStub.PaymentOrderAcsResponse paymentOrderAcsResponse = sendPaymentOrderAcsRequest(pares, md, sessionId,
-                    isP2p);
+            EpayServiceStub.PaymentOrderAcsResponse paymentOrderAcsResponse = sendPaymentOrderAcsRequest(pares, md, sessionId, isP2p);
             parsePaymentOrderAcsResponse(paymentOrderAcs, paymentOrderAcsResponse.get_return());
 
             LOGGER.info(gson.toJson(paymentOrderAcs));
@@ -1144,26 +1110,12 @@ public class HalykSoapService {
         String merchantName = "CAPITALPAY";
         String currencyCode = "398";
 
-        String merchantStr = String.format("<merchant cert_id=\"%s\" name=\"%s\">" +
-                        "<order order_id=\"%s\" amount=\"10,00\" currency=\"%s\">" +
-                        "<department merchant_id=\"%s\"" +
-                        " abonent_id=\"%s\" " +
-                        "approve=\"0\" " +
-                        "service_id=\"%s\" " +
-                        "/>" +
-                        "</order>" +
-                        "</merchant>",
+        String merchantStr = String.format("<merchant cert_id=\"%s\" name=\"%s\">" + "<order order_id=\"%s\" amount=\"10,00\" currency=\"%s\">" + "<department merchant_id=\"%s\"" + " abonent_id=\"%s\" " + "approve=\"0\" " + "service_id=\"%s\" " + "/>" + "</order>" + "</merchant>",
 
 //                testCertificateId,
-                merchantCertificate,
-                merchantName,
-                orderId,
-                currencyCode,
+                merchantCertificate, merchantName, orderId, currencyCode,
 //                testTerminalId,
-                mainTerminalId,
-                serviceMerchantId,
-                isMerchantCard
-        );
+                mainTerminalId, serviceMerchantId, isMerchantCard);
 
         String signatureValue = kkbSign.sign64(merchantStr, keystore, clientAlias, keypass, storepass);
 
@@ -1180,57 +1132,27 @@ public class HalykSoapService {
         halykSaveCardOrder.setApprove("0");
         halykSaveCardOrderRepository.save(halykSaveCardOrder);
 
-        return String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?><document>%s" +
-                        "<merchant_sign type=\"RSA\">" +
-                        "%s" +
-                        "</merchant_sign>" +
-                        "</document>",
+        return String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?><document>%s" + "<merchant_sign type=\"RSA\">" + "%s" + "</merchant_sign>" + "</document>",
 
-                merchantStr,
-                signatureValue
-        );
+                merchantStr, signatureValue);
     }
 
-    public String createP2pXml(String orderId, Long serviceMerchantId, String cardIdFrom,
-                               String cardIdTo, BigDecimal amount, Long terminalId) {
+    public String createP2pXml(String orderId, Long serviceMerchantId, String cardIdFrom, String cardIdTo, BigDecimal amount, Long terminalId) {
         KKBSign kkbSign = new KKBSign();
         String merchantName = "CAPITALPAY";
         String currencyCode = "398";
         String amountStr = amount.setScale(2).toString();
 
 
-        String merchantStr = String.format("<merchant " +
-                        "cert_id=\"%s\" " +
-                        "name=\"%s\">" +
-                        "    <order " +
-                        "merchant_id=\"%s\" " +
-                        "order_id=\"%s\" " +
-                        "amount=\"%s\" " +
-                        "currency=\"%s\" " +
-                        "merchant_main=\"%s\" " +
-                        "abonent_id_from=\"%s\" " +
-                        "abonent_id_to=\"%s\" " +
-                        "card_id_from=\"%s\" " +
-                        "card_id_to=\"%s\" " +
-                        "/>" +
-                        "</merchant>",
+        String merchantStr = String.format("<merchant " + "cert_id=\"%s\" " + "name=\"%s\">" + "    <order " + "merchant_id=\"%s\" " + "order_id=\"%s\" " + "amount=\"%s\" " + "currency=\"%s\" " + "merchant_main=\"%s\" " + "abonent_id_from=\"%s\" " + "abonent_id_to=\"%s\" " + "card_id_from=\"%s\" " + "card_id_to=\"%s\" " + "/>" + "</merchant>",
 
 //                testCertificateId,
-                merchantCertificate,
-                merchantName,
+                merchantCertificate, merchantName,
 //                testTerminalId,
 //                merchantIdBankP2p,
-                terminalId.toString(),
-                orderId,
-                amountStr,
-                currencyCode,
+                terminalId.toString(), orderId, amountStr, currencyCode,
 //                testTerminalId,
-                mainTerminalId,
-                serviceMerchantId,
-                serviceMerchantId,
-                cardIdFrom,
-                cardIdTo
-        );
+                mainTerminalId, serviceMerchantId, serviceMerchantId, cardIdFrom, cardIdTo);
 
         String signatureValue = kkbSign.sign64(merchantStr, keystore, clientAlias, keypass, storepass);
 
@@ -1249,17 +1171,12 @@ public class HalykSoapService {
         halykSaveCardOrder.setCardIdTo(cardIdTo);
         halykSavedCardsP2pOrderRepository.save(halykSaveCardOrder);
 
-        return String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?><document>" +
-                        "%s  <merchant_sign type=\"RSA\">%s</merchant_sign>" +
-                        "</document>",
+        return String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?><document>" + "%s  <merchant_sign type=\"RSA\">%s</merchant_sign>" + "</document>",
 
-                merchantStr,
-                signatureValue
-        );
+                merchantStr, signatureValue);
     }
 
-    public String createAnonymousP2pXml(String orderId, Long serviceMerchantId,
-                                        String cardIdTo, BigDecimal amount, Long terminalId) {
+    public String createAnonymousP2pXml(String orderId, Long serviceMerchantId, String cardIdTo, BigDecimal amount, Long terminalId) {
         KKBSign kkbSign = new KKBSign();
         String merchantName = "CAPITALPAY";
         String currencyCode = "398";
@@ -1267,35 +1184,15 @@ public class HalykSoapService {
 
         LocalDateTime localDateTime = LocalDateTime.now().plusHours(3);
         String zonedDateTime = localDateTime.atZone(ZoneOffset.of("+06:00")).format(dateTimeFormat);
-        String merchantStr = String.format("<merchant " +
-                        "cert_id=\"%s\" " +
-                        "name=\"%s\" " +
-                        "merchant_id=\"%s\" " +
-                        "merchant_main=\"%s\">" +
-                        "<order " +
-                        "card_id_contr=\"%s\" " +
-                        "abonent_id_to=\"%s\" " +
-                        "order_id=\"%s\" " +
-                        "amount=\"%s\" " +
-                        "currency=\"%s\" " +
-                        "ordertime=\"%s\"/>" +
-                        "</merchant>",
+        String merchantStr = String.format("<merchant " + "cert_id=\"%s\" " + "name=\"%s\" " + "merchant_id=\"%s\" " + "merchant_main=\"%s\">" + "<order " + "card_id_contr=\"%s\" " + "abonent_id_to=\"%s\" " + "order_id=\"%s\" " + "amount=\"%s\" " + "currency=\"%s\" " + "ordertime=\"%s\"/>" + "</merchant>",
 
 //                testCertificateId,
-                merchantCertificate,
-                merchantName,
+                merchantCertificate, merchantName,
 //                testTerminalId,
                 terminalId.toString(),
 //                merchantIdP2p,
 //                testTerminalId,
-                mainTerminalId,
-                cardIdTo,
-                serviceMerchantId,
-                orderId,
-                amountStr,
-                currencyCode,
-                zonedDateTime
-        );
+                mainTerminalId, cardIdTo, serviceMerchantId, orderId, amountStr, currencyCode, zonedDateTime);
 
         String signatureValue = kkbSign.sign64(merchantStr, keystore, clientAlias, keypass, storepass);
 
@@ -1313,13 +1210,9 @@ public class HalykSoapService {
         halykOrder.setOrderTime(zonedDateTime);
         halykAnonymousP2pOrderRepository.save(halykOrder);
 
-        return String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?><document>%s" +
-                        "<merchant_sign type=\"RSA\">%s</merchant_sign>" +
-                        "</document>",
+        return String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?><document>%s" + "<merchant_sign type=\"RSA\">%s</merchant_sign>" + "</document>",
 
-                merchantStr,
-                signatureValue
-        );
+                merchantStr, signatureValue);
     }
 
     public String createPurchaseXml(String orderId, BigDecimal amount, Long terminalId) {
@@ -1328,28 +1221,10 @@ public class HalykSoapService {
         String currencyCode = "398";
         String amountStr = amount.setScale(2).toString();
 
-        String merchantStr = String.format("<merchant " +
-                        "cert_id=\"%s\" " +
-                        "name=\"%s\">" +
-                        "<order " +
-                        "order_id=\"%s\" " +
-                        "amount=\"%s\" " +
-                        "currency=\"%s\">" +
-                        "<department " +
-                        "merchant_id=\"%s\" " +
-                        "amount=\"%s\"/>" +
-                        "</order>" +
-                        "</merchant>",
+        String merchantStr = String.format("<merchant " + "cert_id=\"%s\" " + "name=\"%s\">" + "<order " + "order_id=\"%s\" " + "amount=\"%s\" " + "currency=\"%s\">" + "<department " + "merchant_id=\"%s\" " + "amount=\"%s\"/>" + "</order>" + "</merchant>",
 
 //                testCertificateId,
-                merchantCertificate,
-                merchantName,
-                orderId,
-                amountStr,
-                currencyCode,
-                terminalId,
-                amountStr
-        );
+                merchantCertificate, merchantName, orderId, amountStr, currencyCode, terminalId, amountStr);
 
         String signatureValue = kkbSign.sign64(merchantStr, keystore, clientAlias, keypass, storepass);
 
@@ -1363,38 +1238,18 @@ public class HalykSoapService {
         halykOrder.setMerchantSign(signatureValue);
         halykPurchaseOrderRepository.save(halykOrder);
 
-        return String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?><document>%s" +
-                        "<merchant_sign type=\"RSA\">%s</merchant_sign>" +
-                        "</document>",
+        return String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?><document>%s" + "<merchant_sign type=\"RSA\">%s</merchant_sign>" + "</document>",
 
-                merchantStr,
-                signatureValue
-        );
+                merchantStr, signatureValue);
     }
 
-    public String createPurchaseControlXml(String orderId, String amount, Long terminalId,
-                                           String reference, String commandType) {
+    public String createPurchaseControlXml(String orderId, String amount, Long terminalId, String reference, String commandType) {
         KKBSign kkbSign = new KKBSign();
         String currencyCode = "398";
 
-        String merchantStr = String.format("<merchant " +
-                        "id=\"%s\">" +
-                        "<command type=\"%s\"/>" +
-                        "<payment " +
-                        "reference=\"%s\" " +
-                        "approval_code=\"00\" " +
-                        "orderid=\"%s\" " +
-                        "amount=\"%s\" " +
-                        "currency_code=\"%s\"/>" +
-                        "</merchant>",
+        String merchantStr = String.format("<merchant " + "id=\"%s\">" + "<command type=\"%s\"/>" + "<payment " + "reference=\"%s\" " + "approval_code=\"00\" " + "orderid=\"%s\" " + "amount=\"%s\" " + "currency_code=\"%s\"/>" + "</merchant>",
 
-                terminalId,
-                commandType,
-                reference,
-                orderId,
-                amount,
-                currencyCode
-        );
+                terminalId, commandType, reference, orderId, amount, currencyCode);
 
         String signatureValue = kkbSign.sign64(merchantStr, keystore, clientAlias, keypass, storepass);
 
@@ -1409,14 +1264,9 @@ public class HalykSoapService {
         halykOrder.setReference(reference);
         halykBankControlOrderRepository.save(halykOrder);
 
-        return String.format("<document>%s" +
-                        "<merchant_sign type=\"RSA\" cert_id=\"%s\">%s</merchant_sign>" +
-                        "</document>",
+        return String.format("<document>%s" + "<merchant_sign type=\"RSA\" cert_id=\"%s\">%s</merchant_sign>" + "</document>",
 
-                merchantStr,
-                merchantCertificate,
-                signatureValue
-        );
+                merchantStr, merchantCertificate, signatureValue);
     }
 
     public HalykSaveCardOrder parseSaveCardWithBankXml(String xml) {
@@ -1426,12 +1276,7 @@ public class HalykSoapService {
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             StringReader reader = new StringReader(xml);
             Document document = (Document) unmarshaller.unmarshal(reader);
-            if (Objects.nonNull(document) && Objects.nonNull(document.getBank())
-                    && Objects.nonNull(document.getBank().getCustomer())
-                    && Objects.nonNull(document.getBank().getCustomer().getMerchant())
-                    && Objects.nonNull(document.getBank().getCustomer().getMerchant().getOrder())
-                    && Objects.nonNull(document.getBank().getCustomer().getMerchant().getOrder().getId())
-            ) {
+            if (Objects.nonNull(document) && Objects.nonNull(document.getBank()) && Objects.nonNull(document.getBank().getCustomer()) && Objects.nonNull(document.getBank().getCustomer().getMerchant()) && Objects.nonNull(document.getBank().getCustomer().getMerchant().getOrder()) && Objects.nonNull(document.getBank().getCustomer().getMerchant().getOrder().getId())) {
                 HalykSaveCardOrder halykSaveCardOrder = halykSaveCardOrderRepository.findByOrderId(document.getBank().getCustomer().getMerchant().getOrder().getId()).orElse(null);
                 if (Objects.nonNull(halykSaveCardOrder)) {
                     halykSaveCardOrder.setApprovalCode(document.getBank().getResults().getPayment().getApprovalCode());
@@ -1471,12 +1316,7 @@ public class HalykSoapService {
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             StringReader reader = new StringReader(xml);
             Document document = (Document) unmarshaller.unmarshal(reader);
-            if (Objects.nonNull(document) && Objects.nonNull(document.getBank())
-                    && Objects.nonNull(document.getBank().getCustomer())
-                    && Objects.nonNull(document.getBank().getCustomer().getMerchant())
-                    && Objects.nonNull(document.getBank().getCustomer().getMerchant().getOrder())
-                    && Objects.nonNull(document.getBank().getCustomer().getMerchant().getOrder().getId())
-            ) {
+            if (Objects.nonNull(document) && Objects.nonNull(document.getBank()) && Objects.nonNull(document.getBank().getCustomer()) && Objects.nonNull(document.getBank().getCustomer().getMerchant()) && Objects.nonNull(document.getBank().getCustomer().getMerchant().getOrder()) && Objects.nonNull(document.getBank().getCustomer().getMerchant().getOrder().getId())) {
                 HalykAnonymousP2pOrder halykOrder = halykAnonymousP2pOrderRepository.findByOrderId(document.getBank().getCustomer().getMerchant().getOrder().getId()).orElse(null);
                 if (Objects.nonNull(halykOrder)) {
                     halykOrder.setApprovalCode(document.getBank().getResults().getPayment().getApprovalCode());
@@ -1488,6 +1328,9 @@ public class HalykSoapService {
                     halykOrder.setReference(document.getBank().getResults().getPayment().getReference());
                     halykOrder.setSecure(document.getBank().getResults().getPayment().getSecure());
                     halykOrder.setTimestamp(document.getBank().getResults().getTimestamp());
+                    halykOrder.setUserName(document.getBank().getCustomer().getName());
+                    halykOrder.setEmail(document.getBank().getCustomer().getMail());
+                    halykOrder.setPhone(document.getBank().getCustomer().getPhone());
                     halykAnonymousP2pOrderRepository.save(halykOrder);
                     return halykOrder;
                 }
@@ -1506,12 +1349,7 @@ public class HalykSoapService {
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             StringReader reader = new StringReader(xml);
             Document document = (Document) unmarshaller.unmarshal(reader);
-            if (Objects.nonNull(document) && Objects.nonNull(document.getBank())
-                    && Objects.nonNull(document.getBank().getCustomer())
-                    && Objects.nonNull(document.getBank().getCustomer().getMerchant())
-                    && Objects.nonNull(document.getBank().getCustomer().getMerchant().getOrder())
-                    && Objects.nonNull(document.getBank().getCustomer().getMerchant().getOrder().getId())
-            ) {
+            if (Objects.nonNull(document) && Objects.nonNull(document.getBank()) && Objects.nonNull(document.getBank().getCustomer()) && Objects.nonNull(document.getBank().getCustomer().getMerchant()) && Objects.nonNull(document.getBank().getCustomer().getMerchant().getOrder()) && Objects.nonNull(document.getBank().getCustomer().getMerchant().getOrder().getId())) {
                 HalykPurchaseOrder halykOrder = halykPurchaseOrderRepository.findByOrderId(document.getBank().getCustomer().getMerchant().getOrder().getId()).orElse(null);
                 if (Objects.nonNull(halykOrder)) {
                     halykOrder.setApprovalCode(document.getBank().getResults().getPayment().getApprovalCode());
@@ -1522,6 +1360,9 @@ public class HalykSoapService {
                     halykOrder.setReference(document.getBank().getResults().getPayment().getReference());
                     halykOrder.setSecure(document.getBank().getResults().getPayment().getSecure());
                     halykOrder.setTimestamp(document.getBank().getResults().getTimestamp());
+                    halykOrder.setUserName(document.getBank().getCustomer().getName());
+                    halykOrder.setEmail(document.getBank().getCustomer().getMail());
+                    halykOrder.setPhone(document.getBank().getCustomer().getPhone());
                     halykPurchaseOrderRepository.save(halykOrder);
                     return halykOrder;
                 }
@@ -1540,11 +1381,7 @@ public class HalykSoapService {
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             StringReader reader = new StringReader(xml);
             kz.capitalpay.server.paysystems.systems.halyksoap.xml.halyk_control_order_xml.Document document = (kz.capitalpay.server.paysystems.systems.halyksoap.xml.halyk_control_order_xml.Document) unmarshaller.unmarshal(reader);
-            if (Objects.nonNull(document) && Objects.nonNull(document.getBank())
-                    && Objects.nonNull(document.getBank().getMerchant())
-                    && Objects.nonNull(document.getBank().getMerchant().getPayment())
-                    && Objects.nonNull(document.getBank().getMerchant().getPayment().getOrderId())
-            ) {
+            if (Objects.nonNull(document) && Objects.nonNull(document.getBank()) && Objects.nonNull(document.getBank().getMerchant()) && Objects.nonNull(document.getBank().getMerchant().getPayment()) && Objects.nonNull(document.getBank().getMerchant().getPayment().getOrderId())) {
                 HalykBankControlOrder halykOrder = halykBankControlOrderRepository.findByOrderId(document.getBank().getMerchant().getPayment().getOrderId()).orElse(null);
                 if (Objects.nonNull(halykOrder)) {
                     halykOrder.setBankName(document.getBank().getName());
@@ -1569,10 +1406,8 @@ public class HalykSoapService {
             JAXBContext jaxbContext = JAXBContext.newInstance(kz.capitalpay.server.paysystems.systems.halyksoap.xml.saved_cards_p2p.Document.class);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             StringReader reader = new StringReader(xml);
-            kz.capitalpay.server.paysystems.systems.halyksoap.xml.saved_cards_p2p.Document document =
-                    (kz.capitalpay.server.paysystems.systems.halyksoap.xml.saved_cards_p2p.Document) unmarshaller.unmarshal(reader);
-            if (Objects.nonNull(document) && Objects.nonNull(document.getPayment())
-                    && Objects.nonNull(document.getPayment().getOrderId())) {
+            kz.capitalpay.server.paysystems.systems.halyksoap.xml.saved_cards_p2p.Document document = (kz.capitalpay.server.paysystems.systems.halyksoap.xml.saved_cards_p2p.Document) unmarshaller.unmarshal(reader);
+            if (Objects.nonNull(document) && Objects.nonNull(document.getPayment()) && Objects.nonNull(document.getPayment().getOrderId())) {
                 HalykSavedCardsP2pOrder order = halykSavedCardsP2pOrderRepository.findByOrderId(document.getPayment().getOrderId()).orElse(null);
                 if (Objects.nonNull(order)) {
                     order.setApprovalCode(document.getPayment().getApprovalCode());

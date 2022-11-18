@@ -55,7 +55,7 @@ public class P2pPaymentService {
         payment.setTimestamp(System.currentTimeMillis());
         payment.setTotalAmount(totalAmount);
         payment.setUserAgent(userAgent);
-        payment.setToClient(toClient);
+        payment.setOutgoing(toClient);
         payment.setParam(param);
         payment.setP2p(true);
         payment.setStatus(NEW_PAYMENT);

@@ -343,6 +343,7 @@ public class SimpleService {
             halykBankControlOrderRepository.save(halykBankControlOrder);
             if (Objects.nonNull(halykBankControlOrder.getResponseCode()) && halykBankControlOrder.getResponseCode().equals("00")) {
                 paymentService.setStatusByPaySysPayId(halykPurchaseOrder.getOrderId(), SUCCESS);
+                mainPayment.setRrn(halykPurchaseOrder.getReference());
                 if (Objects.nonNull(mainPayment.getPaymentLinkId())) {
                     paymentLinkService.disablePaymentLink(mainPayment.getPaymentLinkId());
                 }

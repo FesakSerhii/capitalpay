@@ -30,11 +30,12 @@ public class Payment {
     private String status;
     private String paymentLinkId;
     @Column(columnDefinition = "boolean default false")
-    private boolean toClient;
+    private boolean outgoing;
     @Column(columnDefinition = "boolean default false")
     private boolean p2p;
     @Column(columnDefinition = "boolean default false")
     private boolean saveBankCard;
+    private String rrn;
 
     public String getGuid() {
         return guid;
@@ -180,12 +181,12 @@ public class Payment {
         this.status = status;
     }
 
-    public boolean isToClient() {
-        return toClient;
+    public boolean isOutgoing() {
+        return outgoing;
     }
 
-    public void setToClient(boolean toClient) {
-        this.toClient = toClient;
+    public void setOutgoing(boolean toClient) {
+        this.outgoing = toClient;
     }
 
     public boolean isP2p() {
@@ -210,5 +211,13 @@ public class Payment {
 
     public void setPaymentLinkId(String paymentLinkId) {
         this.paymentLinkId = paymentLinkId;
+    }
+
+    public String getRrn() {
+        return rrn;
+    }
+
+    public void setRrn(String rrn) {
+        this.rrn = rrn;
     }
 }
