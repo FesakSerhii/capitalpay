@@ -1322,7 +1322,7 @@ public class HalykSoapService {
                     halykOrder.setBankName(document.getBank().getName());
                     halykOrder.setBankSign(document.getBankSign());
                     halykOrder.setCardBin(document.getBank().getResults().getPayment().getCardBin());
-                    halykOrder.setCardHash(document.getBank().getResults().getPayment().getCardHash());
+                    halykOrder.setCardHash(document.getBank().getResults().getPayment().getCard());
                     halykOrder.setResponseCode(document.getBank().getResults().getPayment().getResponseCode());
                     halykOrder.setReference(document.getBank().getResults().getPayment().getReference());
                     halykOrder.setSecure(document.getBank().getResults().getPayment().getSecure());
