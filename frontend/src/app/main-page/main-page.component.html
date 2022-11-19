@@ -1,14 +1,19 @@
 <app-header></app-header>
 
-
 <main>
   <section class="main">
     <div class="container-wide">
       <div class="main__left">
-        <video class="main__left-video" poster="../../../assets/img/poster.png" playsinline autoplay="autoplay" loop="loop"
-               oncanplay="this.play()" onloadedmetadata="this.muted = true">
-          <source src="../../../assets/video/capital-pay-animation-1.mp4" type="video/mp4">
-          <source src="../../../assets/video/capital-pay-animation-1.ogg" type="video/ogg">
+        <video
+            class="main__left-video"
+            poster="../../../assets/img/poster.png"
+            playsinline
+            autoplay="autoplay"
+            loop="loop"
+            oncanplay="this.play()"
+            onloadedmetadata="this.muted = true">
+          <source src="../../../assets/video/capital-pay-animation.mp4" type="video/mp4">
+          <source src="../../../assets/video/capital-pay-animation.ogg" type="video/ogg">
         </video>
       </div>
       <div class="main__right">
@@ -68,7 +73,7 @@
         <div class="widget__block-right">
           <h2 class="headline">Регулярные платежи</h2>
           <p class="description">Платежи с фиксированной периодичностью, которые не требуют подтверждения от владельца
-            карты или счёта. Они идеально подходят для подписки и абонентской платы. При первом платеже клиент даёт своё
+            карты или счета. Они идеально подходят для подписки и абонентской платы. При первом платеже клиент дает свое
             согласие на последующие списания, и они проходят автоматически.
           </p>
         </div>
@@ -92,9 +97,8 @@
         </div>
         <div class="widget__block-right">
           <h2 class="headline">P2P <br> переводы</h2>
-          <p class="description">Переводы денежных средств
-            в системе Visa/MasterCard
-            c карты на карту с использованием платежного шлюза CapitalPay.
+          <p class="description">Переводы денежных средств в системе <strong>Visa/MasterCard</strong> c карты на карту с
+            использованием платежного шлюза CapitalPay.
           </p>
           <p class="description">Время транзакции занимает несколько секунд. Сниженная комиссия.</p>
         </div>
@@ -159,7 +163,7 @@
         </div>
         <div class="advantage__cards-item item-5">
           <img src="../../../assets/img/icon-5.svg" alt="icon" class="icon">
-          <h3 class="headline">Индивидуальные решения для вашего бизнеса</h3>
+          <h3 class="headline">Личный кабинет</h3>
           <p class="description">Доступ к платежам и аналитике 24/7. Контролируйте и управляйте платежами. Возвращайте
             оплату клиенту, формируйте отчеты, настраивайте платежные методы и прочие настройки магазина.</p>
         </div>
@@ -320,7 +324,8 @@
         <div class="d-flex start-section">
           <div class="carousel">
             <h1 style="">Надежная система быстрых платежей</h1>
-            <p style="">Платежная система для приема карт VISA и MasterCard в Казахстане. Лучший способ приема оплаты
+            <p style="">Платежная система для приема карт
+              VISA и MasterCard в Казахстане. Лучший способ приема оплаты
               для сайтов, микрофинансовых организаций и интернет-магазинов. Агрегатор платежей</p>
             <a href="#" class="section-btn">Get started</a>
           </div>
@@ -438,7 +443,7 @@
       <div class="main-info__wrap">
         <ngb-tabset [activeId]="currentTabId" [justify]="'center'">
           <ngb-tab id="0"
-                   title="Гибкое и модульное решение для эквайринга обеспечит высокую эффективность Ваших платёжных процессов">
+                   title="Гибкое и модульное решение для эквайринга обеспечит высокую эффективность Ваших платежных процессов">
             <ng-template ngbTabContent>
               <div class="d-flex main-info__tab">
                 <div class="main-info__img">
@@ -447,8 +452,8 @@
                 <div class="main-info__content">
                   <h4 class="main-info__title">Payment button 1</h4>
                   <p class="main-info__description">Гибкое и модульное решение для эквайринга обеспечит высокую
-                    эффективность Ваших платёжных процессов</p>
-                  <p class="m-auto main-info__step">Комплекс технологически продвинутых услуг по приёму платежей в
+                    эффективность Ваших платежных процессов</p>
+                  <p class="m-auto main-info__step">Комплекс технологически продвинутых услуг по приему платежей в
                     Интернете, нацеленных на оптимальное решение различных бизнес-потребностей поставщиков платежных
                     услуг. Наше модульное решение настраивается и адаптируется под нужды каждого клиента и
                     предоставляется через масштабируемый API.</p>

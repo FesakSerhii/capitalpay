@@ -26,12 +26,16 @@ html {
 }
 
 body {
-  h1, h2, h3, h4, h5, h6, p, ul, li {
-    font-family: 'Mont', sans-serif;
-    //color: #000000;
-  }
-
   background-color: #fff !important;
+}
+
+main {
+  font-family: 'Mont', sans-serif;
+  color: #000;
+}
+
+strong {
+  font-family: 'MontBlack', sans-serif;
 }
 
 * {
