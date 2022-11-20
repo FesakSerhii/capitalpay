@@ -238,6 +238,12 @@ public class SimpleService {
                 String p2pXml = halykSoapService.createAnonymousP2pXml(payment.getPaySysPayId(), payment.getMerchantId(), merchantCard.getBankCardId(), payment.getTotalAmount(), terminal.getInputTerminalId());
                 LOGGER.info("p2pXml {}", p2pXml);
 
+                payment.setReceiverName(merchantCard.getName());
+                payment.setReceiverPhone(merchantCard.getPhone());
+                payment.setReceiverEmail(merchantCard.getEmail());
+                payment.setReceiverPan(merchantCard.getCardNumber());
+                paymentService.save(payment);
+
                 String encodedXml = Base64.getEncoder().encodeToString(p2pXml.getBytes());
                 Map<String, String> result = new HashMap<>();
                 result.put("xml", encodedXml);
@@ -343,6 +349,13 @@ public class SimpleService {
             halykBankControlOrderRepository.save(halykBankControlOrder);
             if (Objects.nonNull(halykBankControlOrder.getResponseCode()) && halykBankControlOrder.getResponseCode().equals("00")) {
                 paymentService.setStatusByPaySysPayId(halykPurchaseOrder.getOrderId(), SUCCESS);
+                mainPayment.setRrn(halykPurchaseOrder.getReference());
+                mainPayment.setPayerEmail(halykPurchaseOrder.getEmail());
+                mainPayment.setPayerName(halykPurchaseOrder.getBankName());
+                mainPayment.setPayerPhone(halykPurchaseOrder.getPhone());
+                String payerPan = Objects.nonNull(halykPurchaseOrder.getCardHash()) ? halykPurchaseOrder.getCardHash().replace("-", "").replace("X", "*") : null;
+                mainPayment.setPayerPan(payerPan);
+                paymentService.save(mainPayment);
                 if (Objects.nonNull(mainPayment.getPaymentLinkId())) {
                     paymentLinkService.disablePaymentLink(mainPayment.getPaymentLinkId());
                 }

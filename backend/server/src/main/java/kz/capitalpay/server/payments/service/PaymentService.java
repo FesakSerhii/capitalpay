@@ -216,4 +216,8 @@ public class PaymentService {
         payment.setPaySysPayId(p2pPaymentService.generateOrderId());
         return paymentRepository.save(payment);
     }
+
+    public Payment save(Payment payment) {
+        return paymentRepository.save(payment);
+    }
 }

@@ -29,6 +29,9 @@ public class HalykAnonymousP2pOrder {
     private String abonentIdTo;
     private String cardIdTo;
     private String orderTime;
+    private String email;
+    private String userName;
+    private String phone;
 
     public String getAbonentIdTo() {
         return abonentIdTo;
@@ -196,5 +199,29 @@ public class HalykAnonymousP2pOrder {
 
     public void setOrderTime(String orderTime) {
         this.orderTime = orderTime;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

@@ -1,5 +1,7 @@
 package kz.capitalpay.server.payments.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -22,7 +24,9 @@ public class Payment {
     private BigDecimal totalAmount;
     private String currency;
     private String description;
+    @JsonIgnore
     private String phone;
+    @JsonIgnore
     private String email;
     private String param;
     private String ipAddress;
@@ -30,11 +34,20 @@ public class Payment {
     private String status;
     private String paymentLinkId;
     @Column(columnDefinition = "boolean default false")
-    private boolean toClient;
+    private boolean outgoing;
     @Column(columnDefinition = "boolean default false")
     private boolean p2p;
     @Column(columnDefinition = "boolean default false")
     private boolean saveBankCard;
+    private String rrn;
+    private String payerPan;
+    private String payerPhone;
+    private String payerEmail;
+    private String payerName;
+    private String receiverPan;
+    private String receiverPhone;
+    private String receiverEmail;
+    private String receiverName;
 
     public String getGuid() {
         return guid;
@@ -180,12 +193,12 @@ public class Payment {
         this.status = status;
     }
 
-    public boolean isToClient() {
-        return toClient;
+    public boolean isOutgoing() {
+        return outgoing;
     }
 
-    public void setToClient(boolean toClient) {
-        this.toClient = toClient;
+    public void setOutgoing(boolean toClient) {
+        this.outgoing = toClient;
     }
 
     public boolean isP2p() {
@@ -210,5 +223,77 @@ public class Payment {
 
     public void setPaymentLinkId(String paymentLinkId) {
         this.paymentLinkId = paymentLinkId;
+    }
+
+    public String getRrn() {
+        return rrn;
+    }
+
+    public void setRrn(String rrn) {
+        this.rrn = rrn;
+    }
+
+    public String getPayerPan() {
+        return payerPan;
+    }
+
+    public void setPayerPan(String payerPan) {
+        this.payerPan = payerPan;
+    }
+
+    public String getPayerPhone() {
+        return payerPhone;
+    }
+
+    public void setPayerPhone(String payerPhone) {
+        this.payerPhone = payerPhone;
+    }
+
+    public String getPayerEmail() {
+        return payerEmail;
+    }
+
+    public void setPayerEmail(String payerEmail) {
+        this.payerEmail = payerEmail;
+    }
+
+    public String getPayerName() {
+        return payerName;
+    }
+
+    public void setPayerName(String payerName) {
+        this.payerName = payerName;
+    }
+
+    public String getReceiverPan() {
+        return receiverPan;
+    }
+
+    public void setReceiverPan(String receiverPan) {
+        this.receiverPan = receiverPan;
+    }
+
+    public String getReceiverPhone() {
+        return receiverPhone;
+    }
+
+    public void setReceiverPhone(String receiverPhone) {
+        this.receiverPhone = receiverPhone;
+    }
+
+    public String getReceiverEmail() {
+        return receiverEmail;
+    }
+
+    public void setReceiverEmail(String receiverEmail) {
+        this.receiverEmail = receiverEmail;
+    }
+
+    public String getReceiverName() {
+        return receiverName;
+    }
+
+    public void setReceiverName(String receiverName) {
+        this.receiverName = receiverName;
     }
 }

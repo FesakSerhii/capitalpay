@@ -43,7 +43,7 @@ public class P2pPaymentService {
         this.restTemplate = restTemplate;
     }
 
-    public Payment generateP2pPayment(String ipAddress, String userAgent, Long merchantId, BigDecimal totalAmount, Long cashBoxId, boolean toClient, String currency, String param) {
+    public Payment generateP2pPayment(String ipAddress, String userAgent, Long merchantId, BigDecimal totalAmount, Long cashBoxId, boolean outgoing, String currency, String param) {
         Payment payment = new Payment();
         payment.setPaySysPayId(generateOrderId());
         payment.setGuid(UUID.randomUUID().toString());
@@ -55,7 +55,7 @@ public class P2pPaymentService {
         payment.setTimestamp(System.currentTimeMillis());
         payment.setTotalAmount(totalAmount);
         payment.setUserAgent(userAgent);
-        payment.setToClient(toClient);
+        payment.setOutgoing(outgoing);
         payment.setParam(param);
         payment.setP2p(true);
         payment.setStatus(NEW_PAYMENT);
