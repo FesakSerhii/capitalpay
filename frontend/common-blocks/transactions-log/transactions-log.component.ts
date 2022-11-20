@@ -97,7 +97,41 @@ export class TransactionsLogComponent implements OnInit {
     for(const field in obj){
       arr.push({field:field, value:obj[field]})
     }
-    this.transactionDetails = [...arr]
+    this.transactionDetails = [...arr];
+
+    this.transactionDetails = this.transactionDetails.map((item: any) => {
+      switch (item.field) {
+        case 'outgoing':
+          item.label = 'Направление платежа'
+          item.value = item.value ? 'Входной' : 'Выходной'
+          break;
+        case 'payerPan':
+          item.label = 'Карта отправителя'
+          break;
+        case 'payerPhone':
+          item.label = 'Телефон отправителя'
+          break;
+        case 'payerName':
+          item.label = 'Имя отправителя'
+          break;
+        case 'payerEmail':
+          item.label = 'Email отправителя'
+          break;
+        case 'receiverPan':
+          item.label = 'Карта получателя'
+          break;
+        case 'receiverPhone':
+          item.label = 'Телефон получателя'
+          break;
+        case 'receiverName':
+          item.label = 'Имя получателя'
+          break;
+        case 'receiverEmail':
+          item.label = 'Email получателя '
+          break;
+      }
+      return item;
+    })
   }
   getGuid(data){
    return data.filter(el=>el.field==='guid')[0].value
