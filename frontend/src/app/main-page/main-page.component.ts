@@ -35,7 +35,8 @@ export class MainPageComponent implements OnInit {
     this.mainForm = new FormGroup({
       phone: new FormControl('', Validators.required),
       name: new FormControl('', Validators.required),
-      email: new FormControl('', [Validators.required, Validators.email])
+      email: new FormControl('', [Validators.required, Validators.email]),
+      comment: new FormControl('', Validators.required),
     })
   }
 
