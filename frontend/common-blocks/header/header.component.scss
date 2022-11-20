@@ -2,23 +2,12 @@
 :host {
   .header-new {
     height: 96px;
+
     .container-wide {
       height: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
-    }
-    &__logo {
-
-    }
-
-    &__logo-image {
-
-    }
-
-    &__nav {
-
-
     }
 
     &__nav-menu {
@@ -29,9 +18,11 @@
 
     .item {
       margin-right: 85px;
+
       &:last-child {
         margin-right: 0;
       }
+
       &__link {
         font-family: 'MontMedium', sans-serif;
         font-size: 18px;
@@ -39,35 +30,46 @@
         color: #000000;
       }
     }
-
-    .btn {
-
-    }
   }
 }
-
-
 
 
 // Old styles
 
 @mixin for-phone-only {
-  @media (max-width: 599px) { @content; }
+  @media (max-width: 599px) {
+    @content;
+  }
 }
+
 @mixin for-tablet-portrait-up {
-  @media (min-width: 600px) { @content; }
+  @media (min-width: 600px) {
+    @content;
+  }
 }
+
 @mixin for-tablet-landscape-up {
-  @media (min-width: 900px) { @content; }
+  @media (min-width: 900px) {
+    @content;
+  }
 }
+
 @mixin for-desktop-up {
-  @media (min-width: 1200px) { @content; }
+  @media (min-width: 1200px) {
+    @content;
+  }
 }
+
 @mixin for-big-desktop-up {
-  @media (min-width: 1800px) { @content; }
+  @media (min-width: 1800px) {
+    @content;
+  }
 }
+
 @mixin smaller-than-desktop {
-  @media (max-width: 1000px) { @content; }
+  @media (max-width: 1000px) {
+    @content;
+  }
 }
 
 a {
@@ -87,17 +89,20 @@ a {
     display: inline;
   }
 }
-.sign-up--button{
+
+.sign-up--button {
   margin-left: 20px;
   padding: 11px 17px;
   background: #008d68;
-  color: white!important;
+  color: white !important;
   border-radius: 20px;
   display: none;
-  .white{
+
+  .white {
     background: white;
-    color: #008d68!important;
+    color: #008d68 !important;
   }
+
   @include for-big-desktop-up {
     display: inline;
   }
@@ -105,7 +110,8 @@ a {
     display: inline;
   }
 }
-.hamburger{
+
+.hamburger {
   margin-right: 16px;
   @include for-big-desktop-up {
     display: none;
@@ -150,18 +156,21 @@ a {
     font-size: 16px;
   }
 
-  input{
+  input {
     border: none;
     border-bottom: 1px solid #d2d2d7;
     margin-bottom: 21px;
-    &:focus{
+
+    &:focus {
       outline: none;
     }
-    &.error{
+
+    &.error {
       border-bottom: 1px solid #ff0000;
     }
   }
-  .disabled{
+
+  .disabled {
     pointer-events: none;
     cursor: not-allowed;
     opacity: 0.7;
@@ -210,7 +219,7 @@ a {
 }
 
 .header-menu {
-  width: min(1111px,90%);
+  width: min(1111px, 90%);
   height: 50px;
   margin: 0 auto;
   padding-top: 32px;
@@ -219,7 +228,8 @@ a {
   align-items: center;
   display: flex;
 }
-.dropdown{
+
+.dropdown {
   display: flex;
   flex-direction: column;
   position: absolute;
@@ -230,14 +240,16 @@ a {
   border-bottom-left-radius: 5px;
   padding-bottom: 16px;
 }
-.dropdown-link{
+
+.dropdown-link {
   margin-top: 12px;
-  padding:0 16px 0 16px;
+  padding: 0 16px 0 16px;
   font-size: 16px;
   color: white;
 }
+
 @include smaller-than-desktop {
-  .header{
-    background: #313234!important;
+  .header {
+    background: #313234 !important;
   }
 }
