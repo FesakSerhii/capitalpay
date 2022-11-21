@@ -23,7 +23,9 @@ public interface PaymentRepository extends JpaRepository<Payment, String> {
 
     List<Payment> findBySaveBankCardFalse();
 
-    List<Payment> findByCashboxIdAndStatus(Long cashboxId, String status);
+    List<Payment> findByCashboxIdAndStatusAndOutgoingFalse(Long cashboxId, String status);
+
+    List<Payment> findByCashboxIdAndStatusAndOutgoingTrue(Long cashboxId, String status);
 
     @Query(value = "select * " +
             " from payment " +
