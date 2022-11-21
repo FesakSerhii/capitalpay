@@ -32,20 +32,40 @@
       <div class="tab-pane" [class.active]="activeTab==='tab1'">
         <div class="d-flex flex-wrap">
           <ng-container *ngIf="!cashBoxEditOpened">
-            <div class="card mr-4" style="width: 380px;position:relative;" *ngFor="let cashBox of cashBoxList">
+            <div class="card mr-4 card-hover" style="width: 380px;position:relative; background-color: #EAF4F4;" *ngFor="let cashBox of cashBoxList">
               <div class="card-header card-header-success card-header-icon">
                 <div class="card-icon" style="padding: 20px;margin-bottom: -18px;">
                   <span class="material-icons" style="width: 43px;height: 43px;line-height: 43px;font-size: 38px">store</span>
                 </div>
                 <h4 class="card-title" style="text-align: end">{{cashBox.name}}</h4>
+                <div class=" mt-5">
+                  <div class="d-flex justify-content-between">
+                    <div>
+                      <div class="d-flex pb-2">
+                        <span style="color: #0f2024">Входящий</span>
+                      </div>
+                      <div class=" d-flex justify-content-end pb-0 pt-0" *ngFor="let balance of cashBox.incomingBalance">
+                        <span style="font-size: 28px;color: #0F001F">{{balance.currency}} {{balance.amount}}</span>
+                      </div>
+                      <div class="d-flex pb-0 pt-0" *ngIf="cashBox.incomingBalance && !cashBox.incomingBalance.length">
+                        <span style="font-size: 28px;color: #0F001F">KZT 0</span>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="d-flex justify-content-end  pb-2">
+                        <span style="color: #0f2024"> Исходящий</span>
+                      </div>
+                      <div class="d-flex justify-content-end pb-0 pt-0" *ngFor="let balance of cashBox.outgoingBalance">
+                        <span style="font-size: 28px;color: #0F001F">{{balance.currency}} {{balance.amount}}</span>
+                      </div>
+                      <div class="d-flex justify-content-end pb-0 pt-0" *ngIf="cashBox.outgoingBalance && !cashBox.outgoingBalance.length">
+                        <span style="font-size: 28px;color: #0F001F">KZT 0</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="card-body d-flex justify-content-end pb-0 pt-0" *ngFor="let balance of cashBox.balance">
-                <span style="font-size: 28px">{{balance.currency}} {{balance.amount}}</span>
-              </div>
-              <div class="card-body d-flex justify-content-end pb-0 pt-0" *ngIf="!cashBox.balance.length">
-                <span style="font-size: 28px">0</span>
-              </div>
-              <hr>
+              <hr class="mb-0">
               <div class="card-footer">
                 <a class="ml-auto" (click)="$event.preventDefault();selectedCashBoxId=selectedCashBoxId!==null?null:cashBox.id;"><img src="../../../assets/shapes/img/dots.svg" alt="dots"></a>
               </div>
