@@ -37,7 +37,7 @@ export class MainPageComponent implements OnInit {
       phone: new FormControl('', Validators.required),
       name: new FormControl('', Validators.required),
       email: new FormControl('', [Validators.required, Validators.email]),
-      comment: new FormControl('', Validators.required),
+      activity: new FormControl('', Validators.required),
     })
   }
 
