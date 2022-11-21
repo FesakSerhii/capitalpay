@@ -28,6 +28,7 @@ public class FeedBackService {
         try {
             String text = (Objects.nonNull(request.getCompanyName()) && !request.getCompanyName().isEmpty() ? "Наименование компании: " + request.getCompanyName() + "<br/>\n" : "")
             + (Objects.nonNull(request.getName()) && !request.getName().isEmpty() ? "Имя Фамилия: " + request.getName() + "<br/>\n" : "")
+            + (Objects.nonNull(request.getActivity()) && !request.getActivity().isEmpty() ? "Вид деятельности: " + request.getActivity() + "<br/>\n" : "")
                     + (Objects.nonNull(request.getPhone()) && !request.getPhone().isEmpty() ? "Номер телефона: " + request.getPhone() + " <br/>\n" : "")
                     + (Objects.nonNull(request.getEmail()) && !request.getEmail().isEmpty() ? "Email: " + request.getEmail() + " <br/>\n" : "")
                     + (Objects.nonNull(request.getText()) && !request.getText().isEmpty() ? "<br/>\n" + request.getText() + " <br/>" : "");

@@ -7,6 +7,7 @@ public class FeedBackDTO {
     private String phone;
     private String email;
     private String text;
+    private String activity;
 
     public String getCompanyName() {
         return companyName;
@@ -46,5 +47,13 @@ public class FeedBackDTO {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public String getActivity() {
+        return activity;
+    }
+
+    public void setActivity(String activity) {
+        this.activity = activity;
     }
 }
