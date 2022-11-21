@@ -153,13 +153,12 @@
           <img src="../../../assets/img/icon-3.svg" alt="icon" class="icon">
           <h3 class="headline">Квалифицированная поддержка вашего бизнеса</h3>
           <p class="description">24/7 служба поддержки контролирует платежи Ваших клиентов. В случае, если оплата была
-            не завершена мы связываемся с покупателем и помогаем оплатить.</p>
+            не завершена мы связываемся с покупателем и помогаем завершить платеж.</p>
         </div>
         <div class="advantage__cards-item item-4">
           <img src="../../../assets/img/icon-4.svg" alt="icon" class="icon">
           <h3 class="headline">Быстрый старт</h3>
-          <p class="description">Доступ к платежам и аналитике 24/7. Контролируйте и управляйте платежами. Возвращайте
-            оплату клиенту, формируйте отчеты, настраивайте платежные методы и прочие настройки магазина.</p>
+          <p class="description">Бесплатное подключение. Отсутствие абонентской платы. Комиссия только за успешные платежи.</p>
         </div>
         <div class="advantage__cards-item item-5">
           <img src="../../../assets/img/icon-5.svg" alt="icon" class="icon">
@@ -287,6 +286,20 @@
                 class="placeholder"
                 placeholder=" ">
               Электронная почта
+            </label>
+          </div>
+          <div class="input-block">
+            <input
+                formControlName="comment"
+                id="comment"
+                class="input"
+                type="text"
+                placeholder=" ">
+            <label
+                for="comment"
+                class="placeholder"
+                placeholder=" ">
+              Вид деятельности
             </label>
           </div>
           <p class="successStatus" *ngIf="successStatusMassage">{{successStatusMassage}}</p>
