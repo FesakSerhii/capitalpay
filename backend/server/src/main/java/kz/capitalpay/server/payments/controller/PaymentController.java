@@ -2,6 +2,7 @@ package kz.capitalpay.server.payments.controller;
 
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.payments.dto.OnePaymentDetailsRequestDTO;
+import kz.capitalpay.server.payments.dto.PaymentFilterDto;
 import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.util.ValidationUtil;
 import org.slf4j.Logger;
@@ -17,7 +18,8 @@ import java.security.Principal;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
 
 @RestController
-@RequestMapping(value = "/api/v1/auth/payments", produces = "application/json;charset=UTF-8")
+//@RequestMapping(value = "/api/v1/auth/payments", produces = "application/json;charset=UTF-8")
+@RequestMapping(value = "/api/v1/payments", produces = "application/json;charset=UTF-8")
 public class PaymentController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PaymentController.class);
@@ -31,9 +33,9 @@ public class PaymentController {
 
     @PostMapping("/list")
     @RolesAllowed({ADMIN, OPERATOR, MERCHANT})
-    ResultDTO paymentList(Principal principal) {
+    ResultDTO paymentList(Principal principal, @Valid @RequestBody PaymentFilterDto filter) {
         LOGGER.info("Payment List");
-        return paymentService.paymentList(principal);
+        return paymentService.paymentList(principal, filter);
     }
 
 
@@ -42,6 +44,13 @@ public class PaymentController {
     ResultDTO onePayment(Principal principal, @Valid @RequestBody OnePaymentDetailsRequestDTO request) {
         LOGGER.info("One payment");
         return paymentService.onePayment(principal, request);
+    }
+
+    @PostMapping("/get/merchant-names")
+    @RolesAllowed({ADMIN, OPERATOR, MERCHANT})
+    ResultDTO getMerchantNames(Principal principal) {
+        LOGGER.info("getMerchantNames()");
+        return paymentService.getPaymentsMerchantNames(principal);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

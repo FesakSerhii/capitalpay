@@ -228,6 +228,7 @@ public class SimpleService {
                 LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
                 return MERCHANT_TERMINAL_SETTINGS_NOT_FOUND;
             }
+            payment.setBankTerminalId(terminal.getInputTerminalId());
 
             Cashbox cashbox = cashboxService.findById(payment.getCashboxId());
             Map<String, String> resultUrls = cashboxSettingsService.getMerchantResultUrls(cashbox.getId());
@@ -256,6 +257,7 @@ public class SimpleService {
             } else {
                 String purchaseXml = halykSoapService.createPurchaseXml(payment.getPaySysPayId(), totalamount, terminal.getInputTerminalId());
                 LOGGER.info("purchaseXml {}", purchaseXml);
+                paymentService.save(payment);
 
                 String encodedXml = Base64.getEncoder().encodeToString(purchaseXml.getBytes());
                 Map<String, String> result = new HashMap<>();

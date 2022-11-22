@@ -64,6 +64,7 @@ public class PaymentLinkService {
             paymentLink.setMerchantName(dto.getMerchantName());
             paymentLink.setEmailTitle(dto.getEmailTitle());
             paymentLink.setCashBoxId(dto.getCashBoxId());
+            paymentLink.setCreateDate(LocalDateTime.now());
             paymentLink.setMerchantEmail(dto.getMerchantEmail());
             paymentLink.setPayerEmail(dto.getPayerEmail());
             paymentLink.setValidHours(dto.getValidHours());

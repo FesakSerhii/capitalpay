@@ -383,7 +383,8 @@ public class HalykSoapService {
     }
 
     public String sendP2p(String ipAddress, String userAgent, CardDataResponseDto payerCardData, SendP2pToClientDto dto, String paymentToPan, boolean toClient, Long terminalId) {
-        Payment payment = p2pPaymentService.generateP2pPayment(ipAddress, userAgent, dto.getMerchantId(), dto.getAcceptedSum(), dto.getCashBoxId(), toClient, currency, dto.getParam());
+        Payment payment = p2pPaymentService.generateP2pPayment(ipAddress, userAgent, dto.getMerchantId(),
+                dto.getAcceptedSum(), dto.getCashBoxId(), toClient, currency, dto.getParam(), terminalId);
 
         HalykOrder transferOrder = generateHalykOrder(dto.getAcceptedSum(), "", "p2p", payment.getPaySysPayId(), 8, HalykOrderDictionary.TRANSFER_ORDER, terminalId.toString());
 

@@ -1,6 +1,9 @@
 package kz.capitalpay.server.payments.repository;
 
 import kz.capitalpay.server.payments.model.Payment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -19,9 +22,9 @@ public interface PaymentRepository extends JpaRepository<Payment, String> {
 
     Payment findTopByPaySysPayId(String paySysPayId);
 
-    List<Payment> findByMerchantIdAndSaveBankCardFalse(Long merchantId);
+    List<Payment> findAllByMerchantIdAndSaveBankCardFalse(Long merchantId);
 
-    List<Payment> findBySaveBankCardFalse();
+    List<Payment> findAllBySaveBankCardFalse();
 
     List<Payment> findByCashboxIdAndStatusAndOutgoingFalse(Long cashboxId, String status);
 
@@ -34,4 +37,6 @@ public interface PaymentRepository extends JpaRepository<Payment, String> {
     Optional<Payment> findLastByPaySysPayId();
 
     Optional<Payment> findByPaySysPayId(String orderId);
+
+    Page<Payment> findAll(Specification<Payment> specification, Pageable pageable);
 }
