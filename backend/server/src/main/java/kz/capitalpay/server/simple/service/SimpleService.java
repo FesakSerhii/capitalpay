@@ -108,6 +108,9 @@ public class SimpleService {
     @Value("${bank.url.test}")
     private String bankTestUrl;
 
+    @Value("${halyk.soap.merchant.id.test}")
+    private String testTerminalId;
+
     // Payment Status
     public static final String NEW_PAYMENT = "NEW";
     public static final String SUCCESS = "SUCCESS";
@@ -198,6 +201,7 @@ public class SimpleService {
                                        BigDecimal totalamount, String currency, String description,
                                        String param, String paymentLink) {
         try {
+            Cashbox cashbox = cashboxService.findById(cashboxid);
             SimpleRequestDTO request = new SimpleRequestDTO();
             String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");
             if (ipAddress == null) {
@@ -218,6 +222,26 @@ public class SimpleService {
                 return paymentResult;
             }
             Payment payment = (Payment) paymentResult.getData();
+            ApplicationUser user = applicationUserService.findById(cashbox.getMerchantId());
+            Map<String, String> resultUrls = cashboxSettingsService.getMerchantResultUrls(cashbox.getId());
+            if (user.isTest()) {
+                payment.setBankTerminalId(Long.valueOf(testTerminalId));
+                String purchaseXml = halykSoapService.createTestPurchaseXml(payment.getPaySysPayId(), totalamount);
+                LOGGER.info("purchaseXml {}", purchaseXml);
+                paymentService.save(payment);
+
+                String encodedXml = Base64.getEncoder().encodeToString(purchaseXml.getBytes());
+                Map<String, String> result = new HashMap<>();
+                result.put("xml", encodedXml);
+                result.put("p2p", "false");
+                result.put("backLink", resultUrls.get(REDIRECT_SUCCESS_URL));
+                result.put("FailureBackLink", resultUrls.get(REDIRECT_FAILED_URL));
+                result.put("FailurePostLink", apiAddress + "/api/purchase-link");
+                result.put("postLink", apiAddress + "/api/purchase-link");
+                result.put("test", "true");
+                return new ResultDTO(true, result, 0);
+            }
+
             MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(payment.getMerchantId());
             if (Objects.isNull(merchantP2pSettings) || Objects.isNull(merchantP2pSettings.getTerminalId())) {
                 LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
@@ -230,8 +254,6 @@ public class SimpleService {
             }
             payment.setBankTerminalId(terminal.getInputTerminalId());
 
-            Cashbox cashbox = cashboxService.findById(payment.getCashboxId());
-            Map<String, String> resultUrls = cashboxSettingsService.getMerchantResultUrls(cashbox.getId());
             if (terminal.isP2p()) {
                 payment.setP2p(true);
                 Long merchantCardId = cashboxService.findUserCardIdByCashBoxId(payment.getCashboxId());
@@ -267,6 +289,7 @@ public class SimpleService {
                 result.put("FailureBackLink", resultUrls.get(REDIRECT_FAILED_URL));
                 result.put("FailurePostLink", apiAddress + "/api/purchase-link");
                 result.put("postLink", apiAddress + "/api/purchase-link");
+                result.put("test", "false");
                 return new ResultDTO(true, result, 0);
             }
         } catch (Exception e) {
@@ -320,30 +343,41 @@ public class SimpleService {
         String xml = requestBody.replace("response=", "");
         HalykPurchaseOrder halykPurchaseOrder = halykSoapService.parseBankPurchaseOrder(xml);
         if (Objects.isNull(halykPurchaseOrder)) {
-            LOGGER.info("halykAnonymousP2pOrder is NULL");
+            LOGGER.info("halykPurchaseOrder is NULL");
             return;
         }
         halykPurchaseOrderRepository.save(halykPurchaseOrder);
         if (Objects.nonNull(halykPurchaseOrder.getResponseCode()) && halykPurchaseOrder.getResponseCode().equals("00")) {
             Payment mainPayment = paymentService.findByPaySysPayId(halykPurchaseOrder.getOrderId());
-            MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(mainPayment.getMerchantId());
-            if (Objects.isNull(merchantP2pSettings) || Objects.isNull(merchantP2pSettings.getTerminalId())) {
-                LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
-                return;
-            }
-            Terminal terminal = terminalRepository.findByIdAndDeletedFalse(merchantP2pSettings.getTerminalId()).orElse(null);
-            if (Objects.isNull(terminal)) {
-                LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
-                return;
-            }
-            String controlOrderXml = halykSoapService.createPurchaseControlXml(halykPurchaseOrder.getOrderId(),
-                    halykPurchaseOrder.getAmount(),
+            ApplicationUser user = applicationUserService.findById(mainPayment.getMerchantId());
+            String controlOrderXml;
+            String url;
+            if (user.isTest()) {
+                controlOrderXml = halykSoapService.createTestPurchaseControlXml(halykPurchaseOrder.getOrderId(),
+                        halykPurchaseOrder.getAmount(),
+                        halykPurchaseOrder.getReference(),
+                        HalykControlOrderCommandTypeDictionary.COMPLETE);
+                url = bankTestUrl + "/jsp/remote/control.jsp?" + controlOrderXml;
+            } else {
+                MerchantP2pSettings merchantP2pSettings = p2pSettingsService.findP2pSettingsByMerchantId(mainPayment.getMerchantId());
+                if (Objects.isNull(merchantP2pSettings) || Objects.isNull(merchantP2pSettings.getTerminalId())) {
+                    LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
+                    return;
+                }
+                Terminal terminal = terminalRepository.findByIdAndDeletedFalse(merchantP2pSettings.getTerminalId()).orElse(null);
+                if (Objects.isNull(terminal)) {
+                    LOGGER.info(MERCHANT_TERMINAL_SETTINGS_NOT_FOUND.toString());
+                    return;
+                }
+                controlOrderXml = halykSoapService.createPurchaseControlXml(halykPurchaseOrder.getOrderId(),
+                        halykPurchaseOrder.getAmount(),
 //                    92061102L,
-                    terminal.getInputTerminalId(),
-                    halykPurchaseOrder.getReference(),
-                    HalykControlOrderCommandTypeDictionary.COMPLETE);
+                        terminal.getInputTerminalId(),
+                        halykPurchaseOrder.getReference(),
+                        HalykControlOrderCommandTypeDictionary.COMPLETE);
+                url = bankUrl + "/jsp/remote/control.jsp?" + controlOrderXml;
+            }
 
-            String url = bankUrl + "/jsp/remote/control.jsp?" + controlOrderXml;
             LOGGER.info("controlOrder url {}", url);
             ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
             LOGGER.info("halykBankControlOrder response body {}", response.getBody());

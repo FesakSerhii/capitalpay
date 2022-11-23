@@ -85,7 +85,7 @@ public class SimpleController {
             modelMap.addAttribute("xml", resultMap.get("xml"));
             modelMap.addAttribute("backLink", resultMap.get("backLink"));
             modelMap.addAttribute("postLink", resultMap.get("postLink"));
-            return "purchase";
+            return resultMap.get("test").equals("true") ? "testPurchase" : "purchase";
         } else {
             modelMap.addAttribute("message", resultDTO.getData());
             return "paysystems/error";
