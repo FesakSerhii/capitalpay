@@ -18,8 +18,8 @@ import java.security.Principal;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
 
 @RestController
-//@RequestMapping(value = "/api/v1/auth/payments", produces = "application/json;charset=UTF-8")
-@RequestMapping(value = "/api/v1/payments", produces = "application/json;charset=UTF-8")
+@RequestMapping(value = "/api/v1/auth/payments", produces = "application/json;charset=UTF-8")
+//@RequestMapping(value = "/api/v1/payments", produces = "application/json;charset=UTF-8")
 public class PaymentController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PaymentController.class);
