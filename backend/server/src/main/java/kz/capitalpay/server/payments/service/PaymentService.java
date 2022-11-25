@@ -176,6 +176,27 @@ public class PaymentService {
         }
     }
 
+    public ResultDTO paymentList(Principal principal) {
+        try {
+            ApplicationUser applicationUser = applicationUserService.getUserByLogin(principal.getName());
+            if (applicationUser == null) {
+                return USER_NOT_FOUND;
+            }
+            List<Payment> paymentList;
+            if (applicationUser.getRoles().contains(applicationRoleService.getRole(OPERATOR))
+                    || applicationUser.getRoles().contains(applicationRoleService.getRole(ADMIN))) {
+                paymentList = paymentRepository.findAllBySaveBankCardFalse();
+            } else {
+                paymentList = paymentRepository.findAllByMerchantIdAndSaveBankCardFalse(applicationUser.getId());
+            }
+            paymentList.sort((o1, o2) -> o2.getTimestamp().compareTo(o1.getTimestamp()));
+            return new ResultDTO(true, paymentList, 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultDTO(false, e.getMessage(), -1);
+        }
+    }
+
     public ResultDTO onePayment(Principal principal, OnePaymentDetailsRequestDTO request) {
         try {
             ApplicationUser applicationUser = applicationUserService.getUserByLogin(principal.getName());
