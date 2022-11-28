@@ -434,14 +434,23 @@ public class CashboxService {
         cashboxDTO.setName(cashbox.getName());
         cashboxDTO.setMerchantId(cashbox.getMerchantId());
         cashboxDTO.setDeleted(cashbox.isDeleted());
-        cashboxDTO.setBalance(getBalance(cashbox.getId()));
+        cashboxDTO.setIncomingBalance(getIncomingBalance(cashbox.getId()));
+        cashboxDTO.setOutgoingBalance(getOutgoingBalance(cashbox.getId()));
         return cashboxDTO;
     }
 
-    private List<CashboxBalanceDTO> getBalance(Long cashboxId) {
-        Map<String, BigDecimal> result = new HashMap<>();
-        List<Payment> paymentList = paymentRepository.findByCashboxIdAndStatus(cashboxId, SUCCESS);
+    private List<CashboxBalanceDTO> getIncomingBalance(Long cashboxId) {
+        List<Payment> paymentList = paymentRepository.findByCashboxIdAndStatusAndOutgoingFalse(cashboxId, SUCCESS);
+        return countBalance(paymentList);
+    }
 
+    private List<CashboxBalanceDTO> getOutgoingBalance(Long cashboxId) {
+        List<Payment> paymentList = paymentRepository.findByCashboxIdAndStatusAndOutgoingTrue(cashboxId, SUCCESS);
+        return countBalance(paymentList);
+    }
+
+    private List<CashboxBalanceDTO> countBalance(List<Payment> paymentList) {
+        Map<String, BigDecimal> result = new HashMap<>();
         for (Payment payment : paymentList) {
             BigDecimal amount = BigDecimal.ZERO;
             if (result.containsKey(payment.getCurrency())) {

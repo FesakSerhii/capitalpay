@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Test redirect</title>
+</head>
+<body>
+<FORM action="https://testpay.kkb.kz/jsp/process/logon.jsp"
+      METHOD="POST" id="SendOrder" hidden></br>
+    <input hidden name="Signed_Order_B64" type="text" th:value="${xml}"/>
+    <input hidden name="BackLink" type="text" th:value="${backLink}"/>
+    <input hidden name="PostLink" type="text" th:value="${postLink}"/>
+    <input hidden name="Language" type="text" value="rus"/>
+    <input hidden type="submit" name="GotoPay" value="SEND"/>
+</FORM>
+
+<script>
+    form = document.getElementById("SendOrder");
+    form.submit();
+</script>
+
+</body>
+</html>

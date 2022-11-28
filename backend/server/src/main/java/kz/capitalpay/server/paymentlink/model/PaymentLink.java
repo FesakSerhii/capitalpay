@@ -18,6 +18,7 @@ public class PaymentLink {
     @Column(precision = 30, scale = 2)
     private BigDecimal totalAmount;
     private LocalDateTime validTill;
+    private LocalDateTime createDate;
     private String payerEmail;
     private String emailTitle;
     private String emailText;
@@ -155,5 +156,13 @@ public class PaymentLink {
 
     public void setValidHours(Integer validHours) {
         this.validHours = validHours;
+    }
+
+    public LocalDateTime getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(LocalDateTime createDate) {
+        this.createDate = createDate;
     }
 }

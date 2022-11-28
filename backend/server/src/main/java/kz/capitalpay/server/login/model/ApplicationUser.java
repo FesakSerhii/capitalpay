@@ -15,10 +15,12 @@ public class ApplicationUser implements Serializable, Cloneable {
     private String realname;
     private String email;
     private Long timestamp;
-    @Column(name = "active", columnDefinition = "boolean default false", nullable = false)
+    @Column(columnDefinition = "boolean default false")
     private boolean active;
-    @Column(name = "blocked", columnDefinition = "boolean default false", nullable = false)
+    @Column(columnDefinition = "boolean default false")
     private boolean blocked;
+    @Column(columnDefinition = "boolean default false")
+    private boolean test;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<ApplicationRole> roles;
@@ -93,5 +95,13 @@ public class ApplicationUser implements Serializable, Cloneable {
 
     public void setBlocked(boolean blocked) {
         this.blocked = blocked;
+    }
+
+    public boolean isTest() {
+        return test;
+    }
+
+    public void setTest(boolean test) {
+        this.test = test;
     }
 }

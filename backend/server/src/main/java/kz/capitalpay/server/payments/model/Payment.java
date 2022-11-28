@@ -48,6 +48,7 @@ public class Payment {
     private String receiverPhone;
     private String receiverEmail;
     private String receiverName;
+    private Long bankTerminalId;
 
     public String getGuid() {
         return guid;
@@ -295,5 +296,13 @@ public class Payment {
 
     public void setReceiverName(String receiverName) {
         this.receiverName = receiverName;
+    }
+
+    public Long getBankTerminalId() {
+        return bankTerminalId;
+    }
+
+    public void setBankTerminalId(Long bankTerminalId) {
+        this.bankTerminalId = bankTerminalId;
     }
 }

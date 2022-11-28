@@ -88,7 +88,7 @@ public class HalykSoapService {
     @Value("${kkbsign.send.order.action.link}")
     String sendOrderActionLink;
 
-    @Value("${halyk.soap.merchant.id}")
+    @Value("${halyk.soap.merchant.id.test}")
     String testTerminalId;
 
     @Value("${halyk.soap.certificate.id}")
@@ -383,7 +383,8 @@ public class HalykSoapService {
     }
 
     public String sendP2p(String ipAddress, String userAgent, CardDataResponseDto payerCardData, SendP2pToClientDto dto, String paymentToPan, boolean toClient, Long terminalId) {
-        Payment payment = p2pPaymentService.generateP2pPayment(ipAddress, userAgent, dto.getMerchantId(), dto.getAcceptedSum(), dto.getCashBoxId(), toClient, currency, dto.getParam());
+        Payment payment = p2pPaymentService.generateP2pPayment(ipAddress, userAgent, dto.getMerchantId(),
+                dto.getAcceptedSum(), dto.getCashBoxId(), toClient, currency, dto.getParam(), terminalId);
 
         HalykOrder transferOrder = generateHalykOrder(dto.getAcceptedSum(), "", "p2p", payment.getPaySysPayId(), 8, HalykOrderDictionary.TRANSFER_ORDER, terminalId.toString());
 
@@ -1242,6 +1243,32 @@ public class HalykSoapService {
                 merchantStr, signatureValue);
     }
 
+    public String createTestPurchaseXml(String orderId, BigDecimal amount) {
+        KKBSign kkbSign = new KKBSign();
+        String merchantName = "CAPITALPAY";
+        String currencyCode = "398";
+        String amountStr = amount.setScale(2).toString();
+
+        String merchantStr = String.format("<merchant " + "cert_id=\"%s\" " + "name=\"%s\">" + "<order " + "order_id=\"%s\" " + "amount=\"%s\" " + "currency=\"%s\">" + "<department " + "merchant_id=\"%s\" " + "amount=\"%s\"/>" + "</order>" + "</merchant>",
+                testCertificateId, merchantName, orderId, amountStr, currencyCode, testTerminalId, amountStr);
+
+        String signatureValue = kkbSign.sign64(merchantStr, testKeystore, clientAlias, testKeypass, testStorepass);
+
+        HalykPurchaseOrder halykOrder = new HalykPurchaseOrder();
+        halykOrder.setMerchantCertId(testCertificateId);
+        halykOrder.setMerchantName(merchantName);
+        halykOrder.setOrderId(orderId);
+        halykOrder.setAmount(amountStr);
+        halykOrder.setCurrencyCode(currencyCode);
+        halykOrder.setMerchantId(testTerminalId);
+        halykOrder.setMerchantSign(signatureValue);
+        halykPurchaseOrderRepository.save(halykOrder);
+
+        return String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?><document>%s" + "<merchant_sign type=\"RSA\">%s</merchant_sign>" + "</document>",
+
+                merchantStr, signatureValue);
+    }
+
     public String createPurchaseControlXml(String orderId, String amount, Long terminalId, String reference, String commandType) {
         KKBSign kkbSign = new KKBSign();
         String currencyCode = "398";
@@ -1258,6 +1285,32 @@ public class HalykSoapService {
         halykOrder.setAmount(amount);
         halykOrder.setCurrencyCode(currencyCode);
         halykOrder.setMerchantId(terminalId.toString());
+        halykOrder.setMerchantSign(signatureValue);
+        halykOrder.setCommandType(commandType);
+        halykOrder.setReference(reference);
+        halykBankControlOrderRepository.save(halykOrder);
+
+        return String.format("<document>%s" + "<merchant_sign type=\"RSA\" cert_id=\"%s\">%s</merchant_sign>" + "</document>",
+
+                merchantStr, merchantCertificate, signatureValue);
+    }
+
+    public String createTestPurchaseControlXml(String orderId, String amount, String reference, String commandType) {
+        KKBSign kkbSign = new KKBSign();
+        String currencyCode = "398";
+
+        String merchantStr = String.format("<merchant " + "id=\"%s\">" + "<command type=\"%s\"/>" + "<payment " + "reference=\"%s\" " + "approval_code=\"00\" " + "orderid=\"%s\" " + "amount=\"%s\" " + "currency_code=\"%s\"/>" + "</merchant>",
+
+                testTerminalId, commandType, reference, orderId, amount, currencyCode);
+
+        String signatureValue = kkbSign.sign64(merchantStr, testKeystore, clientAlias, testKeypass, testStorepass);
+
+        HalykBankControlOrder halykOrder = new HalykBankControlOrder();
+        halykOrder.setMerchantCertId(testCertificateId);
+        halykOrder.setOrderId(orderId);
+        halykOrder.setAmount(amount);
+        halykOrder.setCurrencyCode(currencyCode);
+        halykOrder.setMerchantId(testTerminalId);
         halykOrder.setMerchantSign(signatureValue);
         halykOrder.setCommandType(commandType);
         halykOrder.setReference(reference);

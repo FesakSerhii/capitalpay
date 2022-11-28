@@ -8,6 +8,7 @@ import kz.capitalpay.server.p2p.dto.SendP2pToClientDto;
 import kz.capitalpay.server.p2p.service.P2pPaymentService;
 import kz.capitalpay.server.p2p.service.P2pService;
 import kz.capitalpay.server.payments.model.Payment;
+import kz.capitalpay.server.payments.repository.PaymentRepository;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import kz.capitalpay.server.simple.service.SimpleService;
 import org.slf4j.Logger;
@@ -39,6 +40,7 @@ public class P2pPaymentsController {
     private final HalykSoapService halykSoapService;
     private final Gson gson;
     private final CashboxSettingsService cashboxSettingsService;
+    private final PaymentRepository paymentRepository;
 
     @Value("${payment.p2p.redirect.url}")
     private String paymentRedirectUrl;
@@ -49,12 +51,13 @@ public class P2pPaymentsController {
     @Value("${kkbsign.send.order.action.link}")
     String actionLink;
 
-    public P2pPaymentsController(P2pService p2pService, P2pPaymentService p2pPaymentService, HalykSoapService halykSoapService, Gson gson, CashboxSettingsService cashboxSettingsService) {
+    public P2pPaymentsController(P2pService p2pService, P2pPaymentService p2pPaymentService, HalykSoapService halykSoapService, Gson gson, CashboxSettingsService cashboxSettingsService, PaymentRepository paymentRepository) {
         this.p2pService = p2pService;
         this.p2pPaymentService = p2pPaymentService;
         this.halykSoapService = halykSoapService;
         this.gson = gson;
         this.cashboxSettingsService = cashboxSettingsService;
+        this.paymentRepository = paymentRepository;
     }
 
 
@@ -197,6 +200,8 @@ public class P2pPaymentsController {
             redirectAttributes.addAttribute("xml", resultMap.get("xml"));
             redirectAttributes.addAttribute("backLink", resultMap.get("backLink"));
             redirectAttributes.addAttribute("postLink", resultMap.get("postLink"));
+            payment.setBankTerminalId(Long.parseLong(resultMap.get("terminalId")));
+            paymentRepository.save(payment);
             return new RedirectView(anonymousP2pPageUrl);
         } else {
             redirectAttributes.addAttribute("error", resultDTO.getError());

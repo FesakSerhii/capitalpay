@@ -201,5 +201,11 @@ public class ApplicationUserService {
         String token = request.getHeader(HEADER_STRING).replace(TOKEN_PREFIX, "");
         return JWT.decode(token).getClaim("merchantId").asLong();
     }
+
+    public ApplicationUser findById(Long userId) {
+        return applicationUserRepository.findById(userId).orElse(null);
+    }
+
+
 }
 
