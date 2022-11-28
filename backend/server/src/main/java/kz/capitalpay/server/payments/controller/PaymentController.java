@@ -31,12 +31,12 @@ public class PaymentController {
         this.validationUtil = validationUtil;
     }
 
-//    @PostMapping("/list")
-//    @RolesAllowed({ADMIN, OPERATOR, MERCHANT})
-//    ResultDTO paymentList(Principal principal, @Valid @RequestBody PaymentFilterDto filter) {
-//        LOGGER.info("Payment List");
-//        return paymentService.paymentList(principal, filter);
-//    }
+    @PostMapping("/list/new")
+    @RolesAllowed({ADMIN, OPERATOR, MERCHANT})
+    ResultDTO paymentList(Principal principal, @Valid @RequestBody PaymentFilterDto filter) {
+        LOGGER.info("Payment List");
+        return paymentService.paymentList(principal, filter);
+    }
 
     @PostMapping("/list")
     @RolesAllowed({ADMIN, OPERATOR, MERCHANT})
