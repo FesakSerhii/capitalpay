@@ -7,6 +7,8 @@ import {SearchInputService} from "../../src/app/service/search-input.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {dateCompareValidator} from "../validators/dateCompareValidator";
 import {MassageModalComponent} from "../massage-modal/massage-modal.component";
+import {Observable} from "rxjs";
+import {debounceTime, distinctUntilChanged, map} from "rxjs/operators";
 
 @Component({
     selector: "app-transactions-log",
@@ -25,6 +27,7 @@ export class TransactionsLogComponent implements OnInit {
     isAdmin: boolean;
     transactionContent: any = null;
     transactionList: any[] = null;
+    merchantNames: any[] = null;
     dontTouched: any[] = null;
     transactionDetails: any = null;
     currentPage: number = 1;
@@ -79,12 +82,28 @@ export class TransactionsLogComponent implements OnInit {
         this.showItem.valueChanges.subscribe(a => {
             this.getTransactions(1);
         })
-
+        this.paymentsService.postMerchantNames().then(rest => {
+            this.merchantNames = rest.data
+        })
     }
+
+    searchMerchantNames: (text$: Observable<string>) => Observable<string[]> = (text$: Observable<string>) => text$.pipe(
+        debounceTime(200),
+        distinctUntilChanged(),
+        map((name) => {
+            return name.length < 2 ? [] : this.merchantNames.filter((v) => v.toLowerCase().indexOf(name.toLowerCase()) > -1).slice(0, 10)
+        }),
+    );
 
     async getTransactions(page: number = 1, filterForm: any = this.filter.value, sort: any = {}) {
         this.transactionContent = {
-            ...await this.paymentsService.getTransactionsList({...{page, limit: this.showItem.value, sortDto: sort}, ...filterForm})
+            ...await this.paymentsService.getTransactionsList({
+                ...{
+                    page,
+                    limit: this.showItem.value,
+                    sortDto: sort
+                }, ...filterForm
+            })
         }.data;
         this.transactionList = this.transactionContent.content;
         this.totalElements = this.transactionContent.totalElements;
@@ -160,7 +179,10 @@ export class TransactionsLogComponent implements OnInit {
     async nextSort(field) {
         let sh: SortHelper = this.sortHelper;
         this.sortHelper = sh.nextSort(field);
-        await this.getTransactions(this.currentPage, this.filter.value, {field: this.sortHelper.sortBy, asc: this.sortHelper.increase})
+        await this.getTransactions(this.currentPage, this.filter.value, {
+            field: this.sortHelper.sortBy,
+            asc: this.sortHelper.increase
+        })
     }
 
     get sortedActions() {

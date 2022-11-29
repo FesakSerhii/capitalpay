@@ -32,6 +32,10 @@ export class PaymentsService {
     const filter = Object.keys(obj).reduce((item, key) => (obj[key] === undefined || obj[key] === null || obj[key] === {} || key === 'dateStart' || key === 'dateEnd' ? item : {...item, [key]: obj[key]}), {});
     return this.apiService.postJwt('api','/payments/list',this.tokenService.token, filter).toPromise();
   }
+  postMerchantNames() {
+    return this.apiService.postJwt('api','/payments/get/merchant-names',this.tokenService.token).toPromise();
+  }
+
   getTransactionDetails(guid){
     return this.apiService.postJwt('api','/payments/one',this.tokenService.token,{guid}).toPromise();
   }
