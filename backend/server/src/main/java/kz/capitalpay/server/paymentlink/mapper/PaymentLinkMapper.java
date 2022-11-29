@@ -1,6 +1,8 @@
 package kz.capitalpay.server.paymentlink.mapper;
 
+import kz.capitalpay.server.paymentlink.dto.CreationLinkResponseDto;
 import kz.capitalpay.server.paymentlink.dto.PaymentLinkResponseDto;
+import kz.capitalpay.server.paymentlink.model.PaymentCreationLink;
 import kz.capitalpay.server.paymentlink.model.PaymentLink;
 import kz.capitalpay.server.util.QrCodeUtil;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,4 +42,16 @@ public class PaymentLinkMapper {
         dto.setQrCode(qrCodeUtil.generateQrCode(link));
         return dto;
     }
+
+    public CreationLinkResponseDto toCreationLinkResponseDto(PaymentCreationLink creationLink, String link, String qr) {
+        return new CreationLinkResponseDto(
+                creationLink.getId(),
+                creationLink.getCashBoxId(),
+                creationLink.getCompanyName(),
+                creationLink.getContactPhone(),
+                creationLink.getCashBoxId(),
+                link,
+                qr);
+    }
+
 }

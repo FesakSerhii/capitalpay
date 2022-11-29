@@ -45,6 +45,7 @@ public class ErrorDictionary {
     public static final ResultDTO OCCUPIED_TERMINAL = new ResultDTO(false, "Terminal is already occupied!", 140);
     public static final ResultDTO LINK_NOT_FOUND = new ResultDTO(false, "Link not found", 141);
     public static final ResultDTO ALREADY_PAID = new ResultDTO(false, "Link payment is already successful", 142);
+    public static final ResultDTO CREATION_LINK_ALREADY_EXISTS = new ResultDTO(false, "Link for this cashBox already exists", 143);
 
 
 }

@@ -10,9 +10,13 @@ import kz.capitalpay.server.files.model.FileStorage;
 import kz.capitalpay.server.files.service.FileStorageService;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.service.ApplicationUserService;
+import kz.capitalpay.server.paymentlink.dto.CreatePaymentCreationLinkDto;
 import kz.capitalpay.server.paymentlink.dto.CreatePaymentLinkDto;
 import kz.capitalpay.server.paymentlink.mapper.PaymentLinkMapper;
+import kz.capitalpay.server.paymentlink.model.EditPaymentCreationLinkDto;
+import kz.capitalpay.server.paymentlink.model.PaymentCreationLink;
 import kz.capitalpay.server.paymentlink.model.PaymentLink;
+import kz.capitalpay.server.paymentlink.repository.PaymentCreationLinkRepository;
 import kz.capitalpay.server.paymentlink.repository.PaymentLinkRepository;
 import kz.capitalpay.server.service.SendEmailService;
 import kz.capitalpay.server.util.QrCodeUtil;
@@ -30,6 +34,8 @@ public class PaymentLinkService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PaymentLinkService.class);
 
+    private static final String merchantPaymentUrl = "";
+
     private final PaymentLinkRepository paymentLinkRepository;
     private final QrCodeUtil qrCodeUtil;
     private final SendEmailService sendEmailService;
@@ -38,11 +44,12 @@ public class PaymentLinkService {
     private final PaymentLinkMapper paymentLinkMapper;
     private final ApplicationUserService applicationUserService;
     private final CashboxService cashboxService;
+    private final PaymentCreationLinkRepository paymentCreationLinkRepository;
 
     @Value("${remote.api.addres}")
     private String apiAddress;
 
-    public PaymentLinkService(PaymentLinkRepository paymentLinkRepository, QrCodeUtil qrCodeUtil, SendEmailService sendEmailService, FileStorageService fileStorageService, ObjectMapper objectMapper, PaymentLinkMapper paymentLinkMapper, ApplicationUserService applicationUserService, CashboxService cashboxService) {
+    public PaymentLinkService(PaymentLinkRepository paymentLinkRepository, QrCodeUtil qrCodeUtil, SendEmailService sendEmailService, FileStorageService fileStorageService, ObjectMapper objectMapper, PaymentLinkMapper paymentLinkMapper, ApplicationUserService applicationUserService, CashboxService cashboxService, PaymentCreationLinkRepository paymentCreationLinkRepository) {
         this.paymentLinkRepository = paymentLinkRepository;
         this.qrCodeUtil = qrCodeUtil;
         this.sendEmailService = sendEmailService;
@@ -51,10 +58,14 @@ public class PaymentLinkService {
         this.paymentLinkMapper = paymentLinkMapper;
         this.applicationUserService = applicationUserService;
         this.cashboxService = cashboxService;
+        this.paymentCreationLinkRepository = paymentCreationLinkRepository;
     }
 
     public ResultDTO createPaymentLink(CreatePaymentLinkDto dto) {
         try {
+            if (paymentCreationLinkRepository.existsByCashBoxIdAndDeletedFalse(dto.getCashBoxId())) {
+                return ErrorDictionary.CREATION_LINK_ALREADY_EXISTS;
+            }
             PaymentLink paymentLink = new PaymentLink();
             paymentLink.setGuid(UUID.randomUUID().toString());
             paymentLink.setBillId(dto.getBillId());
@@ -133,6 +144,65 @@ public class PaymentLinkService {
         String link = apiAddress + "/payment/simple/pay-with-link/" + paymentLink.getGuid();
         sendPaymentLinkEmail(paymentLink, link);
         return new ResultDTO(true, "SUCCESS", 0);
+    }
+
+    public ResultDTO createPaymentCreationLink(CreatePaymentCreationLinkDto dto) {
+        try {
+            PaymentCreationLink creationLink = new PaymentCreationLink();
+            creationLink.setCashBoxId(dto.getCashBoxId());
+            creationLink.setId(UUID.randomUUID().toString());
+            creationLink.setCompanyName(dto.getCompanyName());
+            creationLink.setContactPhone(dto.getContactPhone());
+            Cashbox cashbox = cashboxService.findById(dto.getCashBoxId());
+            if (Objects.isNull(cashbox)) {
+                return ErrorDictionary.CASHBOX_NOT_FOUND;
+            }
+            paymentCreationLinkRepository.save(creationLink);
+            String link = merchantPaymentUrl + creationLink.getId();
+            String qr = qrCodeUtil.generateQrCode(link);
+            return new ResultDTO(true, paymentLinkMapper.toCreationLinkResponseDto(creationLink, link, qr), 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultDTO(false, e.getMessage(), -1);
+        }
+    }
+
+    public ResultDTO getPaymentCreationLink(Long cashBoxId) {
+        PaymentCreationLink creationLink = paymentCreationLinkRepository.findByCashBoxIdAndDeletedFalse(cashBoxId).orElse(null);
+        if (Objects.isNull(creationLink)) {
+            return ErrorDictionary.LINK_NOT_FOUND;
+        }
+        String link = merchantPaymentUrl + creationLink.getId();
+        String qr = qrCodeUtil.generateQrCode(link);
+        return new ResultDTO(true, paymentLinkMapper.toCreationLinkResponseDto(creationLink, link, qr), 0);
+    }
+
+    public ResultDTO deletePaymentCreationLink(Long cashBoxId) {
+        PaymentCreationLink creationLink = paymentCreationLinkRepository.findByCashBoxIdAndDeletedFalse(cashBoxId).orElse(null);
+        if (Objects.isNull(creationLink)) {
+            return ErrorDictionary.LINK_NOT_FOUND;
+        }
+        creationLink.setDeleted(true);
+        paymentCreationLinkRepository.save(creationLink);
+        return new ResultDTO(true, "SUCCESS", 0);
+    }
+
+    public ResultDTO editPaymentCreationLink(EditPaymentCreationLinkDto dto) {
+        try {
+            PaymentCreationLink creationLink = paymentCreationLinkRepository.findByIdAndDeletedFalse(dto.getId()).orElse(null);
+            if (Objects.isNull(creationLink)) {
+                return ErrorDictionary.LINK_NOT_FOUND;
+            }
+            creationLink.setContactPhone(dto.getContactPhone());
+            creationLink.setCompanyName(dto.getCompanyName());
+            paymentCreationLinkRepository.save(creationLink);
+            String link = merchantPaymentUrl + creationLink.getId();
+            String qr = qrCodeUtil.generateQrCode(link);
+            return new ResultDTO(true, paymentLinkMapper.toCreationLinkResponseDto(creationLink, link, qr), 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultDTO(false, e.getMessage(), -1);
+        }
     }
 
     private void sendPaymentLinkEmail(PaymentLink paymentLink, String link) {
