@@ -225,6 +225,14 @@ public class PaymentLinkService {
         return new ResultDTO(true, paymentLinkMapper.toCreationLinkResponseDto(creationLink, link, qr), 0);
     }
 
+    public ResultDTO getPaymentCreationLinkPublicInfo(String id) {
+        PaymentCreationLink creationLink = paymentCreationLinkRepository.findByIdAndDeletedFalse(id).orElse(null);
+        if (Objects.isNull(creationLink)) {
+            return ErrorDictionary.LINK_NOT_FOUND;
+        }
+        return new ResultDTO(true, paymentLinkMapper.toCreationLinkPublicInfoDto(creationLink), 0);
+    }
+
     public ResultDTO deletePaymentCreationLink(Long cashBoxId) {
         PaymentCreationLink creationLink = paymentCreationLinkRepository.findByCashBoxIdAndDeletedFalse(cashBoxId).orElse(null);
         if (Objects.isNull(creationLink)) {

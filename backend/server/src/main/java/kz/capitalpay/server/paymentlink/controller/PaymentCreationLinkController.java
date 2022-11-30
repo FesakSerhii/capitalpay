@@ -53,5 +53,10 @@ public class PaymentCreationLinkController {
         return paymentLinkService.createPaymentLink(dto);
     }
 
+    @GetMapping("/api/v1/merchant-link/get-public-info/{id}")
+    public ResultDTO getMerchantLinkPublicInfo(@PathVariable String id) {
+        return paymentLinkService.getPaymentCreationLinkPublicInfo(id);
+    }
+
 
 }

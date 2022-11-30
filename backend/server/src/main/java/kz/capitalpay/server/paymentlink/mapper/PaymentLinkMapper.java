@@ -1,5 +1,6 @@
 package kz.capitalpay.server.paymentlink.mapper;
 
+import kz.capitalpay.server.paymentlink.dto.CreationLinkPublicInfoDto;
 import kz.capitalpay.server.paymentlink.dto.CreationLinkResponseDto;
 import kz.capitalpay.server.paymentlink.dto.PaymentLinkResponseDto;
 import kz.capitalpay.server.paymentlink.model.PaymentCreationLink;
@@ -52,6 +53,10 @@ public class PaymentLinkMapper {
                 creationLink.getCashBoxId(),
                 link,
                 qr);
+    }
+
+    public CreationLinkPublicInfoDto toCreationLinkPublicInfoDto(PaymentCreationLink link) {
+        return new CreationLinkPublicInfoDto(link.getCompanyName(), link.getContactPhone());
     }
 
 }
