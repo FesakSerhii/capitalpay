@@ -10,6 +10,7 @@ import kz.capitalpay.server.files.model.FileStorage;
 import kz.capitalpay.server.files.service.FileStorageService;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.service.ApplicationUserService;
+import kz.capitalpay.server.paymentlink.dto.CreateLinkWithLinkDto;
 import kz.capitalpay.server.paymentlink.dto.CreatePaymentCreationLinkDto;
 import kz.capitalpay.server.paymentlink.dto.CreatePaymentLinkDto;
 import kz.capitalpay.server.paymentlink.mapper.PaymentLinkMapper;
@@ -63,9 +64,6 @@ public class PaymentLinkService {
 
     public ResultDTO createPaymentLink(CreatePaymentLinkDto dto) {
         try {
-            if (paymentCreationLinkRepository.existsByCashBoxIdAndDeletedFalse(dto.getCashBoxId())) {
-                return ErrorDictionary.CREATION_LINK_ALREADY_EXISTS;
-            }
             PaymentLink paymentLink = new PaymentLink();
             paymentLink.setGuid(UUID.randomUUID().toString());
             paymentLink.setBillId(dto.getBillId());
@@ -85,6 +83,53 @@ public class PaymentLinkService {
             Cashbox cashbox = cashboxService.findById(dto.getCashBoxId());
             if (Objects.isNull(cashbox)) {
                 return ErrorDictionary.CASHBOX_NOT_FOUND;
+            }
+            paymentLink.setMerchantId(cashbox.getMerchantId());
+            paymentLink.setValidTill(LocalDateTime.now().plusHours(dto.getValidHours()));
+            paymentLinkRepository.save(paymentLink);
+
+            String link = apiAddress + "/payment/simple/pay-with-link/" + paymentLink.getGuid();
+            sendPaymentLinkEmail(paymentLink, link);
+            Map<String, String> resultMap = new HashMap<>();
+            resultMap.put("link", link);
+            resultMap.put("qrCode", qrCodeUtil.generateQrCode(link));
+            return new ResultDTO(true, resultMap, 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultDTO(false, e.getMessage(), -1);
+        }
+    }
+
+    public ResultDTO createPaymentLink(CreateLinkWithLinkDto dto) {
+        try {
+            PaymentCreationLink creationLink = paymentCreationLinkRepository.findByIdAndDeletedFalse(dto.getCreationLinkId()).orElse(null);
+            if (Objects.isNull(creationLink)) {
+                return ErrorDictionary.LINK_NOT_FOUND;
+            }
+            Cashbox cashbox = cashboxService.findById(creationLink.getCashBoxId());
+            if (Objects.isNull(cashbox)) {
+                return ErrorDictionary.CASHBOX_NOT_FOUND;
+            }
+            ApplicationUser user = applicationUserService.findById(cashbox.getMerchantId());
+            if (Objects.isNull(user)) {
+                return ErrorDictionary.USER_NOT_FOUND;
+            }
+
+            PaymentLink paymentLink = new PaymentLink();
+            paymentLink.setGuid(UUID.randomUUID().toString());
+            paymentLink.setBillId(dto.getBillId());
+            paymentLink.setDescription(dto.getDescription());
+            paymentLink.setTotalAmount(dto.getTotalAmount());
+            paymentLink.setEmailText(dto.getEmailText());
+            paymentLink.setMerchantName(user.getRealname());
+            paymentLink.setEmailTitle(dto.getEmailTitle());
+            paymentLink.setCashBoxId(cashbox.getId());
+            paymentLink.setCreateDate(LocalDateTime.now());
+            paymentLink.setMerchantEmail(user.getEmail());
+            paymentLink.setPayerEmail(dto.getPayerEmail());
+            paymentLink.setValidHours(dto.getValidHours());
+            if (Objects.nonNull(dto.getFileIds())) {
+                paymentLink.setFileIds(dto.getFileIds().toString());
             }
             paymentLink.setMerchantId(cashbox.getMerchantId());
             paymentLink.setValidTill(LocalDateTime.now().plusHours(dto.getValidHours()));
@@ -148,6 +193,9 @@ public class PaymentLinkService {
 
     public ResultDTO createPaymentCreationLink(CreatePaymentCreationLinkDto dto) {
         try {
+            if (paymentCreationLinkRepository.existsByCashBoxIdAndDeletedFalse(dto.getCashBoxId())) {
+                return ErrorDictionary.CREATION_LINK_ALREADY_EXISTS;
+            }
             PaymentCreationLink creationLink = new PaymentCreationLink();
             creationLink.setCashBoxId(dto.getCashBoxId());
             creationLink.setId(UUID.randomUUID().toString());

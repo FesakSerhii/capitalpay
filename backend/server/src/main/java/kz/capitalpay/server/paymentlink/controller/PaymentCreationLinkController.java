@@ -1,6 +1,7 @@
 package kz.capitalpay.server.paymentlink.controller;
 
 import kz.capitalpay.server.dto.ResultDTO;
+import kz.capitalpay.server.paymentlink.dto.CreateLinkWithLinkDto;
 import kz.capitalpay.server.paymentlink.dto.CreatePaymentCreationLinkDto;
 import kz.capitalpay.server.paymentlink.model.EditPaymentCreationLinkDto;
 import kz.capitalpay.server.paymentlink.service.PaymentLinkService;
@@ -46,5 +47,11 @@ public class PaymentCreationLinkController {
     public ResultDTO getMerchantLink(@PathVariable Long cashBoxId) {
         return paymentLinkService.getPaymentCreationLink(cashBoxId);
     }
+
+    @PostMapping("/api/v1/payment-link/create-by-link")
+    public ResultDTO createPaymentLink(@Valid @RequestBody CreateLinkWithLinkDto dto) {
+        return paymentLinkService.createPaymentLink(dto);
+    }
+
 
 }
