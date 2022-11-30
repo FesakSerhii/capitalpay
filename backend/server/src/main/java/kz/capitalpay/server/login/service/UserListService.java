@@ -10,6 +10,8 @@ import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.model.DeletedApplicationUser;
 import kz.capitalpay.server.login.repository.ApplicationUserRepository;
 import kz.capitalpay.server.login.repository.DeletedApplicationUserRepository;
+import kz.capitalpay.server.merchantsettings.dto.MerchantKycFieldDTO;
+import kz.capitalpay.server.merchantsettings.service.MerchantKycService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,7 @@ import static kz.capitalpay.server.constants.ErrorDictionary.NOT_ENOUGH_RIGHTS_T
 import static kz.capitalpay.server.constants.ErrorDictionary.USER_NOT_FOUND;
 import static kz.capitalpay.server.eventlog.service.SystemEventsLogsService.*;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
+import static kz.capitalpay.server.merchantsettings.service.MerchantKycService.MAINPHONE;
 
 @Service
 public class UserListService {
@@ -56,6 +59,9 @@ public class UserListService {
 
     @Autowired
     ApplicationUserMapper applicationUserMapper;
+
+    @Autowired
+    MerchantKycService merchantKycService;
 
 
     public ResultDTO getAllUsers() {
@@ -169,6 +175,8 @@ public class UserListService {
             applicationUserRepository.save(applicationUser);
             ApplicationUser resultUser = maskPassword(applicationUser);
 
+            merchantKycService.setField(applicationUser.getId(), new MerchantKycFieldDTO(MAINPHONE, request.getPhone()));
+
             request.setPassword(null);
             systemEventsLogsService.addNewOperatorAction(principal.getName(),
                     CREATE_USER, gson.toJson(request), applicationUser.getId().toString());
@@ -243,6 +251,7 @@ public class UserListService {
             }
             applicationUserRepository.save(applicationUser);
             ApplicationUser resultUser = maskPassword(applicationUser);
+            merchantKycService.setField(applicationUser.getId(), new MerchantKycFieldDTO(MAINPHONE, request.getPhone()));
             request.setPassword(null);
             systemEventsLogsService.addNewOperatorAction(principal.getName(),
                     EDIT_USER, gson.toJson(request), applicationUser.getId().toString());

@@ -8,10 +8,13 @@ import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.login.model.ApplicationUser;
 import kz.capitalpay.server.login.service.ApplicationRoleService;
 import kz.capitalpay.server.login.service.ApplicationUserService;
+import kz.capitalpay.server.merchantsettings.repository.MerchantKycRepository;
 import kz.capitalpay.server.p2p.service.P2pPaymentService;
+import kz.capitalpay.server.payments.dto.MerchantData;
 import kz.capitalpay.server.payments.dto.OnePaymentDetailsRequestDTO;
 import kz.capitalpay.server.payments.dto.PaymentFilterDto;
 import kz.capitalpay.server.payments.model.Payment;
+import kz.capitalpay.server.payments.repository.MerchantDataCrudRepository;
 import kz.capitalpay.server.payments.repository.PaymentRepository;
 import kz.capitalpay.server.simple.dto.PaymentDetailDTO;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -28,7 +31,6 @@ import javax.persistence.criteria.Predicate;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static kz.capitalpay.server.constants.ErrorDictionary.*;
 import static kz.capitalpay.server.login.service.ApplicationRoleService.*;
@@ -56,6 +58,10 @@ public class PaymentService {
     ApplicationRoleService applicationRoleService;
     @Autowired
     P2pPaymentService p2pPaymentService;
+    @Autowired
+    MerchantKycRepository merchantKycRepository;
+    @Autowired
+    MerchantDataCrudRepository merchantDataCrudRepository;
 
 
     public boolean checkUnique(Cashbox cashbox, String billid) {
@@ -197,6 +203,7 @@ public class PaymentService {
         }
     }
 
+
     public ResultDTO onePayment(Principal principal, OnePaymentDetailsRequestDTO request) {
         try {
             ApplicationUser applicationUser = applicationUserService.getUserByLogin(principal.getName());
@@ -239,20 +246,9 @@ public class PaymentService {
         return paymentRepository.save(payment);
     }
 
-    public ResultDTO getPaymentsMerchantNames(Principal principal) {
-        List<Payment> payments;
-        ApplicationUser applicationUser = applicationUserService.getUserByLogin(principal.getName());
-        if (applicationUser == null) {
-            return USER_NOT_FOUND;
-        }
-        if (applicationUser.getRoles().contains(applicationRoleService.getRole(ADMIN))
-                || applicationUser.getRoles().contains(applicationRoleService.getRole(OPERATOR))) {
-            payments = paymentRepository.findAllBySaveBankCardFalse();
-        } else {
-            payments = paymentRepository.findAllByMerchantIdAndSaveBankCardFalse(applicationUser.getId());
-        }
-        return new ResultDTO(true, payments.stream().map(Payment::getMerchantName).distinct()
-                .filter(x -> Objects.nonNull(x) && !x.trim().isEmpty()).sorted().collect(Collectors.toList()), 0);
+    public ResultDTO getPaymentsMerchantNames(String searchText) {
+        List<MerchantData> merchantData = merchantDataCrudRepository.findDataMerchantByText(searchText);
+        return new ResultDTO(true, merchantData, 0);
     }
 
     private Specification<Payment> buildPaymentSpecification(PaymentFilterDto filter) {

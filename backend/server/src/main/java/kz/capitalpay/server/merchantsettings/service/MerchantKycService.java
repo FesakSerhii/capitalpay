@@ -84,7 +84,7 @@ public class MerchantKycService {
         }
     }
 
-    private void setField(Long merchantId, MerchantKycFieldDTO field) {
+    public void setField(Long merchantId, MerchantKycFieldDTO field) {
         MerchantKyc merchantKyc = merchantKycRepository.findTopByFieldNameAndMerchantId(field.getFieldName(), merchantId);
         if (merchantKyc == null) {
             merchantKyc = new MerchantKyc();

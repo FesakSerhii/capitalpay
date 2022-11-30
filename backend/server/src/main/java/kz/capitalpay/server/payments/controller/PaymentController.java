@@ -3,6 +3,7 @@ package kz.capitalpay.server.payments.controller;
 import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.payments.dto.OnePaymentDetailsRequestDTO;
 import kz.capitalpay.server.payments.dto.PaymentFilterDto;
+import kz.capitalpay.server.payments.dto.SearchTextDto;
 import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.util.ValidationUtil;
 import org.slf4j.Logger;
@@ -53,11 +54,11 @@ public class PaymentController {
         return paymentService.onePayment(principal, request);
     }
 
-    @PostMapping("/get/merchant-names")
+    @PostMapping("/get/merchant-data")
     @RolesAllowed({ADMIN, OPERATOR, MERCHANT})
-    ResultDTO getMerchantNames(Principal principal) {
-        LOGGER.info("getMerchantNames()");
-        return paymentService.getPaymentsMerchantNames(principal);
+    ResultDTO getMerchantNames(@RequestBody SearchTextDto dto) {
+        LOGGER.info("getMerchantData()");
+        return paymentService.getPaymentsMerchantNames(dto.getSearchText());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

@@ -8,6 +8,11 @@ public class MerchantKycFieldDTO {
     @NotBlank
     private String fieldValue;
 
+    public MerchantKycFieldDTO(String fieldName, String fieldValue) {
+        this.fieldName = fieldName;
+        this.fieldValue = fieldValue;
+    }
+
     public String getFieldName() {
         return fieldName;
     }

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -205,7 +206,5 @@ public class ApplicationUserService {
     public ApplicationUser findById(Long userId) {
         return applicationUserRepository.findById(userId).orElse(null);
     }
-
-
 }
 
