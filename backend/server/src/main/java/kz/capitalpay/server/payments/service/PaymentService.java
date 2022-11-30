@@ -247,8 +247,13 @@ public class PaymentService {
     }
 
     public ResultDTO getPaymentsMerchantNames(String searchText) {
-        List<MerchantData> merchantData = merchantDataCrudRepository.findDataMerchantByText(searchText);
-        return new ResultDTO(true, merchantData, 0);
+        try {
+            List<MerchantData> merchantData = merchantDataCrudRepository.findDataMerchantByText(searchText);
+            return new ResultDTO(true, merchantData, 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultDTO(false, e.getMessage(), -1);
+        }
     }
 
     private Specification<Payment> buildPaymentSpecification(PaymentFilterDto filter) {
