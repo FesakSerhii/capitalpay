@@ -30,17 +30,15 @@ export class PaymentsService {
   }
   getTransactionsList(obj){
     const filter = Object.keys(obj).reduce((item, key) => (obj[key] === undefined || obj[key] === null || obj[key] === {} || key === 'dateStart' || key === 'dateEnd' ? item : {...item, [key]: obj[key]}), {});
-    return this.apiService.postJwt('api','/payments/list',this.tokenService.token, filter).toPromise();
+    return this.apiService.postJwt('api','/payments/list/new',this.tokenService.token, filter).toPromise();
   }
-  postMerchantNames() {
-    return this.apiService.postJwt('api','/payments/get/merchant-names',this.tokenService.token).toPromise();
+  postMerchantNames(obj) {
+    return this.apiService.postJwt('api','/payments/get/merchant-data',this.tokenService.token, obj).toPromise();
   }
-
   getTransactionDetails(guid){
     return this.apiService.postJwt('api','/payments/one',this.tokenService.token,{guid}).toPromise();
   }
   getFile(timestampAfter,timestampBefore){
     return this.apiService.postJwtFile('api','/paysystems/register/download',this.tokenService.token,{timestampAfter,timestampBefore}).toPromise();
   }
-
 }

@@ -7,8 +7,8 @@ import {SearchInputService} from "../../src/app/service/search-input.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {dateCompareValidator} from "../validators/dateCompareValidator";
 import {MassageModalComponent} from "../massage-modal/massage-modal.component";
-import {Observable} from "rxjs";
-import {debounceTime, distinctUntilChanged, map} from "rxjs/operators";
+import {Observable, Subscription} from "rxjs";
+import {debounceTime, distinctUntilChanged, map, switchMap} from "rxjs/operators";
 
 @Component({
     selector: "app-transactions-log",
@@ -82,16 +82,20 @@ export class TransactionsLogComponent implements OnInit {
         this.showItem.valueChanges.subscribe(a => {
             this.getTransactions(1);
         })
-        this.paymentsService.postMerchantNames().then(rest => {
-            this.merchantNames = rest.data
-        })
+
     }
 
     searchMerchantNames: (text$: Observable<string>) => Observable<string[]> = (text$: Observable<string>) => text$.pipe(
         debounceTime(200),
         distinctUntilChanged(),
-        map((name) => {
-            return name.length < 2 ? [] : this.merchantNames.filter((v) => v.toLowerCase().indexOf(name.toLowerCase()) > -1).slice(0, 10)
+        switchMap((name: any) => {
+            if(name.length > 1) {
+                return this.paymentsService.postMerchantNames({searchText: name}).then(a => {
+                    return a.data.map(i => i.name);
+                });
+            } else {
+                return [];
+            }
         }),
     );
 
