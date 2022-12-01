@@ -1,334 +1,464 @@
 <div>
-  <ul class="nav nav-pills nav-pills-success" role="tablist">
-    <li class="nav-item mr-5" *ngIf="cashBoxEditOpened">
-      <a class="nav-link active" (click)="$event.preventDefault();cashBoxEditOpened=!cashBoxEditOpened;selectedCashBoxId=null">
-        назад
-      </a>
-    </li>
-    <li class="nav-item" *ngIf="!cashBoxEditOpened">
-      <a class="nav-link" [class.active]="activeTab==='tab1'" (click)="$event.preventDefault();changeTab('tab1')">
-        кассы
-      </a>
-    </li>
-    <li class="nav-item" *ngIf="!cashBoxEditOpened">
-      <a class="nav-link" [class.active]="activeTab==='tab2'" (click)="$event.preventDefault();changeTab('tab2')">
-        комиссии
-      </a>
-    </li>
-    <li class="nav-item" *ngIf="!cashBoxEditOpened">
-      <a class="nav-link" [class.active]="activeTab==='tab3'" (click)="$event.preventDefault();changeTab('tab3')">
-        информация акаунта
-      </a>
-    </li>
-    <li class="nav-item" *ngIf="!cashBoxEditOpened">
-      <a class="nav-link" [class.active]="activeTab==='tab4'" (click)="$event.preventDefault();changeTab('tab4')">
-        безопасность
-      </a>
-    </li>
-  </ul>
-  <div class="row">
-    <ng-scrollbar class="calc200" [visibility]="'always'" style="width: 1620px">
-    <div class="tab-content tab-space">
-      <div class="tab-pane" [class.active]="activeTab==='tab1'">
-        <div class="d-flex flex-wrap">
-          <ng-container *ngIf="!cashBoxEditOpened">
-            <div class="card mr-4 card-hover" style="width: 380px;position:relative; background-color: #EAF4F4;" *ngFor="let cashBox of cashBoxList">
-              <div class="card-header card-header-success card-header-icon">
-                <div class="card-icon" style="padding: 20px;margin-bottom: -18px;">
-                  <span class="material-icons" style="width: 43px;height: 43px;line-height: 43px;font-size: 38px">store</span>
-                </div>
-                <h4 class="card-title" style="text-align: end">{{cashBox.name}}</h4>
-                <div class=" mt-5">
-                  <div class="d-flex justify-content-between">
-                    <div>
-                      <div class="d-flex pb-2">
-                        <span style="color: #0f2024">Входящий</span>
-                      </div>
-                      <div class=" d-flex justify-content-end pb-0 pt-0" *ngFor="let balance of cashBox.incomingBalance">
-                        <span style="font-size: 28px;color: #0F001F">{{balance.currency}} {{balance.amount}}</span>
-                      </div>
-                      <div class="d-flex pb-0 pt-0" *ngIf="cashBox.incomingBalance && !cashBox.incomingBalance.length">
-                        <span style="font-size: 28px;color: #0F001F">KZT 0</span>
-                      </div>
+    <ul class="nav nav-pills nav-pills-success" role="tablist">
+        <li class="nav-item mr-5" *ngIf="cashBoxEditOpened">
+            <a class="nav-link active"
+               (click)="$event.preventDefault();cashBoxEditOpened=!cashBoxEditOpened;selectedCashBoxId=null">
+                назад
+            </a>
+        </li>
+        <li class="nav-item" *ngIf="!cashBoxEditOpened">
+            <a class="nav-link" [class.active]="activeTab==='tab1'" (click)="$event.preventDefault();changeTab('tab1')">
+                кассы
+            </a>
+        </li>
+        <li class="nav-item" *ngIf="!cashBoxEditOpened">
+            <a class="nav-link" [class.active]="activeTab==='tab2'" (click)="$event.preventDefault();changeTab('tab2')">
+                комиссии
+            </a>
+        </li>
+        <li class="nav-item" *ngIf="!cashBoxEditOpened">
+            <a class="nav-link" [class.active]="activeTab==='tab3'" (click)="$event.preventDefault();changeTab('tab3')">
+                информация акаунта
+            </a>
+        </li>
+        <li class="nav-item" *ngIf="!cashBoxEditOpened">
+            <a class="nav-link" [class.active]="activeTab==='tab4'" (click)="$event.preventDefault();changeTab('tab4')">
+                безопасность
+            </a>
+        </li>
+    </ul>
+    <div class="row">
+        <ng-scrollbar class="calc200" [visibility]="'always'" style="width: 1620px">
+            <div class="tab-content tab-space">
+                <div class="tab-pane" [class.active]="activeTab==='tab1'">
+                    <div class="d-flex flex-wrap">
+                        <ng-container *ngIf="!cashBoxEditOpened">
+                            <div class="card mr-4 card-hover"
+                                 style="width: 380px;position:relative; background-color: #EAF4F4;"
+                                 *ngFor="let cashBox of cashBoxList">
+                                <div class="card-header card-header-success card-header-icon">
+                                    <div class="card-icon" style="padding: 20px;margin-bottom: -18px;">
+                                        <span class="material-icons"
+                                              style="width: 43px;height: 43px;line-height: 43px;font-size: 38px">store</span>
+                                    </div>
+                                    <h4 class="card-title" style="text-align: end">{{cashBox.name}}</h4>
+                                    <div class=" mt-5">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <div class="d-flex pb-2">
+                                                    <span style="color: #0f2024">Входящий</span>
+                                                </div>
+                                                <div class=" d-flex justify-content-end pb-0 pt-0"
+                                                     *ngFor="let balance of cashBox.incomingBalance">
+                                                    <span style="font-size: 28px;color: #0F001F">{{balance.currency}} {{balance.amount}}</span>
+                                                </div>
+                                                <div class="d-flex pb-0 pt-0"
+                                                     *ngIf="cashBox.incomingBalance && !cashBox.incomingBalance.length">
+                                                    <span style="font-size: 28px;color: #0F001F">KZT 0</span>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="d-flex justify-content-end  pb-2">
+                                                    <span style="color: #0f2024"> Исходящий</span>
+                                                </div>
+                                                <div class="d-flex justify-content-end pb-0 pt-0"
+                                                     *ngFor="let balance of cashBox.outgoingBalance">
+                                                    <span style="font-size: 28px;color: #0F001F">{{balance.currency}} {{balance.amount}}</span>
+                                                </div>
+                                                <div class="d-flex justify-content-end pb-0 pt-0"
+                                                     *ngIf="cashBox.outgoingBalance && !cashBox.outgoingBalance.length">
+                                                    <span style="font-size: 28px;color: #0F001F">KZT 0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr class="mb-0">
+                                <div class="card-footer">
+                                    <a class="ml-auto"
+                                       (click)="$event.preventDefault();selectedCashBoxId=selectedCashBoxId!==null?null:cashBox.id;"><img
+                                            src="../../../assets/shapes/img/dots.svg" alt="dots"></a>
+                                </div>
+                                <div *ngIf="selectedCashBoxId!==null&&selectedCashBoxId===cashBox.id"
+                                     class="card m-0 d-flex flex-column justify-content-around pl-2" style="position: absolute; width: 160px; height: 120px; top: 191px; right: 0; z-index: 10;">
+                                    <a href="#" style="color: black" (click)="$event.preventDefault();deleteCashBox()">Удалить</a>
+                                    <a href="#" style="color: black"
+                                       (click)="$event.preventDefault();cashBoxMenuOpened=!cashBoxMenuOpened;getCurrencies();">Настройки
+                                        кассы</a>
+                                    <a href="#" style="color: black" (click)="$event.preventDefault();paymentLinkOpen(paymentLinkModal, cashBox); selectedCashBoxId=null">Ссылка на оплату</a>
+                                    <a href="#" style="color: black"
+                                       (click)="$event.preventDefault();cashBoxMenuOpened=!cashBoxMenuOpened">Вывести
+                                        баланс</a>
+                                </div>
+                            </div>
+                        </ng-container>
                     </div>
-                    <div>
-                      <div class="d-flex justify-content-end  pb-2">
-                        <span style="color: #0f2024"> Исходящий</span>
-                      </div>
-                      <div class="d-flex justify-content-end pb-0 pt-0" *ngFor="let balance of cashBox.outgoingBalance">
-                        <span style="font-size: 28px;color: #0F001F">{{balance.currency}} {{balance.amount}}</span>
-                      </div>
-                      <div class="d-flex justify-content-end pb-0 pt-0" *ngIf="cashBox.outgoingBalance && !cashBox.outgoingBalance.length">
-                        <span style="font-size: 28px;color: #0F001F">KZT 0</span>
-                      </div>
+                    <button class="btn btn-success btn-round" (click)="open(addBoxOffice)" *ngIf="!cashBoxEditOpened">
+                        Добавить кассу
+                    </button>
+                    <div class="card" *ngIf="selectedCashBoxId&&cashBoxEditOpened">
+                        <div class="card-header card-header-success card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons-outlined">store_mall_directory</i>
+                            </div>
+                            <h4 class="card-title">Настройки кассы</h4>
+                        </div>
+                        <div class="card-body mt-4 mb-4">
+                            <form [formGroup]="cashBoxInfo">
+                                <div class="form-group has-default bmd-form-group d-flex">
+                                    <label class="col-form-label label-checkbox pt-0 col-2">Id мерчанта</label>
+                                    <input [class.error]="isInvalid(cashBoxInfo,'merchantId')" type="text"
+                                           class="form-control" readonly formControlName="merchantId">
+                                </div>
+                                <div class="form-group has-default bmd-form-group d-flex">
+                                    <label class="col-form-label label-checkbox pt-0 col-2">Id кассы</label>
+                                    <input [class.error]="isInvalid(cashBoxInfo,'cashboxId')" type="text"
+                                           class="form-control" readonly formControlName="cashboxId">
+                                </div>
+                            </form>
+                            <form [formGroup]="casBoxSettingsForm">
+                                <div class="form-group has-default bmd-form-group d-flex">
+                                    <label class="col-form-label label-checkbox pt-0 col-2">Название кассы *</label>
+                                    <input [class.error]="isInvalid(casBoxSettingsForm,'name')" type="text"
+                                           class="form-control" formControlName="name">
+                                </div>
+                            </form>
+                            <form [formGroup]="cashBoxInfo">
+                                <div class="form-group has-default bmd-form-group d-flex">
+                                    <label class="col-form-label label-checkbox pt-0 col-2">Ссылка для перехода в случае
+                                        ошибки</label>
+                                    <input [class.error]="isInvalid(cashBoxInfo,'redirectfailed')" type="text"
+                                           class="form-control" formControlName="redirectfailed">
+                                </div>
+                                <div class="form-group has-default bmd-form-group d-flex">
+                                    <label class="col-form-label label-checkbox pt-0 col-2">Ссылка для перехода в случае
+                                        успеха</label>
+                                    <input [class.error]="isInvalid(cashBoxInfo,'redirectsuccess')" type="text"
+                                           class="form-control" formControlName="redirectsuccess">
+                                </div>
+                                <div class="form-group has-default bmd-form-group d-flex">
+                                    <label class="col-form-label label-checkbox pt-0 col-2">Ссылка для
+                                        переадресации</label>
+                                    <input [class.error]="isInvalid(cashBoxInfo,'redirecturl')" type="text"
+                                           class="form-control" formControlName="redirecturl">
+                                </div>
+                                <div class="form-group has-default bmd-form-group d-flex">
+                                    <label class="col-form-label label-checkbox pt-0 col-2">Ссылка для взаимодействия
+                                        (interaction url)</label>
+                                    <input [class.error]="isInvalid(cashBoxInfo,'interactionurl')" type="text"
+                                           class="form-control" formControlName="interactionurl">
+                                </div>
+                                <div class="form-group has-default bmd-form-group d-flex">
+                                    <label class="col-form-label label-checkbox pt-0 col-2">Ссылка pending</label>
+                                    <input [class.error]="isInvalid(cashBoxInfo,'redirectpending')" type="text"
+                                           class="form-control" formControlName="redirectpending">
+                                </div>
+                                <div class="form-group has-default bmd-form-group d-flex">
+                                    <label class="col-form-label label-checkbox pt-0 col-2">Secret</label>
+                                    <input [class.error]="isInvalid(cashBoxInfo,'secret')" type="text"
+                                           class="form-control" readonly formControlName="secret">
+                                </div>
+                            </form>
+                            <div class="d-flex">
+                                <label class="col-form-label label-checkbox pt-0 col-2">Валюты</label>
+                                <form [formGroup]="currenciesForm">
+                                    <div class="togglebutton" *ngFor="let currency of currenciesList">
+                                        <label>
+                                            <input [class.error]="isInvalid(currenciesForm,currency.alpha)"
+                                                   type="checkbox" [formControlName]="currency.alpha">
+                                            <span class="toggle"></span>
+                                            {{currency.alpha}}
+                                        </label>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="d-flex">
+                                <label class="col-form-label label-checkbox pt-0 col-2">Платежные методы</label>
+                                <form [formGroup]="paymentMethodsForm">
+                                    <div class="togglebutton" *ngFor="let paymentMethod of paymentMethods">
+                                        <label>
+                                            <input [class.error]="isInvalid(paymentMethodsForm,paymentMethod.id)"
+                                                   type="checkbox" [formControlName]="paymentMethod.id">
+                                            <span class="toggle"></span>
+                                            {{paymentMethod.name}}
+                                        </label>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="card-footer">
+                            <button class="btn btn-success btn-round" (click)="editCashBoxName();">Сохранить</button>
+                        </div>
                     </div>
-                  </div>
                 </div>
-              </div>
-              <hr class="mb-0">
-              <div class="card-footer">
-                <a class="ml-auto" (click)="$event.preventDefault();selectedCashBoxId=selectedCashBoxId!==null?null:cashBox.id;"><img src="../../../assets/shapes/img/dots.svg" alt="dots"></a>
-              </div>
-              <div *ngIf="selectedCashBoxId!==null&&selectedCashBoxId===cashBox.id" class="card m-0 d-flex flex-column justify-content-around pl-2" style="position: absolute;
-    width: 160px;
-    height: 120px;
-    top: 161px;
-    right: 0;
-    z-index: 10;">
-                <a href="#" style="color: black" (click)="$event.preventDefault();deleteCashBox()">Удалить</a>
-                <a href="#" style="color: black" (click)="$event.preventDefault();cashBoxMenuOpened=!cashBoxMenuOpened;getCurrencies();">Настройки кассы</a>
-                <a href="#" style="color: black" (click)="$event.preventDefault();cashBoxMenuOpened=!cashBoxMenuOpened">Вывести баланс</a>
-              </div>
-            </div>
-          </ng-container>
-        </div>
-          <button class="btn btn-success btn-round" (click)="open(addBoxOffice)" *ngIf="!cashBoxEditOpened">Добавить кассу</button>
-        <div class="card" *ngIf="selectedCashBoxId&&cashBoxEditOpened">
-          <div class="card-header card-header-success card-header-icon">
-            <div class="card-icon">
-              <i class="material-icons-outlined">store_mall_directory</i>
-            </div>
-            <h4 class="card-title">Настройки кассы</h4>
-          </div>
-          <div class="card-body mt-4 mb-4">
-            <form [formGroup]="cashBoxInfo">
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label label-checkbox pt-0 col-2">Id мерчанта</label>
-                <input [class.error]="isInvalid(cashBoxInfo,'merchantId')" type="text" class="form-control" readonly formControlName="merchantId">
-              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label label-checkbox pt-0 col-2">Id кассы</label>
-                <input [class.error]="isInvalid(cashBoxInfo,'cashboxId')" type="text" class="form-control" readonly formControlName="cashboxId">
-              </div>
-            </form>
-            <form [formGroup]="casBoxSettingsForm">
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label label-checkbox pt-0 col-2">Название кассы *</label>
-                <input [class.error]="isInvalid(casBoxSettingsForm,'name')" type="text" class="form-control" formControlName="name">
-              </div>
-            </form>
-            <form [formGroup]="cashBoxInfo">
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label label-checkbox pt-0 col-2">Ссылка для перехода в случае ошибки</label>
-                <input [class.error]="isInvalid(cashBoxInfo,'redirectfailed')" type="text" class="form-control" formControlName="redirectfailed">
-              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label label-checkbox pt-0 col-2">Ссылка для перехода в случае успеха</label>
-                <input [class.error]="isInvalid(cashBoxInfo,'redirectsuccess')" type="text" class="form-control" formControlName="redirectsuccess">
-              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label label-checkbox pt-0 col-2">Ссылка для переадресации</label>
-                <input [class.error]="isInvalid(cashBoxInfo,'redirecturl')" type="text" class="form-control" formControlName="redirecturl">
-              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label label-checkbox pt-0 col-2">Ссылка для взаимодействия (interaction url)</label>
-                <input [class.error]="isInvalid(cashBoxInfo,'interactionurl')" type="text" class="form-control" formControlName="interactionurl">
-              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label label-checkbox pt-0 col-2">Ссылка pending</label>
-                <input [class.error]="isInvalid(cashBoxInfo,'redirectpending')" type="text" class="form-control" formControlName="redirectpending">
-              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label label-checkbox pt-0 col-2">Secret</label>
-                <input [class.error]="isInvalid(cashBoxInfo,'secret')" type="text" class="form-control" readonly formControlName="secret">
-              </div>
-            </form>
-            <div class="d-flex">
-              <label class="col-form-label label-checkbox pt-0 col-2">Валюты</label>
-              <form [formGroup]="currenciesForm">
-                <div class="togglebutton" *ngFor="let currency of currenciesList">
-                  <label>
-                    <input [class.error]="isInvalid(currenciesForm,currency.alpha)" type="checkbox" [formControlName]="currency.alpha">
-                    <span class="toggle"></span>
-                    {{currency.alpha}}
-                  </label>
-                </div>
-              </form>
-            </div>
-            <div class="d-flex">
-              <label class="col-form-label label-checkbox pt-0 col-2">Платежные методы</label>
-              <form [formGroup]="paymentMethodsForm" >
-                <div class="togglebutton" *ngFor="let paymentMethod of paymentMethods">
-                  <label>
-                    <input [class.error]="isInvalid(paymentMethodsForm,paymentMethod.id)" type="checkbox" [formControlName]="paymentMethod.id">
-                    <span class="toggle"></span>
-                    {{paymentMethod.name}}
-                  </label>
-                </div>
-              </form>
-            </div>
-          </div>
-          <hr>
-          <div class="card-footer">
-            <button class="btn btn-success btn-round" (click)="editCashBoxName();">Сохранить</button>
-          </div>
-        </div>
-      </div>
-      <div class="tab-pane" [class.active]="activeTab==='tab2'">
+                <div class="tab-pane" [class.active]="activeTab==='tab2'">
 
-      </div>
-      <div class="tab-pane" [class.active]="activeTab==='tab3'">
-        <div class="card w720">
-          <div class="card-header card-header-success card-header-icon">
-            <div class="card-icon">
-              <i class="material-icons-outlined">manage_accounts</i>
-            </div>
-            <h4 class="card-title ">Настройки пользователя</h4>
-          </div>
-          <div class="card-body">
-            <h4 class="title">Информация</h4>
-            <form [formGroup]="merchantInfoForm">
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label w160">Email</label>
-                <input [class.error]="isInvalid(merchantInfoForm,'username')" type="email" class="form-control" placeholder="" formControlName="email" >
-              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label w160">Номер телефона</label>
-                <input [class.error]="isInvalid(merchantInfoForm,'username')" type="phone" formControlName="username"
-                       class="form-control" placeholder="Телефон  *" mask='+00000000000'>              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label w160">ИИН/БИН</label>
-                <input [class.error]="isInvalid(merchantInfoForm,'iinbin')" type="text" class="form-control" placeholder="" formControlName="iinbin" >
-              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label w160">Наименование</label>
-                <input [class.error]="isInvalid(merchantInfoForm,'mname')" type="text" class="form-control" placeholder="" formControlName="mname" >
-              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label w160">Юридический адрес</label>
-                <input [class.error]="isInvalid(merchantInfoForm,'uaddress')" type="text" class="form-control" placeholder="" formControlName="uaddress" >
-              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label w160">Фактический адрес</label>
-                <input [class.error]="isInvalid(merchantInfoForm,'faddress')" type="text" class="form-control" placeholder="" formControlName="faddress" >
-              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label w160">ФИО Руководитель</label>
-                <input [class.error]="isInvalid(merchantInfoForm,'headname')" type="text" class="form-control" placeholder="" formControlName="headname" >
-              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label w160">ФИО ГЛ. бухгалтер</label>
-                <input [class.error]="isInvalid(merchantInfoForm,'accountant')" type="text" class="form-control" placeholder="" formControlName="accountant" >
-              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label w160">Основной номер телефона</label>
-                <input [class.error]="isInvalid(merchantInfoForm,'mainphone')" type="phone" formControlName="mainphone"
-                       class="form-control" placeholder="Основной номер телефона" mask='+00000000000'>
-              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label w160">Банк Клиента</label>
-                <input [class.error]="isInvalid(merchantInfoForm,'bankname')" type="text" class="form-control" placeholder="" formControlName="bankname" >
-              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label w160">ИИК</label>
-                <input [class.error]="isInvalid(merchantInfoForm,'iik')" type="text" class="form-control" placeholder="" formControlName="iik" >
-              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label w160">БИК</label>
-                <input [class.error]="isInvalid(merchantInfoForm,'bik')" type="text" class="form-control" placeholder="" formControlName="bik" >
-              </div>
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label w160">Комиссия</label>
-                <input [class.error]="isInvalid(merchantInfoForm,'commission')" type="text" class="form-control" placeholder="" formControlName="commission" >
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-      <div class="tab-pane" [class.active]="activeTab==='tab4'">
-        <div class="card w720">
-          <div class="card-header card-header-success card-header-icon">
-            <div class="card-icon">
-              <i class="material-icons-outlined">gpp_good</i>
-            </div>
-            <h4 class="card-title ">Безопасность</h4>
-          </div>
-          <div class="card-body">
-<!--            <h4 class="title">Информация</h4>-->
-              <div class="form-group has-default bmd-form-group d-flex">
-                <label class="col-form-label w160 col-2">Пароль</label>
-                <button class="btn slim btn-success btn-round" (click)="open(changePasswordModal)">Изменить пароль</button>
-              </div>
-            <div class="form-group has-default bmd-form-group d-flex align-items-baseline">
-              <label class="col-form-label w160 col-2">Двухфакторная аутентификация</label>
-              <div>
-                <span>Отправим SMS код на ваш основной телефон, который был указан при регистрации, для входа в аккаунт.</span>
-                <div class="togglebutton">
-                  <label>
-                    <input [class.error]="isInvalid(isTwoFactor)" type="checkbox" [formControl]="isTwoFactor">
-                    <span class="toggle"></span>
-                    Активировано
-                  </label>
                 </div>
-              </div>
+                <div class="tab-pane" [class.active]="activeTab==='tab3'">
+                    <div class="card w720">
+                        <div class="card-header card-header-success card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons-outlined">manage_accounts</i>
+                            </div>
+                            <h4 class="card-title ">Настройки пользователя</h4>
+                        </div>
+                        <div class="card-body">
+                            <h4 class="title">Информация</h4>
+                            <form [formGroup]="merchantInfoForm">
+                                <div class="form-group has-default bmd-form-group d-flex">
+                                    <label class="col-form-label w160">Email</label>
+                                    <input [class.error]="isInvalid(merchantInfoForm,'username')" type="email"
+                                           class="form-control" placeholder="" formControlName="email">
+                                </div>
+                                <div class="form-group has-default bmd-form-group d-flex">
+                                    <label class="col-form-label w160">Номер телефона</label>
+                                    <input [class.error]="isInvalid(merchantInfoForm,'username')" type="phone"
+                                           formControlName="username"
+                                           class="form-control" placeholder="Телефон  *" mask='+00000000000'></div>
+                                <div class="form-group has-default bmd-form-group d-flex">
+                                    <label class="col-form-label w160">ИИН/БИН</label>
+                                    <input [class.error]="isInvalid(merchantInfoForm,'iinbin')" type="text"
+                                           class="form-control" placeholder="" formControlName="iinbin">
+                                </div>
+                                <div class="form-group has-default bmd-form-group d-flex">
+                                    <label class="col-form-label w160">Наименование</label>
+                                    <input [class.error]="isInvalid(merchantInfoForm,'mname')" type="text"
+                                           class="form-control" placeholder="" formControlName="mname">
+                                </div>
+                                <div class="form-group has-default bmd-form-group d-flex">
+                                    <label class="col-form-label w160">Юридический адрес</label>
+                                    <input [class.error]="isInvalid(merchantInfoForm,'uaddress')" type="text"
+                                           class="form-control" placeholder="" formControlName="uaddress">
+                                </div>
+                                <div class="form-group has-default bmd-form-group d-flex">
+                                    <label class="col-form-label w160">Фактический адрес</label>
+                                    <input [class.error]="isInvalid(merchantInfoForm,'faddress')" type="text"
+                                           class="form-control" placeholder="" formControlName="faddress">
+                                </div>
+                                <div class="form-group has-default bmd-form-group d-flex">
+                                    <label class="col-form-label w160">ФИО Руководитель</label>
+                                    <input [class.error]="isInvalid(merchantInfoForm,'headname')" type="text"
+                                           class="form-control" placeholder="" formControlName="headname">
+                                </div>
+                                <div class="form-group has-default bmd-form-group d-flex">
+                                    <label class="col-form-label w160">ФИО ГЛ. бухгалтер</label>
+                                    <input [class.error]="isInvalid(merchantInfoForm,'accountant')" type="text"
+                                           class="form-control" placeholder="" formControlName="accountant">
+                                </div>
+                                <div class="form-group has-default bmd-form-group d-flex">
+                                    <label class="col-form-label w160">Основной номер телефона</label>
+                                    <input [class.error]="isInvalid(merchantInfoForm,'mainphone')" type="phone"
+                                           formControlName="mainphone"
+                                           class="form-control" placeholder="Основной номер телефона"
+                                           mask='+00000000000'>
+                                </div>
+                                <div class="form-group has-default bmd-form-group d-flex">
+                                    <label class="col-form-label w160">Банк Клиента</label>
+                                    <input [class.error]="isInvalid(merchantInfoForm,'bankname')" type="text"
+                                           class="form-control" placeholder="" formControlName="bankname">
+                                </div>
+                                <div class="form-group has-default bmd-form-group d-flex">
+                                    <label class="col-form-label w160">ИИК</label>
+                                    <input [class.error]="isInvalid(merchantInfoForm,'iik')" type="text"
+                                           class="form-control" placeholder="" formControlName="iik">
+                                </div>
+                                <div class="form-group has-default bmd-form-group d-flex">
+                                    <label class="col-form-label w160">БИК</label>
+                                    <input [class.error]="isInvalid(merchantInfoForm,'bik')" type="text"
+                                           class="form-control" placeholder="" formControlName="bik">
+                                </div>
+                                <div class="form-group has-default bmd-form-group d-flex">
+                                    <label class="col-form-label w160">Комиссия</label>
+                                    <input [class.error]="isInvalid(merchantInfoForm,'commission')" type="text"
+                                           class="form-control" placeholder="" formControlName="commission">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" [class.active]="activeTab==='tab4'">
+                    <div class="card w720">
+                        <div class="card-header card-header-success card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons-outlined">gpp_good</i>
+                            </div>
+                            <h4 class="card-title ">Безопасность</h4>
+                        </div>
+                        <div class="card-body">
+                            <!--            <h4 class="title">Информация</h4>-->
+                            <div class="form-group has-default bmd-form-group d-flex">
+                                <label class="col-form-label w160 col-2">Пароль</label>
+                                <button class="btn slim btn-success btn-round" (click)="open(changePasswordModal)">
+                                    Изменить пароль
+                                </button>
+                            </div>
+                            <div class="form-group has-default bmd-form-group d-flex align-items-baseline">
+                                <label class="col-form-label w160 col-2">Двухфакторная аутентификация</label>
+                                <div>
+                                    <span>Отправим SMS код на ваш основной телефон, который был указан при регистрации, для входа в аккаунт.</span>
+                                    <div class="togglebutton">
+                                        <label>
+                                            <input [class.error]="isInvalid(isTwoFactor)" type="checkbox"
+                                                   [formControl]="isTwoFactor">
+                                            <span class="toggle"></span>
+                                            Активировано
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
+        </ng-scrollbar>
     </div>
-    </ng-scrollbar>
-  </div>
 </div>
 <ng-template #addBoxOffice let-modal>
-  <div class="card mt-0 mb-0 w742">
-    <div class="card-header card-header-success card-header-icon">
-      <div class="card-icon">
-        <i class="material-icons-outlined">store_mall_directory</i>
-      </div>
-      <h4 class="card-title ">Создать кассу</h4>
-      <button type="button" class="close position-absolute" style="top: 10px;right: 0" data-dismiss="modal" aria-label="Close" (click)="modal.dismiss();">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="card-body">
-      <form [formGroup]="cashBoxForm">
-        <div class="form-group has-default bmd-form-group">
-          <input [class.error]="isInvalid(cashBoxForm,'name')" type="text" formControlName="name" class="form-control" placeholder="Название кассы *">
+    <div class="card mt-0 mb-0 w742">
+        <div class="card-header card-header-success card-header-icon">
+            <div class="card-icon">
+                <i class="material-icons-outlined">store_mall_directory</i>
+            </div>
+            <h4 class="card-title ">Создать кассу</h4>
+            <button type="button" class="close position-absolute" style="top: 10px;right: 0" data-dismiss="modal"
+                    aria-label="Close" (click)="modal.dismiss();">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
-        <div class="d-flex">
-        <label class="col-form-label">Валюта</label>
-        <app-custom-select formControlName="currency" [values]="currencies"></app-custom-select>
+        <div class="card-body">
+            <form [formGroup]="cashBoxForm">
+                <div class="form-group has-default bmd-form-group">
+                    <input [class.error]="isInvalid(cashBoxForm,'name')" type="text" formControlName="name"
+                           class="form-control" placeholder="Название кассы *">
+                </div>
+                <div class="d-flex">
+                    <label class="col-form-label">Валюта</label>
+                    <app-custom-select formControlName="currency" [values]="currencies"></app-custom-select>
+                </div>
+            </form>
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-success btn-round" (click)="addCashBox()">Создать кассу
+                    <div class="ripple-container"></div>
+                </button>
+            </div>
         </div>
-      </form>
-      <div class="d-flex justify-content-end">
-        <button class="btn btn-success btn-round" (click)="addCashBox()">Создать кассу<div class="ripple-container"></div></button>
-      </div>
     </div>
-  </div>
 </ng-template>
 <ng-template #changePassword let-modal>
-  <div class="card mt-0 mb-0 w742">
-    <div class="card-header card-header-success card-header-icon">
-      <div class="card-icon">
-        <i class="material-icons-outlined">manage_accounts</i>
-      </div>
-      <h4 class="card-title ">Изменить пароль</h4>
-      <button type="button" class="close position-absolute" style="top: 10px;right: 0" data-dismiss="modal" aria-label="Close" (click)="modal.dismiss();">
-        <span aria-hidden="true">&times;</span>
-      </button>
+    <div class="card mt-0 mb-0 w742">
+        <div class="card-header card-header-success card-header-icon">
+            <div class="card-icon">
+                <i class="material-icons-outlined">manage_accounts</i>
+            </div>
+            <h4 class="card-title ">Изменить пароль</h4>
+            <button type="button" class="close position-absolute" style="top: 10px;right: 0" data-dismiss="modal"
+                    aria-label="Close" (click)="modal.dismiss();">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="card-body">
+            <form [formGroup]="passChangeForm">
+                <div class="d-flex">
+                    <label class="col-form-label">Старый пароль</label>
+                    <input [class.error]="isInvalid(passChangeForm,'oldPassword')" type="password" class="form-control"
+                           formControlName="oldPassword">
+                </div>
+                <div class="d-flex">
+                    <label class="col-form-label">Новый пароль</label>
+                    <input [class.error]="isInvalid(passChangeForm,'newPassword')" type="password" class="form-control"
+                           formControlName="newPassword">
+                </div>
+                <div class="d-flex">
+                    <label class="col-form-label">Повторите пароль</label>
+                    <input [class.error]="isInvalid(passChangeForm,'confirmPassword')" type="password"
+                           class="form-control" formControlName="confirmPassword">
+                </div>
+            </form>
+            <span style="color: red" *ngIf="errStatusMassage!==null">{{errStatusMassage}}</span>
+            <span style="color: red" *ngIf="!comparePasswords()">Пароли не совпадают</span>
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-success btn-round"
+                        (click)="confirmPasswordChange()">Сохранить изменения
+                </button>
+            </div>
+        </div>
     </div>
-    <div class="card-body">
-      <form [formGroup]="passChangeForm">
-        <div class="d-flex">
-          <label class="col-form-label">Старый пароль</label>
-          <input [class.error]="isInvalid(passChangeForm,'oldPassword')" type="password" class="form-control" formControlName="oldPassword">
+</ng-template>
+<ng-template #paymentLink let-modal>
+    <div class="card mt-0 mb-0 w742">
+        <div class="card-header card-header-success card-header-icon">
+            <div class="card-icon">
+                <i class="material-icons-outlined">insert_link</i>
+            </div>
+            <h4 class="card-title">{{!merchantLinkInfo.result ? 'Создания ссылки на оплату' : 'Ссылка на оплату'}}</h4>
+            <button type="button" class="close position-absolute" style="top: 10px;right: 0" data-dismiss="modal"
+                    aria-label="Close" (click)="modal.dismiss();">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
-        <div class="d-flex">
-          <label class="col-form-label">Новый пароль</label>
-          <input [class.error]="isInvalid(passChangeForm,'newPassword')" type="password" class="form-control" formControlName="newPassword">
+        <div class="card-body">
+            <ng-container *ngIf="!merchantLinkInfo.result">
+                <form [formGroup]="paymentLinkForm">
+                    <div class="form-group has-default bmd-form-group d-flex">
+                        <label class="col-form-label label-checkbox pt-0 col-3 d-flex align-items-end">Название компании</label>
+                        <input [class.error]="isInvalid(paymentLinkForm,'companyName')" type="text" class="form-control"
+                               formControlName="companyName">
+                    </div>
+                    <div class="form-group has-default bmd-form-group d-flex">
+                        <label class="col-form-label label-checkbox pt-0 col-3 d-flex align-items-end">Контактный телефон</label>
+                        <input [class.error]="isInvalid(paymentLinkForm,'contactPhone')" type="text" class="form-control"
+                               formControlName="contactPhone">
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button class="btn btn-success btn-round"
+                                (click)="createPaymentLink()">Создать ссылку
+                        </button>
+                    </div>
+                </form>
+            </ng-container>
+            <ng-container *ngIf="merchantLinkInfo.result">
+                <div class="card card-hover mt-0" style="margin-bottom: 0;">
+                    <div class="card-header card-header-success card-header-icon">
+                        <h4 class="card-title ">QR код на оплату</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="qrcode" style='background-image: url({{editPaymentLinkForm.get("qr").value}})'></div>
+                        <button class="btn btn-success btn-round btn-back" (click)="downloadPdf(editPaymentLinkForm.get('qr').value)">Сохранить pdf</button>
+                        <button class="btn btn-success btn-round btn-back ml-2" (click)="copy(editPaymentLinkForm.get('qr').value, true)">Копировать</button>
+                    </div>
+                </div>
+                <div class="card card-hover" style="margin-bottom: 0;">
+                    <div class="card-header card-header-success card-header-icon">
+                        <h4 class="card-title">Ссылка на оплату</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group has-default bmd-form-group d-flex">
+                            <label class="col-form-label text-left">Ссылка</label>
+                            <input type="text" [value]="editPaymentLinkForm.get('link').value" readonly class="form-control input w-100">
+                        </div>
+                        <button class="btn btn-success btn-round btn-back" (click)="copy(editPaymentLinkForm.get('link').value)">Копировать</button>
+                    </div>
+                </div>
+                <form [formGroup]="editPaymentLinkForm">
+                    <div class="form-group has-default bmd-form-group d-flex">
+                        <label class="col-form-label label-checkbox pt-0 col-3 d-flex align-items-end">Название компании</label>
+                        <input [class.error]="isInvalid(paymentLinkForm,'companyName')" type="text" class="form-control"
+                               formControlName="companyName">
+                    </div>
+                    <div class="form-group has-default bmd-form-group d-flex">
+                        <label class="col-form-label label-checkbox pt-0 col-3 d-flex align-items-end">Контактный телефон</label>
+                        <input [class.error]="isInvalid(paymentLinkForm,'contactPhone')" type="text" class="form-control"
+                               formControlName="contactPhone">
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button class="btn btn-success btn-round"
+                                (click)="editPaymentLink()">Редактировать ссылку
+                        </button>
+                    </div>
+                </form>
+            </ng-container>
         </div>
-        <div class="d-flex">
-          <label class="col-form-label">Повторите пароль</label>
-          <input [class.error]="isInvalid(passChangeForm,'confirmPassword')" type="password" class="form-control" formControlName="confirmPassword">
-        </div>
-      </form>
-      <span style="color: red" *ngIf="errStatusMassage!==null">{{errStatusMassage}}</span>
-      <span style="color: red" *ngIf="!comparePasswords()">Пароли не совпадают</span>
-      <div class="d-flex justify-content-end">
-        <button class="btn btn-success btn-round"
-                (click)="confirmPasswordChange()">Сохранить изменения</button>
-      </div>
     </div>
-  </div>
 </ng-template>
 <app-confirm-action-modal #confirmContent [messageType]="confirmMassage"></app-confirm-action-modal>
