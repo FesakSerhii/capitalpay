@@ -1,0 +1,73 @@
+<div class="tpsform form2-theme">
+    <div class="info-block col-2">
+        <div class="company-info">
+            <div class="text-field">
+                <label>Компания:</label> ТОО «CapitalPay»
+            </div>
+            <div class="text-field">
+                <label>Адрес:</label> Астана, ул.Калдаякова, 17-55
+            </div>
+            <div class="text-field">
+                <label>Телефон:</label> +7 777 610-10-33
+            </div>
+        </div>
+        <div class="logo">
+            <img src="/assets/img/logo.svg" alt="Logo">
+        </div>
+    </div>
+    <form class="info-block">
+        <label class="tpsform_input" style="position: relative" for="cardnumber">
+            <span class="focused">Сумма перевода*:</span>
+            <input type="text" placeholder="" id="cardnumber" autocomplete="cc-number" formControlName="cardNumber">
+        </label>
+        <label class="tpsform_input" style="position: relative" >
+            <span class="focused">Номер заказа (накладная)*:</span>
+            <input type="text" placeholder="Введите Номер заказа (накладная)"  autocomplete="cc-number" formControlName="cardNumber">
+        </label>
+        <label class="tpsform_input" style="position: relative" >
+            <span class="focused">БИН / ИИН:</span>
+            <input type="text" placeholder="Введите БИН / ИИН" autocomplete="cc-number" formControlName="cardNumber">
+        </label>
+        <label class="tpsform_input" style="position: relative" >
+            <span class="focused">Email (для квитанции)*:</span>
+            <input type="text" placeholder="Введите БИН / ИИН" autocomplete="cc-number" formControlName="cardNumber">
+        </label>
+        <label class="tpsform_input" style="position: relative" >
+            <span class="focused">Комментарий для продавца:</span>
+            <input type="text" placeholder="Оставьте комментарий для продавца" autocomplete="cc-number" formControlName="cardNumber">
+        </label>
+    </form>
+    <div class="payment-block">
+        <span>
+            <div class="title">Способ оплаты</div>
+            <input type="hidden" required="required">
+        </span>
+        <div class="type-block">
+            <div class="subtitle">Банковские карты</div>
+            <div class="items">
+                <div class="row">
+                    <div class="item">
+                        <div class="item-block">
+                            <img src="/assets/img/Visa_Inc._logo.png" alt="Visa">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item-block">
+                            <img src="/assets/img/Mastercard-logo.png" alt="MasterCard">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="info-block info-finish">
+        <div class="title">
+            <div>Комиссия: <span class="right">0₸</span></div>
+            <div> Итого к оплате: <span class="right">0.00 ₸</span></div>
+        </div>
+        <button class="form-btn form2-theme green-theme">
+            <span>Продолжить</span>
+        </button>
+        <div class="hint">Нажимая «Продолжить», вы соглашаетесь с <a href="/rules" target="_blank"> Политикой конфиденциальности</a></div>
+    </div>
+</div>

@@ -11,6 +11,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {IConfig, NgxMaskModule} from 'ngx-mask';
 import { CardBindingComponent } from './card-binding/card-binding.component';
 import { CardPaymentComponent } from './card-payment/card-payment.component';
+import { PaymentInvoicingComponent } from './payment-invoicing/payment-invoicing.component';
 
 const maskConfigFunction: () => Partial<IConfig> = () => {
   return {
@@ -22,7 +23,8 @@ const maskConfigFunction: () => Partial<IConfig> = () => {
     AppComponent,
     PaymentFormComponent,
     CardBindingComponent,
-    CardPaymentComponent
+    CardPaymentComponent,
+    PaymentInvoicingComponent
   ],
   imports: [
     BrowserModule,
