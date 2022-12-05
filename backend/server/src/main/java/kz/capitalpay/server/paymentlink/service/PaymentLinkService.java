@@ -34,9 +34,6 @@ import java.util.*;
 public class PaymentLinkService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PaymentLinkService.class);
-
-    private static final String merchantPaymentUrl = "";
-
     private final PaymentLinkRepository paymentLinkRepository;
     private final QrCodeUtil qrCodeUtil;
     private final SendEmailService sendEmailService;
@@ -49,6 +46,9 @@ public class PaymentLinkService {
 
     @Value("${remote.api.addres}")
     private String apiAddress;
+    @Value("${payment.link.creation.url}")
+    private String merchantPaymentUrl;
+
 
     public PaymentLinkService(PaymentLinkRepository paymentLinkRepository, QrCodeUtil qrCodeUtil, SendEmailService sendEmailService, FileStorageService fileStorageService, ObjectMapper objectMapper, PaymentLinkMapper paymentLinkMapper, ApplicationUserService applicationUserService, CashboxService cashboxService, PaymentCreationLinkRepository paymentCreationLinkRepository) {
         this.paymentLinkRepository = paymentLinkRepository;

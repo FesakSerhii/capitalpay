@@ -41,16 +41,17 @@ public class ResultDTO {
         return data;
     }
 
-    public void setData(Object data) {
-        this.data = data;
-    }
-
     public int getError() {
         return error;
     }
 
     public void setError(int error) {
         this.error = error;
+    }
+
+    public ResultDTO setData(Object data) {
+        this.data = data;
+        return new ResultDTO(result, data, error);
     }
 
     @Override

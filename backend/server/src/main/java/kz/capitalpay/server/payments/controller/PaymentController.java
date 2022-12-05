@@ -58,7 +58,7 @@ public class PaymentController {
     @RolesAllowed({ADMIN, OPERATOR, MERCHANT})
     ResultDTO getMerchantNames(@RequestBody SearchTextDto dto) {
         LOGGER.info("getMerchantData()");
-        return paymentService.getPaymentsMerchantNames(dto.getSearchText());
+        return paymentService.getPaymentsSearchMerchantData(dto.getSearchText());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

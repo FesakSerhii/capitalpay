@@ -36,6 +36,7 @@ public class HalykSavedCardsP2pOrder {
     private String intReference;
     private String approvalCode;
     private String session;
+    private String bankError;
 
     public Long getId() {
         return id;
@@ -259,5 +260,13 @@ public class HalykSavedCardsP2pOrder {
 
     public void setSession(String session) {
         this.session = session;
+    }
+
+    public String getBankError() {
+        return bankError;
+    }
+
+    public void setBankError(String bankError) {
+        this.bankError = bankError;
     }
 }

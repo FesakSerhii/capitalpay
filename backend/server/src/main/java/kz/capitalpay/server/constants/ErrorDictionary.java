@@ -37,7 +37,7 @@ public class ErrorDictionary {
     public static final ResultDTO P2P_SETTINGS_NOT_FOUND = new ResultDTO(false, "P2P setiings not found!", 132);
     public static final ResultDTO AVAILABLE_ONLY_FOR_CASHBOX_OWNER = new ResultDTO(false, "Action available only for card owner!", 133);
     public static final ResultDTO P2P_IS_NOT_ALLOWED = new ResultDTO(false, "P2p is not allowed!", 134);
-    public static final ResultDTO BANK_ERROR = new ResultDTO(false, "Bank error", 135);
+    public static ResultDTO BANK_ERROR = new ResultDTO(false, "Bank error", 135);
     public static final ResultDTO CARD_ALREADY_EXISTS = new ResultDTO(false, "Card already exists!", 136);
     public static final ResultDTO EMPTY_FILE = new ResultDTO(false, "File is empty!", 137);
     public static final ResultDTO TERMINAL_NOT_FOUND = new ResultDTO(false, "Terminal not found!", 138);

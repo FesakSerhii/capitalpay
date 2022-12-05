@@ -10,7 +10,6 @@ import kz.capitalpay.server.login.service.ApplicationRoleService;
 import kz.capitalpay.server.login.service.ApplicationUserService;
 import kz.capitalpay.server.merchantsettings.repository.MerchantKycRepository;
 import kz.capitalpay.server.p2p.service.P2pPaymentService;
-import kz.capitalpay.server.payments.dto.MerchantData;
 import kz.capitalpay.server.payments.dto.OnePaymentDetailsRequestDTO;
 import kz.capitalpay.server.payments.dto.PaymentFilterDto;
 import kz.capitalpay.server.payments.model.Payment;
@@ -246,10 +245,9 @@ public class PaymentService {
         return paymentRepository.save(payment);
     }
 
-    public ResultDTO getPaymentsMerchantNames(String searchText) {
+    public ResultDTO getPaymentsSearchMerchantData(String searchText) {
         try {
-            List<MerchantData> merchantData = merchantDataCrudRepository.findDataMerchantByText(searchText);
-            return new ResultDTO(true, merchantData, 0);
+            return new ResultDTO(true, merchantDataCrudRepository.findDataMerchantByText(searchText), 0);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultDTO(false, e.getMessage(), -1);

@@ -1,7 +1,9 @@
 package kz.capitalpay.server.paysystems.systems.halyksoap.service;
 
 import com.google.gson.Gson;
+import kz.capitalpay.server.constants.ErrorDictionary;
 import kz.capitalpay.server.constants.HalykOrderDictionary;
+import kz.capitalpay.server.dto.ResultDTO;
 import kz.capitalpay.server.p2p.dto.SendP2pToClientDto;
 import kz.capitalpay.server.p2p.service.P2pPaymentService;
 import kz.capitalpay.server.payments.model.CheckCardValidityPayment;
@@ -10,6 +12,7 @@ import kz.capitalpay.server.payments.repository.CheckCardValidityPaymentReposito
 import kz.capitalpay.server.payments.repository.PaymentRepository;
 import kz.capitalpay.server.payments.service.PaymentLogService;
 import kz.capitalpay.server.payments.service.PaymentService;
+import kz.capitalpay.server.paysystems.systems.halyksoap.dto.PaymentResultDto;
 import kz.capitalpay.server.paysystems.systems.halyksoap.kkbsign.KKBSign;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.*;
 import kz.capitalpay.server.paysystems.systems.halyksoap.repository.*;
@@ -382,7 +385,7 @@ public class HalykSoapService {
         return new CheckCardValidityResponse(false, result.getReturnCode());
     }
 
-    public String sendP2p(String ipAddress, String userAgent, CardDataResponseDto payerCardData, SendP2pToClientDto dto, String paymentToPan, boolean toClient, Long terminalId) {
+    public PaymentResultDto sendP2p(String ipAddress, String userAgent, CardDataResponseDto payerCardData, SendP2pToClientDto dto, String paymentToPan, boolean toClient, Long terminalId) {
         Payment payment = p2pPaymentService.generateP2pPayment(ipAddress, userAgent, dto.getMerchantId(),
                 dto.getAcceptedSum(), dto.getCashBoxId(), toClient, currency, dto.getParam(), terminalId);
 
@@ -414,15 +417,12 @@ public class HalykSoapService {
 
         if (transferOrderResponse.get_return().getReturnCode().equals("00")) {
             paymentService.setStatusByPaySysPayId(orderId, SUCCESS);
-//            payment.setStatus(SUCCESS);
-//            paymentLogService.newEvent(payment.getGuid(), ipAddress, SUCCESS, gson.toJson(payment));
-//            paymentRepository.save(payment);
-            return "OK";
+            return new PaymentResultDto(false, new ResultDTO(true, "SUCCESS", 0));
         }
-        return check3ds(result, transferOrder.getOrderid());
+        return checkP2p3ds(result, transferOrder.getOrderid());
     }
 
-    public String sendSavedCardsP2p(String cardFromId, SendP2pToClientDto dto, String cardToId, Payment payment, Long terminalId) {
+    public ResultDTO sendSavedCardsP2p(String cardFromId, SendP2pToClientDto dto, String cardToId, Payment payment, Long terminalId) {
         LOGGER.info("sendSavedCardsP2p()");
         String p2pXml = createP2pXml(payment.getPaySysPayId(), dto.getMerchantId(), cardFromId, cardToId, dto.getAcceptedSum(), terminalId);
         LOGGER.info("p2pXml {}", p2pXml);
@@ -440,14 +440,11 @@ public class HalykSoapService {
             paymentService.save(payment);
             if (order.getResult().equals("00")) {
                 paymentService.setStatusByPaySysPayId(order.getOrderId(), SUCCESS);
-//            payment.setStatus(SUCCESS);
-//            paymentLogService.newEvent(payment.getGuid(), ipAddress, SUCCESS, gson.toJson(payment));
-//            paymentRepository.save(payment);
-                return "OK";
+                return new ResultDTO(true, "SUCCESS", 0);
             }
         }
         paymentService.setStatusByPaySysPayId(payment.getPaySysPayId(), FAILED);
-        return "FAIL";
+        return ErrorDictionary.BANK_ERROR.setData("Bank error " + order.getBankError());
     }
 
     private EpayServiceStub.PaymentOrderResponse sendPaymentOrderRequest(String amount, String currency, String cvv2, String requestMerchantId, String month, String year, String orderId, String pan, String trType) {
@@ -667,6 +664,21 @@ public class HalykSoapService {
         return payment;
     }
 
+    private PaymentResultDto checkP2p3ds(EpayServiceStub.Result response, String orderId) {
+        if (response.getPareq() != null && !response.getPareq().equals("null") && response.getMd() != null && !response.getMd().equals("null")) {
+            Map<String, String> param = new HashMap<>();
+            param.put("acsUrl", response.getAcsUrl());
+            param.put("MD", response.getMd());
+            param.put("PaReq", response.getPareq());
+            LOGGER.info("Code 00, order: {}", gson.toJson(response));
+            paymentService.setStatusByPaySysPayId(orderId, PENDING);
+            LOGGER.info("param: {}", param);
+            return new PaymentResultDto(true, new ResultDTO(true, "3ds", 0), gson.toJson(param));
+        }
+        paymentService.setStatusByPaySysPayId(orderId, FAILED);
+        return new PaymentResultDto(false, ErrorDictionary.BANK_ERROR.setData("Bank error " + response.getReturnCode() + ":" + response.getMessage()));
+    }
+
     private String check3ds(EpayServiceStub.Result response, String orderId) {
         if (response.getPareq() != null && !response.getPareq().equals("null") && response.getMd() != null && !response.getMd().equals("null")) {
             Map<String, String> param = new HashMap<>();
@@ -681,6 +693,7 @@ public class HalykSoapService {
         paymentService.setStatusByPaySysPayId(orderId, FAILED);
         return "FAIL";
     }
+
 
     private HalykOrder generateHalykOrder(BigDecimal amount, String cardholderName, String desc, String orderId, int trType, String requestType, String merchantId) {
         HalykOrder paymentOrder = new HalykOrder();
@@ -1479,6 +1492,7 @@ public class HalykSoapService {
                     order.setIntReference(document.getPayment().getIntReference());
                     order.setApprovalCode(document.getPayment().getApprovalCode());
                     order.setSession(document.getPayment().getSession());
+                    order.setBankError(document.getError().getPayment());
                     halykSavedCardsP2pOrderRepository.save(order);
                     return order;
                 }

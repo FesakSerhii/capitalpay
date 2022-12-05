@@ -13,6 +13,7 @@ import kz.capitalpay.server.p2p.model.MerchantP2pSettings;
 import kz.capitalpay.server.paymentlink.service.PaymentLinkService;
 import kz.capitalpay.server.payments.model.Payment;
 import kz.capitalpay.server.payments.service.PaymentService;
+import kz.capitalpay.server.paysystems.systems.halyksoap.dto.PaymentResultDto;
 import kz.capitalpay.server.paysystems.systems.halyksoap.model.HalykAnonymousP2pOrder;
 import kz.capitalpay.server.paysystems.systems.halyksoap.service.HalykSoapService;
 import kz.capitalpay.server.terminal.model.Terminal;
@@ -507,17 +508,17 @@ public class P2pService {
         return sha256hex.equals(signature);
     }
 
-    private ResultDTO checkReturnCode(String paymentResult) {
-        if (("OK").equals(paymentResult)) {
+    private ResultDTO checkReturnCode(PaymentResultDto paymentResult) {
+        if (paymentResult.getResultDTO().isResult() && !paymentResult.isIs3ds()) {
             return new ResultDTO(true, "Successful payment", 0);
         }
-        if ("FAIL".equals(paymentResult)) {
-            return ErrorDictionary.BANK_ERROR;
+        if (!paymentResult.getResultDTO().isResult()) {
+            return paymentResult.getResultDTO();
         }
         LOGGER.info("Redirect to 3DS");
         LOGGER.info("Result: {}", paymentResult);
         try {
-            LinkedHashMap<String, String> param = gson.fromJson(paymentResult, LinkedHashMap.class);
+            LinkedHashMap<String, String> param = gson.fromJson(paymentResult.getStrFor3ds(), LinkedHashMap.class);
             AnonymousP2pPaymentResponseDto dto = new AnonymousP2pPaymentResponseDto(param.get("acsUrl"), param.get("MD"), param.get("PaReq"), termUrl, true);
             return new ResultDTO(true, dto, 0);
         } catch (Exception e) {
@@ -526,25 +527,34 @@ public class P2pService {
         }
     }
 
-    private RedirectView checkReturnCode(String paymentResult, Map<String, String> resultUrls, RedirectAttributes redirectAttributes) {
-        if (("OK").equals(paymentResult)) {
+    private RedirectView checkReturnCode(PaymentResultDto paymentResult, Map<String, String> resultUrls, RedirectAttributes redirectAttributes) {
+        if (paymentResult.getResultDTO().isResult() && !paymentResult.isIs3ds()) {
             return new RedirectView(resultUrls.get(REDIRECT_SUCCESS_URL));
         }
-        if ("FAIL".equals(paymentResult)) {
-            addErrorAttributes(redirectAttributes, ErrorDictionary.BANK_ERROR);
+        if (!paymentResult.getResultDTO().isResult()) {
+            addErrorAttributes(redirectAttributes, paymentResult.getResultDTO());
             return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
         }
         LOGGER.info("Redirect to 3DS");
         LOGGER.info("Result: {}", paymentResult);
         try {
             String secureRedirectUrl = apiAddress + "/public/paysystem/secure/redirect";
-            LinkedHashMap<String, String> param = gson.fromJson(paymentResult, LinkedHashMap.class);
+            LinkedHashMap<String, String> param = gson.fromJson(paymentResult.getStrFor3ds(), LinkedHashMap.class);
             redirectAttributes.addAttribute("acsUrl", param.get("acsUrl"));
             redirectAttributes.addAttribute("MD", param.get("MD"));
             redirectAttributes.addAttribute("PaReq", param.get("PaReq"));
             return new RedirectView(secureRedirectUrl);
         } catch (Exception e) {
             e.printStackTrace();
+            return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
+        }
+    }
+
+    private RedirectView checkReturnCode(ResultDTO paymentResult, Map<String, String> resultUrls, RedirectAttributes redirectAttributes) {
+        if (paymentResult.isResult()) {
+            return new RedirectView(resultUrls.get(REDIRECT_SUCCESS_URL));
+        } else {
+            addErrorAttributes(redirectAttributes, ErrorDictionary.BANK_ERROR);
             return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
         }
     }
