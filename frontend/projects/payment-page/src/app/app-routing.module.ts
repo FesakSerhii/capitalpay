@@ -13,7 +13,7 @@ const routes: Routes = [
     path: 'payment',
     component: CardPaymentComponent
   },{
-    path: 'invoicing',
+    path: 'invoicing/:link',
     component: PaymentInvoicingComponent
   }
 ];

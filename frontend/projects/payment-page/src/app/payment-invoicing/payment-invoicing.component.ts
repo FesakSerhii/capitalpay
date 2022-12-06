@@ -33,18 +33,16 @@ export class PaymentInvoicingComponent implements OnInit {
   successForm: boolean;
   constructor(private userCardService: UserCardService, private activatedRoute: ActivatedRoute, public checkFormInvalidService:CheckFormInvalidService) { }
   ngOnInit(): void {
-    this.activatedRoute.queryParamMap.subscribe(params => {
-      this.linkId = params.get('link');
-      if(this.linkId) {
-        this.formInvoicing.get('creationLinkId').patchValue(this.linkId);
-        this.userCardService.getPublicInfo(this.linkId).then(rest => {
-          this.paymentLinkForm.get('companyName').patchValue(rest.data.companyName);
-          this.paymentLinkForm.get('contactPhone').patchValue(rest.data.contactPhone);
-          this.formInvoicing.get('emailTitle').patchValue(`Ссылки на оплату счета ${rest.data.companyName}`)
-          this.formInvoicing.get('emailText').patchValue(`Ссылки на оплату счета ${rest.data.companyName}`)
-        })
-      }
-    })
+    this.linkId = this.activatedRoute.snapshot.paramMap.get('link');
+    if(this.linkId) {
+      this.formInvoicing.get('creationLinkId').patchValue(this.linkId);
+      this.userCardService.getPublicInfo(this.linkId).then(rest => {
+        this.paymentLinkForm.get('companyName').patchValue(rest.data.companyName);
+        this.paymentLinkForm.get('contactPhone').patchValue(rest.data.contactPhone);
+        this.formInvoicing.get('emailTitle').patchValue(`Ссылки на оплату счета ${rest.data.companyName}`)
+        this.formInvoicing.get('emailText').patchValue(`Ссылки на оплату счета ${rest.data.companyName}`)
+      })
+    }
   }
 
   submitForm() {
