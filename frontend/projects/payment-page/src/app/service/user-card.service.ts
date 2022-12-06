@@ -33,4 +33,10 @@ export class UserCardService {
   getByPaymentId(paymentId) {
     return this.apiService.post('api',`/cashboxsetting/get-by-paymentid?paymentId=${paymentId}`).toPromise();
   }
+  getPublicInfo(id) {
+    return this.apiService.get('api', '/merchant-link/get-public-info/'+id).toPromise()
+  }
+  postCreateByLink(obj) {
+    return this.apiService.post('api', '/payment-link/create-by-link', obj).toPromise()
+  }
 }

@@ -1,72 +1,80 @@
-<div class="tpsform form2-theme">
+<form class="tpsform form2-theme" [formGroup]="formInvoicing" (submit)="submitForm()">
     <div class="info-block col-2">
         <div class="company-info">
-            <div class="text-field">
-                <label>Компания:</label> ТОО «CapitalPay»
+            <div class="text-field" *ngIf="paymentLinkForm.get('companyName').value">
+                <label>Компания:</label> {{paymentLinkForm.get('companyName').value}}
             </div>
-            <div class="text-field">
-                <label>Адрес:</label> Астана, ул.Калдаякова, 17-55
-            </div>
-            <div class="text-field">
-                <label>Телефон:</label> +7 777 610-10-33
+            <div class="text-field" *ngIf="paymentLinkForm.get('contactPhone').value">
+                <label>Телефон:</label> {{paymentLinkForm.get('contactPhone').value}}
             </div>
         </div>
         <div class="logo">
-            <img src="/assets/img/logo.svg" alt="Logo">
+             <img src="/assets/img/logo.svg" alt="Logo">
         </div>
     </div>
-    <form class="info-block" [formGroup]="formInvoicing">
-        <label class="tpsform_input" style="position: relative">
-            <span class="focused">Сумма перевода*:</span>
-            <input type="text" placeholder="Введите сумму перевода" formControlName="sum" mask="separator.2" suffix=" ₸">
-        </label>
-        <label class="tpsform_input" style="position: relative" >
-            <span class="focused">Номер заказа (накладная)*:</span>
-            <input type="text" placeholder="Введите Номер заказа (накладная)" formControlName="consignment">
-        </label>
-        <label class="tpsform_input" style="position: relative" >
-            <span class="focused">БИН / ИИН:</span>
-            <input type="number" placeholder="Введите БИН / ИИН" formControlName="bin">
-        </label>
-        <label class="tpsform_input" style="position: relative" >
-            <span class="focused">Email (для квитанции)*:</span>
-            <input type="text" placeholder="Введите Email" formControlName="email">
-        </label>
-        <label class="tpsform_input" style="position: relative" >
-            <span class="focused">Комментарий для продавца:</span>
-            <input type="text" placeholder="Оставьте комментарий для продавца" formControlName="comment">
-        </label>
-    </form>
-    <div class="payment-block">
-        <span>
-            <div class="title">Способ оплаты</div>
-        </span>
-        <div class="type-block">
-            <div class="subtitle">Банковские карты</div>
-            <div class="items">
-                <div class="row">
-                    <div class="item" [class.active]="formInvoicing.get('bankCards').value === 1" (click)="bankCardsChange(1)">
-                        <div class="item-block">
-                            <img src="/assets/img/Visa_Inc._logo.png" alt="Visa">
-                        </div>
-                    </div>
-                    <div class="item" [class.active]="formInvoicing.get('bankCards').value === 2" (click)="bankCardsChange(2)">
-                        <div class="item-block">
-                            <img src="/assets/img/Mastercard-logo.png" alt="MasterCard">
-                        </div>
-                    </div>
+    <ng-container *ngIf="!successForm">
+        <div class="info-block form">
+            <label class="tpsform_input" style="position: relative">
+                <span class="focused">Сумма перевода*:</span>
+                <input type="text" placeholder="Введите сумму перевода" [class.error]="isInvalid(formInvoicing, 'totalAmount')" formControlName="totalAmount" mask="separator.2"
+                       suffix=" ₸">
+            </label>
+            <label class="tpsform_input" style="position: relative">
+                <span class="focused">Номер заказа (накладная)*:</span>
+                <input type="text" [class.error]="isInvalid(formInvoicing, 'billId')" placeholder="Введите Номер заказа (накладная)" formControlName="billId">
+            </label>
+            <label class="tpsform_input" style="position: relative">
+                <span class="focused">Email (для квитанции)*:</span>
+                <input type="text" placeholder="Введите Email" [class.error]="isInvalid(formInvoicing, 'payerEmail')" formControlName="payerEmail">
+            </label>
+            <label class="tpsform_input" style="position: relative">
+                <span class="focused">Комментарий для продавца:</span>
+                <textarea  [class.error]="isInvalid(formInvoicing, 'description')" formControlName="description" cols="10"
+                          rows="3"></textarea>
+            </label>
+        </div>
+        <div class="info-block info-finish">
+            <div class="title">
+                <div>Комиссия: <span class="right">0 ₸</span></div>
+                <div> Итого к оплате: <span
+                        class="right"><span>{{formInvoicing.get('totalAmount').value ? (formInvoicing.get('totalAmount').value | mask: 'separator.2') : '0.00'}}</span> ₸</span>
                 </div>
             </div>
+            <span style="color: red" *ngIf="errStatusMassage!==null">{{errStatusMassage}}</span>
+            <button class="form-btn form2-theme green-theme" type="submit">
+                <span>Продолжить</span>
+            </button>
+            <div class="hint">Нажимая «Продолжить», вы соглашаетесь с <a href="/assets/pdf/confidentiality.pdf"
+                                                                         target="_blank"> Политикой конфиденциальности</a>
+            </div>
         </div>
-    </div>
-    <div class="info-block info-finish">
-        <div class="title">
-            <div>Комиссия: <span class="right">0₸</span></div>
-            <div> Итого к оплате: <span class="right"><span>{{formInvoicing.get('sum').value ? (formInvoicing.get('sum').value | mask: 'separator.2') : '0.00'}}</span> ₸</span></div>
+    </ng-container>
+    <ng-container *ngIf="successForm">
+        <div class="card card-hover mt-0" style="margin-bottom: 0;" *ngIf="paymentLinkForm.get('qrCode').value">
+            <div class="card-header card-header-success card-header-icon">
+                <h4 class="card-title "><strong>QR код на оплату</strong></h4>
+            </div>
+            <div class="card-body">
+                <div class="qrcode" style='background-image: url({{paymentLinkForm.get("qrCode").value}})'></div>
+                <button class="btn btn-success btn-round btn-back" (click)="downloadPdf(paymentLinkForm.get('qrCode').value)">Сохранить pdf</button>
+                <button class="btn btn-success btn-round btn-back ml-2" (click)="copy(paymentLinkForm.get('qrCode').value, true)">Копировать</button>
+            </div>
         </div>
-        <button class="form-btn form2-theme green-theme">
-            <span>Продолжить</span>
-        </button>
-        <div class="hint">Нажимая «Продолжить», вы соглашаетесь с <a href="/assets/pdf/confidentiality.pdf" target="_blank"> Политикой конфиденциальности</a></div>
-    </div>
-</div>
+        <div class="card card-hover" style="margin-bottom: 0;" *ngIf="paymentLinkForm.get('link').value">
+            <div class="card-header card-header-success card-header-icon">
+                <h4 class="card-title mb-0"><strong>Ссылка на оплату</strong></h4>
+            </div>
+            <div class="card-body">
+                <div class="form-group has-default bmd-form-group d-flex">
+                    <input type="text" [value]="paymentLinkForm.get('link').value" readonly class="form-control input w-100">
+                </div>
+                <button class="btn btn-success btn-round btn-back" (click)="copy(paymentLinkForm.get('link').value)">Копировать</button>
+            </div>
+        </div>
+        <div class="info-block info-finish" *ngIf="paymentLinkForm.get('link').value">
+            <a target="_blank" href="{{paymentLinkForm.get('link').value}}" class="form-btn form2-theme green-theme" type="submit">
+                Оплатить
+            </a>
+        </div>
+    </ng-container>
+</form>
