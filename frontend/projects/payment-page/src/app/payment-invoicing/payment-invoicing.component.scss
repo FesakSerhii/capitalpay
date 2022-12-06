@@ -1,5 +1,10 @@
 .tpsform.form2-theme {
   padding: 0;
+
+  @media (max-width: 768px) {
+    max-width: 650px;
+    width: calc(100vw - 32px);
+  }
 }
 .info-block {
   border-bottom: 0.5px solid #d3d3d3;
@@ -7,13 +12,27 @@
   justify-content: space-between;
   align-items: center;
   padding: 28px 30px 29px 30px;
+  @media (max-width: 500px) {
+    padding: 16px 20px;
+  }
   .text-field label {
     font-weight: bold;
+  }
+  .logo {
+    @media (max-width: 500px) {
+      max-width: 100px;
+      img {
+        width: 100%;
+      }
+    }
   }
 }
 .company-info {
   .text-field {
     margin-bottom: 6px;
+    @media (max-width: 500px) {
+      font-size: 13px;
+    }
     &:last-child {
       margin-bottom: 0;
     }
@@ -45,10 +64,16 @@ form {
 .payment-block .title {
   font-weight: bold;
   padding: 44px 30px 0;
+  @media (max-width: 500px) {
+    padding: 30px 20px 0 ;
+  }
 }
 .payment-block .subtitle {
   padding: 21px 30px 0;
   font-size: 12px;
+  @media (max-width: 500px) {
+    padding: 16px 20px;
+  }
 }
 .payment-block .items {
   overflow: hidden;
@@ -56,34 +81,45 @@ form {
   justify-content: flex-start;
   flex-wrap: wrap;
 }
-.payment-block .items .row {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  padding: 0 30px;
-  margin-top: 25px;
-}
-.payment-block .items .item {
-  position: relative;
-  float: left;
-  width: 49%;
-  height: 115px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.payment-block .items .item:first-child {
-  justify-content: flex-start !important;
+.payment-block .items {
+  .row {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 30px;
+    margin-top: 25px;
+    @media (max-width: 500px) {
+      padding: 0 20px;
+    }
+  }
+  .item {
+    position: relative;
+    float: left;
+    width: 49%;
+    height: 115px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &:first-child {
+      justify-content: flex-start !important;
+    }
+    &.active {
+      .item-block {
+        border-radius: 3px;
+        background: rgba(2, 171, 129, 0.3);
+      }
+    }
+    .item-block:hover {
+      border-radius: 3px;
+      background: rgba(2, 171, 129, 0.3);
+    }
+  }
 }
 .info-block .hint {
   font-size: 12px;
   color: #8A8A8A;
   margin-top: 19px;
   text-align: center;
-}
-.payment-block .items .item .item-block:hover {
-  border-radius: 3px;
-  background: rgba(2, 171, 129, 0.3);
 }
 .info-finish {
   flex-direction: column;

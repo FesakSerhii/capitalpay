@@ -15,43 +15,42 @@
             <img src="/assets/img/logo.svg" alt="Logo">
         </div>
     </div>
-    <form class="info-block">
-        <label class="tpsform_input" style="position: relative" for="cardnumber">
+    <form class="info-block" [formGroup]="formInvoicing">
+        <label class="tpsform_input" style="position: relative">
             <span class="focused">Сумма перевода*:</span>
-            <input type="text" placeholder="" id="cardnumber" autocomplete="cc-number" formControlName="cardNumber">
+            <input type="text" placeholder="Введите сумму перевода" formControlName="sum" mask="separator.2" suffix=" ₸">
         </label>
         <label class="tpsform_input" style="position: relative" >
             <span class="focused">Номер заказа (накладная)*:</span>
-            <input type="text" placeholder="Введите Номер заказа (накладная)"  autocomplete="cc-number" formControlName="cardNumber">
+            <input type="text" placeholder="Введите Номер заказа (накладная)" formControlName="consignment">
         </label>
         <label class="tpsform_input" style="position: relative" >
             <span class="focused">БИН / ИИН:</span>
-            <input type="text" placeholder="Введите БИН / ИИН" autocomplete="cc-number" formControlName="cardNumber">
+            <input type="number" placeholder="Введите БИН / ИИН" formControlName="bin">
         </label>
         <label class="tpsform_input" style="position: relative" >
             <span class="focused">Email (для квитанции)*:</span>
-            <input type="text" placeholder="Введите БИН / ИИН" autocomplete="cc-number" formControlName="cardNumber">
+            <input type="text" placeholder="Введите Email" formControlName="email">
         </label>
         <label class="tpsform_input" style="position: relative" >
             <span class="focused">Комментарий для продавца:</span>
-            <input type="text" placeholder="Оставьте комментарий для продавца" autocomplete="cc-number" formControlName="cardNumber">
+            <input type="text" placeholder="Оставьте комментарий для продавца" formControlName="comment">
         </label>
     </form>
     <div class="payment-block">
         <span>
             <div class="title">Способ оплаты</div>
-            <input type="hidden" required="required">
         </span>
         <div class="type-block">
             <div class="subtitle">Банковские карты</div>
             <div class="items">
                 <div class="row">
-                    <div class="item">
+                    <div class="item" [class.active]="formInvoicing.get('bankCards').value === 1" (click)="bankCardsChange(1)">
                         <div class="item-block">
                             <img src="/assets/img/Visa_Inc._logo.png" alt="Visa">
                         </div>
                     </div>
-                    <div class="item">
+                    <div class="item" [class.active]="formInvoicing.get('bankCards').value === 2" (click)="bankCardsChange(2)">
                         <div class="item-block">
                             <img src="/assets/img/Mastercard-logo.png" alt="MasterCard">
                         </div>
@@ -63,11 +62,11 @@
     <div class="info-block info-finish">
         <div class="title">
             <div>Комиссия: <span class="right">0₸</span></div>
-            <div> Итого к оплате: <span class="right">0.00 ₸</span></div>
+            <div> Итого к оплате: <span class="right"><span>{{formInvoicing.get('sum').value ? (formInvoicing.get('sum').value | mask: 'separator.2') : '0.00'}}</span> ₸</span></div>
         </div>
         <button class="form-btn form2-theme green-theme">
             <span>Продолжить</span>
         </button>
-        <div class="hint">Нажимая «Продолжить», вы соглашаетесь с <a href="/rules" target="_blank"> Политикой конфиденциальности</a></div>
+        <div class="hint">Нажимая «Продолжить», вы соглашаетесь с <a href="/assets/pdf/confidentiality.pdf" target="_blank"> Политикой конфиденциальности</a></div>
     </div>
 </div>
