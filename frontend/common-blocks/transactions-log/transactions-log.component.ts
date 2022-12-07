@@ -46,6 +46,7 @@ export class TransactionsLogComponent implements OnInit {
         merchantName: new FormControl(),
         merchantId: new FormControl(),
         paymentId: new FormControl(),
+        bankTerminalId: new FormControl(),
         totalAmount: new FormControl(),
         currency: new FormControl(),
         cashboxName: new FormControl(),
