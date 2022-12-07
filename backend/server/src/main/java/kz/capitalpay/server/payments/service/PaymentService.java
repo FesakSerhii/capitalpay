@@ -168,7 +168,7 @@ public class PaymentService {
             if (applicationUser == null) {
                 return USER_NOT_FOUND;
             }
-            if (applicationUser.getRoles().contains(applicationRoleService.getRole(MERCHANT))) {
+            if (!applicationUser.getRoles().contains(applicationRoleService.getRole(ADMIN))) {
                 filter.setMerchantId(applicationUser.getId());
             }
             PageRequest request = PageRequest.of(filter.getPage() - 1, filter.getLimit());
@@ -277,9 +277,6 @@ public class PaymentService {
             }
             if (Objects.nonNull(filter.getCurrency()) && !filter.getCurrency().trim().isEmpty()) {
                 predicates.add(builder.and(builder.equal(root.get("currency"), filter.getCurrency())));
-            }
-            if (Objects.nonNull(filter.getMerchantName()) && !filter.getMerchantName().trim().isEmpty()) {
-                predicates.add(builder.and(builder.equal(root.get("merchantName"), filter.getMerchantName())));
             }
             if (Objects.nonNull(filter.getBillId()) && !filter.getBillId().trim().isEmpty()) {
                 predicates.add(builder.and(builder.equal(root.get("billId"), filter.getBillId())));

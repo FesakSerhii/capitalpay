@@ -17,7 +17,6 @@ public class PaymentFilterDto {
     private @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     LocalDate dateAfter;
     private String currency;
-    private String merchantName;
     private String billId;
     private String paymentId;
     private String cashboxName;
@@ -64,14 +63,6 @@ public class PaymentFilterDto {
 
     public void setCurrency(String currency) {
         this.currency = currency;
-    }
-
-    public String getMerchantName() {
-        return merchantName;
-    }
-
-    public void setMerchantName(String merchantName) {
-        this.merchantName = merchantName;
     }
 
     public String getBillId() {
