@@ -305,4 +305,42 @@ public class Payment {
     public void setBankTerminalId(Long bankTerminalId) {
         this.bankTerminalId = bankTerminalId;
     }
+
+    @Override
+    public String toString() {
+        return "Payment{" +
+                "guid='" + guid + '\'' +
+                ", timestamp=" + timestamp +
+                ", localDateTime=" + localDateTime +
+                ", merchantId=" + merchantId +
+                ", merchantName='" + merchantName + '\'' +
+                ", cashboxId=" + cashboxId +
+                ", cashboxName='" + cashboxName + '\'' +
+                ", billId='" + billId + '\'' +
+                ", paySysPayId='" + paySysPayId + '\'' +
+                ", totalAmount=" + totalAmount +
+                ", currency='" + currency + '\'' +
+                ", description='" + description + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", param='" + param + '\'' +
+                ", ipAddress='" + ipAddress + '\'' +
+                ", userAgent='" + userAgent + '\'' +
+                ", status='" + status + '\'' +
+                ", paymentLinkId='" + paymentLinkId + '\'' +
+                ", outgoing=" + outgoing +
+                ", p2p=" + p2p +
+                ", saveBankCard=" + saveBankCard +
+                ", rrn='" + rrn + '\'' +
+                ", payerPan='" + payerPan + '\'' +
+                ", payerPhone='" + payerPhone + '\'' +
+                ", payerEmail='" + payerEmail + '\'' +
+                ", payerName='" + payerName + '\'' +
+                ", receiverPan='" + receiverPan + '\'' +
+                ", receiverPhone='" + receiverPhone + '\'' +
+                ", receiverEmail='" + receiverEmail + '\'' +
+                ", receiverName='" + receiverName + '\'' +
+                ", bankTerminalId=" + bankTerminalId +
+                '}';
+    }
 }

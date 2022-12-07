@@ -19,6 +19,7 @@ import kz.capitalpay.server.paymentlink.model.PaymentCreationLink;
 import kz.capitalpay.server.paymentlink.model.PaymentLink;
 import kz.capitalpay.server.paymentlink.repository.PaymentCreationLinkRepository;
 import kz.capitalpay.server.paymentlink.repository.PaymentLinkRepository;
+import kz.capitalpay.server.payments.service.PaymentService;
 import kz.capitalpay.server.service.SendEmailService;
 import kz.capitalpay.server.util.QrCodeUtil;
 import org.slf4j.Logger;
@@ -29,6 +30,9 @@ import org.springframework.stereotype.Service;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.*;
+
+import static kz.capitalpay.server.constants.ErrorDictionary.BILL_ID_ALREADY_EXISTS;
+import static kz.capitalpay.server.constants.ErrorDictionary.BILL_ID_IS_TOO_LONG;
 
 @Service
 public class PaymentLinkService {
@@ -43,6 +47,7 @@ public class PaymentLinkService {
     private final ApplicationUserService applicationUserService;
     private final CashboxService cashboxService;
     private final PaymentCreationLinkRepository paymentCreationLinkRepository;
+    private final PaymentService paymentService;
 
     @Value("${remote.api.addres}")
     private String apiAddress;
@@ -50,7 +55,7 @@ public class PaymentLinkService {
     private String merchantPaymentUrl;
 
 
-    public PaymentLinkService(PaymentLinkRepository paymentLinkRepository, QrCodeUtil qrCodeUtil, SendEmailService sendEmailService, FileStorageService fileStorageService, ObjectMapper objectMapper, PaymentLinkMapper paymentLinkMapper, ApplicationUserService applicationUserService, CashboxService cashboxService, PaymentCreationLinkRepository paymentCreationLinkRepository) {
+    public PaymentLinkService(PaymentLinkRepository paymentLinkRepository, QrCodeUtil qrCodeUtil, SendEmailService sendEmailService, FileStorageService fileStorageService, ObjectMapper objectMapper, PaymentLinkMapper paymentLinkMapper, ApplicationUserService applicationUserService, CashboxService cashboxService, PaymentCreationLinkRepository paymentCreationLinkRepository, PaymentService paymentService) {
         this.paymentLinkRepository = paymentLinkRepository;
         this.qrCodeUtil = qrCodeUtil;
         this.sendEmailService = sendEmailService;
@@ -60,6 +65,7 @@ public class PaymentLinkService {
         this.applicationUserService = applicationUserService;
         this.cashboxService = cashboxService;
         this.paymentCreationLinkRepository = paymentCreationLinkRepository;
+        this.paymentService = paymentService;
     }
 
     public ResultDTO createPaymentLink(CreatePaymentLinkDto dto) {
@@ -83,6 +89,10 @@ public class PaymentLinkService {
             Cashbox cashbox = cashboxService.findById(dto.getCashBoxId());
             if (Objects.isNull(cashbox)) {
                 return ErrorDictionary.CASHBOX_NOT_FOUND;
+            }
+            ResultDTO checkPaymentLinkError = checkPaymentLink(dto.getBillId(), cashbox);
+            if (Objects.nonNull(checkPaymentLinkError)) {
+                return checkPaymentLinkError;
             }
             paymentLink.setMerchantId(cashbox.getMerchantId());
             paymentLink.setValidTill(LocalDateTime.now().plusHours(dto.getValidHours()));
@@ -109,6 +119,10 @@ public class PaymentLinkService {
             Cashbox cashbox = cashboxService.findById(creationLink.getCashBoxId());
             if (Objects.isNull(cashbox)) {
                 return ErrorDictionary.CASHBOX_NOT_FOUND;
+            }
+            ResultDTO checkPaymentLinkError = checkPaymentLink(dto.getBillId(), cashbox);
+            if (Objects.nonNull(checkPaymentLinkError)) {
+                return checkPaymentLinkError;
             }
             ApplicationUser user = applicationUserService.findById(cashbox.getMerchantId());
             if (Objects.isNull(user)) {
@@ -271,5 +285,15 @@ public class PaymentLinkService {
         }
         List<FileStorage> files = fileStorageService.getFilListById(fileIds);
         sendEmailService.sendEmailWithFiles(paymentLink.getPayerEmail(), paymentLink.getEmailTitle(), paymentLink.getEmailText() + "\n\n" + link, files);
+    }
+
+    private ResultDTO checkPaymentLink(String billId, Cashbox cashbox) {
+        if (billId.length() > 31) {
+            return BILL_ID_IS_TOO_LONG;
+        }
+        if (!paymentService.checkUnique(cashbox, billId)) {
+            return BILL_ID_ALREADY_EXISTS;
+        }
+        return null;
     }
 }

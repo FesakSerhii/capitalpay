@@ -218,6 +218,7 @@ public class SimpleService {
             request.setPaymentLinkId(paymentLink);
             LOGGER.info("Request: {}", gson.toJson(request));
             ResultDTO paymentResult = newPayment(request);
+            LOGGER.info("Creata payment result: {}", paymentResult);
             if (!(paymentResult.getData() instanceof Payment)) {
                 return paymentResult;
             }
