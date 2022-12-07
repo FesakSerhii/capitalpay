@@ -6,7 +6,7 @@
       <div class="card w1060">
         <div class="card-body">
           <div class="d-flex justify-content-between">
-            <form class="form-horizontal" [formGroup]="filter">
+            <form class="form-horizontal form-filter" [formGroup]="filter">
               <div class="d-flex justify-content-between">
                 <div class="d-flex">
                   <label class="col-form-label">Валюта</label>
@@ -36,7 +36,7 @@
                 <div class="d-flex">
                   <label class="col-form-label">Номер счета</label>
                   <div class="form-group has-default bmd-form-group">
-                    <input type="text" class="form-control" formControlName="paySysPayId">
+                    <input type="text" class="form-control" formControlName="billId">
                   </div>
                 </div>
                 <!--                <div class="d-flex">-->
@@ -46,17 +46,21 @@
                 <!--                  </div>-->
                 <!--                </div>-->
               </div>
-              <div class="d-flex justify-content-around">
-                <div class="d-flex">
+              <div class="d-flex justify-content-between">
+                <div class="d-flex" *ngIf="isAdmin">
                   <label class="col-form-label">Мерчант</label>
-                  <div class="form-group has-default bmd-form-group">
-                    <input type="text" class="form-control" formControlName="merchantName">
+                  <div class="form-group has-default bmd-form-group merchantSearch">
+                    <input type="text"
+                           class="form-control"
+                           formControlName="merchantName"
+                           [ngbTypeahead]="searchMerchantNames"
+                           (selectItem)="onSelectItem($event)" [resultFormatter]="formatter">
                   </div>
                 </div>
                 <div class="d-flex">
                   <label class="col-form-label">ID платежа</label>
                   <div class="form-group has-default bmd-form-group">
-                    <input type="text" class="form-control" formControlName="billId">
+                    <input type="text" class="form-control" formControlName="paymentId">
                   </div>
                 </div>
                 <div class="d-flex">
@@ -99,7 +103,7 @@
                   <div class="row mr-0">
                     <div class="col-sm-12 col-md-6">
                       <div class="dataTables_length" id="datatables_length">
-                        <label class="d-flex align-items-baseline">Show <app-custom-select classes="tight" [values]="[10,20,50]" [placeholder]="10"></app-custom-select> entries</label>
+                        <label class="d-flex align-items-baseline">Show <app-custom-select classes="tight" [formControl]="showItem" [values]="[10,20,50]" [placeholder]="10"></app-custom-select> entries</label>
                       </div>
                     </div>
                     <div class="col-sm-12 col-md-6">
@@ -118,11 +122,11 @@
                         <table class="table table-striped table-no-bordered table-hover dataTable dtr-inline" cellspacing="0" width="100%" style="width: 100%;" role="grid" aria-describedby="datatables_info">
                           <thead>
                           <tr role="row mr-0">
-                            <th class="sortable-th" (click)="nextSort('billId')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'billId'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'billId'">ID платежа</span></th>
-                            <th class="sortable-th" (click)="nextSort('timestamp')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'timestamp'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'timestamp'">Время создания</span></th>
+                            <th class="sortable-th" (click)="nextSort('guid')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'guid'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'guid'">ID платежа</span></th>
+                            <th class="sortable-th" (click)="nextSort('localDateTime')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'localDateTime'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'localDateTime'">Время создания</span></th>
                             <th *ngIf="isAdmin" class="sortable-th" (click)="nextSort('merchantName')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'merchantName'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'merchantName'">Мерчант</span></th>
                             <th class="sortable-th" (click)="nextSort('cashboxName')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'cashboxName'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'cashboxName'">Касса</span></th>
-                            <th class="sortable-th" (click)="nextSort('paySysPayId')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'paySysPayId'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'paySysPayId'">Номер счета</span></th>
+                            <th class="sortable-th" (click)="nextSort('billId')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'billId'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'billId'">Номер счета</span></th>
                             <th class="sortable-th" (click)="nextSort('totalAmount')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'totalAmount'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'totalAmount'">Сумма</span></th>
                             <th class="sortable-th" (click)="nextSort('currency')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'currency'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'currency'">Валюта</span></th>
                             <th class="sortable-th" (click)="nextSort('status')"><span [class.sorting_desc]="sortHelper.sort.sortBy === 'status'" [class.sorting_asc]="sortHelper.sort.increase&&sortHelper.sort.sortBy === 'status'">Статус</span></th>
@@ -140,7 +144,7 @@
                           </tr>
                           </tfoot>
                           <tbody *ngIf="visible">
-                          <tr *ngFor="let transaction of sortedActions | paginate: { itemsPerPage: 10, currentPage: currentPage }" class="cursor-pointer"
+                          <tr *ngFor="let transaction of sortedActions | paginate: {currentPage: currentPage, totalItems: totalElements, itemsPerPage: showItem.value }" class="cursor-pointer"
                               [class.selectedItem]="transactionDetails!==null&&transaction.guid===getGuid(transactionDetails)"
                               (click)="getTransactionDetails(transaction.guid)">
                             <td tabindex="0" class="sorting_1">{{transaction.billId}}</td>

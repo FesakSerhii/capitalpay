@@ -10,6 +10,8 @@ import {KycService} from '../../../../projects/admin-panel/src/app/service/kyc.s
 import {ConfirmActionModalComponent} from '../../../../common-blocks/confirm-action-modal/confirm-action-modal.component';
 import {ActivatedRoute} from '@angular/router';
 import {CheckFormInvalidService} from "../../service/check-form-invalid.service";
+import {error} from "protractor";
+import {jsPDF} from "jspdf";
 
 @Component({
   selector: 'app-settings',
@@ -19,6 +21,7 @@ import {CheckFormInvalidService} from "../../service/check-form-invalid.service"
 export class SettingsComponent implements OnInit {
   @ViewChild('addBoxOffice', {static: false}) addBoxOffice: TemplateRef<any>;
   @ViewChild('changePassword', {static: false}) changePasswordModal: TemplateRef<any>;
+  @ViewChild('paymentLink', {static: false}) paymentLinkModal: TemplateRef<any>;
   @ViewChild('confirmContent', {static: false}) confirmModal: ConfirmActionModalComponent;
 
   constructor(private modalService: NgbModal,
@@ -59,6 +62,7 @@ export class SettingsComponent implements OnInit {
   currenciesList: any = null;
   currencies: any = null;
   paymentMethods: any = null;
+  merchantLinkInfo: any = null;
   cashBoxInfo = new FormGroup({
     redirectfailed: new FormControl(''),
     redirectsuccess: new FormControl(''),
@@ -82,6 +86,19 @@ export class SettingsComponent implements OnInit {
   cashBoxForm = new FormGroup({
     name: new FormControl(),
     currency: new FormControl()
+  })
+  paymentLinkForm = new FormGroup({
+    cashBoxId: new FormControl(null, [Validators.required]),
+    companyName: new FormControl(null, [Validators.required]),
+    contactPhone: new FormControl(null, [Validators.required]),
+  })
+  editPaymentLinkForm = new FormGroup({
+    id: new FormControl(null, [Validators.required]),
+    cashBoxId: new FormControl(null, [Validators.required]),
+    companyName: new FormControl(null, [Validators.required]),
+    contactPhone: new FormControl(null, [Validators.required]),
+    link: new FormControl(),
+    qr: new FormControl(),
   })
   cashBoxList: any = null;
   cashBoxMenuOpened: boolean = false;
@@ -133,6 +150,43 @@ export class SettingsComponent implements OnInit {
 
   open(modal) {
     this.modalService.open(modal, {windowClass: ''});
+  }
+
+  async paymentLinkOpen(modal, box) {
+    try {
+      this.merchantLinkInfo = await this.cashBoxService.getMerchantLinkGetPublicInfo(box.id);
+      this.modalService.dismissAll();
+      if(!this.merchantLinkInfo.result) {
+        this.paymentLinkForm.get('cashBoxId').patchValue(box.id);
+        this.paymentLinkForm.get('companyName').patchValue(box.name);
+      } else {
+        this.editPaymentLinkForm.patchValue(this.merchantLinkInfo.data)
+      }
+      this.modalService.open(modal, {windowClass: ''});
+    } catch (error) {}
+  }
+
+  createPaymentLink() {
+    if(this.paymentLinkForm.invalid){
+      return;
+    }
+    this.confirmModal.open().then(resp => {
+      this.cashBoxService.postMerchantLinkCreate(this.paymentLinkForm.value).then(rest => {
+        this.modalService.dismissAll()
+      })
+    })
+
+  }
+  editPaymentLink() {
+    if(this.editPaymentLinkForm.invalid){
+      return;
+    }
+    this.confirmModal.open().then(resp => {
+      const obj:any = Object.fromEntries(Object.entries(this.editPaymentLinkForm.value).filter(([key, value]) => key === 'id' || key === 'companyName' || key === 'contactPhone'))
+      this.cashBoxService.postMerchantLinkEdit(obj).then(rest => {
+        this.modalService.dismissAll()
+      })
+    })
   }
 
   editCashBoxName() {
@@ -245,7 +299,31 @@ export class SettingsComponent implements OnInit {
       this.editCashBoxInfo()
     })
   }
+  downloadPdf(qrCode) {
+    const doc: any = new jsPDF();
+    doc.addImage(qrCode, 'JPG', 10, 10);
+    doc.save('capitalPay.pdf');
+  }
+  async copy(text: string, image: boolean = false) {
+    if(image) {
+      try {
+        // @ts-ignore
+        await navigator.clipboard.write([
+          // @ts-ignore
+          new ClipboardItem({
+            'image/png': fetch(text).then(res => res.blob())
+          })
+        ]);
+      } catch (err) {
+        console.error(err.name, err.message);
+      }
+    } else {
+      navigator.clipboard.writeText(text).then(() => {}).catch(err => {
+        console.error(err.name, err.message);
+      });
+    }
 
+  }
   confirmPasswordChange() {
     if(this.passChangeForm.invalid){
       this.errStatusMassage='Заполните все необходимые поля';
