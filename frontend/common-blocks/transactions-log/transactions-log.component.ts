@@ -9,6 +9,7 @@ import {dateCompareValidator} from "../validators/dateCompareValidator";
 import {MassageModalComponent} from "../massage-modal/massage-modal.component";
 import {Observable, Subscription} from "rxjs";
 import {debounceTime, distinctUntilChanged, map, switchMap} from "rxjs/operators";
+import { NgbTypeaheadSelectItemEvent } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
     selector: "app-transactions-log",
@@ -43,6 +44,7 @@ export class TransactionsLogComponent implements OnInit {
         dateAfter: new FormControl(),
         dateEnd: new FormControl(),
         merchantName: new FormControl(),
+        merchantId: new FormControl(),
         paymentId: new FormControl(),
         totalAmount: new FormControl(),
         currency: new FormControl(),
@@ -85,19 +87,27 @@ export class TransactionsLogComponent implements OnInit {
 
     }
 
+    formatter = (result: any) => result?.label;
     searchMerchantNames: (text$: Observable<string>) => Observable<string[]> = (text$: Observable<string>) => text$.pipe(
         debounceTime(200),
         distinctUntilChanged(),
         switchMap((name: any) => {
             if(name.length > 1) {
                 return this.paymentsService.postMerchantNames({searchText: name}).then(a => {
-                    return a.data.map(i => i.name);
+                    return a.data.map(i => {
+                       return {value: i.merchantId, label: i.name};
+                    });
                 });
             } else {
                 return [];
             }
         }),
     );
+    onSelectItem(event: NgbTypeaheadSelectItemEvent): void {
+        event.preventDefault();
+        this.filter.get('merchantName').patchValue( event.item.label);
+        this.filter.get('merchantId').patchValue( event.item.value);
+    }
 
     async getTransactions(page: number = 1, filterForm: any = this.filter.value, sort: any = {}) {
         this.transactionContent = {
