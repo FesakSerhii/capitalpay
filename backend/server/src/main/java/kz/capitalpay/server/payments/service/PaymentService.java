@@ -87,12 +87,13 @@ public class PaymentService {
         return paymentRepository.findById(paymentId).orElse(null);
     }
 
-    public Payment setStatusByPaySysPayId(String paySysPayId, String status) {
+    public Payment setStatusByPaySysPayId(String paySysPayId, String status, String bankError) {
         LOGGER.info("PaySysPay ID: {}", paySysPayId);
         Payment payment = paymentRepository.findTopByPaySysPayId(paySysPayId);
         if (payment != null) {
             LOGGER.info("Payment pspid: {}", payment.getPaySysPayId());
             payment.setStatus(status);
+            payment.setBankError(bankError);
             paymentRepository.save(payment);
             paymentLogService.newEvent(payment.getGuid(), payment.getIpAddress(), CHANGE_STATUS_PAYMENT, gson.toJson(payment));
             notifyMerchant(payment);

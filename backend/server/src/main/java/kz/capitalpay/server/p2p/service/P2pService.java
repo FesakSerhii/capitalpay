@@ -465,7 +465,7 @@ public class P2pService {
             return;
         }
         if (Objects.nonNull(halykAnonymousP2pOrder.getResponseCode()) && halykAnonymousP2pOrder.getResponseCode().equals("00")) {
-            paymentService.setStatusByPaySysPayId(halykAnonymousP2pOrder.getOrderId(), SUCCESS);
+            paymentService.setStatusByPaySysPayId(halykAnonymousP2pOrder.getOrderId(), SUCCESS, null);
             Payment payment = paymentService.findByPaySysPayId(halykAnonymousP2pOrder.getOrderId());
             payment.setRrn(halykAnonymousP2pOrder.getReference());
             payment.setPayerEmail(halykAnonymousP2pOrder.getEmail());

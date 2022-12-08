@@ -324,7 +324,7 @@ public class HalykSoapService {
                 LOGGER.info("PaReq: " + controlOrderForCommerceResponse.get_return().getPareq());
                 LOGGER.info("Md: " + controlOrderForCommerceResponse.get_return().getMd());
                 LOGGER.info("AcsUrl: " + controlOrderForCommerceResponse.get_return().getAcsUrl());
-                paymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), SUCCESS);
+                paymentService.setStatusByPaySysPayId(paymentOrder.getOrderid(), SUCCESS, null);
             } else {
                 return check3ds(result, paymentOrder.getOrderid());
             }
@@ -416,7 +416,7 @@ public class HalykSoapService {
         LOGGER.info(gson.toJson(transferOrder));
 
         if (transferOrderResponse.get_return().getReturnCode().equals("00")) {
-            paymentService.setStatusByPaySysPayId(orderId, SUCCESS);
+            paymentService.setStatusByPaySysPayId(orderId, SUCCESS, null);
             return new PaymentResultDto(false, new ResultDTO(true, "SUCCESS", 0));
         }
         return checkP2p3ds(result, transferOrder.getOrderid());
@@ -439,11 +439,11 @@ public class HalykSoapService {
             payment.setRrn(order.getReference());
             paymentService.save(payment);
             if (order.getResult().equals("00")) {
-                paymentService.setStatusByPaySysPayId(order.getOrderId(), SUCCESS);
+                paymentService.setStatusByPaySysPayId(order.getOrderId(), SUCCESS, null);
                 return new ResultDTO(true, "SUCCESS", 0);
             }
         }
-        paymentService.setStatusByPaySysPayId(payment.getPaySysPayId(), FAILED);
+        paymentService.setStatusByPaySysPayId(payment.getPaySysPayId(), FAILED, order.getBankError());
         return ErrorDictionary.BANK_ERROR.setData("Bank error " + order.getBankError());
     }
 
@@ -671,12 +671,13 @@ public class HalykSoapService {
             param.put("MD", response.getMd());
             param.put("PaReq", response.getPareq());
             LOGGER.info("Code 00, order: {}", gson.toJson(response));
-            paymentService.setStatusByPaySysPayId(orderId, PENDING);
+            paymentService.setStatusByPaySysPayId(orderId, PENDING, null);
             LOGGER.info("param: {}", param);
             return new PaymentResultDto(true, new ResultDTO(true, "3ds", 0), gson.toJson(param));
         }
-        paymentService.setStatusByPaySysPayId(orderId, FAILED);
-        return new PaymentResultDto(false, ErrorDictionary.BANK_ERROR.setData("Bank error " + response.getReturnCode() + ":" + response.getMessage()));
+        String bankError = response.getReturnCode() + ":" + response.getMessage();
+        paymentService.setStatusByPaySysPayId(orderId, FAILED, bankError);
+        return new PaymentResultDto(false, ErrorDictionary.BANK_ERROR.setData("Bank error " + bankError));
     }
 
     private String check3ds(EpayServiceStub.Result response, String orderId) {
@@ -686,11 +687,11 @@ public class HalykSoapService {
             param.put("MD", response.getMd());
             param.put("PaReq", response.getPareq());
             LOGGER.info("Code 00, order: {}", gson.toJson(response));
-            paymentService.setStatusByPaySysPayId(orderId, PENDING);
+            paymentService.setStatusByPaySysPayId(orderId, PENDING, null);
             LOGGER.info("param: {}", param);
             return gson.toJson(param);
         }
-        paymentService.setStatusByPaySysPayId(orderId, FAILED);
+        paymentService.setStatusByPaySysPayId(orderId, FAILED, response.getReturnCode() + ":" + response.getMessage());
         return "FAIL";
     }
 
@@ -935,7 +936,7 @@ public class HalykSoapService {
             LOGGER.info(gson.toJson(paymentOrderAcs));
             if (paymentOrderAcs.getReturnCode() != null && paymentOrderAcs.getReturnCode().equals("00")) {
                 LOGGER.info("Return code: {}", paymentOrderAcs.getReturnCode());
-                return paymentService.setStatusByPaySysPayId(paymentOrderAcs.getOrderid(), SUCCESS);
+                return paymentService.setStatusByPaySysPayId(paymentOrderAcs.getOrderid(), SUCCESS, null);
             }
             return null;
 
