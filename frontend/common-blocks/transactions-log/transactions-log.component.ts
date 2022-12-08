@@ -1,29 +1,29 @@
-import {Component, OnInit, ViewChild} from "@angular/core";
-import {UserService} from "../../projects/admin-panel/src/app/service/user.service";
-import {Router} from "@angular/router";
-import {PaymentsService} from "../../projects/admin-panel/src/app/service/payments.service";
-import {SortHelper} from "../../src/app/helper/sort-helper";
-import {SearchInputService} from "../../src/app/service/search-input.service";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {dateCompareValidator} from "../validators/dateCompareValidator";
-import {MassageModalComponent} from "../massage-modal/massage-modal.component";
-import {Observable, Subscription} from "rxjs";
-import {debounceTime, distinctUntilChanged, map, switchMap} from "rxjs/operators";
-import { NgbTypeaheadSelectItemEvent } from "@ng-bootstrap/ng-bootstrap";
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {UserService} from '../../projects/admin-panel/src/app/service/user.service';
+import {Router} from '@angular/router';
+import {PaymentsService} from '../../projects/admin-panel/src/app/service/payments.service';
+import {SortHelper} from '../../src/app/helper/sort-helper';
+import {SearchInputService} from '../../src/app/service/search-input.service';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {dateCompareValidator} from '../validators/dateCompareValidator';
+import {MassageModalComponent} from '../massage-modal/massage-modal.component';
+import {Observable, Subscription} from 'rxjs';
+import {debounceTime, distinctUntilChanged, map, switchMap} from 'rxjs/operators';
+import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
-    selector: "app-transactions-log",
-    templateUrl: "./transactions-log.component.html",
-    styleUrls: ["./transactions-log.component.scss"]
+    selector: 'app-transactions-log',
+    templateUrl: './transactions-log.component.html',
+    styleUrls: ['./transactions-log.component.scss']
 })
 export class TransactionsLogComponent implements OnInit {
 
-    @ViewChild("invalidDatesModalContent", {static: false}) invalidDatesModal: MassageModalComponent;
+    @ViewChild('invalidDatesModalContent', {static: false}) invalidDatesModal: MassageModalComponent;
 
     constructor(private userService: UserService, private router: Router, private paymentsService: PaymentsService, private searchInputService: SearchInputService) {
     }
 
-    activeTab = "tab1";
+    activeTab = 'tab1';
     user: any;
     isAdmin: boolean;
     transactionContent: any = null;
@@ -31,9 +31,9 @@ export class TransactionsLogComponent implements OnInit {
     merchantNames: any[] = null;
     dontTouched: any[] = null;
     transactionDetails: any = null;
-    currentPage: number = 1;
-    totalElements: number = 1;
-    visible: boolean = true;
+    currentPage = 1;
+    totalElements = 1;
+    visible = true;
     selectedTransaction: any = null;
     sortHelper = new SortHelper();
     showItem: FormControl = new FormControl(10);
@@ -63,17 +63,32 @@ export class TransactionsLogComponent implements OnInit {
     }
     currencyList = [];
     tableSearch = new FormControl();
+    transactionLabel: any = {
+        outgoing: {
+            label: 'Направление платежа',
+            value: (value) => value ? 'Входной' : 'Выходной'
+        },
+        payerPan: 'Карта отправителя',
+        payerPhone: 'Телефон отправителя',
+        payerName: 'Имя отправителя',
+        payerEmail: 'Email отправителя',
+        receiverPan: 'Карта получателя',
+        receiverPhone: 'Телефон получателя',
+        receiverName: 'Имя получателя',
+        receiverEmail: 'Email получателя',
+        bankError: (value) => value ? 'Ошибка банка при переводе': 'disabled'
+    }
 
     ngOnInit(): void {
-        let dateFields = {
-            dateStart: "dateEnd",
+        const dateFields = {
+            dateStart: 'dateEnd',
         };
-        for (let v in dateFields) {
+        for (const v in dateFields) {
             this.filter.get(v).setValidators([Validators.required, dateCompareValidator(this.filter, dateFields[v])]);
             this.filter.get(dateFields[v]).setValidators([Validators.required, dateCompareValidator(this.filter, v, true)]);
         }
         this.user = this.userService.getUserInfo();
-        this.isAdmin = this.router.url.includes("admin-panel");
+        this.isAdmin = this.router.url.includes('admin-panel');
         this.getTransactions(1);
         this.tableSearch.valueChanges.subscribe(val => {
             if (val.length > 3) {
@@ -132,7 +147,7 @@ export class TransactionsLogComponent implements OnInit {
     }
 
     formRegistre() {
-        this.router.navigate([(this.isAdmin ? "admin-panel" : "/merchant") + "/transaction-log/registry"])
+        this.router.navigate([(this.isAdmin ? 'admin-panel' : '/merchant') + '/transaction-log/registry'])
     }
 
     changePage(event) {
@@ -148,51 +163,32 @@ export class TransactionsLogComponent implements OnInit {
         const obj = {...await this.paymentsService.getTransactionDetails(id)}.data
         const arr = [];
         for (const field in obj) {
-            arr.push({field: field, value: obj[field]})
+            arr.push({field, value: obj[field]})
         }
         this.transactionDetails = [...arr];
 
         this.transactionDetails = this.transactionDetails.map((item: any) => {
-            switch (item.field) {
-                case "outgoing":
-                    item.label = "Направление платежа"
-                    item.value = item.value ? "Входной" : "Выходной"
-                    break;
-                case "payerPan":
-                    item.label = "Карта отправителя"
-                    break;
-                case "payerPhone":
-                    item.label = "Телефон отправителя"
-                    break;
-                case "payerName":
-                    item.label = "Имя отправителя"
-                    break;
-                case "payerEmail":
-                    item.label = "Email отправителя"
-                    break;
-                case "receiverPan":
-                    item.label = "Карта получателя"
-                    break;
-                case "receiverPhone":
-                    item.label = "Телефон получателя"
-                    break;
-                case "receiverName":
-                    item.label = "Имя получателя"
-                    break;
-                case "receiverEmail":
-                    item.label = "Email получателя "
-                    break;
+            if(typeof this.transactionLabel[item.field] === 'string') {
+                item.label = this.transactionLabel[item.field]
+            } else if(typeof this.transactionLabel[item.field] === 'object') {
+                item.label = typeof this.transactionLabel[item.field].label === 'string' ? this.transactionLabel[item.field].label : item.field
+                item.value = typeof this.transactionLabel[item.field].value === 'function' ? this.transactionLabel[item.field].value(item.value) : item.value
+            } else if(typeof this.transactionLabel[item.field] === 'function') {
+                item.label = this.transactionLabel[item.field](item.value)
             }
-            return item;
-        })
+            if(item.label !== 'disabled') {
+                return item
+            }
+        }).filter(( element ) => element !== undefined);
     }
 
+
     getGuid(data) {
-        return data.filter(el => el.field === "guid")[0].value
+        return data.filter(el => el.field === 'guid')[0].value
     }
 
     async nextSort(field) {
-        let sh: SortHelper = this.sortHelper;
+        const sh: SortHelper = this.sortHelper;
         this.sortHelper = sh.nextSort(field);
         await this.getTransactions(this.currentPage, this.filter.value, {
             field: this.sortHelper.sortBy,
@@ -219,15 +215,15 @@ export class TransactionsLogComponent implements OnInit {
         }
 
         for (const control in this.filter.value) {
-            let value: any = this.filter.value[control];
+            const value: any = this.filter.value[control];
             this.isFilterActive[control] = true;
-            if (this.filter.value[control] && control !== "dateStart" && control !== "dateEnd" && control !== "dateBefore" && control !== "dateAfter") {
+            if (this.filter.value[control] && control !== 'dateStart' && control !== 'dateEnd' && control !== 'dateBefore' && control !== 'dateAfter') {
                 this.dontTouched = this.dontTouched.filter(el => {
                     return el[control] !== null ? `${el[control]}`.toLowerCase().includes(value.trim().toLowerCase()) : false
                 })
-            } else if (control === "dateStart" && this.filter.value[control]) {
+            } else if (control === 'dateStart' && this.filter.value[control]) {
                 this.filter.value.dateAfter = this.compareDates(this.filter.value.dateStart)
-            } else if (control === "dateEnd" && this.filter.value[control]) {
+            } else if (control === 'dateEnd' && this.filter.value[control]) {
                 this.filter.value.dateBefore = this.compareDates(this.filter.value.dateEnd)
             }
         }
@@ -237,7 +233,7 @@ export class TransactionsLogComponent implements OnInit {
     }
 
     compareDates(dateValueStart) {
-        return dateValueStart ? `${dateValueStart.year}-${String(dateValueStart.month).padStart(2, "0")}-${String(dateValueStart.day).padStart(2, "0")}` : null;
+        return dateValueStart ? `${dateValueStart.year}-${String(dateValueStart.month).padStart(2, '0')}-${String(dateValueStart.day).padStart(2, '0')}` : null;
     }
 
     clearFilter() {
