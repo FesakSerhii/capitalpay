@@ -94,8 +94,8 @@ public class P2pService {
         try {
             Cashbox cashbox = cashboxService.findById(dto.getCashBoxId());
             if (!cashbox.getMerchantId().equals(dto.getMerchantId())) {
-                LOGGER.info(ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXES.toString());
-                addErrorAttributes(redirectAttributes, ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXES);
+                LOGGER.info(ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXS_OWNER.toString());
+                addErrorAttributes(redirectAttributes, ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXS_OWNER);
                 return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
             }
 
@@ -154,8 +154,8 @@ public class P2pService {
         try {
             Cashbox cashbox = cashboxService.findById(dto.getCashBoxId());
             if (!cashbox.getMerchantId().equals(dto.getMerchantId())) {
-                LOGGER.info(ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXES.toString());
-                addErrorAttributes(redirectAttributes, ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXES);
+                LOGGER.info(ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXS_OWNER.toString());
+                addErrorAttributes(redirectAttributes, ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXS_OWNER);
                 return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
             }
 
@@ -216,8 +216,8 @@ public class P2pService {
         try {
             Cashbox cashbox = cashboxService.findById(dto.getCashBoxId());
             if (!cashbox.getMerchantId().equals(dto.getMerchantId())) {
-                LOGGER.info(ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXES.toString());
-                addErrorAttributes(redirectAttributes, ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXES);
+                LOGGER.info(ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXS_OWNER.toString());
+                addErrorAttributes(redirectAttributes, ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXS_OWNER);
                 return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
             }
             Long merchantCardId = cashboxService.findUserCardIdByCashBoxId(dto.getCashBoxId());
@@ -272,8 +272,8 @@ public class P2pService {
         try {
             Cashbox cashbox = cashboxService.findById(dto.getCashBoxId());
             if (!cashbox.getMerchantId().equals(dto.getMerchantId())) {
-                LOGGER.info(ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXES.toString());
-                addErrorAttributes(redirectAttributes, ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXES);
+                LOGGER.info(ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXS_OWNER.toString());
+                addErrorAttributes(redirectAttributes, ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXS_OWNER);
                 return new RedirectView(resultUrls.get(REDIRECT_FAILED_URL));
             }
             Long merchantCardId = cashboxService.findUserCardIdByCashBoxId(dto.getCashBoxId());
@@ -331,7 +331,7 @@ public class P2pService {
         }
         if (!cashbox.getMerchantId().equals(merchantId)) {
             LOGGER.info("AVAILABLE_ONLY_FOR_CASHBOXES");
-            return ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXES;
+            return ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXS_OWNER;
         }
         BigDecimal amount = totalAmount.setScale(2, RoundingMode.HALF_UP);
         if (!cashboxCurrencyService.checkCurrencyEnable(cashbox.getId(), merchantId, currency)) {
@@ -363,7 +363,7 @@ public class P2pService {
         try {
             Cashbox cashbox = cashboxService.findById(payment.getCashboxId());
             if (!cashbox.getMerchantId().equals(payment.getMerchantId())) {
-                return ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXES;
+                return ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXS_OWNER;
             }
             Long merchantCardId = cashboxService.findUserCardIdByCashBoxId(payment.getCashboxId());
             if (merchantCardId.equals(0L)) {
@@ -408,7 +408,7 @@ public class P2pService {
         try {
             Cashbox cashbox = cashboxService.findById(payment.getCashboxId());
             if (!cashbox.getMerchantId().equals(payment.getMerchantId())) {
-                return ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXES;
+                return ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXS_OWNER;
             }
             Long merchantCardId = cashboxService.findUserCardIdByCashBoxId(payment.getCashboxId());
             if (merchantCardId.equals(0L)) {

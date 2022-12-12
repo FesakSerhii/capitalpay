@@ -240,7 +240,7 @@ public class CashboxService {
         }
         Cashbox cashbox = optionalCashBox.get();
         if (!cashbox.getMerchantId().equals(dto.getMerchantId())) {
-            return ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXES;
+            return ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXS_OWNER;
         }
         UserCard userCard = userCardRepository.findById(dto.getCardId()).orElse(null);
         if (Objects.isNull(userCard)) {
@@ -268,7 +268,7 @@ public class CashboxService {
         }
         Cashbox cashbox = optionalCashBox.get();
         if (!cashbox.getMerchantId().equals(dto.getMerchantId())) {
-            return ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXES;
+            return ErrorDictionary.AVAILABLE_ONLY_FOR_CASHBOXS_OWNER;
         }
         UserCardFromBank userCard = userBankCardRepository.findById(dto.getCardId()).orElse(null);
         if (Objects.isNull(userCard)) {

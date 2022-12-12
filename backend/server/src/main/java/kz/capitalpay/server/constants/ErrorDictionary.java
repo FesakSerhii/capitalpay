@@ -26,7 +26,7 @@ public class ErrorDictionary {
     public static final ResultDTO PAGE_NOT_FOUND = new ResultDTO(false, "Page not found", 119);
     public static final ResultDTO AVAILABLE_ONLY_FOR_ADMIN_OR_OPERATOR = new ResultDTO(false, "Action available only for admin or operator", 120);
     public static final ResultDTO AVAILABLE_ONLY_FOR_ADMIN_OPERATOR_AND_MERCHANT = new ResultDTO(false, "Action available only for admin, operator or merchant.", 121);
-    public static final ResultDTO AVAILABLE_ONLY_FOR_CASHBOXES = new ResultDTO(false, "Action available only for owner cashboxes.", 122);
+    public static final ResultDTO AVAILABLE_ONLY_FOR_CASHBOXS_OWNER = new ResultDTO(false, "Action available only for owner cashboxes.", 122);
     public static final ResultDTO MUST_CONTAIN_12_DIGITS = new ResultDTO(false, "BIN or IIN must contain 12 digits.", 123);
     public static final ResultDTO CONTAINS_IDENTICAL_DIGITS = new ResultDTO(false, "BIN or IIN contains 12 identical digits.", 124);
     public static final ResultDTO MUST_CONTAIN_ONLY_DIGITS = new ResultDTO(false, "BIN or IIN must contains only digits.", 125);
