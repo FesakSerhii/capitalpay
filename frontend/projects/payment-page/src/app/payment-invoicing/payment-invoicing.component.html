@@ -23,14 +23,28 @@
                 <span class="focused">Номер заказа (накладная)*:</span>
                 <input type="text" [class.error]="isInvalid(formInvoicing, 'billId')" placeholder="Введите Номер заказа (накладная)" formControlName="billId">
             </label>
+
             <label class="tpsform_input" style="position: relative">
-                <span class="focused">Email*:</span>
+                <span class="focused">Email:</span>
                 <input type="text" placeholder="Введите Email" [class.error]="isInvalid(formInvoicing, 'payerEmail')" formControlName="payerEmail">
             </label>
             <label class="tpsform_input" style="position: relative">
-                <span class="focused">Комментарий для продавца:</span>
+                <span class="focused">Комментарий для продавца*:</span>
                 <textarea  [class.error]="isInvalid(formInvoicing, 'description')" formControlName="description" cols="10"
                           rows="3"></textarea>
+            </label>
+            <label class="tpsform_input">
+                <span class="focused">Время жизни ссылки:</span>
+                <span class="d-flex align-items-center radio-form">
+                    <span>
+                        <input type="radio" value="1" formControlName="validHours">
+                        <span>1 час</span>
+                    </span>
+                    <span>
+                        <input type="radio" value="3" formControlName="validHours">
+                        <span>3 часа</span>
+                    </span>
+                </span>
             </label>
         </div>
         <div class="info-block info-finish">
