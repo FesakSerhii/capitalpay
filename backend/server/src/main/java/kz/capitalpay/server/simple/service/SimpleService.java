@@ -258,6 +258,9 @@ public class SimpleService {
             if (terminal.isP2p()) {
                 payment.setP2p(true);
                 Long merchantCardId = cashboxService.findUserCardIdByCashBoxId(payment.getCashboxId());
+                if (Objects.isNull(merchantCardId)) {
+                    return CARD_NOT_FOUND;
+                }
                 UserCardFromBank merchantCard = userCardService.findUserCardFromBankById(merchantCardId);
                 String p2pXml = halykSoapService.createAnonymousP2pXml(payment.getPaySysPayId(), payment.getMerchantId(), merchantCard.getBankCardId(), payment.getTotalAmount(), terminal.getInputTerminalId());
                 LOGGER.info("p2pXml {}", p2pXml);
