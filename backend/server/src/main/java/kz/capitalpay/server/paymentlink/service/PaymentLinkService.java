@@ -151,6 +151,8 @@ public class PaymentLinkService {
 
             String link = apiAddress + "/payment/simple/pay-with-link/" + paymentLink.getGuid();
             if (Objects.nonNull(dto.getPayerEmail())) {
+                paymentLink.setEmailTitle("Ссылка на оплату от " + creationLink.getCompanyName());
+                paymentLink.setEmailText("");
                 sendPaymentLinkEmail(paymentLink, link);
             }
             Map<String, String> resultMap = new HashMap<>();
