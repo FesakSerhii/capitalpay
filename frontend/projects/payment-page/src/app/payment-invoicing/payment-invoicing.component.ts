@@ -16,8 +16,8 @@ export class PaymentInvoicingComponent implements OnInit {
     totalAmount: new FormControl('', [Validators.required]),
     billId: new FormControl('', [Validators.required]),
     payerEmail: new FormControl('', [Validators.email]),
-    emailTitle: new FormControl('', [Validators.required]),
-    emailText: new FormControl('', [Validators.required]),
+    emailTitle: new FormControl(),
+    emailText: new FormControl(),
     description: new FormControl('', [Validators.required]),
     failed: new FormControl(),
     validHours: new FormControl('3'),
@@ -39,8 +39,6 @@ export class PaymentInvoicingComponent implements OnInit {
       this.userCardService.getPublicInfo(this.linkId).then(rest => {
         this.paymentLinkForm.get('companyName').patchValue(rest.data.companyName);
         this.paymentLinkForm.get('contactPhone').patchValue(rest.data.contactPhone);
-        this.formInvoicing.get('emailTitle').patchValue(`Ссылки на оплату счета ${rest.data.companyName}`)
-        this.formInvoicing.get('emailText').patchValue(`Ссылки на оплату счета ${rest.data.companyName}`)
       })
     }
   }
