@@ -49,6 +49,7 @@ public class Payment {
     private String receiverEmail;
     private String receiverName;
     private Long bankTerminalId;
+    private String bankError;
 
     public String getGuid() {
         return guid;
@@ -304,6 +305,14 @@ public class Payment {
 
     public void setBankTerminalId(Long bankTerminalId) {
         this.bankTerminalId = bankTerminalId;
+    }
+
+    public String getBankError() {
+        return bankError;
+    }
+
+    public void setBankError(String bankError) {
+        this.bankError = bankError;
     }
 
     @Override

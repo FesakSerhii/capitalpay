@@ -385,7 +385,7 @@ public class SimpleService {
             HalykBankControlOrder halykBankControlOrder = halykSoapService.parseBankControlOrder(response.getBody());
             halykBankControlOrderRepository.save(halykBankControlOrder);
             if (Objects.nonNull(halykBankControlOrder.getResponseCode()) && halykBankControlOrder.getResponseCode().equals("00")) {
-                paymentService.setStatusByPaySysPayId(halykPurchaseOrder.getOrderId(), SUCCESS);
+                paymentService.setStatusByPaySysPayId(halykPurchaseOrder.getOrderId(), SUCCESS, null);
                 mainPayment.setRrn(halykPurchaseOrder.getReference());
                 mainPayment.setPayerEmail(halykPurchaseOrder.getEmail());
                 mainPayment.setPayerName(halykPurchaseOrder.getBankName());
