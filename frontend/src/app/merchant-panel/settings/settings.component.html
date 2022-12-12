@@ -451,7 +451,8 @@
                         <input [class.error]="isInvalid(paymentLinkForm,'contactPhone')" type="text" class="form-control"
                                formControlName="contactPhone">
                     </div>
-                    <div class="d-flex justify-content-end">
+                    <div class="d-flex justify-content-end align-items-center">
+                        <span *ngIf="paymentLinkSuccessEdit"  class="mr-auto" style="color: #008D68; font-weight: 500">Ссылка на оплату отредактированная</span>
                         <button class="btn btn-success btn-round"
                                 (click)="editPaymentLink()">Редактировать ссылку
                         </button>
