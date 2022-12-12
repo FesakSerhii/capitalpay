@@ -24,7 +24,7 @@
                 <input type="text" [class.error]="isInvalid(formInvoicing, 'billId')" placeholder="Введите Номер заказа (накладная)" formControlName="billId">
             </label>
             <label class="tpsform_input" style="position: relative">
-                <span class="focused">Email (для квитанции)*:</span>
+                <span class="focused">Email*:</span>
                 <input type="text" placeholder="Введите Email" [class.error]="isInvalid(formInvoicing, 'payerEmail')" formControlName="payerEmail">
             </label>
             <label class="tpsform_input" style="position: relative">
@@ -35,7 +35,6 @@
         </div>
         <div class="info-block info-finish">
             <div class="title">
-                <div>Комиссия: <span class="right">0 ₸</span></div>
                 <div> Итого к оплате: <span
                         class="right"><span>{{formInvoicing.get('totalAmount').value ? (formInvoicing.get('totalAmount').value | mask: 'separator.2') : '0.00'}}</span> ₸</span>
                 </div>

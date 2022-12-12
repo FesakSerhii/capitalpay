@@ -80,12 +80,12 @@
                                             src="../../../assets/shapes/img/dots.svg" alt="dots"></a>
                                 </div>
                                 <div *ngIf="selectedCashBoxId!==null&&selectedCashBoxId===cashBox.id"
-                                     class="card m-0 d-flex flex-column justify-content-around pl-2" style="position: absolute; width: 160px; height: 120px; top: 191px; right: 0; z-index: 10;">
+                                     class="card m-0 d-flex flex-column justify-content-around pl-2" style="position: absolute; width: 210px; height: 120px; top: 191px; right: 0; z-index: 10;">
                                     <a href="#" style="color: black" (click)="$event.preventDefault();deleteCashBox()">Удалить</a>
                                     <a href="#" style="color: black"
                                        (click)="$event.preventDefault();cashBoxMenuOpened=!cashBoxMenuOpened;getCurrencies();">Настройки
                                         кассы</a>
-                                    <a href="#" style="color: black" (click)="$event.preventDefault();paymentLinkOpen(paymentLinkModal, cashBox); selectedCashBoxId=null">Ссылка на оплату</a>
+                                    <a href="#" style="color: black" (click)="$event.preventDefault();paymentLinkOpen(paymentLinkModal, cashBox); selectedCashBoxId=null">Ссылка на выставление счета</a>
                                     <a href="#" style="color: black"
                                        (click)="$event.preventDefault();cashBoxMenuOpened=!cashBoxMenuOpened">Вывести
                                         баланс</a>
@@ -391,7 +391,7 @@
             <div class="card-icon">
                 <i class="material-icons-outlined">insert_link</i>
             </div>
-            <h4 class="card-title">{{!merchantLinkInfo.result ? 'Создания ссылки на оплату' : 'Ссылка на оплату'}}</h4>
+            <h4 class="card-title">{{!merchantLinkInfo.result ? 'Создания ссылки на выставление счета' : 'Ссылка на выставление счета'}}</h4>
             <button type="button" class="close position-absolute" style="top: 10px;right: 0" data-dismiss="modal"
                     aria-label="Close" (click)="modal.dismiss();">
                 <span aria-hidden="true">&times;</span>
@@ -452,7 +452,7 @@
                                formControlName="contactPhone">
                     </div>
                     <div class="d-flex justify-content-end align-items-center">
-                        <span *ngIf="paymentLinkSuccessEdit"  class="mr-auto" style="color: #008D68; font-weight: 500">Ссылка на оплату отредактированная</span>
+                        <span *ngIf="paymentLinkSuccessEdit"  class="mr-auto" style="color: #008D68; font-weight: 500">Ссылка на оплату отредактирована</span>
                         <button class="btn btn-success btn-round"
                                 (click)="editPaymentLink()">Редактировать ссылку
                         </button>
