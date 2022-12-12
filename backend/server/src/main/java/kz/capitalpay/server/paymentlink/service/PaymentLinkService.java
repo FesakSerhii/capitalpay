@@ -150,7 +150,7 @@ public class PaymentLinkService {
             paymentLinkRepository.save(paymentLink);
 
             String link = apiAddress + "/payment/simple/pay-with-link/" + paymentLink.getGuid();
-            if (Objects.nonNull(dto.getPayerEmail()) && Objects.nonNull(dto.getEmailTitle()) && Objects.nonNull(dto.getEmailText())) {
+            if (Objects.nonNull(dto.getPayerEmail())) {
                 sendPaymentLinkEmail(paymentLink, link);
             }
             Map<String, String> resultMap = new HashMap<>();
