@@ -28,8 +28,12 @@ export class PaymentsService {
   editRegistries(fields){
     return this.apiService.postJwt('api','/paysystems/halyk/set',this.tokenService.token,{fields}).toPromise();
   }
-  getTransactionsList(){
-    return this.apiService.postJwt('api','/payments/list',this.tokenService.token).toPromise();
+  getTransactionsList(obj){
+    const filter = Object.keys(obj).reduce((item, key) => (obj[key] === undefined || obj[key] === null || obj[key] === {} || key === 'dateStart' || key === 'dateEnd' ? item : {...item, [key]: obj[key]}), {});
+    return this.apiService.postJwt('api','/payments/list',this.tokenService.token, filter).toPromise();
+  }
+  postMerchantNames(obj) {
+    return this.apiService.postJwt('api','/payments/get/merchant-data',this.tokenService.token, obj).toPromise();
   }
   getTransactionDetails(guid){
     return this.apiService.postJwt('api','/payments/one',this.tokenService.token,{guid}).toPromise();
@@ -37,5 +41,4 @@ export class PaymentsService {
   getFile(timestampAfter,timestampBefore){
     return this.apiService.postJwtFile('api','/paysystems/register/download',this.tokenService.token,{timestampAfter,timestampBefore}).toPromise();
   }
-
 }

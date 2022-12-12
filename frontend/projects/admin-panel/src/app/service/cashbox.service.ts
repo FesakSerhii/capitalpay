@@ -42,4 +42,13 @@ export class CashBoxService {
   editEnableCurrecies(data){
     return this.apiService.postJwt('api','/currency/cashbox/edit',this.tokenService.token,data).toPromise();
   }
+  getMerchantLinkGetPublicInfo(id) {
+    return this.apiService.get('api', `/merchant-link/get/${id}`).toPromise();
+  }
+  postMerchantLinkCreate(obj) {
+    return this.apiService.postJwt('api', '/merchant-link/create',this.tokenService.token,obj).toPromise();
+  }
+  postMerchantLinkEdit(obj) {
+    return this.apiService.postJwt('api', '/merchant-link/edit',this.tokenService.token,obj).toPromise();
+  }
 }

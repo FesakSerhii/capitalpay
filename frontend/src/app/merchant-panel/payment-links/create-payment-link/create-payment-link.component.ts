@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from "@angular/core";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute} from "@angular/router";
 import {CashBoxService} from "../../../../../projects/admin-panel/src/app/service/cashbox.service";
@@ -8,6 +8,7 @@ import {UserService} from "../../../../../projects/admin-panel/src/app/service/u
 import {PaymentService} from "../../../service/payment.service";
 import {FileService} from "../../../service/file.service";
 import {jsPDF} from "jspdf";
+import {MassageModalComponent} from "../../../../../common-blocks/massage-modal/massage-modal.component";
 
 @Component({
   selector: 'app-create-payment-link',
@@ -15,6 +16,7 @@ import {jsPDF} from "jspdf";
   styleUrls: ['./create-payment-link.component.scss']
 })
 export class CreatePaymentLinkComponent implements OnInit {
+  @ViewChild('massageModal', { static: false }) massageModal: MassageModalComponent;
   merchantId: number = null;
   cashBoxId: any = null;
   linkData: any = null;
@@ -35,7 +37,7 @@ export class CreatePaymentLinkComponent implements OnInit {
     validHours: new FormControl(3, Validators.required),
     fileIds: new FormControl(null),
   });
-
+  errStatusMassage: string = null;
   constructor(private route: ActivatedRoute, private cashBoxService: CashBoxService, public checkFormInvalidService:CheckFormInvalidService, private kycService: KycService, private userService: UserService, private paymentService: PaymentService, private fileService: FileService) {}
 
   ngOnInit(): void {
@@ -46,7 +48,6 @@ export class CreatePaymentLinkComponent implements OnInit {
       });
     })
     this.getUserInfo();
-
   }
 
   getUserInfo() {
@@ -63,6 +64,15 @@ export class CreatePaymentLinkComponent implements OnInit {
     this.form.get('fileIds').patchValue(this.fileList);
     this.paymentService.postPaymentLinkCreate(this.form.value).then(rest => {
       this.linkData = rest.data
+    }).catch(error => {
+      switch (error.status) {
+        case 113: this.errStatusMassage = 'Касса не найдена'; break;
+        case 115: this.errStatusMassage = 'Слишком длинный номер счета (больше 31 символа)'; break;
+        case 116: this.errStatusMassage = 'Такой номер счета для данной кассы уже существует'; break;
+        default: this.errStatusMassage = error.statusMessage; break;
+      }
+      this.massageModal.open();
+      console.log(error);
     })
   }
 
@@ -109,5 +119,8 @@ export class CreatePaymentLinkComponent implements OnInit {
   }
   isInvalid(form: FormGroup|FormControl,field: string='') {
     return this.checkFormInvalidService.isInvalid(form,field);
+  }
+  modalClosed(event: any) {
+
   }
 }

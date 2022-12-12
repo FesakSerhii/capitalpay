@@ -24,3 +24,19 @@
 .form-control.ng-touched.ng-invalid {
     border-bottom: 1px solid #ff0000;
 }
+
+
+.merchantSearch {
+  .dropdown-item {
+    background-color: transparent !important;
+  }
+  .dropdown-menu .dropdown-item:hover,
+  .dropdown-menu .dropdown-item:focus,
+  .dropdown-menu a:hover,
+  .dropdown-menu a:focus,
+  .dropdown-menu a:active {
+    box-shadow: none;
+    background-color: transparent;
+    color: initial;
+  }
+}
