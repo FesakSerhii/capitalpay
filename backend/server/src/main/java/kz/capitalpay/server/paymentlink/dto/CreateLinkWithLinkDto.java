@@ -15,13 +15,11 @@ public class CreateLinkWithLinkDto {
     private String billId;
     @NotNull
     private BigDecimal totalAmount;
-    @NotBlank
     @Email
     private String payerEmail;
-    @NotBlank
     private String emailTitle;
-    @NotBlank
     private String emailText;
+    @NotNull
     private Integer validHours;
     private List<Long> fileIds;
 

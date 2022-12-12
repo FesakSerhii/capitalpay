@@ -150,7 +150,9 @@ public class PaymentLinkService {
             paymentLinkRepository.save(paymentLink);
 
             String link = apiAddress + "/payment/simple/pay-with-link/" + paymentLink.getGuid();
-            sendPaymentLinkEmail(paymentLink, link);
+            if (Objects.nonNull(dto.getPayerEmail()) && Objects.nonNull(dto.getEmailTitle()) && Objects.nonNull(dto.getEmailText())) {
+                sendPaymentLinkEmail(paymentLink, link);
+            }
             Map<String, String> resultMap = new HashMap<>();
             resultMap.put("link", link);
             resultMap.put("qrCode", qrCodeUtil.generateQrCode(link));
