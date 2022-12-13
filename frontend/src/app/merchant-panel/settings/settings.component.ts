@@ -110,7 +110,7 @@ export class SettingsComponent implements OnInit {
   confirmMassage: string = null;
   isTwoFactor = new FormControl();
   errStatusMassage: string = null;
-
+  paymentLinkSuccessEdit: boolean;
 
   ngOnInit(): void {
     this.activatedRoute.queryParamMap.subscribe((param) => {
@@ -170,10 +170,11 @@ export class SettingsComponent implements OnInit {
     if(this.paymentLinkForm.invalid){
       return;
     }
-    this.confirmModal.open().then(resp => {
-      this.cashBoxService.postMerchantLinkCreate(this.paymentLinkForm.value).then(rest => {
-        this.modalService.dismissAll()
-      })
+    this.cashBoxService.postMerchantLinkCreate(this.paymentLinkForm.value).then(rest => {
+      // this.modalService.dismissAll()
+      this.paymentLinkForm.reset();
+      this.merchantLinkInfo = rest;
+      this.editPaymentLinkForm.patchValue(rest.data)
     })
 
   }
@@ -181,11 +182,15 @@ export class SettingsComponent implements OnInit {
     if(this.editPaymentLinkForm.invalid){
       return;
     }
-    this.confirmModal.open().then(resp => {
-      const obj:any = Object.fromEntries(Object.entries(this.editPaymentLinkForm.value).filter(([key, value]) => key === 'id' || key === 'companyName' || key === 'contactPhone'))
-      this.cashBoxService.postMerchantLinkEdit(obj).then(rest => {
-        this.modalService.dismissAll()
-      })
+    const obj:any = Object.fromEntries(Object.entries(this.editPaymentLinkForm.value).filter(([key, value]) => key === 'id' || key === 'companyName' || key === 'contactPhone'))
+    this.cashBoxService.postMerchantLinkEdit(obj).then(rest => {
+      this.merchantLinkInfo = rest;
+      this.editPaymentLinkForm.reset();
+      this.editPaymentLinkForm.patchValue(rest.data)
+      this.paymentLinkSuccessEdit = true;
+      setTimeout(() => {
+        this.paymentLinkSuccessEdit = false;
+      }, 3000)
     })
   }
 
