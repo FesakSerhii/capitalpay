@@ -290,7 +290,7 @@ public class PaymentService {
                 predicates.add(builder.and(builder.equal(root.get("cashboxName"), filter.getCashboxName())));
             }
             if (Objects.nonNull(filter.getStatus()) && !filter.getStatus().trim().isEmpty()) {
-                predicates.add(builder.and(builder.equal(root.get("status"), filter.getStatus())));
+                predicates.add(builder.and(builder.equal(builder.lower(root.get("status")), filter.getStatus().toLowerCase())));
             }
             if (Objects.nonNull(filter.getBankTerminalId())) {
                 predicates.add(builder.and(builder.equal(root.get("bankTerminalId"), filter.getBankTerminalId())));
