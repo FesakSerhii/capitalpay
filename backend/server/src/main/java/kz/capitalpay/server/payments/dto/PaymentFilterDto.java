@@ -20,6 +20,7 @@ public class PaymentFilterDto {
     private String billId;
     private String paymentId;
     private String cashboxName;
+    private String status;
     private Long bankTerminalId;
     private BigDecimal totalAmount;
     private Long merchantId;
@@ -119,5 +120,13 @@ public class PaymentFilterDto {
 
     public void setSortDto(PaymentSortDto sortDto) {
         this.sortDto = sortDto;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

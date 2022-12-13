@@ -265,6 +265,7 @@ public class PaymentService {
             LOGGER.info("before: {}", filter.getDateBefore());
             LOGGER.info("page: {}", filter.getPage());
             LOGGER.info("limit: {}", filter.getLimit());
+            LOGGER.info("status: {}", filter.getStatus());
 
             predicates.add(builder.and(builder.equal(root.get("saveBankCard"), false)));
             if (Objects.nonNull(filter.getMerchantId())) {
@@ -287,6 +288,9 @@ public class PaymentService {
             }
             if (Objects.nonNull(filter.getCashboxName()) && !filter.getCashboxName().trim().isEmpty()) {
                 predicates.add(builder.and(builder.equal(root.get("cashboxName"), filter.getCashboxName())));
+            }
+            if (Objects.nonNull(filter.getStatus()) && !filter.getStatus().trim().isEmpty()) {
+                predicates.add(builder.and(builder.equal(root.get("status"), filter.getStatus())));
             }
             if (Objects.nonNull(filter.getBankTerminalId())) {
                 predicates.add(builder.and(builder.equal(root.get("bankTerminalId"), filter.getBankTerminalId())));
