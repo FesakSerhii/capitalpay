@@ -288,7 +288,8 @@ public class PaymentLinkService {
             fileIds = new ArrayList<>();
         }
         List<FileStorage> files = fileStorageService.getFilListById(fileIds);
-        sendEmailService.sendEmailWithFiles(paymentLink.getPayerEmail(), paymentLink.getEmailTitle(), paymentLink.getEmailText() + "\n\n" + link, files);
+        String linkHtml = String.format("<html><body><a href=\"%s\">%s</a></body></html>", link, link);
+        sendEmailService.sendEmailWithFiles(paymentLink.getPayerEmail(), paymentLink.getEmailTitle(), paymentLink.getEmailText() + "\n\n" + linkHtml, files);
     }
 
     private ResultDTO checkPaymentLink(String billId, Cashbox cashbox) {
