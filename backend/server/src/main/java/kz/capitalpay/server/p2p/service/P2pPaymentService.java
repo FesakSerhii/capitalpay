@@ -44,7 +44,8 @@ public class P2pPaymentService {
     }
 
     public Payment generateP2pPayment(String ipAddress, String userAgent, Long merchantId, BigDecimal totalAmount,
-                                      Long cashBoxId, boolean outgoing, String currency, String param, Long bankTerminalId) {
+                                      Long cashBoxId, boolean outgoing, String currency, String param,
+                                      Long bankTerminalId, String merchantName, String cashboxName) {
         Payment payment = new Payment();
         payment.setPaySysPayId(generateOrderId());
         payment.setGuid(UUID.randomUUID().toString());
@@ -58,6 +59,8 @@ public class P2pPaymentService {
         payment.setUserAgent(userAgent);
         payment.setOutgoing(outgoing);
         payment.setParam(param);
+        payment.setCashboxName(cashboxName);
+        payment.setMerchantName(merchantName);
         payment.setBankTerminalId(bankTerminalId);
         payment.setP2p(true);
         payment.setStatus(NEW_PAYMENT);
